@@ -1,0 +1,5 @@
+<?php
+
+class GoMage_ProductDesigner_Model_Mysql4_Collection_Abstract extends Mage_Core_Model_Resource_Db_Collection_Abstract
+{
+}

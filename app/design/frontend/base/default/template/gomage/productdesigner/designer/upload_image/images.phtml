@@ -1,0 +1,3 @@
+<?php foreach($this->getUploadedImages() as $image): ?>
+    <img src="<?php echo $this->getImageUrl($image['image']); ?>" class="clipart-image" />
+<?php endforeach; ?>

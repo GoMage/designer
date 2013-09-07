@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    /**
+     * GoMage ProductDesigner Extension
+     *
+     * @category     Extension
+     * @copyright    Copyright (c) 2010-2012 GoMage (http://www.gomage.com)
+     * @author       GoMage
+     * @license      http://www.gomage.com/license-agreement/  Single domain license
+     * @terms of use http://www.gomage.com/terms-of-use
+     * @version      Release: 1.0
+     */
+ -->
+<config>
+    <menu>
+        <catalog translate="title" module="catalog">
+            <title>Catalog</title>
+            <sort_order>30</sort_order>
+            <depends>
+                <module>Mage_Catalog</module>
+            </depends>
+            <children>
+                <designer translate="title" module="designer">
+                    <title>Product Designer</title>
+                    <sort_order>6</sort_order>
+                    <children>
+                        <cliparts module="designer">
+                            <title>Cliparts</title>
+                            <action>adminhtml/cliparts</action>
+                            <sort_order>6</sort_order>
+                        </cliparts>
+                        <fonts module="designer">
+                            <title>Fonts</title>
+                            <action>adminhtml/fonts</action>
+                            <sort_order>7</sort_order>
+                        </fonts>
+                        <!--<ideas module="designer">
+                            <title>Design Ideas</title>
+                            <action>gomage_designer/adminhtml_ideas/index</action>
+                            <sort_order>8</sort_order>
+                        </ideas>-->
+                        <config module="designer">
+                            <title>Configuration</title>
+                            <action>adminhtml/system_config/edit/section/gmpd</action>
+                            <sort_order>9</sort_order>
+                        </config>
+                    </children>
+                </designer>
+            </children>
+        </catalog>
+    </menu>
+    <acl>
+        <resources>
+            <admin>
+                <children>
+                    <system>
+                        <children>
+                            <config>
+                                <children>
+                                    <gomage_activation>
+                                        <title>GoMage - Activation</title>
+                                    </gomage_activation>
+                                </children>
+                            </config>
+                        </children>
+                    </system>
+                </children>
+            </admin>
+        </resources>
+    </acl>
+    <acl>
+        <resources>
+            <admin>
+                <children>
+                    <system>
+                        <children>
+                            <config>
+                                <children>
+                                    <gmpd>
+                                        <title>GoMage - Product Designer</title>
+                                    </gmpd>
+                                </children>
+                            </config>
+                        </children>
+                    </system>
+                </children>
+            </admin>
+        </resources>
+   </acl>
+    <acl>
+        <resources>
+            <admin>
+                <children>
+                    <gmpd translate="title" module="designer">
+                        <title>GoMage ProductDesigner</title>
+                        <sort_order>100</sort_order>
+                        <children>
+                            <cliparts>
+                                <title>Cliparts</title>
+                            </cliparts>
+                            <fonts>
+                                <title>Fonts</title>
+                            </fonts>
+                            <ideas>
+                                <title>Design Ideas</title>
+                            </ideas>
+                            <config>
+                                <title>Configuration</title>
+                            </config>
+                        </children>
+                    </gmpd>
+                </children>
+            </admin>
+        </resources>
+    </acl>
+</config>
+

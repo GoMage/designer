@@ -1,0 +1,164 @@
+<?php
+$_product = $this->getProduct();
+//Is Product Navigation (Choose Product) Tab Enabled
+$navigationEnabled = $this->isNavigationEnabled();
+
+//Is Design (Add Design) Tab Enabled
+$designEnabled = $this->isDesignEnabled() && $_product->getId();
+
+//Is Text (Add Text) Tab Enabled
+$textEnabled = $this->isTextEnabled() && $_product->getId();
+
+//Is Image (Upload Image) Tab Enabled
+$imageEnabled = $this->isUploadImageEnabled() && $_product->getId();
+?>
+<script type="text/javascript">
+    function initProductDesigner() {
+        var settings = {};
+        settings.navigation = {
+            chooseProduct : $("pd_choose_product"),
+            addDesign : $("pd_add_design"),
+            addText : $("pd_add_text"),
+            addImage : $("pd_add_image"),
+            designGallery : $("pd_design_gallery"),
+            saveDesign: $("pd_save_design"),
+            continue : $('pd_gt_product')
+        };
+
+        settings.controls = {
+            undo: 'pd_undo',
+            redo: 'pd_redo',
+            flip_x: 'pd_flip_horizontal',
+            flip_y: 'pd_flip_vertical',
+            zoom: 'pd_zoom',
+            allign_by_center: 'pd_allign_by_center'
+        };
+        settings.isCustomerRegistered = '<?php echo $this->getCustomerId(); ?>';
+        settings.isProductSelected = <?php echo $this->isProductSelected() ? 1 : 0; ?>;
+        settings.isNavigationEnabled = <?php echo $this->isNavigationEnabled(); ?>;
+        settings.isDesignedEnabled = <?php echo $this->isDesignEnabled(); ?>;
+        settings.isTextEnabled = <?php echo $this->isTextEnabled(); ?>;
+        settings.isUploadImageEnabled = <?php echo $this->isUploadImageEnabled(); ?>;
+
+        settings.currentUrl       = location.toString();
+        settings.prodImagesPath   = "/skin/frontend/base/default/images/gomage/productdesigner/";
+        settings.clipartsBasePath = "/media/gomage/productdesigner/cliparts/";
+
+        settings.socialIcons = {
+            twitter  : settings.prodImagesPath + 'social/twitter.png',
+            email    : settings.prodImagesPath + 'social/email.png',
+            facebook : settings.prodImagesPath + 'social/facebook.png'
+        };
+        settings.product = <?php echo $this->getEditorConfigJson(); ?>;
+        settings.container = $("pd_container");
+        settings.pane = $("pd_pane");
+
+        window.w = new GoMage.ProductDesigner(settings, '<?php echo Mage::getUrl('*/index/continue')?>');
+    }
+    document.observe("dom:loaded", function(e){
+        initProductDesigner();
+    }.bind(this));
+</script>
+<div id="product-designer">
+    <div>
+        <ul id="pd_nav_container">
+            <li style="display: <?php echo $navigationEnabled ? 'block': 'none'?>" id="pd_choose_product"><?php echo $this->__('Choose Product'); ?></li>
+            <li style="display: <?php echo $designEnabled ? 'block': 'none'?>" id="pd_add_design"><?php echo $this->__('Add Design'); ?></li>
+            <li style="display: <?php echo $textEnabled ? 'block': 'none'?>" id="pd_add_text"><?php echo $this->__('Add Text'); ?></li>
+            <li style="display: <?php echo $imageEnabled ? 'block': 'none' ?>" id="pd_add_image"><?php echo $this->__('Upload Image'); ?></li>
+        </ul>
+        <ul id="pd_save_container" style="display: <?php echo $this->isProductSelected() ? 'block': 'none'?>">
+            <li><button class="pd-btn" id="pd_save_design"><?php echo Mage::helper('designer')->__('Save  Design') ?></button></li>
+            <li><button class="pd-btn" id="pd_gt_product"><?php echo Mage::helper('designer')->__('Continue') ?></button></li>
+        </ul>
+    </div>
+
+    <div class="right sidebar">
+        <div id="pd_panels">
+            <!-- Product Designer Tabs -->
+            <div id="pd_tabs">
+                <?php if ($this->isNavigationEnabled()): ?>
+                    <div class="pd-tab-content" id="pd_choose_product-content" style="display: block;">
+                        <div class="pd-header"><?php echo $this->__('Choose Product'); ?></div>
+                        <div class="pd-content">
+                            <?php
+                            // Product Navigation Block
+                            // (template : base/default/template/gomage/productdesigner/catalog/product/filters.phtml)
+                            echo $this->getChildHtml('productNavigator');
+                            ?>
+                        </div>
+                    </div>
+                <?php endif;?>
+                <?php if ($this->isDesignEnabled()): ?>
+                    <div class="pd-tab-content" id="pd_add_design-content">
+                        <div class="pd-header"><?php echo $this->__('Choose A Design'); ?></div>
+                        <div class="pd-content">
+                            <?php
+                            // Add Image
+                            // (template : gomage/productdesigner/design/choose_design.phtml)
+                            echo $this->getChildHtml('addDesign');
+                            ?>
+                        </div>
+                    </div>
+                <?php endif;?>
+                <?php if ($this->isTextEnabled()): ?>
+                    <div class="pd-tab-content" id="pd_add_text-content">
+                        <div class="pd-header"><?php echo $this->__('Add Text'); ?></div>
+                        <div class="pd-content">
+                            <?php
+                            // Add Image Text
+                            // (template : gomage/productdesigner/design/text.phtml)
+                            echo $this->getChildHtml('addText');
+                            ?>
+                        </div>
+                    </div>
+                <?php endif;?>
+                <?php if ($this->isUploadImageEnabled()): ?>
+                    <div class="pd-tab-content" id="pd_add_image-content">
+                        <div class="pd-header"><?php echo $this->__('Upload Images'); ?></div>
+                        <div class="pd-content">
+                            <?php
+                            // Upload Image
+                            // (template : gomage/productdesigner/design/upload_image.phtml)
+                            echo $this->getChildHtml('uploadImage');
+                            ?>
+                        </div>
+                    </div>
+                <?php endif;?>
+            </div>
+            <!-- End Of Product Designer Tabs -->
+        </div>
+            <div id="additional_panels" style="display: <?php echo !$this->isProductSelected() ? 'none' : 'block'?>">
+                <?php $config = $this->getEditorConfig(); ?>
+                <div id="pd_sides" style="float: right;">
+                    <ul style="float: left">
+                    <?php foreach ($config['images'] as $k => $v): ?>
+                        <li style="float: left">
+                            <img width="48" height="48" class="product-image" src="<?php echo $v['u'] ?>" data-id="<?php echo $k; ?>" data-image-id="<?php echo $v['id'] ?>">
+                        </li>
+                    <?php endforeach ?>
+                    </ul>
+                    <script type="text/html" class="no-display" id="product-image-template">
+                        <li style="float: left">
+                            <img width="48" height="48" class="product-image" src="#{url}" data-id="#{image-id}" data-image-id="#{data-image-id}">
+                        </li>
+                    </script>
+                </div>
+                <div id="additional_instructions">
+                    <?php echo $this->getChildHtml('additionalInstructions');?>
+                </div>
+            </div>
+    </div>
+
+    <div class="content">
+        <div id="pd_container"></div>
+    </div>
+        <div id="pd_bottom_panel" style="width: <?php echo $this->getProductImageWidth();?>px; display: <?php echo !$this->isProductSelected() ? 'none' : 'block'?>">
+            <button class="pd-btn" id="pd_flip_horizontal"><?php echo Mage::helper('designer')->__('Horizontal Flip') ?></button>
+            <button class="pd-btn" id="pd_flip_vertical"><?php echo Mage::helper('designer')->__('Vertical Flip') ?></button>
+            <button class="pd-btn" id="pd_zoom"><?php echo Mage::helper('designer')->__('Zoom') ?></button>
+            <button class="pd-btn" id="pd_allign_by_center"><?php echo Mage::helper('designer')->__('Align by center') ?></button>
+            <button class="pd-btn" id="pd_undo"><?php echo Mage::helper('designer')->__('Undo') ?></button>
+            <button class="pd-btn" id="pd_redo"><?php echo Mage::helper('designer')->__('Redo') ?></button>
+        </div>
+</div>

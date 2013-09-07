@@ -1,0 +1,6 @@
+<?php
+$cliparts = $this->getCliparts();
+?>
+<?php foreach($cliparts as $_clipart): ?>
+    <img src="<?php echo $this->getClipartUrl($_clipart->getImage()); ?>" class="clipart-image" />
+<?php endforeach; ?>

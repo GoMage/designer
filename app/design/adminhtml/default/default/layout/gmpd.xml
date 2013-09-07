@@ -1,0 +1,43 @@
+<?xml version="1.0" ?>
+<layout>
+    <adminhtml_catalog_product_edit>
+        <reference name="head">
+            <action method="addJs"><script>gomage/productdesigner/adminhtml/product_edit.js</script></action>
+        </reference>
+    </adminhtml_catalog_product_edit>
+    <adminhtml_catalog_product_new>
+        <reference name="head">
+            <action method="addJs"><script>gomage/productdesigner/adminhtml/product_edit.js</script></action>
+        </reference>
+    </adminhtml_catalog_product_new>
+    <adminhtml_cliparts_edit>
+        <update handle="editor" />
+        <reference name="left">
+            <block name="cliparts_categories_tree" type="designer/adminhtml_cliparts_tree" template="gomage/productdesigner/cliparts/tree.phtml" />
+        </reference>
+        <reference name="content">
+            <block name="cliparts_edit"  type="designer/adminhtml_cliparts_edit" template="gomage/productdesigner/cliparts/edit.phtml">
+                <block name="form" type="designer/adminhtml_cliparts_edit_form" template="gomage/productdesigner/cliparts/edit/form.phtml">
+                    <block name="gallery" type="designer/adminhtml_cliparts_edit_gallery" />
+                </block>
+            </block>
+        </reference>
+        <reference name="js">
+            <block type="core/template" template="catalog/wysiwyg/js.phtml" name="catalog.wysiwyg.js" />
+        </reference>
+    </adminhtml_cliparts_edit>
+
+    <adminhtml_fonts_edit>
+        <update handle="editor" />
+        <reference name="content">
+            <block name="cliparts_edit"  type="designer/adminhtml_fonts_edit" template="gomage/productdesigner/fonts/edit.phtml">
+                <block name="form" type="designer/adminhtml_fonts_edit_form" template="gomage/productdesigner/fonts/edit/form.phtml">
+                    <block name="gallery" type="designer/adminhtml_fonts_edit_gallery" />
+                </block>
+            </block>
+        </reference>
+        <reference name="js">
+            <block type="core/template" template="catalog/wysiwyg/js.phtml" name="catalog.wysiwyg.js" />
+        </reference>
+    </adminhtml_fonts_edit>
+</layout>

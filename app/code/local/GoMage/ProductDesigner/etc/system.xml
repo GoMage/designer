@@ -1,0 +1,819 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ /**
+ * GoMage ProductDesigner Extension
+ *
+ * @category     Extension
+ * @copyright    Copyright (c) 2010-2012 GoMage (http://www.gomage.com)
+ * @author       GoMage
+ * @license      http://www.gomage.com/license-agreement/  Single domain license
+ * @terms of use http://www.gomage.com/terms-of-use
+ * @version      Release: 1.0
+ */
+ -->
+<config>
+   <tabs>
+      <gomage translate="label">
+         <label>GoMage</label>
+         <sort_order>200</sort_order>
+      </gomage>
+   </tabs>
+   <sections>
+      <gomage_activation>
+         <label>Activation</label>
+         <tab>gomage</tab>
+         <frontend_type>text</frontend_type>
+         <sort_order>1000</sort_order>
+         <show_in_default>1</show_in_default>
+         <show_in_website>1</show_in_website>
+         <show_in_store>1</show_in_store>
+         <groups>
+            <feed translate="label">
+               <label>GoMage Product Designer v.1.0</label>
+               <frontend_type>text</frontend_type>
+               <sort_order>30</sort_order>
+               <show_in_default>1</show_in_default>
+               <show_in_website>1</show_in_website>
+               <show_in_store>1</show_in_store>
+               <fields>
+                  <key>
+                     <label>Activation Key</label>
+                     <frontend_type>text</frontend_type>
+                     <sort_order>5</sort_order>
+                     <show_in_default>1</show_in_default>
+                     <show_in_website>0</show_in_website>
+                     <show_in_store>0</show_in_store>
+                  </key>
+                  <!--
+                  <websites translate="label">
+                     <label>Select Websites</label>
+                     <frontend_type>checkbox</frontend_type>
+                     <source_model>adminhtml/system_config_source_website</source_model>
+                     <frontend_model>gomage_productDesigner/adminhtml_config_form_renderer_website</frontend_model>
+                     <sort_order>20</sort_order>
+                     <show_in_default>1</show_in_default>
+                     <show_in_website>0</show_in_website>
+                     <show_in_store>0</show_in_store>
+                  </websites>
+                  -->
+               </fields>
+            </feed>
+         </groups>
+      </gomage_activation>
+      <gmpd>
+        <label>Product Designer</label>
+        <tab>gomage</tab>
+        <frontend_type>text</frontend_type>
+        <sort_order>1000</sort_order>
+        <show_in_default>1</show_in_default>
+        <show_in_website>1</show_in_website>
+        <show_in_store>1</show_in_store>
+        <groups>
+          <general translate="label">
+            <label>General</label>
+            <frontend_type>text</frontend_type>
+            <sort_order>10</sort_order>
+            <show_in_default>1</show_in_default>
+            <show_in_website>1</show_in_website>
+            <show_in_store>1</show_in_store>
+            <expanded>1</expanded>
+            <fields>
+              <enabled translate="label comment">
+                <label>Enabled</label>
+                <frontend_type>select</frontend_type>
+                <source_model>adminhtml/system_config_source_yesno</source_model>
+                <sort_order>1</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+              </enabled>
+              <!-- Skin -->
+              <skin translate="label comment">
+                <label>Product Designer Skin</label>
+                <frontend_type>select</frontend_type>
+                <source_model>gmpd/config_source_skin</source_model>
+                <sort_order>2</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+              </skin>
+              <!-- Add to cart buttons -->
+              <add_to_cart_button translate="label comment">
+                <label>Disable Add to Cart button</label>
+                <frontend_type>select</frontend_type>
+                <source_model>adminhtml/system_config_source_yesno</source_model>
+                <sort_order>3</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+              </add_to_cart_button>
+              <!-- Format -->
+              <format translate="label comment">
+                <label>Design Format</label>
+                <frontend_type>select</frontend_type>
+                <source_model>gmpd/config_source_format</source_model>
+                <sort_order>4</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+              </format>
+              <!-- Fixed price -->
+              <fixed_price translate="label comment">
+                <label>Fixed Price</label>
+                <frontend_type>text</frontend_type>
+                <sort_order>5</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+                <validate>validate-number</validate>
+              </fixed_price>
+              <!-- Price for one text layer -->
+              <price_for_text translate="label comment">
+                <label>Price for 1 text</label>
+                <frontend_type>text</frontend_type>
+                <sort_order>6</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+                <validate>validate-number</validate>
+              </price_for_text>
+              <!-- Price for one image layer -->
+              <price_for_image translate="label comment">
+                <label>Price for 1 image</label>
+                <frontend_type>text</frontend_type>
+                <sort_order>7</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+                <validate>validate-number</validate>
+              </price_for_image>
+              <!-- Show comments fiels -->
+              <show_comment translate="label comment">
+                <label>Show Comments Field</label>
+                <frontend_type>select</frontend_type>
+                <source_model>adminhtml/system_config_source_yesno</source_model>
+                <sort_order>8</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+              </show_comment>
+              <!-- Enable Save Design -->
+              <save_design translate="label comment">
+                <label>Enable Save Design</label>
+                <frontend_type>select</frontend_type>
+                <source_model>adminhtml/system_config_source_yesno</source_model>
+                <sort_order>9</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+              </save_design>
+            </fields>
+          </general>
+          <!-- Module Navigation Settings -->
+          <navigation translate="label">
+            <label>Navigation</label>
+            <frontend_type>text</frontend_type>
+            <sort_order>20</sort_order>
+            <show_in_default>1</show_in_default>
+            <show_in_website>1</show_in_website>
+            <show_in_store>1</show_in_store>
+            <fields>
+              <!-- Enable Navigation Tab -->
+              <enabled translate="label comment">
+                <label>Enable Navigation Tab</label>
+                <frontend_type>select</frontend_type>
+                <source_model>adminhtml/system_config_source_yesno</source_model>
+                <sort_order>1</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+              </enabled>
+              <!-- Category -->
+              <category translate="label comment">
+                <label>Category</label>
+                <frontend_type>multiselect</frontend_type>
+                <source_model>adminhtml/system_config_source_category</source_model>
+                <sort_order>2</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+              </category>
+              <!-- Attributes Group -->
+              <attr_1 translate="label comment">
+                <label>Attributes</label>
+                <frontend_type>text</frontend_type>
+                <sort_order>4</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+              </attr_1>
+              <attr_2>
+                <frontend_type>text</frontend_type>
+                <sort_order>5</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+              </attr_2>
+              <attr_3>
+                <frontend_type>text</frontend_type>
+                <sort_order>6</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+              </attr_3>
+              <attr_4>
+                <frontend_type>text</frontend_type>
+                <sort_order>7</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+              </attr_4>
+              <!-- Advanced navigation -->
+              <show_help>
+                <label>Show Help Icon</label>
+                <frontend_type>select</frontend_type>
+                <source_model>adminhtml/system_config_source_yesno</source_model>
+                <sort_order>8</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+              </show_help>
+              <popup_text>
+                <label>Help Icon text</label>
+                <frontend_type>textarea</frontend_type>
+                <sort_order>9</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+              </popup_text>
+              <popup_width>
+                <label>Popup Width, px</label>
+                <frontend_type>text</frontend_type>
+                <sort_order>10</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+                <validate>validate-number</validate>
+              </popup_width>
+              <popup_height>
+                <label>Popup Height, px</label>
+                <frontend_type>text</frontend_type>
+                <sort_order>11</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+                <validate>validate-number</validate>
+              </popup_height>
+              <filter_reset>
+                <label>Show Reset Link</label>
+                <frontend_type>select</frontend_type>
+                <source_model>adminhtml/system_config_source_yesno</source_model>
+                <sort_order>12</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+              </filter_reset>
+            </fields>
+          </navigation>
+          <!-- Add design -->
+          <design translate="label">
+            <label>Add Design</label>
+            <frontend_type>text</frontend_type>
+            <sort_order>30</sort_order>
+            <show_in_default>1</show_in_default>
+            <show_in_website>1</show_in_website>
+            <show_in_store>1</show_in_store>
+            <fields>
+              <!-- Enable Design Tab -->
+              <enabled translate="label comment">
+                <label>Enable Design Tab</label>
+                <frontend_type>select</frontend_type>
+                <source_model>adminhtml/system_config_source_yesno</source_model>
+                <sort_order>1</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+              </enabled>
+              <!-- Search -->
+              <search translate="label comment">
+                <label>Show Search Field</label>
+                <frontend_type>select</frontend_type>
+                <source_model>adminhtml/system_config_source_yesno</source_model>
+                <sort_order>2</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+              </search>
+              <!-- Navigation -->
+              <navigation translate="label comment">
+                <label>Show Navigation</label>
+                <frontend_type>select</frontend_type>
+                <source_model>adminhtml/system_config_source_yesno</source_model>
+                <sort_order>3</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+              </navigation>
+              <!-- Design Size -->
+              <design_size translate="label comment">
+                <label>Design Size</label>
+                <frontend_type>label</frontend_type>
+                <sort_order>4</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+              </design_size>
+              <design_size_width>
+                <label>Width, px</label>
+                <frontend_type>text</frontend_type>
+                <sort_order>5</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+                <validate>validate-number</validate>
+              </design_size_width>
+              <design_size_height>
+                <label>Height, px</label>
+                <frontend_type>text</frontend_type>
+                <sort_order>6</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+                <validate>validate-number</validate>
+              </design_size_height>
+              <!-- Maximum Layers Quantity -->
+              <max_layers>
+                <label>Maximum Layers Qty</label>
+                <frontend_type>text</frontend_type>
+                <sort_order>7</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+                <validate>validate-number</validate>
+              </max_layers>
+              <!-- Help -->
+              <show_help>
+                <label>Show Help Icon</label>
+                <frontend_type>select</frontend_type>
+                <source_model>adminhtml/system_config_source_yesno</source_model>
+                <sort_order>8</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+              </show_help>
+              <popup_text>
+                <label>Help Icon text</label>
+                <frontend_type>textarea</frontend_type>
+                <sort_order>9</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+              </popup_text>
+              <popup_width>
+                <label>Popup Width, px</label>
+                <frontend_type>text</frontend_type>
+                <sort_order>10</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+                <validate>validate-number</validate>
+              </popup_width>
+              <popup_height>
+                <label>Popup Height, px</label>
+                <frontend_type>text</frontend_type>
+                <sort_order>11</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+                <validate>validate-number</validate>
+              </popup_height>
+            </fields>
+          </design>
+          <!-- Text -->
+          <text translate="label">
+            <label>Add Text</label>
+            <frontend_type>text</frontend_type>
+            <sort_order>40</sort_order>
+            <show_in_default>1</show_in_default>
+            <show_in_website>1</show_in_website>
+            <show_in_store>1</show_in_store>
+            <fields>
+              <!-- Enable Text Tab -->
+              <enabled translate="label comment">
+                <label>Enable Add Text Tab</label>
+                <frontend_type>select</frontend_type>
+                <source_model>adminhtml/system_config_source_yesno</source_model>
+                <sort_order>1</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+              </enabled>
+              <!-- Effects -->
+              <effects translate="label comment">
+                <label>Enable Effects</label>
+                <frontend_type>select</frontend_type>
+                <source_model>adminhtml/system_config_source_yesno</source_model>
+                <sort_order>2</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+              </effects>
+              <!-- Default Font -->
+              <font translate="label comment">
+                <label>Default Font</label>
+                <frontend_type>select</frontend_type>
+                <source_model>gmpd/config_source_font</source_model>
+                <sort_order>3</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+              </font>
+              <!-- Default Font Size -->
+              <size translate="label comment">
+                <label>Default Font Size</label>
+                <frontend_type>select</frontend_type>
+                <source_model>gmpd/config_source_font_size</source_model>
+                <sort_order>4</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+              </size>
+              <!-- Maximum Layers Quantity -->
+              <max_layers>
+                <label>Maximum Layers Qty</label>
+                <frontend_type>text</frontend_type>
+                <sort_order>5</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+                <validate>validate-number</validate>
+              </max_layers>
+              <!-- Help -->
+              <show_help>
+                <label>Show Help Icon</label>
+                <frontend_type>select</frontend_type>
+                <source_model>adminhtml/system_config_source_yesno</source_model>
+                <sort_order>8</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+              </show_help>
+              <popup_text>
+                <label>Help Icon text</label>
+                <frontend_type>textarea</frontend_type>
+                <sort_order>9</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+              </popup_text>
+              <popup_width>
+                <label>Popup Width, px</label>
+                <frontend_type>text</frontend_type>
+                <sort_order>10</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+                <validate>validate-number</validate>
+              </popup_width>
+              <popup_height>
+                <label>Popup Height, px</label>
+                <frontend_type>text</frontend_type>
+                <sort_order>11</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+                <validate>validate-number</validate>
+              </popup_height>
+            </fields>
+          </text>
+          <!-- Upload Image -->
+          <upload_image translate="label">
+            <label>Upload Image</label>
+            <frontend_type>text</frontend_type>
+            <sort_order>50</sort_order>
+            <show_in_default>1</show_in_default>
+            <show_in_website>1</show_in_website>
+            <show_in_store>1</show_in_store>
+            <fields>
+            <!-- Enable Upload Images Tab -->
+            <enabled translate="label comment">
+                <label>Enable Upload Images Tab</label>
+                <frontend_type>select</frontend_type>
+                <source_model>adminhtml/system_config_source_yesno</source_model>
+                <sort_order>1</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+            </enabled>
+              <!-- Enable Copyrights confirmation -->
+              <copyright translate="label comment">
+                <label>Enable Copyrights confirmation</label>
+                <frontend_type>select</frontend_type>
+                <source_model>adminhtml/system_config_source_yesno</source_model>
+                <sort_order>2</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+              </copyright>
+              <!-- Copyrights Text -->
+              <copyright_text translate="label comment">
+                <label>Copyrights Text</label>
+                <frontend_type>textarea</frontend_type>
+                <sort_order>3</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+              </copyright_text>
+              <!-- Supported Image Formats -->
+              <format translate="label comment">
+                <label>Supported Image Formats</label>
+                <frontend_type>multiselect</frontend_type>
+                <source_model>gmpd/config_source_allowedFormat</source_model>
+                <sort_order>4</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+              </format>
+              <!-- Max Image Size -->
+              <max_size translate="label comment">
+                <label>Maximum Image Size</label>
+                <frontend_type>label</frontend_type>
+                <sort_order>5</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+              </max_size>
+              <max_size_width>
+                <label>Width, px</label>
+                <frontend_type>text</frontend_type>
+                <sort_order>6</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+                <validate>validate-number</validate>
+              </max_size_width>
+              <max_size_height>
+                <label>Height, px</label>
+                <frontend_type>text</frontend_type>
+                <sort_order>7</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+                <validate>validate-number</validate>
+              </max_size_height>
+              <!-- Show Conditions -->
+              <conditions translate="label comment">
+                <label>Show Image Conditions</label>
+                <frontend_type>select</frontend_type>
+                <source_model>adminhtml/system_config_source_yesno</source_model>
+                <sort_order>8</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+              </conditions>
+              <!-- Conditions Text -->
+              <conditions_text translate="label comment">
+                <label>Image Conditions Text</label>
+                <frontend_type>textarea</frontend_type>
+                <sort_order>9</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+              </conditions_text>
+              <!-- Help -->
+              <show_help>
+                <label>Show Help Icon</label>
+                <frontend_type>select</frontend_type>
+                <source_model>adminhtml/system_config_source_yesno</source_model>
+                <sort_order>10</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+              </show_help>
+              <popup_text>
+                <label>Help Icon text</label>
+                <frontend_type>textarea</frontend_type>
+                <sort_order>11</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+              </popup_text>
+              <popup_width>
+                <label>Popup Width, px</label>
+                <frontend_type>text</frontend_type>
+                <sort_order>12</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+                <validate>validate-number</validate>
+              </popup_width>
+              <popup_height>
+                <label>Popup Height, px</label>
+                <frontend_type>text</frontend_type>
+                <sort_order>13</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+                <validate>validate-number</validate>
+              </popup_height>
+            </fields>
+          </upload_image>
+          <!-- Designs Ideas -->
+          <!--<ideas translate="label">
+            <label>Design Ideas</label>
+            <frontend_type>text</frontend_type>
+            <sort_order>60</sort_order>
+            <show_in_default>1</show_in_default>
+            <show_in_website>1</show_in_website>
+            <show_in_store>1</show_in_store>
+            <fields>
+              <enabled translate="label comment">
+                <label>Enable Design Ideas Tab</label>
+                <frontend_type>select</frontend_type>
+                <source_model>adminhtml/system_config_source_yesno</source_model>
+                <sort_order>1</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+              </enabled>
+              <search translate="label comment">
+                <label>Show Search Field</label>
+                <frontend_type>select</frontend_type>
+                <source_model>adminhtml/system_config_source_yesno</source_model>
+                <sort_order>2</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+              </search>
+              <navigation translate="label comment">
+                <label>Show Navigation</label>
+                <frontend_type>select</frontend_type>
+                <source_model>adminhtml/system_config_source_yesno</source_model>
+                <sort_order>3</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+              </navigation>
+              &lt;!&ndash; Help &ndash;&gt;
+              <show_help>
+                <label>Show Help Icon</label>
+                <frontend_type>select</frontend_type>
+                <source_model>adminhtml/system_config_source_yesno</source_model>
+                <sort_order>10</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+              </show_help>
+              <popup_text>
+                <label>Help Icon text</label>
+                <frontend_type>textarea</frontend_type>
+                <sort_order>11</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+              </popup_text>
+              <popup_width>
+                <label>Popup Width, px</label>
+                <frontend_type>text</frontend_type>
+                <sort_order>12</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+                <validate>validate-number</validate>
+              </popup_width>
+              <popup_height>
+                <label>Popup Height, px</label>
+                <frontend_type>text</frontend_type>
+                <sort_order>13</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+                <validate>validate-number</validate>
+              </popup_height>
+            </fields>
+          </ideas>-->
+          <!-- Saved Designs -->
+          <saved translate="label">
+            <label>Saved Designs</label>
+            <frontend_type>text</frontend_type>
+            <sort_order>70</sort_order>
+            <show_in_default>1</show_in_default>
+            <show_in_website>1</show_in_website>
+            <show_in_store>1</show_in_store>
+            <fields>
+              <search translate="label comment">
+                <label>Show Search Field</label>
+                <frontend_type>select</frontend_type>
+                <source_model>adminhtml/system_config_source_yesno</source_model>
+                <sort_order>1</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+              </search>
+              <navigation translate="label comment">
+                <label>Show Navigation</label>
+                <frontend_type>select</frontend_type>
+                <source_model>adminhtml/system_config_source_yesno</source_model>
+                <sort_order>2</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+              </navigation>
+              <!-- Help -->
+              <show_help>
+                <label>Show Help Icon</label>
+                <frontend_type>select</frontend_type>
+                <source_model>adminhtml/system_config_source_yesno</source_model>
+                <sort_order>10</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+              </show_help>
+              <popup_text>
+                <label>Help Icon text</label>
+                <frontend_type>textarea</frontend_type>
+                <sort_order>11</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+              </popup_text>
+              <popup_width>
+                <label>Popup Width, px</label>
+                <frontend_type>text</frontend_type>
+                <sort_order>12</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+                <validate>validate-number</validate>
+              </popup_width>
+              <popup_height>
+                <label>Popup Height, px</label>
+                <frontend_type>text</frontend_type>
+                <sort_order>13</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+                <validate>validate-number</validate>
+              </popup_height>
+            </fields>
+          </saved>
+          <!-- Share settings -->
+          <share translate="label">
+            <label>Share Settings</label>
+            <frontend_type>text</frontend_type>
+            <sort_order>80</sort_order>
+            <show_in_default>1</show_in_default>
+            <show_in_website>1</show_in_website>
+            <show_in_store>1</show_in_store>
+            <fields>
+              <email translate="label comment">
+                <label>Enable E-Mail</label>
+                <frontend_type>select</frontend_type>
+                <source_model>adminhtml/system_config_source_yesno</source_model>
+                <sort_order>1</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+              </email>
+              <email_sender translate="label comment">
+                <label>E-Mail Sender</label>
+                <frontend_type>multiselect</frontend_type>
+                <source_model>adminhtml/system_config_source_email_identity</source_model>
+                <sort_order>2</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+              </email_sender>
+              <facebook translate="label comment">
+                <label>Enable Facebook Share</label>
+                <frontend_type>select</frontend_type>
+                <source_model>adminhtml/system_config_source_yesno</source_model>
+                <sort_order>3</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+              </facebook>
+              <twitter translate="label comment">
+                <label>Enable Twitter Share</label>
+                <frontend_type>select</frontend_type>
+                <source_model>adminhtml/system_config_source_yesno</source_model>
+                <sort_order>4</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+              </twitter>
+              <print translate="label comment">
+                <label>Enable Print</label>
+                <frontend_type>select</frontend_type>
+                <source_model>adminhtml/system_config_source_yesno</source_model>
+                <sort_order>5</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>1</show_in_store>
+              </print>
+            </fields>
+          </share>
+        </groups>
+      </gmpd>
+   </sections>
+</config>

@@ -1,0 +1,102 @@
+/** test styles **/
+#pd_container {
+  background-color: #000;
+  margin-top: 20px;
+  width: 100%;
+}
+
+#pd-tab-content {
+    display: none;
+}
+
+#pd_container canvas.canvas-pane {
+  border: 1px dashed #333;
+}
+
+/*#pd_container .right-sidebar {
+  border: 1px solid #ccc;
+  height: 600px;
+  width: 275px;
+  margin-top: -600px;
+  float: right;
+}
+*/
+
+#pd_nav_container,
+#pd_nav_container li {
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+  list-style-type: none
+}
+
+#pd_nav_container li {
+  font-size: 16pt;
+  padding-left: 30px;
+  padding-right: 30px;
+  background-color: #fff;
+  border: 1px solid red;
+}
+
+#pd_nav_container li a {
+  text-decoration: none;
+}
+
+.pd-panel {
+  position: absolute;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 200px;
+  height: 500px;
+  overflow: auto;
+  z-index: 1100;
+  padding: 5px;
+}
+
+.pd-panel .pd-panel-header,
+.pd-panel .pd-panel-footer {
+  height: 22%;
+  border: 1px solid #ccc;
+}
+
+.pd-panel .pd-panel-content {
+  height: 50%;
+  overflow: auto;
+  border: 1px solid #ccc;
+  margin: 5px 0;
+}
+
+#pd_bottom_panel {
+  text-align: right;
+  width: 100%;
+}
+
+#pd_bottom_panel button {
+  font-size: 14pt;
+  font-weight: bold;
+  padding: 3px;
+}
+
+.pd-text-btn {
+  font-size: 12pt;
+  padding: 3px;
+  width: 30px;
+}
+
+.pd-element-wrapper {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.pd-btn-bold {
+  font-weight: bold;
+}
+
+.pd-btn-italic {
+  font-style: italic;
+}
+
+.pd-btn-underline {
+  text-decoration: underline;
+}

@@ -1,0 +1,17 @@
+<div class="content-header">
+    <h3 class="icon-head head-categories"><?php echo Mage::helper('designer')->__($this->htmlEscape($this->getHeader())) ?></h3>
+    <p class="content-buttons form-buttons">
+        <?php echo $this->getSaveButtonHtml() ?>
+    </p>
+</div>
+<div>
+    <form id="cliparts_edit_form" action="<?php echo $this->getSaveUrl() ?>" method="post" enctype="multipart/form-data">
+        <input name="form_key" type="hidden" value="<?php echo $this->getFormKey() ?>" />
+        <?php echo $this->getChildHtml('gallery'); ?>
+    </form>
+</div>
+<script>
+    function categorySubmit() {
+        $('cliparts_edit_form').submit();
+    }
+</script>

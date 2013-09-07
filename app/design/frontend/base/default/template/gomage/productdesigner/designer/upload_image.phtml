@@ -1,0 +1,37 @@
+<?php
+/**
+ * @var $this GoMage_ProductDesigner_Block_Designer_UploadImage
+ */
+?>
+<div>
+    <div id="uploadedImages">
+        <?php echo $this->getChildHtml('uploadedImages'); ?>
+    </div>
+    <?php if ($this->licenseAgreementsEnabled()):?>
+        <input type="checkbox" name="licence_agreements" id="licence_agreements">
+        <label for="licence_agreements">I have the rights to use these images.</label>
+        <div class="pd_more_info_link">
+            <a href="javascript:;" id="license-agreements-link">More info</a>
+            <div id="license-agreemants" class="pd-license-agreements-popup" style="display: none">
+                <?php echo $this->getLicenceAgreementsText(); ?>
+            </div>
+        </div>
+    <?php endif;?>
+</div>
+<div id="file-input-box" <?php echo $this->licenseAgreementsEnabled() ? 'style="display:none;"' : ''?>>
+    <form target="iframeSave" id="uploadImages" enctype="multipart/form-data" action="<?php echo Mage::getUrl('designer/index/uploadImages'); ?>" method="post">
+        <input name="filesToUpload[]" id="filesToUpload" type="file" multiple="true"/>
+        <input type="submit" value="<?php echo $this->__('Save'); ?>" />
+        <iframe id="iframeSave" name="iframeSave" style="display:none;" src=""></iframe>
+    </form>
+    <?php if ($this->imageConditionsEnabled()): ?>
+        <div id="image-conditions" class="pd-image-conditions-popup" style="display: none">
+            <?php echo $this->getImageConditionsText(); ?>
+        </div>
+    <?php endif;?>
+</div>
+<script type="text/javascript">
+    document.observe('dom:loaded', function(e){
+        var imagesUploader = new GoMage.ImageUploader();
+    }.bind(this));
+</script>

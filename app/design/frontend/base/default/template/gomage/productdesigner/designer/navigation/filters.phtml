@@ -1,0 +1,10 @@
+<?php $availableFilters = $this->getAvailableFilters();?>
+<?php foreach ($availableFilters as $_filter):?>
+    <?php $options = $this->getAvailableFiltersOptions($_filter);?>
+    <select name="<?php echo $_filter?>" id="<?php echo $_filter?>_selector" class="filter_selector">
+        <option value=""><?php echo $this->__('Select '. $_filter)?></option>
+        <?php foreach ($options as $_option): ?>
+            <option <?php echo $this->isFilterOptionSelected($_filter, $_option->getId()) ? 'selected="selected"' : '';?>value="<?php echo $_option->getId();?>"><?php echo $_option->getName(); ?></option>
+        <?php endforeach;?>
+    </select>
+<?php endforeach;?>

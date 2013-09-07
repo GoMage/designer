@@ -1,0 +1,38 @@
+<?php
+/**
+ * GoMage.com
+ *
+ * GoMage ProductDesigner Extension
+ *
+ * @category     Extension
+ * @copyright    Copyright (c) 2010-2012 GoMage.com (http://www.gomage.com)
+ * @author       GoMage.com
+ * @license      http://www.gomage.com/licensing  Single domain license
+ * @terms of use http://www.gomage.com/terms-of-use
+ * @version      Release: 1.0
+ * @since        Class available since Release 1.0
+ */
+?>
+<?php
+/**
+ * @see GoMage_ProductDesigner_Block_Product_Navigator
+ * @var $this GoMage_ProductDesigner_Block_Product_Navigator
+ */
+?>
+<div id="navigation_panel">
+    <div id="navigation-filters">
+        <?php echo $this->getFiltersHtml(); ?>
+    </div>
+
+    <div id="navigation_listing">
+        <?php echo $this->getProductListHtml(); ?>
+    </div>
+</div>
+<script type="text/javascript">
+    document.observe('dom:loaded', function(e){
+        var Navigator = new GoMage.ProductNavigation(
+            '<?php echo Mage::getUrl('*/index/filterProducts')?>',
+            '<?php echo Mage::getUrl('*/index/changeProduct')?>'
+        );
+    }.bind(this));
+</script>
