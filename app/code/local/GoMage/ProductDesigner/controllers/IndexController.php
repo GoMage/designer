@@ -132,7 +132,6 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
          * @var $product Mage_Catalog_Model_Product
          */
         $request = $this->getRequest();
-        $layersData = json_decode($request->getParam('layersData'), true);
         $isAjax = $request->isAjax();
         if (!$isAjax) {
             $this->norouteAction();
@@ -140,8 +139,11 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
         }
         try {
             $product = $this->_initializeProduct();
-            if ($product->getId()) {
-                Mage::getModel('gmpd/image')->createProductImages($product, $layersData);
+            $images = $this->getRequest()->getParam('images');
+
+            if ($product->getId() && $images) {
+                $images = Mage::helper('core')->jsonDecode($images);
+                Mage::getModel('gmpd/image')->createProductImages($images, $product);
                 Mage::helper('designer/ajax')->sendRedirect(array(
                     'url' => $product->getProductUrl(),
                 ));

@@ -229,6 +229,7 @@ GoMage.ProductDesigner.prototype = {
             this.designArea = designArea;                
             this.canvas = new fabric.Canvas(canvas);
             this.canvas.selection = false;
+            this.containerCanvases[prod.id] = this.canvas;
         } else {
             var designArea = this.containerLayers[prod.id];
             this.container.appendChild(designArea);
@@ -274,47 +275,44 @@ GoMage.ProductDesigner.prototype = {
             }.bind(this));
         }
     },
-                
+
     observeContinueBtn: function() {
         if(this.navigation.continue) {
             this.navigation.continue.observe('click', function() {
                 if ((this.canvas == null) || this.canvas == 'undefined') {
                     return;
                 }
-                var designAreaId = this.designArea.id;
-                this.addLayersToObjectsArray(designAreaId, this.canvas);
-                for(var index in this.containerLayers) {
-                    index = parseInt(index);
-                    if(isNaN(index)) {
-                        break;
-                    }
-                    var containerLayer = this.containerLayers[index];
-                    var designId = containerLayer.id;
-                    var canvasElement = this.containerCanvases[index];
-                    if(typeof this.layersObjectsArray[designId] === 'undefined') {
-                        this.addLayersToObjectsArray(designId, canvasElement);
-                    }
-                }
 
-                var layersObjectsArrayLength = Object.keys(this.layersObjectsArray).length;
-                if(layersObjectsArrayLength > 0) {
-                    var params = getUrlParams();
-                    new Ajax.Request(this.urls.continue, {
-                        method:'post',
-                        parameters: {
-                            'id' : params['id'],
-                            'layersData' : Object.toJSON(this.layersObjectsArray)
-                        },
-                        onSuccess: function(transport) {
-                            var response = transport.responseText.evalJSON();
-                            if(response.status == 'redirect' && response.url != undefined) {
-//                                location.href = response.url;
-                            } else if(response.status == 'error')  {
-                                console.log(response.message);
-                            }
+                var images = {};
+                for (var imageId in this.containerCanvases) {
+                    if (this.containerCanvases.hasOwnProperty(imageId)) {
+                        this.containerCanvases[imageId].deactivateAll();
+                        this.containerCanvases[imageId].renderAll();
+                        var image = this.containerCanvases[imageId].toDataURL();
+                        image = image.substr(image.indexOf(',') + 1).toString();
+                        images[imageId] = image;
+                        var contextTop = this.containerCanvases[imageId].contextTop;
+                        if (contextTop && contextTop != undefined) {
+                            this.containerCanvases[imageId].clearContext(contextTop);
                         }
-                    });
+                    }
                 }
+                var params = getUrlParams();
+                new Ajax.Request(this.urls.continue, {
+                    method:'post',
+                    parameters: {
+                        id : params['id'],
+                        images: Object.toJSON(images)
+                    },
+                    onSuccess: function(transport) {
+                        var response = transport.responseText.evalJSON();
+                        if (response.status == 'redirect' && response.url != undefined) {
+                            location.href = response.url;
+                        } else if (response.status == 'error') {
+                            console.log(response.message);
+                        }
+                    }
+                });
             }.bind(this));
         }
     },

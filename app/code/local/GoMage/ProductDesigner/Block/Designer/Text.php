@@ -33,7 +33,7 @@ class GoMage_ProductDesigner_Block_Designer_Text extends Mage_Core_Block_Templat
      */
     public function getFontUrl($font)
     {
-        return Mage::getSingleton('gmpd/font_gallery_config')->getTmpMediaUrl($font);
+        return Mage::getSingleton('gmpd/font_gallery_config')->getMediaUrl($font);
     }
 
     /**
