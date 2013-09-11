@@ -25,9 +25,7 @@
  */
 
 /**
- * Short description of the class
- *
- * Long description of the class (if any...)
+ * Image model
  *
  * @category   GoMage
  * @package    GoMage_ProductDesigner
@@ -171,10 +169,14 @@ class GoMage_ProductDesigner_Model_Image extends Varien_Object
             $layerData['fontSize'] = $layer['fontSize'];
             $layerData['color'] = $layer['color'];
             if ($layer['fontWeight'] == 'bold') {
-                $layerData['fontWeight'] = 501;
+                $layerData['fontWeight'] = 600;
             }
-            $layerData['fontStyle'] = $layer['fontStyle'];
-            $layerData['decoration'] = $layer['textDecoration'];
+            if (isset($layer['fontStyle'])) {
+                $layerData['fontStyle'] = Imagick::STYLE_ITALIC;
+            }
+            if (isset($layer['textDecoration'])) {
+                $layerData['decoration'] = Imagick::DECORATION_UNDERLINE;
+            }
             if (isset($layer['outline'])) {
                 $outline = $layer['outline'];
                 $layerData['outline'] = array(
@@ -186,7 +188,6 @@ class GoMage_ProductDesigner_Model_Image extends Varien_Object
                 $layerData['shadow'] = $layer['shadow'];
             }
         }
-
         return $layerData;
     }
 
@@ -288,11 +289,13 @@ class GoMage_ProductDesigner_Model_Image extends Varien_Object
         if (isset($layer['fontWeight'])){
             $text->setFontWeight($layer['fontWeight']);
         }
-        $text->setFontStyle($layer['fontStyle'] == 'italic'
-            ? Imagick::STYLE_ITALIC : Imagick::STYLE_NORMAL);
-        $text->setTextDecoration($layer['decoration'] == 'underline'
-            ? Imagick::DECORATION_UNDERLINE : Imagick::DECORATION_NO);
-        
+        if (isset($layer['fontStyle'])){
+            $text->setFontStyle($layer['fontStyle']);
+        }
+        if (isset($layer['decoration'])) {
+            $text->setTextDecoration($layer['decoration']);
+        }
+
         if (isset($layer['outline'])) {
             $outline = $layer['outline'];
             $text->setStrokeWidth($outline['strokeWidth']);
@@ -310,19 +313,31 @@ class GoMage_ProductDesigner_Model_Image extends Varien_Object
         } else {
             $image->newImage($metrics['textWidth'], $metrics['textHeight'], $background);
         }
-
         $image->annotateImage($text, 0, 0, 0, $layer['text']);
 
         if (isset($layer['shadow'])) {
-            $shadowImage = clone $image;
-            $shadowImage->setImageBackgroundColor(new ImagickPixel($shadow['color']));
-            $shadowImage->shadowImage(120, 5, $shadow['offsetX'], $shadow['offsetY']);
-            $shadowImage->compositeimage($image, Imagick::COMPOSITE_OVER, 0, 0);
-            $this->addImageToCanvas($canvas, $layer, $shadowImage);
-        } else {
-            $this->addImageToCanvas($canvas, $layer, $image);
+            $image = $this->createTextShadow($image, $layer['shadow']);
         }
+
+        $this->addImageToCanvas($canvas, $layer, $image);
         $text->destroy();
+    }
+
+    /**
+     * Create text shadow
+     *
+     * @param Imagick $image Image
+     * @param array $shadowData Shadow Params
+     * @return mixed
+     */
+    public function createTextShadow($image, $shadowData)
+    {
+        $shadowImage = clone $image;
+        $shadowImage->setImageBackgroundColor(new ImagickPixel($shadowData['color']));
+        $shadowImage->shadowImage(100, $shadowData['blur'] / 10  , $shadowData['offsetX'], $shadowData['offsetY']);
+        $shadowImage->compositeimage($image, Imagick::COMPOSITE_OVER, 0, 0);
+
+        return $shadowImage;
     }
 
     /**

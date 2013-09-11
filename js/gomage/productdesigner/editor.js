@@ -503,7 +503,7 @@ GoMage.ProductDesigner.prototype = {
                     };
                 }
                 // Add outline effect params
-                if(layerObject.strokeWidth >=0.05) {
+                if(layerObject.strokeWidth > 0.05) {
                     textData['outline'] = {
                         width: layerObject.strokeWidth,
                         color: layerObject.strokeStyle
@@ -518,7 +518,6 @@ GoMage.ProductDesigner.prototype = {
                 objectData['originalHeight'] = layerObject._originalImage.height;
             }
             var objectLayersLength = Object.keys(this.layersObjectsArray[designAreaId]).length;
-            console.log(objectData);
             this.layersObjectsArray[designAreaId][objectLayersLength] = objectData;
         }.bind(this));
     },

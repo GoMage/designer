@@ -1,0 +1,227 @@
+<?php
+/**
+ * Template for block GoMage_ProductDesigner_Block_Adminhtml_Catalog_Product_Helper_Form_Gallery_Content
+ */
+?>
+<?php
+$_block = $this;
+$settings = $this->getProductDesignAreas();
+$productDesignerEnabled = $this->isProductDesignerModuleEnabled();
+/* @var $_block GoMage_ProductDesigner_Block_Adminhtml_Catalog_Product_Helper_Form_Gallery_Content */
+?>
+<div id="<?php echo $_block->getHtmlId() ?>" >
+<ul class="messages">
+    <li class="notice-msg">
+        <ul>
+            <li>
+              <?php echo Mage::helper('catalog')->__('Image type and information need to be specified for each store view.'); ?>
+            </li>
+        </ul>
+    </li>
+</ul>
+<div class="grid">
+<table cellspacing="0" class="data border" id="<?php echo $_block->getHtmlId() ?>_grid" width="100%">
+    <col width="1" />
+    <col />
+    <col width="70" />
+    <?php foreach ($_block->getImageTypes() as $typeId=>$type): ?>
+    <col />
+    <?php endforeach; ?>
+    <col width="70" />
+    <col width="70" />
+    <thead>
+        <tr class="headings">
+            <th><?php echo Mage::helper('catalog')->__('Image') ?></th>
+            <th><?php echo Mage::helper('catalog')->__('Label') ?></th>
+            <th><?php echo Mage::helper('catalog')->__('Sort Order') ?></th>
+            <?php foreach ($_block->getImageTypes() as $typeId=>$type): ?>
+            <th><?php echo $type['label'] ?></th>
+            <?php endforeach; ?>
+            <th><?php echo Mage::helper('catalog')->__('Exclude') ?></th>
+            <th <?php if (!$productDesignerEnabled): ?>class="last"<?php endif ?>><?php echo Mage::helper('catalog')->__('Remove') ?></th>
+            <?php if ($productDesignerEnabled): ?>
+                <th class="last"><?php echo Mage::helper('designer')->__('Choose design area') ?></th>
+            <?php endif ?>
+        </tr>
+    </thead>
+    <tbody id="<?php echo $_block->getHtmlId() ?>_list">
+        <tr id="<?php echo $_block->getHtmlId() ?>_template" class="template no-display">
+            <td class="cell-image"><div class="place-holder" onmouseover="<?php echo $_block->getJsObjectName(); ?>.loadImage('__file__')"><span><?php echo Mage::helper('catalog')->__('Roll Over for preview') ?></span></div><img src="<?php echo $this->getSkinUrl('images/spacer.gif')?>" width="100" style="display:none;" alt="" /></td>
+            <td class="cell-label"><input type="text" <?php if($_block->getElement()->getReadonly()):?> disabled="disabled"<?php endif;?> class="input-text" onkeyup="<?php echo $_block->getJsObjectName(); ?>.updateImage('__file__')" onchange="<?php echo $_block->getJsObjectName(); ?>.updateImage('__file__')" /></td>
+            <td class="cell-position"><input type="text" <?php if($_block->getElement()->getReadonly()):?> disabled="disabled"<?php endif;?> class="input-text validate-number" onkeyup="<?php echo $_block->getJsObjectName(); ?>.updateImage('__file__')" onchange="<?php echo $_block->getJsObjectName(); ?>.updateImage('__file__')" /></td>
+            <?php foreach ($_block->getImageTypes() as $typeId=>$type): ?>
+            <td class="cell-<?php echo $typeId ?> a-center"><input <?php if($_block->getElement()->getAttributeReadonly($typeId)) :?> disabled="disabled" <?php endif;?> type="radio" name="<?php echo $type['field'] ?>" onclick="<?php echo $_block->getJsObjectName(); ?>.setProductImages('__file__')" value="__file__" /></td>
+            <?php endforeach; ?>
+            <td class="cell-disable a-center"><input type="checkbox" <?php if($_block->getElement()->getReadonly()):?> disabled="disabled"<?php endif;?> onclick="<?php echo $_block->getJsObjectName(); ?>.updateImage('__file__')" /></td>
+            <td class="cell-remove a-center<?php if (!$productDesignerEnabled): ?> last<?php endif; ?>"><input type="checkbox" <?php if($_block->getElement()->getReadonly()):?> disabled="disabled"<?php endif;?> onclick="<?php echo $_block->getJsObjectName(); ?>.updateImage('__file__')" /></td>
+            <?php if ($productDesignerEnabled): ?>
+                <td class="cell-choose-design-area a-center last">
+                    <input type="checkbox" name="design_area_for[]" value="" onclick="switchDesignArea('__file__', this)" />
+                    [ <a href="javascript:void(0)" onclick="editDesignArea('__file__', this)"><?php echo Mage::helper('designer')->__('Edit') ?></a> ]
+                </td>
+            <?php endif ?>
+        </tr>
+        <?php if($_block->hasUseDefault()): ?>
+        <tr id="<?php echo $_block->getHtmlId() ?>_default">
+            <td><?php echo Mage::helper('catalog')->__('Use Default Value') ?></td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <?php foreach ($_block->getMediaAttributes() as $_attribute): ?>
+            <td class="a-center">
+            <?php if($_block->getElement()->canDisplayUseDefault($_attribute)): ?>
+            <input class="default-checkbox" name="use_default[]" type="checkbox" <?php if($_block->getElement()->getAttributeReadonly($_attribute->getAttributeCode())):?> disabled="disabled" <?php endif;?>  onclick="<?php echo $_block->getJsObjectName(); ?>.updateUseDefault()"
+            <?php if($_block->getElement()->usedDefault($_attribute)): ?>checked<?php endif; ?> value="<?php echo $_attribute->getAttributeCode() ?>" />
+            <?php endif ?>
+            </td>
+            <?php endforeach; ?>
+            <td>&nbsp;</td>
+            <td <?php if (!$productDesignerEnabled): ?>class="last"<?php endif ?>>&nbsp;</td>
+            <?php if ($productDesignerEnabled): ?>
+                <td class="last">&nbsp;</td>
+            <?php endif; ?>
+        </tr>
+        <?php endif ?>
+        <tr id="<?php echo $_block->getHtmlId() ?>-image-0">
+            <td class="cell-image"><?php echo Mage::helper('catalog')->__('No image') ?></td>
+            <td class="cell-label"><input type="hidden" />&nbsp;</td>
+            <td class="cell-position"><input type="hidden" />&nbsp;</td>
+            <?php foreach ($_block->getImageTypes() as $typeId=>$type): ?>
+            <td class="cell-<?php echo $typeId ?> a-center"><input type="radio" <?php if($_block->getElement()->getAttributeReadonly($typeId)) :?> disabled="disabled" <?php endif;?> name="<?php echo $type['field'] ?>" onclick="<?php echo $_block->getJsObjectName(); ?>.setProductImages('no_selection')" value="no_selection" /></td>
+            <?php endforeach; ?>
+            <td class="cell-disable"><input type="hidden" />&nbsp;</td>
+            <td class="cell-remove<?php if (!$productDesignerEnabled): ?> last<?php endif; ?>"><input type="hidden" />&nbsp;</td>
+            <?php if ($productDesignerEnabled): ?>
+                <td class="cell-choose-design-area last">&nbsp;</td>
+            <?php endif; ?>
+        </tr>
+    </tbody>
+    <?php if (!$_block->getElement()->getReadonly()):?>
+    <tfoot>
+        <tr>
+            <td colspan="100" class="last" style="padding:8px">
+                <?php echo $_block->getUploaderHtml() ?>
+            </td>
+        </tr>
+    </tfoot>
+    <?php endif;?>
+</table>
+</div>
+</div>
+<input type="hidden" id="<?php echo $_block->getHtmlId() ?>_save" name="<?php echo $_block->getElement()->getName() ?>[images]" value="<?php echo $_block->htmlEscape($_block->getImagesJson()) ?>" />
+<input type="hidden" id="<?php echo $_block->getHtmlId() ?>_save_image" name="<?php echo $_block->getElement()->getName() ?>[values]" value="<?php echo $_block->htmlEscape($_block->getImagesValuesJson()) ?>" />
+
+<?php if (false): ?>
+<div>
+    <input type="checkbox" name="enable_product_designer" value="1" id="enable_product_designer" <?php if ($productDesignerEnabled == 1): ?>checked="checked"<?php endif ?> />
+    <label for="enable_product_designer"><?php echo Mage::helper('designer')->__('Enable Product Designer for this product') ?></label>
+</div>
+<?php endif ?>
+<script type="text/javascript">
+//<![CDATA[
+var <?php echo $_block->getJsObjectName(); ?> = new Product.Gallery('<?php echo $_block->getHtmlId() ?>', <?php if ($_block->getElement()->getReadonly()):?>null<?php else:?><?php echo $_block->getUploader()->getJsObjectName() ?><?php endif;?>, <?php echo $_block->getImageTypesJson() ?>);
+//]]>
+</script>
+<?php if ($productDesignerEnabled): ?>
+    <div id="design-area-popup"></div>
+<?php endif;?>
+<script type="text/javascript">
+function switchDesignArea(f, self)
+{
+    var url = '<?php echo $this->getUpdateStateUrl(); ?>'
+    //<![CDATA[
+    var v = <?php echo $_block->getJsObjectName(); ?>.getIndexByFile(f);
+    v = <?php echo $_block->getJsObjectName(); ?>.images[v].value_id;
+    //]]>
+
+    if (!v) {
+        return false;
+    }
+
+    if (self.checked == false) {
+        new Ajax.Request(url, {
+            method:'post',
+            parameters: {'state' : 0, 'image_id' : v},
+            onSuccess: function(transport) {
+                var response = transport.responseText.evalJSON();
+                if (response.status == 'error') {
+                    console.log(response.message);
+                }
+            }
+        });
+    } else {
+        openDesignAreaEditor(v);
+    }
+}
+
+function editDesignArea(f, self)
+{
+    //<![CDATA[
+    var v = <?php echo $_block->getJsObjectName(); ?>.getIndexByFile(f);
+    v = <?php echo $_block->getJsObjectName(); ?>.images[v].value_id;
+    //]]>
+    if (!v) {
+        return false;
+    }
+    openDesignAreaEditor(v, self);
+}
+
+function openDesignAreaEditor(imageId, target)
+{
+    new Ajax.Request('<?php echo $this->getEditDesignAreaUrl()?>', {
+        method: 'post',
+        parameters: { img: imageId },
+        onSuccess: function(transport){
+            var response = transport.responseText.evalJSON();
+            if (response.status == 'success') {
+                $('design-area-popup').update(response.design_area);
+                window.designAreaPopup.setContent('design-area-popup', true, true);
+                window.designAreaPopup.setZIndex(2000);
+                window.designAreaPopup.showCenter(true);
+                if (target != undefined) {
+                    window.designAreaPopup.target = target;
+                }
+            } else if(response.status == 'error') {
+                $('design-area-popup').update('');
+                alert(response.message);
+            }
+        }
+    });
+}
+
+$(function() {
+    var $settings = <?php echo $settings ? $settings : '{}'; ?>;
+    var object = <?php echo $_block->getJsObjectName(); ?>;
+    object._createImageRow = object.createImageRow;
+    object.createImageRow = function(img) {
+        this._createImageRow(img);
+        var id = this.prepareId(img.file);
+        $(id).select('td:last-child').each(function(el) {  el.update(""); });
+    };
+
+    object.images.each(function(row) {
+        var id = object.prepareId(row.file);
+        $(id).select('td:last-child > input').each(function(el) {
+            el.value = row.value_id;
+            if(typeof $settings !== 'undefined' && typeof $settings[row.value_id] !== 'undefined') {
+                if($settings[row.value_id]['on'] == 1){
+                    el.checked = true;
+                }
+            }
+        });
+    });
+    <?php if(!$productDesignerEnabled): ?>
+        $('enable_product_designer').up('tr').setStyle({'display':'none'});
+    <?php endif; ?>
+
+    window.designAreaPopup = new Window({
+        className: 'magento',
+        title: '<?php echo Mage::helper('designer')->__('Choose design area') ?>',
+        width: 600,
+        height: 600,
+        minimizable: false,
+        maximizable: false,
+        showEffectOptions: {duration:0.4},
+        hideEffectOptions: {duration:0.4}
+    });
+})();
+</script>

@@ -3,13 +3,26 @@
     <adminhtml_catalog_product_edit>
         <reference name="head">
             <action method="addJs"><script>gomage/productdesigner/adminhtml/product_edit.js</script></action>
+            <action method="addJs"><script>prototype/window.js</script></action>
+            <action method="addItem"><type>js_css</type><name>prototype/windows/themes/default.css</name></action>
+            <action method="addItem"><type>skin_css</type><name>lib/prototype/windows/themes/magento.css</name></action>
+            <action method="addJs"><script>gomage/productdesigner/vendor/fabric.min.js</script></action>
+            <action method="addJs"><script>gomage/productdesigner/vendor/excanvas.compiled.js</script></action>
         </reference>
     </adminhtml_catalog_product_edit>
     <adminhtml_catalog_product_new>
         <reference name="head">
             <action method="addJs"><script>gomage/productdesigner/adminhtml/product_edit.js</script></action>
+            <action method="addJs"><script>prototype/window.js</script></action>
+            <action method="addItem"><type>js_css</type><name>prototype/windows/themes/default.css</name></action>
+            <action method="addItem"><type>skin_css</type><name>lib/prototype/windows/themes/magento.css</name></action>
+            <action method="addJs"><script>gomage/productdesigner/vendor/fabric.min.js</script></action>
+            <action method="addJs"><script>gomage/productdesigner/vendor/excanvas.compiled.js</script></action>
         </reference>
     </adminhtml_catalog_product_new>
+    <adminhtml_designer_product_edit>
+            <block type="designer/adminhtml_product_edit" name="product_designer_product" template="gomage/productdesigner/product/edit.phtml" output="toHtml" />
+    </adminhtml_designer_product_edit>
     <adminhtml_cliparts_edit>
         <update handle="editor" />
         <reference name="left">

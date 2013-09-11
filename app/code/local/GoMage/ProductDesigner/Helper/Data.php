@@ -21,7 +21,7 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function isEnabled()
     {
-
+        return Mage::getStoreConfig('gmpd/general/enabled', Mage::app()->getStore());
     }
 
     public function isCustomizable($product)
@@ -96,7 +96,7 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function jsonDecode($string)
     {
-        $settings = (array)json_decode($string);
+        $settings = Mage::helper('core')->jsonDecode($string);
         $tmp = array();
         foreach ($settings as $i => $v) {
             $tmp[$i] = (array)$v;

@@ -107,32 +107,6 @@
             <block type="designer/designer_uploadImage_images" name="uploadedImages" template="gomage/productdesigner/designer/upload_image/images.phtml" />
         </reference>
     </gomage_designer_index_uploadimages>
-
-    <!-- product configuration layout -->
-    <gomage_designer_product_edit translate="label">
-        <label></label>
-        <remove name="right"/>
-        <remove name="left"/>
-        <remove name="header" />
-        <remove name="breadcrumbs" />
-        <remove name="footer" />
-        <remove name="before_body_end" />
-        <remove name="core_profiler" />
-        <reference name="head">
-            <action method="addJs"><script>prototype/window.js</script></action>
-            <action method="addItem"><type>js_css</type><name>prototype/windows/themes/default.css</name></action>
-            <action method="addItem"><type>skin_css</type><name>lib/prototype/windows/themes/magento.css</name></action>
-            <action method="addJs"><script>gomage/productdesigner/vendor/fabric.min.js</script></action>
-            <action method="addJs"><script>gomage/productdesigner/vendor/excanvas.compiled.js</script></action>
-            <action method="addItem"><type>skin_css</type><name>css/gomage/productdesigner/editor.css</name><params/></action>
-        </reference>
-        <reference name="root">
-            <action method="setTemplate"><template>page/empty.phtml</template></action>
-        </reference>
-        <reference name="content">
-            <block type="designer/product" name="product_designer_product" template="gomage/productdesigner/product.phtml" />
-        </reference>
-    </gomage_designer_product_edit>
     <!-- Override templates to add "Customize it" button near "Add to cart button" -->
     <catalog_category_default>
         <reference name="product_list">
