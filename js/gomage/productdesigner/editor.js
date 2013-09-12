@@ -254,17 +254,14 @@ GoMage.ProductDesigner.prototype = {
         return parseInt(x1 - x2) + parseInt(prod.l) - Math.round(prod.w / 2);
     },
 
-    createPanels : function() {
-    },
-
     observeSaveDesign: function() {
         if(this.navigation.saveDesign) {
             this.createCustomerLoginWindows();
             this.navigation.saveDesign.observe('click', function(e) {
                 e.stop();
-                if(!this.isCustomerLogin && this.loginWindow) {
+                if (!this.isCustomerLogin && this.loginWindow) {
                     this.loginWindow.showCenter(true);
-                } else if(this.isCustomerLogin)  {
+                } else if(this.isCustomerLogin) {
                     this.saveDesign(this.urls.saveDesign, this.saveDesignCallback);
                 }
             }.bind(this));
@@ -274,11 +271,11 @@ GoMage.ProductDesigner.prototype = {
     createCustomerLoginWindows: function() {
         if(!this.isCustomerLogin) {
             if ($('customer-login-container')){
-                var loginWindow = new Window({
+                this.loginWindow = this.createPopupWindow('customer-login-container', {
                     className: 'magento',
                     title: 'Registration',
-                    width:800,
-                    minWidth: 800,
+                    width: 430,
+                    minWidth: 430,
                     maximizable:false,
                     minimizable:false,
                     resizable:false,
@@ -288,18 +285,17 @@ GoMage.ProductDesigner.prototype = {
                     showEffectOptions: {duration: 0.4},
                     hideEffectOptions: {duration: 0.4}
                 });
-                loginWindow.setContent('customer-login-container', true, true);
-                loginWindow.setZIndex(2000);
-                this.loginWindow = loginWindow;
+
                 this.observeRegisterBtn();
                 this.observeLogin();
             }
             if ($('customer-register-container')) {
-                var registrationWindow = new Window({
+                this.registrationWindow = this.createPopupWindow('customer-register-container', {
                     className: 'magento',
                     title: 'Registration',
-                    width:800,
-                    minWidth: 800,
+                    width: 900,
+                    minWidth: 900,
+                    minHeight: 410,
                     maximizable:false,
                     minimizable:false,
                     resizable:false,
@@ -309,11 +305,17 @@ GoMage.ProductDesigner.prototype = {
                     showEffectOptions: {duration: 0.4},
                     hideEffectOptions: {duration: 0.4}
                 });
-                registrationWindow.setContent('customer-register-container', true, true);
-                registrationWindow.setZIndex(2000);
-                this.registrationWindow = registrationWindow;
+                this.observeRegisterSubmitBtn();
             }
         }
+    },
+
+    createPopupWindow: function(contentId, params){
+        var win = new Window(params);
+        win.setContent(contentId, true, true);
+        win.setZIndex(2000);
+
+        return win;
     },
 
     observeRegisterBtn: function() {
@@ -329,40 +331,58 @@ GoMage.ProductDesigner.prototype = {
         }
     },
 
+    observeRegisterSubmitBtn: function() {
+        var registerBtn = $('customer-register-submit-btn');
+        if (registerBtn) {
+            registerBtn.observe('click', function(e) {
+                e.stop();
+                this.loginAndSaveDesign(this.urls.registration, 'form-validate', this.registrationWindow);
+            }.bind(this));
+        }
+    },
+
     observeLogin: function() {
         var loginBtn = $('customer-login-btn');
         if (loginBtn) {
             loginBtn.observe('click', function(e){
                 e.stop();
-                var form = new VarienForm('login-form', true);
-                if (form.validator.validate()) {
-                    var elements = form.form.elements;
-                    var data = {};
-                    for (var index in elements) {
-                        if (elements.hasOwnProperty(index)) {
-                            var elm = elements[index];
-                            if (typeof elm == "object" && elm.tagName == 'INPUT') {
-                                data[elm.name] = elm.value;
-                            }
-                        }
-                    };
-                    var imagesData = this.prepareImagesForSave();
-                    var data = Object.extend(data, imagesData);
-                    new Ajax.Request(this.urls.login, {
-                        method: 'post',
-                        parameters: data,
-                        onSuccess: function(transport) {
-                            var response = transport.responseText.evalJSON();
-                            if (response.status == 'success') {
-                                this.isCustomerLogin = true;
-                                this.loginWindow.close();
-                            } else if (response.status == 'error' && response.message) {
-                                alert(response.message);
-                            }
-                        }.bind(this)
-                    });
-                }
+                this.loginAndSaveDesign(this.urls.login, 'login-form', this.loginWindow);
             }.bind(this));
+        }
+    },
+
+    loginAndSaveDesign: function(url, formId, window) {
+        var form = new VarienForm(formId, true);
+        if (form.validator.validate()) {
+            var elements = form.form.elements;
+            var data = {};
+            for (var index in elements) {
+                if (elements.hasOwnProperty(index)) {
+                    var elm = elements[index];
+                    if (typeof elm == "object" && elm.tagName == 'INPUT') {
+                        if (elm.type == 'checkbox') {
+                            data[elm.name] = elm.checked
+                        } else {
+                            data[elm.name] = elm.value;
+                        }
+                    }
+                }
+            };
+            var imagesData = this.prepareImagesForSave();
+            var data = Object.extend(data, imagesData);
+            new Ajax.Request(url, {
+                method: 'post',
+                parameters: data,
+                onSuccess: function(transport) {
+                    var response = transport.responseText.evalJSON();
+                    if (response.status == 'success') {
+                        this.isCustomerLogin = true;
+                        window.close();
+                    } else if (response.status == 'error' && response.message) {
+                        alert(response.message);
+                    }
+                }.bind(this)
+            });
         }
     },
 
@@ -575,65 +595,6 @@ GoMage.ProductDesigner.prototype = {
     observeProductImageChange: function(){
         Event.on($(this.opt.product_side_id), 'click', '.product-image', function(e, elem){
             this.changeProductImage(elem.readAttribute('data-id'));
-        }.bind(this));
-    },
-        
-    addLayersToObjectsArray: function(designAreaId, canvas) {
-        this.layersObjectsArray[designAreaId] = {};
-        canvas.getObjects().each(function(layerObject) {
-            // Init Basic layer object params
-            console.log(layerObject.left);
-            var objectData = {
-                top: layerObject.top,
-                left: layerObject.left,
-                width: layerObject.getWidth(),
-                height: layerObject.getHeight(),
-                corner: layerObject.angle,
-                scaleX: layerObject.scaleX,
-                scaleY: layerObject.scaleY,
-                flip: layerObject.flipY,
-                flop: layerObject.flipX
-            };
-            if(layerObject.type == 'custom_text') {
-                // Init Basic text params
-                var textData = {
-                    type: 'text',
-                    color: layerObject.color,
-                    fontSize: layerObject.fontsize,
-                    fontFamily: layerObject.fontFamily,
-                    fontWeight: layerObject.fontWeight,
-                    fontStyle: layerObject.fontStyle,
-                    textDecoration: layerObject.textDecoration,
-                    text: layerObject.text
-                };
-
-                // Add shadow effect params
-                var textShadowParams = layerObject.textShadowParams;
-                if(textShadowParams.x != 0 || textShadowParams.y != 0) {
-                    textData['shadow'] = {
-                        offsetX: textShadowParams.x,
-                        offsetY: textShadowParams.y,
-                        blur: textShadowParams.blur,
-                        color: textShadowParams.color
-                    };
-                }
-                // Add outline effect params
-                if(layerObject.strokeWidth > 0.05) {
-                    textData['outline'] = {
-                        width: layerObject.strokeWidth,
-                        color: layerObject.strokeStyle
-                    };
-                }
-                objectData = $merge(objectData,textData);
-            }
-            if(layerObject.type == 'image') {
-                objectData['type'] = 'image';
-                objectData['imageSrc'] = layerObject._originalImage.src;
-                objectData['originalWidth'] = layerObject._originalImage.width;
-                objectData['originalHeight'] = layerObject._originalImage.height;
-            }
-            var objectLayersLength = Object.keys(this.layersObjectsArray[designAreaId]).length;
-            this.layersObjectsArray[designAreaId][objectLayersLength] = objectData;
         }.bind(this));
     },
 

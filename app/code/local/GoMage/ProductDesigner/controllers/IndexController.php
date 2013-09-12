@@ -144,9 +144,7 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
                 'url' => $product->getProductUrl(),
             ));
         } catch (Exception $e) {
-            Mage::helper('designer/ajax')->sendError(array(
-                'message' => $e->getMessage()
-            ));
+            Mage::helper('designer/ajax')->sendError($e->getMessage());
         }
     }
 
@@ -216,9 +214,7 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
             $this->_saveDesign();
             Mage::helper('designer/ajax')->sendSuccess();
         } catch (Exception $e) {
-            Mage::helper('designer/ajax')->sendError(array(
-                'message' => $e->getMessage()
-            ));
+            Mage::helper('designer/ajax')->sendError($e->getMessage());
         }
     }
 
@@ -242,15 +238,13 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
                         $customer->sendNewAccountEmail('confirmed', '', Mage::app()->getStore()->getId());
                     }
                     $this->_saveDesign();
-                    Mage::helper('designer/ajax')->sendSuccess();
                 } else {
                     throw new Exception($this->__('Login and password are required.'));
                 }
             }
+            Mage::helper('designer/ajax')->sendSuccess();
         } catch (Exception $e) {
-            Mage::helper('designer/ajax')->sendError(array(
-                'message' => $e->getMessage()
-            ));
+            Mage::helper('designer/ajax')->sendError($e->getMessage());
         } catch (Mage_Core_Exception $e) {
             switch ($e->getCode()) {
                 case Mage_Customer_Model_Customer::EXCEPTION_EMAIL_NOT_CONFIRMED:
@@ -262,45 +256,20 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
                     break;
                 default:
                     $message = $e->getMessage();
-                Mage::helper('designer/ajax')->sendError(array(
-                    'message' => $message
-                ));
+
+                Mage::helper('designer/ajax')->sendError($message);
             }
         }
     }
 
-    public function signupAction()
+    public function registerAction()
     {
-        $this->loadLayout();
-        $this->renderLayout();
-    }
-
-    protected function redirectTo404Page()
-    {
-        // TODO
-        $this->getResponse()->setHeader('HTTP/1.1', '404 Not Found');
-        $this->getResponse()->setHeader('Status', '404 File not found');
-
-        $pageId = Mage::getStoreConfig('web/default/cms_no_route');
-
-        if (!Mage::helper('cms/page')->renderPage($this, $pageId)) {
-            $this->_forward('defaultNoRoute');
-        }
-    }
-
-    protected function _jsonDecode($string)
-    {
-        return Mage::helper('designer')->jsonDecode($string);
+        Mage::log($this->getRequest()->getParams());
     }
 
     protected function _getCustomerSession()
     {
         return Mage::getSingleton('customer/session');
-    }
-
-    protected function _getCoreSession()
-    {
-        return Mage::getSingleton('core/session');
     }
 
     protected function getConvertHelper()

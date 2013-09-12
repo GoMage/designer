@@ -32,10 +32,8 @@
  */
 ?>
 <div class="account-create" id="customer-register-container" style="display: none">
-    <form action="<?php echo $this->getPostActionUrl() ?>" method="post" id="form-validate">
+    <form method="post" id="form-validate">
         <div class="fieldset">
-            <input type="hidden" name="success_url" value="<?php echo $this->getSuccessUrl() ?>" />
-            <input type="hidden" name="error_url" value="<?php echo $this->getErrorUrl() ?>" />
             <h2 class="legend"><?php echo $this->__('Personal Information') ?></h2>
             <ul class="form-list">
                 <li class="fields">
@@ -167,14 +165,13 @@
         </div>
         <div class="buttons-set">
             <p class="required"><?php echo $this->__('* Required Fields') ?></p>
-            <button type="submit" title="<?php echo $this->__('Submit') ?>" class="button"><span><span><?php echo $this->__('Submit') ?></span></span></button>
+            <button type="button" title="<?php echo $this->__('Register') ?>" id="customer-register-submit-btn" class="button"><span><span><?php echo $this->__('Register') ?></span></span></button>
         </div>
     </form>
     <script type="text/javascript">
     //<![CDATA[
-        var dataForm = new VarienForm('form-validate', true);
         <?php if($this->getShowAddressFields()): ?>
-        new RegionUpdater('country', 'region', 'region_id', <?php echo $this->helper('directory')->getRegionJson() ?>, undefined, 'zip');
+            new RegionUpdater('country', 'region', 'region_id', <?php echo $this->helper('directory')->getRegionJson() ?>, undefined, 'zip');
         <?php endif; ?>
     //]]>
     </script>
