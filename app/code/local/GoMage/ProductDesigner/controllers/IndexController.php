@@ -138,20 +138,30 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
             return;
         }
         try {
-            $product = $this->_initializeProduct();
-            $images = $this->getRequest()->getParam('images');
-
-            if ($product->getId() && $images) {
-                $images = Mage::helper('core')->jsonDecode($images);
-                Mage::getModel('gmpd/image')->createProductImages($images, $product);
-                Mage::helper('designer/ajax')->sendRedirect(array(
-                    'url' => $product->getProductUrl(),
-                ));
-            }
+            $this->_saveDesign();
+            $product = Mage::registry('current_product');
+            Mage::helper('designer/ajax')->sendRedirect(array(
+                'url' => $product->getProductUrl(),
+            ));
         } catch (Exception $e) {
             Mage::helper('designer/ajax')->sendError(array(
                 'message' => $e->getMessage()
             ));
+        }
+    }
+
+    protected function _saveDesign()
+    {
+        $product = $this->_initializeProduct();
+        $images = $this->getRequest()->getParam('images');
+
+        if ($product->getId() && $images && !empty($images)) {
+            $images = Mage::helper('core')->jsonDecode($images);
+            Mage::getModel('gmpd/image')->createProductImages($images, $product);
+        } elseif(!$product->getId()) {
+            throw new Exception(Mage::helper('designer')->__('Product is not defined'));
+        } elseif(!$images || empty($images)) {
+            throw new Exception(Mage::helper('designer')->__('Designed images are empty'));
         }
     }
 
@@ -195,12 +205,68 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
 
     public function saveDesignAction()
     {
-        
+        $request = $this->getRequest();
+        $isAjax = $request->isAjax();
+        if (!$isAjax) {
+            $this->norouteAction();
+            return;
+        }
+
+        try {
+            $this->_saveDesign();
+            Mage::helper('designer/ajax')->sendSuccess();
+        } catch (Exception $e) {
+            Mage::helper('designer/ajax')->sendError(array(
+                'message' => $e->getMessage()
+            ));
+        }
     }
 
     public function loginAction()
     {
-        
+        $request = $this->getRequest();
+        $isAjax = $request->isAjax();
+        if (!$isAjax) {
+            $this->norouteAction();
+            return;
+        }
+
+        try {
+            $customerSession = $this->_getCustomerSession();
+            $login = $this->getRequest()->getParam('login');
+            if (!$customerSession->isLoggedIn()) {
+                if (!empty($login['username']) && !empty($login['password'])) {
+                    $customerSession->login($login['username'], $login['password']);
+                    $customer = $customerSession->getCustomer();
+                    if ($customer->getIsJustConfirmed()) {
+                        $customer->sendNewAccountEmail('confirmed', '', Mage::app()->getStore()->getId());
+                    }
+                    $this->_saveDesign();
+                    Mage::helper('designer/ajax')->sendSuccess();
+                } else {
+                    throw new Exception($this->__('Login and password are required.'));
+                }
+            }
+        } catch (Exception $e) {
+            Mage::helper('designer/ajax')->sendError(array(
+                'message' => $e->getMessage()
+            ));
+        } catch (Mage_Core_Exception $e) {
+            switch ($e->getCode()) {
+                case Mage_Customer_Model_Customer::EXCEPTION_EMAIL_NOT_CONFIRMED:
+                    $value = Mage::helper('customer')->getEmailConfirmationUrl($login['username']);
+                    $message = Mage::helper('customer')->__('This account is not confirmed. <a href="%s">Click here</a> to resend confirmation email.', $value);
+                    break;
+                case Mage_Customer_Model_Customer::EXCEPTION_INVALID_EMAIL_OR_PASSWORD:
+                    $message = $e->getMessage();
+                    break;
+                default:
+                    $message = $e->getMessage();
+                Mage::helper('designer/ajax')->sendError(array(
+                    'message' => $message
+                ));
+            }
+        }
     }
 
     public function signupAction()

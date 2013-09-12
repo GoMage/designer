@@ -74,7 +74,7 @@ $c = function(name, attrs, css) {
  */
 if (typeof GoMage == 'undefined') GoMage = {};
 
-GoMage.ProductDesigner = function(config, continueUrl) {
+GoMage.ProductDesigner = function(config, continueUrl, loginUrl, registrationUrl, saveDesign) {
     'use strict';
     this.opt = {
         product_side_id: 'pd_sides',
@@ -82,7 +82,10 @@ GoMage.ProductDesigner = function(config, continueUrl) {
         scale_factor: 1.2
     };
     this.urls = {
-        continue: continueUrl
+        continue: continueUrl,
+        login: loginUrl,
+        registration: registrationUrl,
+        saveDesign: saveDesign
     }
     this.history = new History();
     this.layersManager = new LayersManager(this);
@@ -96,6 +99,7 @@ GoMage.ProductDesigner = function(config, continueUrl) {
     this.layersObjectsArray = {};
     this.regWin = null
     this.productAdditionalImageTemplate = new Template($('product-image-template').innerHTML);
+    this.isCustomerLogin = this.config.isCustomerRegistered;
     
     this.loadProduct(config.product);
     this.observeLayerControls();
@@ -255,64 +259,177 @@ GoMage.ProductDesigner.prototype = {
 
     observeSaveDesign: function() {
         if(this.navigation.saveDesign) {
-            this.navigation.saveDesign.observe('click', function() {
-                if(!this.config.isCustomerRegistered) {
-                    var win = new Window({
-                        className: 'magento',
-                        title: 'Registration',
-                        url: location.origin + '/designer/index/signup',
-                        width:1000,
-                        height: 500,
-                        minimizable: true,
-                        maximizable: true,
-                        showEffectOptions: {duration: 0.4},
-                        hideEffectOptions: {duration: 0.4}
-                    });
-                    win.setZIndex(2000);
-                    win.showCenter(true);
-                    this.regWin = win;
+            this.createCustomerLoginWindows();
+            this.navigation.saveDesign.observe('click', function(e) {
+                e.stop();
+                if(!this.isCustomerLogin && this.loginWindow) {
+                    this.loginWindow.showCenter(true);
+                } else if(this.isCustomerLogin)  {
+                    this.saveDesign(this.urls.saveDesign, this.saveDesignCallback);
                 }
             }.bind(this));
+        }
+    },
+
+    createCustomerLoginWindows: function() {
+        if(!this.isCustomerLogin) {
+            if ($('customer-login-container')){
+                var loginWindow = new Window({
+                    className: 'magento',
+                    title: 'Registration',
+                    width:800,
+                    minWidth: 800,
+                    maximizable:false,
+                    minimizable:false,
+                    resizable:false,
+                    draggable:false,
+                    showEffect:Effect.BlindDown,
+                    hideEffect:Effect.BlindUp,
+                    showEffectOptions: {duration: 0.4},
+                    hideEffectOptions: {duration: 0.4}
+                });
+                loginWindow.setContent('customer-login-container', true, true);
+                loginWindow.setZIndex(2000);
+                this.loginWindow = loginWindow;
+                this.observeRegisterBtn();
+                this.observeLogin();
+            }
+            if ($('customer-register-container')) {
+                var registrationWindow = new Window({
+                    className: 'magento',
+                    title: 'Registration',
+                    width:800,
+                    minWidth: 800,
+                    maximizable:false,
+                    minimizable:false,
+                    resizable:false,
+                    draggable:false,
+                    showEffect:Effect.BlindDown,
+                    hideEffect:Effect.BlindUp,
+                    showEffectOptions: {duration: 0.4},
+                    hideEffectOptions: {duration: 0.4}
+                });
+                registrationWindow.setContent('customer-register-container', true, true);
+                registrationWindow.setZIndex(2000);
+                this.registrationWindow = registrationWindow;
+            }
+        }
+    },
+
+    observeRegisterBtn: function() {
+        var registerBtn = $('customer-register-btn');
+        if (registerBtn){
+            registerBtn.observe('click', function(e){
+                e.stop();
+                this.loginWindow.close();
+                setTimeout(function(){
+                    this.registrationWindow.showCenter(true);
+                }.bind(this), 700);
+            }.bind(this));
+        }
+    },
+
+    observeLogin: function() {
+        var loginBtn = $('customer-login-btn');
+        if (loginBtn) {
+            loginBtn.observe('click', function(e){
+                e.stop();
+                var form = new VarienForm('login-form', true);
+                if (form.validator.validate()) {
+                    var elements = form.form.elements;
+                    var data = {};
+                    for (var index in elements) {
+                        if (elements.hasOwnProperty(index)) {
+                            var elm = elements[index];
+                            if (typeof elm == "object" && elm.tagName == 'INPUT') {
+                                data[elm.name] = elm.value;
+                            }
+                        }
+                    };
+                    var imagesData = this.prepareImagesForSave();
+                    var data = Object.extend(data, imagesData);
+                    new Ajax.Request(this.urls.login, {
+                        method: 'post',
+                        parameters: data,
+                        onSuccess: function(transport) {
+                            var response = transport.responseText.evalJSON();
+                            if (response.status == 'success') {
+                                this.isCustomerLogin = true;
+                                this.loginWindow.close();
+                            } else if (response.status == 'error' && response.message) {
+                                alert(response.message);
+                            }
+                        }.bind(this)
+                    });
+                }
+            }.bind(this));
+        }
+    },
+
+    prepareImagesForSave: function() {
+        var data = {};
+
+        if ((this.canvas == null) || this.canvas == 'undefined') {
+            return data;
+        }
+
+        var images = {};
+        for (var imageId in this.containerCanvases) {
+            if (this.containerCanvases.hasOwnProperty(imageId)) {
+                this.containerCanvases[imageId].deactivateAll();
+                this.containerCanvases[imageId].renderAll();
+                var image = this.containerCanvases[imageId].toDataURL();
+                image = image.substr(image.indexOf(',') + 1).toString();
+                images[imageId] = image;
+                var contextTop = this.containerCanvases[imageId].contextTop;
+                if (contextTop && contextTop != undefined) {
+                    this.containerCanvases[imageId].clearContext(contextTop);
+                }
+            }
+        }
+
+        var params = getUrlParams();
+        data['id'] = params['id'];
+        data['images'] = Object.toJSON(images);
+
+        return data;
+    },
+
+    saveDesign: function(url, responseCallback){
+        if ((this.canvas == null) || this.canvas == 'undefined') {
+            return;
+        }
+
+        var params = this.prepareImagesForSave();
+        new Ajax.Request(url, {
+            method:'post',
+            parameters: params,
+            onSuccess: responseCallback.bind(this)
+        });
+    },
+
+    continueCallback: function(transport){
+        var response = transport.responseText.evalJSON();
+        if (response.status == 'redirect' && response.url != undefined) {
+            location.href = response.url;
+        } else if (response.status == 'error') {
+            console.log(response.message);
+        }
+    },
+
+    saveDesignCallback: function(transport){
+        var response = transport.responseText.evalJSON();
+        if (response.status == 'success') {
+            alert('Design was saved');
+        } else if (response.status == 'error') {
+            console.log(response.message);
         }
     },
 
     observeContinueBtn: function() {
         if(this.navigation.continue) {
             this.navigation.continue.observe('click', function() {
-                if ((this.canvas == null) || this.canvas == 'undefined') {
-                    return;
-                }
-
-                var images = {};
-                for (var imageId in this.containerCanvases) {
-                    if (this.containerCanvases.hasOwnProperty(imageId)) {
-                        this.containerCanvases[imageId].deactivateAll();
-                        this.containerCanvases[imageId].renderAll();
-                        var image = this.containerCanvases[imageId].toDataURL();
-                        image = image.substr(image.indexOf(',') + 1).toString();
-                        images[imageId] = image;
-                        var contextTop = this.containerCanvases[imageId].contextTop;
-                        if (contextTop && contextTop != undefined) {
-                            this.containerCanvases[imageId].clearContext(contextTop);
-                        }
-                    }
-                }
-                var params = getUrlParams();
-                new Ajax.Request(this.urls.continue, {
-                    method:'post',
-                    parameters: {
-                        id : params['id'],
-                        images: Object.toJSON(images)
-                    },
-                    onSuccess: function(transport) {
-                        var response = transport.responseText.evalJSON();
-                        if (response.status == 'redirect' && response.url != undefined) {
-                            location.href = response.url;
-                        } else if (response.status == 'error') {
-                            console.log(response.message);
-                        }
-                    }
-                });
+                this.saveDesign(this.urls.continue, this.continueCallback);
             }.bind(this));
         }
     },

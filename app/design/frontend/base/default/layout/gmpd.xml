@@ -51,8 +51,9 @@
                     <block type="designer/designer_uploadImage_images" name="uploadedImages" template="gomage/productdesigner/designer/upload_image/images.phtml" />
                 </block>
                 <!--<block type="designer/designer_ideas" name="designIdeas" template="gomage/productdesigner/designer/design_ideas.phtml" />-->
-
                 <block type="core/template" name="additionalInstructions" template="gomage/productdesigner/designer/additional_instructions.phtml" />
+                <block type="designer/customer_form_register" name="customer_form_login" as="customer.login" template="gomage/productdesigner/customer/login.phtml"/>
+                <block type="customer/form_register" name="customer_form_register" as="customer.register" template="gomage/productdesigner/customer/register.phtml"/>
             </block>
         </reference>
     </gomage_designer_index_index>
@@ -79,28 +80,6 @@
             </block>
         </reference>
     </gomage_designer_index_filtercliparts>
-
-    <!-- Sing-up form -->
-    <gomage_designer_index_signup translate="label">
-        <label>Registration Form</label>
-        <remove name="right"/>
-        <remove name="left"/>
-        <remove name="header" />
-        <remove name="breadcrumbs" />
-        <remove name="footer" />
-        <remove name="before_body_end" />
-        <remove name="core_profiler" />
-        <reference name="root">
-            <action method="setTemplate"><template>page/empty.phtml</template></action>
-        </reference>
-        <reference name="content">
-            <block type="designer/customer_form_register" name="customer_form_register" template="customer/form/register.phtml">
-                <block type="page/html_wrapper" name="customer.form.register.fields.before" as="form_fields_before" translate="label">
-                    <label>Form Fields Before</label>
-                </block>
-            </block>
-        </reference>
-    </gomage_designer_index_signup>
 
     <gomage_designer_index_uploadimages translate="label">
         <reference name="content">

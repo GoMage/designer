@@ -95,7 +95,7 @@ class GoMage_ProductDesigner_Adminhtml_Designer_ProductController
 
         try {
             if (!$product || !$product->getId()){
-                throw Exception(Mage::helper('designer')->__('Product with id %d not found', $this->getRequest()->getParam('product_id')));
+                throw new Exception(Mage::helper('designer')->__('Product with id %d not found', $this->getRequest()->getParam('product_id')));
             }
             $product->setDesignAreas(Mage::helper('core')
                 ->jsonEncode($this->_prepareDesignAreaSettings($product))
@@ -163,7 +163,7 @@ class GoMage_ProductDesigner_Adminhtml_Designer_ProductController
                 }
                 Mage::helper('designer/ajax')->sendSuccess();
             } else {
-                throw Exception(Mage::helper('designer')->__('Product with id %d not found', $productId));
+                throw new Exception(Mage::helper('designer')->__('Product with id %d not found', $productId));
             }
         } catch (Exception $e) {
             Mage::helper('designer/ajax')->sendError($e->getMessage());

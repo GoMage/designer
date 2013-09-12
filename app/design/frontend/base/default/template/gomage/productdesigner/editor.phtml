@@ -53,7 +53,12 @@ $imageEnabled = $this->isUploadImageEnabled() && $_product->getId();
         settings.container = $("pd_container");
         settings.pane = $("pd_pane");
 
-        window.w = new GoMage.ProductDesigner(settings, '<?php echo Mage::getUrl('*/index/continue')?>');
+        window.w = new GoMage.ProductDesigner(settings,
+            '<?php echo Mage::getUrl('*/index/continue')?>',
+            '<?php echo Mage::getUrl('*/index/login')?>',
+            '<?php echo Mage::getUrl('*/index/register')?>',
+            '<?php echo Mage::getUrl('*/index/saveDesign')?>'
+        );
     }
     document.observe("dom:loaded", function(e){
         initProductDesigner();
@@ -162,3 +167,5 @@ $imageEnabled = $this->isUploadImageEnabled() && $_product->getId();
             <button class="pd-btn" id="pd_redo"><?php echo Mage::helper('designer')->__('Redo') ?></button>
         </div>
 </div>
+<?php echo $this->getChildHtml('customer.login');?>
+<?php echo $this->getChildHtml('customer.register');?>
