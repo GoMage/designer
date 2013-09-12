@@ -49,7 +49,7 @@
                     <div class="short-description"><?php echo $_helper->productAttribute($_product, nl2br($_product->getShortDescription()), 'short_description') ?></div>
                     <div class="price"><?php echo $this->getPriceHtml($_product, true); ?></div>
                 </div>
-                <a href="<?php echo $_product->getProductUrl() ?>" id="product_<?php echo $_product->getId(); ?>" title="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" class="product-image"><img src="<?php echo $this->helper('catalog/image')->init($_product, 'small_image')->resize(60); ?>" width="60" height="60" alt="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" /></a>
+                <a href="<?php echo $_product->getProductUrl() ?>" product_id="<?php echo $_product->getId(); ?>" title="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" class="product-image"><img src="<?php echo $this->helper('catalog/image')->init($_product, 'small_image')->resize(60); ?>" width="60" height="60" alt="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" /></a>
             </li>
         <?php if ($i%$_columnCount==0 || $i==$_collectionSize): ?>
         </ul>

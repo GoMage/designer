@@ -666,9 +666,10 @@ GoMage.ProductNavigation.prototype = {
     observeProductSelect: function() {
         Event.on($(this.opt.navigationProducts), 'click', '.product-image', function(e, elem){
             e.stop();
-            var productId = elem.id.replace('product_', '');
-            var data = getUrlParams();
-            data['id'] = productId;
+            var productId = elem.getAttribute('product_id');
+            if (productId && productId != undefined) {
+                var data = { id: productId };
+            }
             this.prepareAndSubmitData(this.opt.productUrl, this.updateDataOnProductChoose.bind(this), data);
         }.bind(this));
     },
