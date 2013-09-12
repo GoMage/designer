@@ -113,17 +113,19 @@ class GoMage_ProductDesigner_Block_Designer_Navigation_Filters extends Mage_Core
      */
     public function getAvailableFiltersOptions($filter)
     {
-        $productCollection = isset($this->_filtersCollections[$filter]) ? $this->_filtersCollections[$filter] :
-            $this->getProductCollection();
+        $productCollection = $this->getProductCollection();
         if ($filter == 'category') {
             return $this->_prepareCategoryFilters($productCollection);
         }
 
         $filters = new Varien_Data_Collection();
         foreach($productCollection as $product) {
-            if($product->getData($filter)) {
+            if($value = $product->getData($filter)) {
+                if ($filters->getItemById($value)) {
+                    continue;
+                }
                 $item = new Varien_Object(array(
-                    'id' => $product->getData($filter),
+                    'id' => $value,
                     'name' => $product->getAttributeText($filter)
                 ));
                 $filters->addItem($item);
