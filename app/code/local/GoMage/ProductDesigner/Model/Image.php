@@ -34,7 +34,7 @@
  */
 class GoMage_ProductDesigner_Model_Image extends Varien_Object
 {
-    protected $_imageExtension = 'imagickg';
+    protected $_imageExtension = 'imagick';
     /**
      * Return image helper
      *
