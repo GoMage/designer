@@ -32,6 +32,12 @@
  */
 ?>
 <div class="account-login" id="customer-login-container" style="display: none">
+    <ul class="messages" style="display: none">
+        <li class="error-msg" id="login-error-msg">
+            <ul>
+            </ul>
+        </li>
+    </ul>
     <form method="post" id="login-form">
         <div class="col-2 registered-users">
             <div class="content">
@@ -56,7 +62,6 @@
         </div>
         <div class="col-2 registered-users">
             <div class="buttons-set">
-                <a href="<?php echo $this->getForgotPasswordUrl() ?>" class="f-left"><?php echo $this->__('Forgot Your Password?') ?></a>
                 <button type="button" class="button" title="<?php echo $this->__('Login') ?>" id="customer-login-btn"><span><span><?php echo $this->__('Login') ?></span></span></button>
                 <button type="button" id="customer-register-btn" title="<?php echo $this->__('Create an Account') ?>" class="button"><span><span><?php echo $this->__('Create an Account') ?></span></span></button>
             </div>

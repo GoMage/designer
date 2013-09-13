@@ -31,16 +31,7 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
      */
     protected function _initializeProduct()
     {
-        $request = $this->getRequest();
-        $productId = $request->getParam("id", false);
-
-        $product = Mage::getModel('catalog/product');
-        if ($productId) {
-            $product->load($productId);
-        }
-        Mage::register('current_product', $product);
-
-        return $product;
+        return Mage::helper('designer')->initializeProduct();
     }
 
     /**
@@ -150,17 +141,7 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
 
     protected function _saveDesign()
     {
-        $product = $this->_initializeProduct();
-        $images = $this->getRequest()->getParam('images');
-
-        if ($product->getId() && $images && !empty($images)) {
-            $images = Mage::helper('core')->jsonDecode($images);
-            Mage::getModel('gmpd/image')->createProductImages($images, $product);
-        } elseif(!$product->getId()) {
-            throw new Exception(Mage::helper('designer')->__('Product is not defined'));
-        } elseif(!$images || empty($images)) {
-            throw new Exception(Mage::helper('designer')->__('Designed images are empty'));
-        }
+        Mage::helper('designer')->saveProductDesignedImages();
     }
 
     public function uploadImagesAction()
@@ -216,55 +197,6 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
         } catch (Exception $e) {
             Mage::helper('designer/ajax')->sendError($e->getMessage());
         }
-    }
-
-    public function loginAction()
-    {
-        $request = $this->getRequest();
-        $isAjax = $request->isAjax();
-        if (!$isAjax) {
-            $this->norouteAction();
-            return;
-        }
-
-        try {
-            $customerSession = $this->_getCustomerSession();
-            $login = $this->getRequest()->getParam('login');
-            if (!$customerSession->isLoggedIn()) {
-                if (!empty($login['username']) && !empty($login['password'])) {
-                    $customerSession->login($login['username'], $login['password']);
-                    $customer = $customerSession->getCustomer();
-                    if ($customer->getIsJustConfirmed()) {
-                        $customer->sendNewAccountEmail('confirmed', '', Mage::app()->getStore()->getId());
-                    }
-                    $this->_saveDesign();
-                } else {
-                    throw new Exception($this->__('Login and password are required.'));
-                }
-            }
-            Mage::helper('designer/ajax')->sendSuccess();
-        } catch (Exception $e) {
-            Mage::helper('designer/ajax')->sendError($e->getMessage());
-        } catch (Mage_Core_Exception $e) {
-            switch ($e->getCode()) {
-                case Mage_Customer_Model_Customer::EXCEPTION_EMAIL_NOT_CONFIRMED:
-                    $value = Mage::helper('customer')->getEmailConfirmationUrl($login['username']);
-                    $message = Mage::helper('customer')->__('This account is not confirmed. <a href="%s">Click here</a> to resend confirmation email.', $value);
-                    break;
-                case Mage_Customer_Model_Customer::EXCEPTION_INVALID_EMAIL_OR_PASSWORD:
-                    $message = $e->getMessage();
-                    break;
-                default:
-                    $message = $e->getMessage();
-
-                Mage::helper('designer/ajax')->sendError($message);
-            }
-        }
-    }
-
-    public function registerAction()
-    {
-        Mage::log($this->getRequest()->getParams());
     }
 
     protected function _getCustomerSession()

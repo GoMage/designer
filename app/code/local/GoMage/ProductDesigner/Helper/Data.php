@@ -203,4 +203,33 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
         }
         return $editorConfig;
     }
+
+    public function saveProductDesignedImages()
+    {
+        $product = $this->initializeProduct();
+        $images = Mage::app()->getRequest()->getParam('images');
+
+        if ($product->getId() && $images && !empty($images)) {
+            $images = Mage::helper('core')->jsonDecode($images);
+            Mage::getModel('gmpd/image')->createProductImages($images, $product);
+        } elseif(!$product->getId()) {
+            throw new Exception(Mage::helper('designer')->__('Product is not defined'));
+        } elseif(!$images || empty($images)) {
+            throw new Exception(Mage::helper('designer')->__('Designed images are empty'));
+        }
+    }
+
+    public function initializeProduct()
+    {
+        $request = Mage::app()->getRequest();
+        $productId = $request->getParam("id", false);
+
+        $product = Mage::getModel('catalog/product');
+        if ($productId) {
+            $product->load($productId);
+        }
+        Mage::register('current_product', $product);
+
+        return $product;
+    }
 }

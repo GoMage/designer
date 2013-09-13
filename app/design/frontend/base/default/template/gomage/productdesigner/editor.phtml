@@ -55,8 +55,8 @@ $imageEnabled = $this->isUploadImageEnabled() && $_product->getId();
 
         window.w = new GoMage.ProductDesigner(settings,
             '<?php echo Mage::getUrl('*/index/continue')?>',
-            '<?php echo Mage::getUrl('*/index/login')?>',
-            '<?php echo Mage::getUrl('*/index/register')?>',
+            '<?php echo Mage::getUrl('*/customer/loginPost')?>',
+            '<?php echo Mage::getUrl('*/customer/createPost')?>',
             '<?php echo Mage::getUrl('*/index/saveDesign')?>'
         );
     }

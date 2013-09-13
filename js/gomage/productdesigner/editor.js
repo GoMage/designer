@@ -259,6 +259,10 @@ GoMage.ProductDesigner.prototype = {
             this.createCustomerLoginWindows();
             this.navigation.saveDesign.observe('click', function(e) {
                 e.stop();
+                if (!this.canvasesHasLayers()) {
+                    alert('Please add to canvas thogh one layer');
+                    return;
+                }
                 if (!this.isCustomerLogin && this.loginWindow) {
                     this.loginWindow.showCenter(true);
                 } else if(this.isCustomerLogin) {
@@ -271,9 +275,9 @@ GoMage.ProductDesigner.prototype = {
     createCustomerLoginWindows: function() {
         if(!this.isCustomerLogin) {
             if ($('customer-login-container')){
-                this.loginWindow = this.createPopupWindow('customer-login-container', {
+                this.loginWindow = this.createPopupWindow('customer-login-container', 'login-error-msg', {
                     className: 'magento',
-                    title: 'Registration',
+                    title: 'Login',
                     width: 430,
                     minWidth: 430,
                     maximizable:false,
@@ -290,7 +294,7 @@ GoMage.ProductDesigner.prototype = {
                 this.observeLogin();
             }
             if ($('customer-register-container')) {
-                this.registrationWindow = this.createPopupWindow('customer-register-container', {
+                this.registrationWindow = this.createPopupWindow('customer-register-container', 'register-error-msg', {
                     className: 'magento',
                     title: 'Registration',
                     width: 900,
@@ -310,11 +314,11 @@ GoMage.ProductDesigner.prototype = {
         }
     },
 
-    createPopupWindow: function(contentId, params){
+    createPopupWindow: function(contentId, errorContainerId, params){
         var win = new Window(params);
+        win.errorContainerId = errorContainerId
         win.setContent(contentId, true, true);
         win.setZIndex(2000);
-
         return win;
     },
 
@@ -377,13 +381,51 @@ GoMage.ProductDesigner.prototype = {
                     var response = transport.responseText.evalJSON();
                     if (response.status == 'success') {
                         this.isCustomerLogin = true;
+                        this.clearLoginErrors(window.errorContainerId);
+                        var quickAccessContainer = $$('.quick-access')[0];
+                        if (quickAccessContainer && quickAccessContainer != undefined) {
+                            if (response.welcome_text) {
+                                var welcomeText = quickAccessContainer.down('.welcome-msg');
+                                welcomeText.update(response.welcome_text);
+                            }
+                            if (response.top_links) {
+                                var topLinks = quickAccessContainer.down('.links');
+                                topLinks.replace(response.top_links);
+                            }
+                        }
                         window.close();
+                        alert('Design was saved');
+                    } else if (response.status == 'redirect' && response.url) {
+                        location.href = response.url;
                     } else if (response.status == 'error' && response.message) {
-                        alert(response.message);
+                        if (typeof response.message == 'object') {
+                            response.message.each(function(message){
+                                this.addLoginError(window.errorContainerId, message);
+                            }.bind(this));
+                        } else {
+                            this.addLoginError(window.errorContainerId, response.message);
+                        }
+
                     }
                 }.bind(this)
             });
         }
+    },
+
+    addLoginError: function(containerId, message) {
+        var errorContainer = $(containerId);
+        var item = document.createElement('span');
+        item.innerHTML = message;
+        var itemWrapper = document.createElement('li');
+        itemWrapper.appendChild(item);
+        errorContainer.down().appendChild(itemWrapper);
+        errorContainer.up().show();
+    },
+
+    clearLoginErrors: function(containerId) {
+        var errorContainer = $(containerId).down();
+        errorContainer.innserHTML = '';
+        errorContainer.up().hide();
     },
 
     prepareImagesForSave: function() {
@@ -392,27 +434,40 @@ GoMage.ProductDesigner.prototype = {
         if ((this.canvas == null) || this.canvas == 'undefined') {
             return data;
         }
-
         var images = {};
         for (var imageId in this.containerCanvases) {
             if (this.containerCanvases.hasOwnProperty(imageId)) {
-                this.containerCanvases[imageId].deactivateAll();
-                this.containerCanvases[imageId].renderAll();
-                var image = this.containerCanvases[imageId].toDataURL();
+                var canvas = this.containerCanvases[imageId];
+                if (canvas.getObjects().length > 0)
+                canvas.deactivateAll();
+                canvas.renderAll();
+                var image = canvas.toDataURL();
                 image = image.substr(image.indexOf(',') + 1).toString();
                 images[imageId] = image;
-                var contextTop = this.containerCanvases[imageId].contextTop;
+                var contextTop = canvas.contextTop;
                 if (contextTop && contextTop != undefined) {
-                    this.containerCanvases[imageId].clearContext(contextTop);
+                    canvas.clearContext(contextTop);
                 }
             }
         }
-
-        var params = getUrlParams();
-        data['id'] = params['id'];
-        data['images'] = Object.toJSON(images);
+        if (Object.keys(images).length > 0) {
+            var params = getUrlParams();
+            data['id'] = params['id'];
+            data['images'] = Object.toJSON(images);
+        }
 
         return data;
+    },
+
+    canvasesHasLayers: function()
+    {
+        var count = 0;
+        for (var imageId in this.containerCanvases) {
+            var canvas = this.containerCanvases[imageId];
+            count += canvas.getObjects().length;
+        }
+
+        return count > 0 ? true : false;
     },
 
     saveDesign: function(url, responseCallback){
@@ -448,7 +503,12 @@ GoMage.ProductDesigner.prototype = {
 
     observeContinueBtn: function() {
         if(this.navigation.continue) {
-            this.navigation.continue.observe('click', function() {
+            this.navigation.continue.observe('click', function(e) {
+                e.stop();
+                if (!this.canvasesHasLayers()) {
+                    alert('Please add to canvas thogh one layer');
+                    return;
+                }
                 this.saveDesign(this.urls.continue, this.continueCallback);
             }.bind(this));
         }

@@ -32,6 +32,12 @@
  */
 ?>
 <div class="account-create" id="customer-register-container" style="display: none">
+    <ul class="messages" style="display: none">
+        <li class="error-msg" id="register-error-msg">
+            <ul>
+            </ul>
+        </li>
+    </ul>
     <form method="post" id="form-validate">
         <div class="fieldset">
             <h2 class="legend"><?php echo $this->__('Personal Information') ?></h2>

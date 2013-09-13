@@ -52,7 +52,7 @@
                 </block>
                 <!--<block type="designer/designer_ideas" name="designIdeas" template="gomage/productdesigner/designer/design_ideas.phtml" />-->
                 <block type="core/template" name="additionalInstructions" template="gomage/productdesigner/designer/additional_instructions.phtml" />
-                <block type="designer/customer_form_register" name="customer_form_login" as="customer.login" template="gomage/productdesigner/customer/login.phtml"/>
+                <block type="core/template" name="customer_form_login" as="customer.login" template="gomage/productdesigner/customer/login.phtml"/>
                 <block type="customer/form_register" name="customer_form_register" as="customer.register" template="gomage/productdesigner/customer/register.phtml"/>
             </block>
         </reference>
@@ -101,4 +101,18 @@
             </action>
         </reference>
     </catalog_category_layered>
+    <!-- Top links for logged in customer -->
+    <customer_logged_in_top_links>
+        <block type="page/template_links" name="top.links" as="topLinks" output="toHtml"/>
+        <reference name="top.links">
+            <action method="addLink" translate="label title" module="customer"><label>My Account</label><url helper="customer/getAccountUrl"/><title>My Account</title><prepare/><urlParams/><position>10</position></action>
+            <action method="addLink" translate="label title" module="customer"><label>Log Out</label><url helper="customer/getLogoutUrl"/><title>Log Out</title><prepare/><urlParams/><position>100</position></action>
+            <block type="wishlist/links" name="wishlist_link" />
+            <action method="addLinkBlock"><blockName>wishlist_link</blockName></action>
+            <block type="checkout/links" name="checkout_cart_link">
+                <action method="addCartLink"></action>
+                <action method="addCheckoutLink"></action>
+            </block>
+        </reference>
+    </customer_logged_in_top_links>
 </layout>
