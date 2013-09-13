@@ -84,4 +84,9 @@ class GoMage_ProductDesigner_Block_Editor extends Mage_Core_Block_Template
     {
         return $imageWidth = Mage::getStoreConfig('gmpd/design/design_size_width');
     }
+
+    public function isCustomerLoggedIn()
+    {
+        return (bool) $this->getCustomerId();
+    }
 }

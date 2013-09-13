@@ -33,7 +33,7 @@ $imageEnabled = $this->isUploadImageEnabled() && $_product->getId();
             zoom: 'pd_zoom',
             allign_by_center: 'pd_allign_by_center'
         };
-        settings.isCustomerRegistered = '<?php echo $this->getCustomerId(); ?>';
+        settings.isCustomerLoggedIn = '<?php echo $this->isCustomerLoggedIn(); ?>';
         settings.isProductSelected = <?php echo $this->isProductSelected() ? 1 : 0; ?>;
         settings.isNavigationEnabled = <?php echo $this->isNavigationEnabled(); ?>;
         settings.isDesignedEnabled = <?php echo $this->isDesignEnabled(); ?>;
@@ -167,5 +167,7 @@ $imageEnabled = $this->isUploadImageEnabled() && $_product->getId();
             <button class="pd-btn" id="pd_redo"><?php echo Mage::helper('designer')->__('Redo') ?></button>
         </div>
 </div>
-<?php echo $this->getChildHtml('customer.login');?>
-<?php echo $this->getChildHtml('customer.register');?>
+<?php if (!$this->getCustomerId()): ?>
+    <?php echo $this->getChildHtml('customer.login');?>
+    <?php echo $this->getChildHtml('customer.register');?>
+<?php endif;?>

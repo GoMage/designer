@@ -96,10 +96,8 @@ GoMage.ProductDesigner = function(config, continueUrl, loginUrl, registrationUrl
     this.currentProd = null;
     this.containerLayers = {},
     this.containerCanvases = {},
-    this.layersObjectsArray = {};
-    this.regWin = null
     this.productAdditionalImageTemplate = new Template($('product-image-template').innerHTML);
-    this.isCustomerLogin = this.config.isCustomerRegistered;
+    this.isCustomerLogin = this.config.isCustomerLoggedIn;
     
     this.loadProduct(config.product);
     this.observeLayerControls();
@@ -118,7 +116,6 @@ GoMage.ProductDesigner.prototype = {
         this.history.clear();
         this.containerLayers = {};
         this.containerCanvases = {};
-        this.layersObjectsArray = {};
         this.container.innerHTML = '';
         this.config.product = product;
         this.loadProduct(product);
@@ -256,15 +253,17 @@ GoMage.ProductDesigner.prototype = {
 
     observeSaveDesign: function() {
         if(this.navigation.saveDesign) {
-            this.createCustomerLoginWindows();
             this.navigation.saveDesign.observe('click', function(e) {
                 e.stop();
                 if (!this.canvasesHasLayers()) {
                     alert('Please add to canvas thogh one layer');
                     return;
                 }
-                if (!this.isCustomerLogin && this.loginWindow) {
-                    this.loginWindow.showCenter(true);
+                if (!this.isCustomerLogin) {
+                    this.createCustomerLoginWindows();
+                    if (this.loginWindow) {
+                        this.loginWindow.showCenter(true);
+                    }
                 } else if(this.isCustomerLogin) {
                     this.saveDesign(this.urls.saveDesign, this.saveDesignCallback);
                 }
