@@ -14,7 +14,6 @@
  */
 class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
 {
-
     protected $allowedProductTypes = array('simple', 'configurable');
     protected $_productSettings;
 

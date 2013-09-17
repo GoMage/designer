@@ -34,7 +34,8 @@ class GoMage_ProductDesigner_Model_Design extends Mage_Core_Model_Abstract {
         $this->_init('gmpd/design');
     }
 
-    public function getConfig() {
+    public function getConfig()
+    {
         return Mage::getSingleton('gmpd/design_config');
     }
 

@@ -82,13 +82,6 @@
                     <frontName>designer</frontName>
                 </args>
             </gomage_designer>
-            <customer>
-                <args>
-                    <modules>
-                        <GoMage_ProductDesigner before="Mage_Customer">GoMage_ProductDesigner_Customer</GoMage_ProductDesigner>
-                    </modules>
-                </args>
-            </customer>
         </routers>
         <layout>
             <updates>
