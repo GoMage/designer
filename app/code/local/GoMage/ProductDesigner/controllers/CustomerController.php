@@ -282,4 +282,10 @@ class GoMage_ProductDesigner_CustomerController extends Mage_Customer_AccountCon
         $block = $this->getLayout()->createBlock('page/html_header');
         return $block->getWelcome() . $block->getAdditionalHtml();
     }
+
+    public function designsAction()
+    {
+        $this->loadLayout();
+        $this->renderLayout();
+    }
 }

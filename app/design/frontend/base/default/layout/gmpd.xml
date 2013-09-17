@@ -115,4 +115,28 @@
             </block>
         </reference>
     </customer_logged_in_top_links>
+
+    <customer_account>
+    <!-- Mage_Sales -->
+        <reference name="customer_account_navigation">
+            <action method="addLink" translate="label" module="designer"><name>designs</name><path>designer/customer/designs/</path><label>My Saved Designs</label></action>
+        </reference>
+    </customer_account>
+
+    <gomage_designer_customer_designs>
+        <update handle="customer_account" />
+        <reference name="my.account.wrapper">
+            <block type="core/template" name="customer.designs" template="gomage/productdesigner/customer/designs.phtml">
+                <action method="setTitle" translate="title">
+                    <title>My Saved Designs</title>
+                </action>
+                <block type="designer/customer_designs" name="customer.design.list" as="design.list" template="gomage/productdesigner/customer/designs/list.phtml">
+                    <block type="page/html_pager" name="pager">
+                        <action method="setLimit"><limit>12</limit></action>
+                    </block>
+                    <action method="setColumnCount"><count>4</count></action>
+                </block>
+            </block>
+        </reference>
+    </gomage_designer_customer_designs>
 </layout>

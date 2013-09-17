@@ -1,4 +1,0 @@
-<?php
-class GoMage_ProductDesigner_Block_Customer_Form_Register extends Mage_Customer_Block_Form_Register
-{
-}
