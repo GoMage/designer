@@ -142,7 +142,9 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function getDesignGroupId()
     {
-        return sha1(rand(0,1000).microtime(true));
+        $designGroupId = sha1(rand(0,1000).microtime(true));
+        Mage::register('design_group_id', $designGroupId);
+        return $designGroupId;
     }
     
     /**
@@ -176,7 +178,7 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
             return $editorConfig;
         }
 
-        $images = $product->getMediaGalleryImages($fromDesignerPage = true);
+        $images = $product->getMediaGalleryImages(true);
         $settings = $product->getDesignAreas();
 
         if ($settings == null) {

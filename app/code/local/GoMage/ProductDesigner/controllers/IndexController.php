@@ -131,8 +131,9 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
         try {
             $this->_saveDesign();
             $product = Mage::registry('current_product');
+            $designGroupId = Mage::registry('design_group_id');
             Mage::helper('designer/ajax')->sendRedirect(array(
-                'url' => $product->getProductUrl(),
+                'url' => $product->getDesignedProductUrl($designGroupId),
             ));
         } catch (Exception $e) {
             Mage::helper('designer/ajax')->sendError($e->getMessage());

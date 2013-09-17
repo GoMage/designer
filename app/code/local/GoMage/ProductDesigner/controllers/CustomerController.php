@@ -286,6 +286,10 @@ class GoMage_ProductDesigner_CustomerController extends Mage_Customer_AccountCon
     public function designsAction()
     {
         $this->loadLayout();
+        $this->getLayout()->getBlock('head')->setTitle($this->__('My Saved Designs'));
+        if ($block = $this->getLayout()->getBlock('customer.account.link.back')) {
+            $block->setRefererUrl($this->_getRefererUrl());
+        }
         $this->renderLayout();
     }
 }

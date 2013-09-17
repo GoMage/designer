@@ -1,36 +1,45 @@
 <?php
-class GoMage_ProductDesigner_Model_Catalog_Product extends Mage_Catalog_Model_Product {
-    public function getMediaGalleryImages($fromDesignerPage=false)
+class GoMage_ProductDesigner_Model_Catalog_Product extends Mage_Catalog_Model_Product
+{
+    /**
+     * Retrive media gallery images
+     *
+     * @return Varien_Data_Collection
+     */
+    public function getMediaGalleryImages($skipExclude = false)
     {
-        $images = parent::getMediaGalleryImages();
-        if($images && !$fromDesignerPage) {
-            $imageIds = $images->getAllIds();
-            $designImages = Mage::getSingleton('gmpd/design')->getCollectionByImageIds($imageIds);
-
-            if($designImages->count() > 0) {
-                $designImagesArray = $this->prepareDesignImagesArray($designImages);
-
-                foreach($images as $image) {
-                    $newImage = $image;
-                    if(isset($designImagesArray[$image->getId()])) {
-                        $designImage = $designImagesArray[$image->getId()];
-                        $newImage = new Varien_Object($image->getData());
-                        $newImage->addData(array(
-                            'file' => $designImage->getDesign(),
-                            'url' => $designImage->getImageUrl(),
-                            'path' => $designImage->getImagePath()
-                        ));
-                    }
-                    $images->removeItemByKey($image->getId());
-                    $images->addItem($newImage);
-                }
-                $this->setData('media_gallery_images', $images);
+        if(!$this->hasData('media_gallery_images') && is_array($this->getMediaGallery('images'))) {
+            $images = new Varien_Data_Collection();
+            if ($designGroupId = Mage::app()->getRequest()->getParam('design_id', false)) {
+                $designImages = Mage::getModel('gmpd/design')->getDesignsByGroupId($designGroupId);
+                $designImages = $this->_prepareDesignImages($designImages);
             }
+            foreach ($this->getMediaGallery('images') as $image) {
+                if ($image['disabled'] && !$skipExclude) {
+                    continue;
+                }
+                if (!empty($designImages) && isset($designImages[$image['value_id']])) {
+                    $designImage = $designImages[$image['value_id']];
+                    $mediaConfig = $this->getDesignMediaConfig();
+                    $image['origin_file'] = $image['file'];
+                    $image['file'] = $designImage['design'];
+                    $image['design_id'] = $designGroupId;
+                } else {
+                    $mediaConfig = $this->getMediaConfig();
+                }
+                $image['url'] = $mediaConfig->getMediaUrl($image['file']);
+                $image['path'] = $mediaConfig->getMediaPath($image['file']);
+                $image['id'] = isset($image['value_id']) ? $image['value_id'] : null;
+                $images->addItem(new Varien_Object($image));
+            }
+            $this->setData('media_gallery_images', $images);
         }
-        return $images;
+
+        return $this->getData('media_gallery_images');
     }
 
-    protected function prepareDesignImagesArray($designImages) {
+    protected function _prepareDesignImages($designImages)
+    {
         $designImagesArray = array();
         foreach($designImages as $designImage) {
             $designImagesArray[$designImage->getImageId()] = $designImage;
@@ -38,17 +47,45 @@ class GoMage_ProductDesigner_Model_Catalog_Product extends Mage_Catalog_Model_Pr
         return $designImagesArray;
     }
 
-    public function getImage() {
-        $image = $this->getData('image');
-        if($image) {
-            $galleryImages = $this->getMediaGalleryImages();
-            foreach($galleryImages as $galleryImage) {
-                if(preg_match('#'.preg_quote($image).'$#', $galleryImage->getFile(), $matches) != 0) {
-                    $image = $galleryImage->getFile();
+    public function getImage()
+    {
+        $imageFile = $this->getData('image');
+        if($imageFile) {
+            $images = $this->getMediaGalleryImages(true);
+            foreach($images as $image) {
+                if($image->getOriginFile() == $imageFile) {
+                    $this->setData('image', $image->getFile());
                 }
-                $this->setData('image', $image);
             }
         }
-        return $image;
+        return $this->getData('image');
+    }
+
+    public function getDesignMediaConfig()
+    {
+        return Mage::getSingleton('gmpd/design_config');
+    }
+
+    /**
+     * Retrieve Product URL
+     *
+     * @param string $designGroupId Design Id
+     * @param bool   $useSid        Use SID
+     * @return string
+     */
+    public function getDesignedProductUrl($designGroupId, $useSid = null)
+    {
+        if ($useSid === null) {
+            $useSid = Mage::app()->getUseSessionInUrl();
+        }
+
+        $params = array();
+        if (!$useSid) {
+            $params['_nosid'] = true;
+        }
+        if ($designGroupId) {
+            $params['_query'] = array('design_id' => $designGroupId);
+        }
+        return $this->getUrlModel()->getUrl($this, $params);
     }
 }

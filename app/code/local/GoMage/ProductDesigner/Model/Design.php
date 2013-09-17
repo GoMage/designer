@@ -53,7 +53,7 @@ class GoMage_ProductDesigner_Model_Design extends Mage_Core_Model_Abstract {
         }
         $collection->addFieldToFilter('image_id', array('in'=>$imageIds));
         $collection->getSelect()->group('image_id');
-        $collection->addOrder('create_time');
+        $collection->addOrder('created_date');
         return $collection;
     }
 
@@ -63,5 +63,13 @@ class GoMage_ProductDesigner_Model_Design extends Mage_Core_Model_Abstract {
 
     public function getImagePath() {
         return $this->getConfig()->getBaseMediaPath() . $this->getDesign();
+    }
+
+    public function getDesignsByGroupId($designGroupId)
+    {
+        $collection = $this->getCollection();
+        $collection->addFieldToFilter('design_group_id', $designGroupId);
+
+        return $collection;
     }
 }

@@ -35,7 +35,6 @@ class GoMage_ProductDesigner_Block_Adminhtml_Product_Edit extends Mage_Core_Bloc
     {
         $product = $this->getProduct();
         $imageId = $this->getImageId();
-        $image = $this->getImage();
 
         if (!$product->getId()) {
             return array();

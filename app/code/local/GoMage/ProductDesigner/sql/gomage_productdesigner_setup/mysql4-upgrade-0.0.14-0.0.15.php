@@ -10,7 +10,7 @@ $installer->run(<<<SQL
     ADD COLUMN `session_id` VARCHAR(40) NOT NULL DEFAULT '';
   -- ADD `create_time` FIELD TO DESIGN TABLE
     ALTER TABLE `{$this->getTable('gomage_productdesigner_design')}`
-    ADD COLUMN `create_time` INT(12) NOT NULL DEFAULT '0';
+    ADD COLUMN `created_date` DATETIME NOT NULL;
 SQL
 );
 

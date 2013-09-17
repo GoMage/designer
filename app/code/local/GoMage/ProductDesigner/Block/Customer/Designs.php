@@ -71,7 +71,7 @@ class GoMage_ProductDesigner_Block_Customer_Designs extends Mage_Catalog_Block_P
             $customerId = $this->getCustomerId();
             $collection = Mage::getModel('gmpd/design')->getCollection()
                 ->getCustomerDesignCollection($customerId)
-                ->setOrder('create_time', 'desc');
+                ->setOrder('created_date');
             $pager = $this->getPager();
             $pager->setCollection($collection);
             $collection->addProductsToCollection();

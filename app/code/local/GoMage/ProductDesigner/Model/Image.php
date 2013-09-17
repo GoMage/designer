@@ -173,15 +173,14 @@ class GoMage_ProductDesigner_Model_Image extends Varien_Object
             }
 
             $design = Mage::getModel('gmpd/design');
-            $designGroupId = Mage::helper('designer')->getDesignGroupId();
             $design->setData(array(
                 'customer_id' => $customerId,
                 'session_id' => $customerId ? null : Mage::helper('designer')->getDesignerSessionId(),
                 'product_id' => $currentProduct->getId(),
                 'design' => str_replace($configPath, '', $fileToSave),
                 'image_id' => $imageId,
-                'create_time' => Mage::getModel('core/date')->date(),
-                'design_group_id' => $designGroupId
+                'created_date' => Mage::getModel('core/date')->gmtDate(),
+                'design_group_id' => $this->getDesignGroupId()
             ));
             $design->save();
         }
@@ -239,7 +238,7 @@ class GoMage_ProductDesigner_Model_Image extends Varien_Object
      * @param string $imagePath Image path
      * @return string
      */
-    public function _prepareImageExtension($imagePath)
+    protected function _prepareImageExtension($imagePath)
     {
         $imagePathExploded = explode('.', $imagePath);
         $imageExtension = array_pop($imagePathExploded);
@@ -248,5 +247,15 @@ class GoMage_ProductDesigner_Model_Image extends Varien_Object
             $imageExtension = 'jpeg';
         }
         return $imageExtension;
+    }
+
+    protected function getDesignGroupId()
+    {
+        if (!$this->hasData('design_group_id')) {
+            $designGroupId = Mage::helper('designer')->getDesignGroupId();
+            $this->setData('design_group_id', $designGroupId);
+        }
+
+        return $this->getData('design_group_id');
     }
 }

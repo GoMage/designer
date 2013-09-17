@@ -162,6 +162,11 @@
                     <catalog_product_edit_tabs>GoMage_ProductDesigner_Block_Adminhtml_Catalog_Product_Edit_Tabs</catalog_product_edit_tabs>
                 </rewrite>
             </adminhtml>
+            <catalog>
+                <rewrite>
+                    <product_view_media>GoMage_ProductDesigner_Block_Catalog_Product_View_Media</product_view_media>
+                </rewrite>
+            </catalog>
         </blocks>
         <resources>
             <gomage_productdesigner_setup>

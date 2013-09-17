@@ -73,7 +73,7 @@ class GoMage_ProductDesigner_Adminhtml_Designer_ProductController
     {
         $imageId = $this->getRequest()->getParam('img');
         if ($product->getId() && $imageId) {
-            $images  = $product->getMediaGalleryImages();
+            $images  = $product->getMediaGalleryImages(true);
             $image   = $images->getItemByColumnValue('value_id', $imageId);
             if ($image && $image->getId()) {
                 Mage::register('current_image', $image);
