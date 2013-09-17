@@ -133,26 +133,26 @@ $imageEnabled = $this->isUploadImageEnabled() && $_product->getId();
             </div>
             <!-- End Of Product Designer Tabs -->
         </div>
-            <div id="additional_panels" style="display: <?php echo !$this->isProductSelected() ? 'none' : 'block'?>">
-                <?php $config = $this->getEditorConfig(); ?>
-                <div id="pd_sides" style="float: right;">
-                    <ul style="float: left">
-                    <?php foreach ($config['images'] as $k => $v): ?>
-                        <li style="float: left">
-                            <img width="48" height="48" class="product-image" src="<?php echo $v['u'] ?>" data-id="<?php echo $k; ?>" data-image-id="<?php echo $v['id'] ?>">
-                        </li>
-                    <?php endforeach ?>
-                    </ul>
-                    <script type="text/html" class="no-display" id="product-image-template">
-                        <li style="float: left">
-                            <img width="48" height="48" class="product-image" src="#{url}" data-id="#{image-id}" data-image-id="#{data-image-id}">
-                        </li>
-                    </script>
-                </div>
-                <div id="additional_instructions">
-                    <?php echo $this->getChildHtml('additionalInstructions');?>
-                </div>
+        <div id="additional_panels" style="display: <?php echo !$this->isProductSelected() ? 'none' : 'block'?>">
+            <?php $config = $this->getEditorConfig(); ?>
+            <div id="pd_sides" style="float: right;">
+                <ul style="float: left">
+                <?php foreach ($config['images'] as $k => $v): ?>
+                    <li style="float: left">
+                        <img width="48" height="48" class="product-image" src="<?php echo $v['u'] ?>" data-id="<?php echo $k; ?>" data-image-id="<?php echo $v['id'] ?>">
+                    </li>
+                <?php endforeach ?>
+                </ul>
+                <script type="text/html" class="no-display" id="product-image-template">
+                    <li style="float: left">
+                        <img width="48" height="48" class="product-image" src="#{url}" data-id="#{image-id}" data-image-id="#{data-image-id}">
+                    </li>
+                </script>
             </div>
+            <div id="additional_instructions">
+                <?php echo $this->getChildHtml('additionalInstructions');?>
+            </div>
+        </div>
     </div>
 
     <div class="content">
