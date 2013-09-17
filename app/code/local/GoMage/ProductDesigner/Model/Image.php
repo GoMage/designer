@@ -173,6 +173,7 @@ class GoMage_ProductDesigner_Model_Image extends Varien_Object
             }
 
             $design = Mage::getModel('gmpd/design');
+            $designGroupId = Mage::helper('designer')->getDesignGroupId();
             $design->setData(array(
                 'customer_id' => $customerId,
                 'session_id' => $customerId ? null : Mage::helper('designer')->getDesignerSessionId(),
@@ -180,6 +181,7 @@ class GoMage_ProductDesigner_Model_Image extends Varien_Object
                 'design' => str_replace($configPath, '', $fileToSave),
                 'image_id' => $imageId,
                 'create_time' => Mage::getModel('core/date')->date(),
+                'design_group_id' => $designGroupId
             ));
             $design->save();
         }

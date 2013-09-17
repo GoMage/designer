@@ -105,7 +105,8 @@ class GoMage_ProductDesigner_Model_UploadedImage extends Mage_Core_Model_Abstrac
         return $collectionArray['items'];
     }
 
-    protected function _getDesignerSessionId() {
-        return $this->_getCustomerSession()->getDesignerSessionId();
+    protected function _getDesignerSessionId()
+    {
+        return Mage::helper('designer')->getDesignerSessionId();
     }
 }

@@ -146,7 +146,6 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
 
     public function uploadImagesAction()
     {
-        $this->prepareDesignerSessionId();
         $files = @$_FILES['filesToUpload'];
         if (is_array($files)) {
             $files = $this->prepareFilesArray($files);
@@ -209,14 +208,9 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
         return Mage::helper('designer/convert');
     }
 
-    protected function prepareDesignerSessionId()
-    {
-        Mage::helper('designer')->prepareDesignerSessionId();
-    }
-
     protected function getSessionId()
     {
-        return $this->_getCustomerSession()->getDesignerSessionId();
+        return $this->_getCustomerSession()->getEncryptedSessionId();
     }
 
     protected function prepareFilesArray($files)

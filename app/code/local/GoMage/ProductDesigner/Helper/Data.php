@@ -132,14 +132,18 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function getDesignerSessionId() 
     {
-        $this->prepareDesignerSessionId();
-        $sessionId = $this->_getCustomerSession()->getDesignerSessionId();
+        $sessionId = $this->_getCustomerSession()->getEncryptedSessionId();
         return $sessionId;
     }
 
     protected function _getCustomerSession() 
     {
         return Mage::getSingleton('customer/session');
+    }
+
+    public function getDesignGroupId()
+    {
+        return sha1(rand(0,1000).microtime(true));
     }
     
     /**
