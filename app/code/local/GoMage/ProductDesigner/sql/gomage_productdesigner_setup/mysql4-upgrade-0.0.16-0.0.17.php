@@ -33,7 +33,7 @@ $installer->startSetup();
 
 $installer->getConnection()->changeColumn(
     $installer->getTable('gmpd/design'),
-    'create_time',
+    'created_date',
     'created_date',
     array(
         'type'    => Varien_Db_Ddl_Table::TYPE_DATETIME,
