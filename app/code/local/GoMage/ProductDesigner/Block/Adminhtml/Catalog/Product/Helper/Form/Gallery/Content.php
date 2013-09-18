@@ -22,8 +22,7 @@ class GoMage_ProductDesigner_Block_Adminhtml_Catalog_Product_Helper_Form_Gallery
         $product = $this->getProduct();
 
         if ($product && $product->getId()) {
-            return Mage::getStoreConfig('gmpd/general/enabled', Mage::app()->getStore())
-                && $product->getEnableProductDesigner();
+            return Mage::getStoreConfig('gmpd/general/enabled', Mage::app()->getStore());
         }
 
         return false;

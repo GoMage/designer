@@ -7,6 +7,7 @@
 $_block = $this;
 $settings = $this->getProductDesignAreas();
 $productDesignerEnabled = $this->isProductDesignerModuleEnabled();
+$product = $this->getProduct();
 /* @var $_block GoMage_ProductDesigner_Block_Adminhtml_Catalog_Product_Helper_Form_Gallery_Content */
 ?>
 <div id="<?php echo $_block->getHtmlId() ?>" >
@@ -209,7 +210,7 @@ $(function() {
             }
         });
     });
-    <?php if(!$productDesignerEnabled): ?>
+    <?php if(!$productDesignerEnabled && $product && $product->getEnableProductDesigner()): ?>
         $('enable_product_designer').up('tr').setStyle({'display':'none'});
     <?php endif; ?>
 
