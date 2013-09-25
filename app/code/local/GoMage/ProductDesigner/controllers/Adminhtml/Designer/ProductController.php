@@ -23,7 +23,7 @@ class GoMage_ProductDesigner_Adminhtml_Designer_ProductController
         if ($productId) {
             $product->load($productId);
         }
-        Mage::register('current_product', $product);
+        Mage::register('product', $product);
         return $product;
     }
 
@@ -130,8 +130,7 @@ class GoMage_ProductDesigner_Adminhtml_Designer_ProductController
             'h'  => $params['h'], // design area height
             'w'  => $params['w'], // design area width
             's'  => $params['s'], // side type [front, back, left, right]
-            'ip' => $params['initial_price'],
-            'on' => true,
+            'ip' => $params['initial_price']
         );
 
         return $settings;

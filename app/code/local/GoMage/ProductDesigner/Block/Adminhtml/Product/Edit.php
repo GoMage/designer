@@ -23,7 +23,7 @@ class GoMage_ProductDesigner_Block_Adminhtml_Product_Edit extends Mage_Core_Bloc
      */
     public function getProduct()
     {
-        return Mage::registry('current_product');
+        return Mage::registry('product');
     }
 
     /**

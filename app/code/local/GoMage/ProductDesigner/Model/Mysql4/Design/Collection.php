@@ -18,6 +18,12 @@ class GoMage_ProductDesigner_Model_Mysql4_Design_Collection
     public function getCustomerDesignCollection($customerId)
     {
         $this->addFieldToFilter('customer_id', $customerId);
+        $this->getSelect()->joinInner(
+            array('image' => $this->getTable('gmpd/design_image')),
+            "main_table.design_id = image.design_id",
+            array('image' => 'image.image')
+        )->group("main_table.design_id");
+
         return $this;
     }
 

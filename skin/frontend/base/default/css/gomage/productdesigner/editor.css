@@ -448,3 +448,7 @@ li.layer-type-text .layer-icon {
     border: 1px solid;
     margin-top: 5px;
 }
+
+.product-designer-price .regular-price .price {
+    font-size: 26px;
+}

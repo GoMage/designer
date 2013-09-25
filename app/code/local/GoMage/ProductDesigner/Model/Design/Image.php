@@ -25,50 +25,41 @@
  */
 
 /**
- * Image model
+ * Design image model
  *
  * @category   GoMage
  * @package    GoMage_ProductDesigner
  * @subpackage Model
  * @author     Roman Bublik <rb@gomage.com>
  */
-class GoMage_ProductDesigner_Model_Image extends Varien_Object
+class GoMage_ProductDesigner_Model_Design_Image extends Mage_Core_Model_Abstract
 {
     protected $_imageExtension = 'imagick';
-    /**
-     * Return image helper
-     *
-     * @return GoMage_ProductDesigner_Helper_ProductImage
-     */
-    public function getImageHelper()
-    {
-        return Mage::helper('designer/productImage');
-    }
 
-    /**
-     * Create product images
-     *
-     * @param array                      $images  Images
-     * @param Mage_Catalog_Model_Product $product Product
-     * @return void
-     */
-    public function createProductImages($images, $product)
+    public function saveImage($image, $imageId, $product, $designId)
     {
         $dataHelper = Mage::helper('designer');
-        foreach ($images as $imageId => $image) {
-            $imageSettings = $dataHelper->getImageSettings($product, $imageId);
-            if ($imageSettings) {
-                $dimensions = $imageSettings['dimensions'];
-                $canvas = $this->createCanvas($imageSettings['path'], $dimensions['width'], $dimensions['height']);
-                if ($canvas) {
-                    $layer = $this->createLayer($image);
-                    if ($layer) {
-                        $canvas = $this->addLayerToCanvas($canvas, $layer, $imageSettings);
-                        $this->saveCanvas($canvas, $imageId);
-                    }
+        $imageSettings = $dataHelper->getImageSettings($product, $imageId);
+        if ($imageSettings) {
+            $dimensions = $imageSettings['dimensions'];
+            $canvas = $this->createCanvas($imageSettings['path'], $dimensions['width'], $dimensions['height']);
+            if ($canvas) {
+                $layer = $this->createLayer($image);
+                if ($layer) {
+                    $canvas = $this->addLayerToCanvas($canvas, $layer, $imageSettings);
+                    $this->saveCanvas($canvas, $imageId, $designId);
                 }
             }
         }
+    }
+    /**
+     * Initialize resource model
+     *
+     * @return void
+     */
+    protected function _construct()
+    {
+        $this->_init('gmpd/design_image');
     }
 
     /**
@@ -151,14 +142,14 @@ class GoMage_ProductDesigner_Model_Image extends Varien_Object
     /**
      * Save file to DB
      *
-     * @param Imagick $canvas  canvas
-     * @param int     $imageId Image Id
+     * @param Imagick $canvas   canvas
+     * @param int     $imageId  Image Id
+     * @param int     $designId Design Id
      * @return void
      */
-    public function saveCanvas($canvas, $imageId)
+    public function saveCanvas($canvas, $imageId, $designId)
     {
-        $customerId = (int) Mage::getSingleton('customer/session')->getCustomerId();
-        $currentProduct = Mage::registry('current_product');
+        $currentProduct = Mage::registry('product');
         $designConfig = Mage::getSingleton('gmpd/design_config');
         $configPath = $designConfig->getBaseMediaPath();
 
@@ -172,17 +163,13 @@ class GoMage_ProductDesigner_Model_Image extends Varien_Object
                 imagedestroy($canvas);
             }
 
-            $design = Mage::getModel('gmpd/design');
-            $design->setData(array(
-                'customer_id' => $customerId,
-                'session_id' => $customerId ? null : Mage::helper('designer')->getDesignerSessionId(),
+            $this->addData(array(
                 'product_id' => $currentProduct->getId(),
-                'design' => str_replace($configPath, '', $fileToSave),
+                'design_id' => $designId,
+                'image' => str_replace($configPath, '', $fileToSave),
                 'image_id' => $imageId,
                 'created_date' => Mage::getModel('core/date')->gmtDate(),
-                'design_group_id' => $this->getDesignGroupId()
-            ));
-            $design->save();
+            ))->save();
         }
     }
 
@@ -247,15 +234,5 @@ class GoMage_ProductDesigner_Model_Image extends Varien_Object
             $imageExtension = 'jpeg';
         }
         return $imageExtension;
-    }
-
-    protected function getDesignGroupId()
-    {
-        if (!$this->hasData('design_group_id')) {
-            $designGroupId = Mage::helper('designer')->getDesignGroupId();
-            $this->setData('design_group_id', $designGroupId);
-        }
-
-        return $this->getData('design_group_id');
     }
 }

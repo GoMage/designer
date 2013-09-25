@@ -129,20 +129,20 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
             return;
         }
         try {
-            $this->_saveDesign();
-            $product = Mage::registry('current_product');
-            $designGroupId = Mage::registry('design_group_id');
+            $design = $this->_saveDesign();
+            $product = Mage::registry('product');
             Mage::helper('designer/ajax')->sendRedirect(array(
-                'url' => $product->getDesignedProductUrl($designGroupId),
+                'url' => $product->getDesignedProductUrl($design->getId()),
             ));
         } catch (Exception $e) {
             Mage::helper('designer/ajax')->sendError($e->getMessage());
+            Mage::logException($e);
         }
     }
 
     protected function _saveDesign()
     {
-        Mage::helper('designer')->saveProductDesignedImages();
+        return Mage::helper('designer')->saveProductDesignedImages();
     }
 
     public function uploadImagesAction()

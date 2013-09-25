@@ -14,7 +14,7 @@
 <config>
     <modules>
         <GoMage_ProductDesigner>
-            <version>0.0.17</version>
+            <version>0.0.19</version>
         </GoMage_ProductDesigner>
     </modules>
     <default>
@@ -90,6 +90,16 @@
                 </gomage_designer>
             </updates>
         </layout>
+        <events>
+            <sales_quote_add_item>
+                <observers>
+                    <add_design_to_quote_item>
+                        <class>gmpd/observer</class>
+                        <method>addDesignToQuoteItem</method>
+                    </add_design_to_quote_item>
+                </observers>
+            </sales_quote_add_item>
+        </events>
     </frontend>
     <admin>
         <routers>
@@ -141,6 +151,9 @@
                     <design>
                         <table>gomage_productdesigner_design</table>
                     </design>
+                    <design_image>
+                        <table>gomage_productdesigner_design_image</table>
+                    </design_image>
                     <publishedDesign>
                         <table>gomage_productdesigner_published_design</table>
                     </publishedDesign>
@@ -165,6 +178,7 @@
             <catalog>
                 <rewrite>
                     <product_view_media>GoMage_ProductDesigner_Block_Catalog_Product_View_Media</product_view_media>
+                    <product_view_options>GoMage_ProductDesigner_Block_Catalog_Product_View_Options</product_view_options>
                 </rewrite>
             </catalog>
         </blocks>

@@ -139,13 +139,6 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
     {
         return Mage::getSingleton('customer/session');
     }
-
-    public function getDesignGroupId()
-    {
-        $designGroupId = sha1(rand(0,1000).microtime(true));
-        Mage::register('design_group_id', $designGroupId);
-        return $designGroupId;
-    }
     
     /**
      * Return Image Url
@@ -167,7 +160,7 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
     public function getProductSettingForEditor(Mage_Catalog_Model_Product $product = null)
     {
         if (is_null($product)) {
-            $product = Mage::registry('current_product');
+            $product = Mage::registry('product');
         }
 
         $editorConfig = array(
@@ -193,18 +186,12 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
                 continue;
             }
 
-            if (!isset($settings[$id]['on']) || $settings[$id]['on'] != 1) {
-                continue;
-            }
-
-            unset($settings[$id]['on']);
-
             $imageUrl = Mage::helper('designer')->getDesignImageUrl($product, $image);
             $conf = $settings[$id];
             $conf['id'] = $id;
             $conf['u'] = $imageUrl;
             $conf['d'] = Mage::helper('designer')->getImageDimensions($imageUrl);
-            $editorConfig['images'][] = $conf;
+            $editorConfig['images'][$id] = $conf;
         }
         return $editorConfig;
     }
@@ -213,10 +200,13 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
     {
         $product = $this->initializeProduct();
         $images = Mage::app()->getRequest()->getParam('images');
-
+        $prices = Mage::app()->getRequest()->getParam('prices', array());
         if ($product->getId() && $images && !empty($images)) {
             $images = Mage::helper('core')->jsonDecode($images);
-            Mage::getModel('gmpd/image')->createProductImages($images, $product);
+            $prices = Mage::helper('core')->jsonDecode($prices);
+            Mage::log($prices);
+            $design = Mage::getModel('gmpd/design')->saveDesign($images, $product, $prices);
+            return $design;
         } elseif(!$product->getId()) {
             throw new Exception(Mage::helper('designer')->__('Product is not defined'));
         } elseif(!$images || empty($images)) {
@@ -233,7 +223,7 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
         if ($productId) {
             $product->load($productId);
         }
-        Mage::register('current_product', $product);
+        Mage::register('product', $product);
 
         return $product;
     }

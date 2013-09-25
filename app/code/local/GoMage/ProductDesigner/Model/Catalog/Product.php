@@ -10,8 +10,8 @@ class GoMage_ProductDesigner_Model_Catalog_Product extends Mage_Catalog_Model_Pr
     {
         if(!$this->hasData('media_gallery_images') && is_array($this->getMediaGallery('images'))) {
             $images = new Varien_Data_Collection();
-            if ($designGroupId = Mage::app()->getRequest()->getParam('design_id', false)) {
-                $designImages = Mage::getModel('gmpd/design')->getDesignsByGroupId($designGroupId);
+            if ($designId = Mage::app()->getRequest()->getParam('design_id', false)) {
+                $designImages = $this->getDesignProductImages($designId);
                 $designImages = $this->_prepareDesignImages($designImages);
             }
             foreach ($this->getMediaGallery('images') as $image) {
@@ -22,8 +22,8 @@ class GoMage_ProductDesigner_Model_Catalog_Product extends Mage_Catalog_Model_Pr
                     $designImage = $designImages[$image['value_id']];
                     $mediaConfig = $this->getDesignMediaConfig();
                     $image['origin_file'] = $image['file'];
-                    $image['file'] = $designImage['design'];
-                    $image['design_id'] = $designGroupId;
+                    $image['file'] = $designImage['image'];
+                    $image['design_id'] = $designId;
                 } else {
                     $mediaConfig = $this->getMediaConfig();
                 }
@@ -69,11 +69,11 @@ class GoMage_ProductDesigner_Model_Catalog_Product extends Mage_Catalog_Model_Pr
     /**
      * Retrieve Product URL
      *
-     * @param string $designGroupId Design Id
-     * @param bool   $useSid        Use SID
+     * @param string $designId Design Id
+     * @param bool   $useSid   Use SID
      * @return string
      */
-    public function getDesignedProductUrl($designGroupId, $useSid = null)
+    public function getDesignedProductUrl($designId, $useSid = null)
     {
         if ($useSid === null) {
             $useSid = Mage::app()->getUseSessionInUrl();
@@ -83,9 +83,18 @@ class GoMage_ProductDesigner_Model_Catalog_Product extends Mage_Catalog_Model_Pr
         if (!$useSid) {
             $params['_nosid'] = true;
         }
-        if ($designGroupId) {
-            $params['_query'] = array('design_id' => $designGroupId);
+        if ($designId) {
+            $params['_query'] = array('design_id' => $designId);
         }
         return $this->getUrlModel()->getUrl($this, $params);
+    }
+
+    public function getDesignProductImages($designId)
+    {
+        $collection = Mage::getModel('gmpd/design_image')->getCollection()
+            ->addFieldToFilter('design_id', $designId)
+            ->addFieldToFilter('product_id', $this->getId());
+
+        return $collection;
     }
 }

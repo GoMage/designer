@@ -90,6 +90,7 @@ GoMage.ProductDesigner = function(config, continueUrl, loginUrl, registrationUrl
     this.history = new History();
     this.layersManager = new LayersManager(this);
     this.config = config;
+    this.prices = config.prices;
     this.container = config.container;
     this.navigation = config.navigation;
     this.isNoActiveObjects = false;
@@ -108,6 +109,9 @@ GoMage.ProductDesigner = function(config, continueUrl, loginUrl, registrationUrl
     this.observeCanvasObjectModified();
     this.observeCanvasObjectSelected();
     this.observeCanvasObjectRendered();
+    this.initPrices();
+    this.reloadPrice();
+    this.observePriceMoreInfo();
 }
 
 GoMage.ProductDesigner.prototype = {
@@ -138,8 +142,13 @@ GoMage.ProductDesigner.prototype = {
     },
 
     loadProduct : function(product) {
-        var prod = product.images[0];
-        this.addDesignArea(prod);
+        for (var prop in product.images) {
+            if (product.images.hasOwnProperty(prop)) {
+                var prod = product.images[prop];
+                this.addDesignArea(prod);
+                return;
+            }
+        }
     },
 
     updateProductImages: function(product) {
@@ -437,15 +446,16 @@ GoMage.ProductDesigner.prototype = {
         for (var imageId in this.containerCanvases) {
             if (this.containerCanvases.hasOwnProperty(imageId)) {
                 var canvas = this.containerCanvases[imageId];
-                if (canvas.getObjects().length > 0)
-                canvas.deactivateAll();
-                canvas.renderAll();
-                var image = canvas.toDataURL();
-                image = image.substr(image.indexOf(',') + 1).toString();
-                images[imageId] = image;
-                var contextTop = canvas.contextTop;
-                if (contextTop && contextTop != undefined) {
-                    canvas.clearContext(contextTop);
+                if (canvas.getObjects().length > 0) {
+                    canvas.deactivateAll();
+                    canvas.renderAll();
+                    var image = canvas.toDataURL();
+                    image = image.substr(image.indexOf(',') + 1).toString();
+                    images[imageId] = image;
+                    var contextTop = canvas.contextTop;
+                    if (contextTop && contextTop != undefined) {
+                        canvas.clearContext(contextTop);
+                    }
                 }
             }
         }
@@ -453,6 +463,7 @@ GoMage.ProductDesigner.prototype = {
             var params = getUrlParams();
             data['id'] = params['id'];
             data['images'] = Object.toJSON(images);
+            data['prices'] = Object.toJSON(this.designPrices);
         }
 
         return data;
@@ -462,11 +473,22 @@ GoMage.ProductDesigner.prototype = {
     {
         var count = 0;
         for (var imageId in this.containerCanvases) {
-            var canvas = this.containerCanvases[imageId];
-            count += canvas.getObjects().length;
+            var canvasCount = this.canvasHasLayers(imageId);
+            if (canvasCount) {
+                count += canvasCount;
+            }
         }
 
         return count > 0 ? true : false;
+    },
+
+    canvasHasLayers: function(id){
+        var canvas = this.containerCanvases[id];
+        if (canvas && canvas != 'undefined') {
+            return canvas.getObjects().length;
+        }
+
+        return false;
     },
 
     saveDesign: function(url, responseCallback){
@@ -729,6 +751,130 @@ GoMage.ProductDesigner.prototype = {
     // Zoom In
     zoom: function() {
 
+    },
+
+    initPrices: function() {
+        this.pricesContainers = {};
+        this.pricesContainers[0] = $('fixed_price');
+        this.pricesContainers[1] = $('design_areas_price');
+        this.pricesContainers[2] = $('images_price');
+        this.pricesContainers[3] = $('texts_price');
+    },
+
+    reloadPrice: function(){
+        if (!this.config.isProductSelected) {
+            return;
+        }
+
+        var imagesPrice = 0;
+        var textsPrice = 0;
+        var designAreasPrice = 0;
+        var subTotal = 0;
+        this.designPrices = {};
+
+        if (this.prices.fixed_price > 0) {
+            var fixedPrice = parseInt(this.prices.fixed_price);
+            var fixedPriceConfig = {
+                price: fixedPrice,
+                type: "fixed"
+            };
+            subTotal+=fixedPrice;
+            optionsPrice.addCustomPrices('design_fixed_price', fixedPriceConfig);
+            this.designPrices['fixed_price'] = fixedPrice;
+        }
+
+        for (var id in this.containerCanvases) {
+            var canvas = this.containerCanvases[id];
+            var designAreaPrice = 0;
+            if (canvas && canvas != 'undefined') {
+                var canvasCount = canvas.getObjects().length;
+                if (canvasCount > 0) {
+                    if (this.config.product.images.hasOwnProperty(id)) {
+                        var designArea = this.config.product.images[id];
+                        designAreaPrice = parseInt(designArea.ip);
+                        if (designAreaPrice > 0) {
+                            designAreasPrice += designAreaPrice;
+                            subTotal += designAreaPrice;
+                        }
+                        var imagesCount = 0;
+                        var textsCount = 0;
+                        var imagePrice = parseInt(this.prices.image_text);
+                        var textPrice = parseInt(this.prices.text_price);
+                        canvas.getObjects().each(function(object){
+                            if (object.type == 'custom_text') {
+                                textsCount++;
+                                if (textPrice > 0) {
+                                    textsPrice += textPrice;
+                                    subTotal += textPrice;
+                                }
+                            } else if (object.type == 'image'){
+                                imagesCount++;
+                                if (imagePrice > 0) {
+                                    imagesPrice += imagePrice;
+                                    subTotal += imagePrice;
+                                }
+                            }
+                        }.bind(this));
+                        if (this.designPrices['images'] == undefined) {
+                            this.designPrices['images'] = {};
+                        }
+                        this.designPrices['images'][id] = designAreaPrice
+                            + (imagePrice * imagesCount) + (textPrice * textsCount);
+
+                        if (this.designPrices['texts_count'] == undefined) {
+                            this.designPrices['texts_count'] = textsCount;
+                        } else {
+                            this.designPrices['texts_count'] += textsCount;
+                        }
+                        if (this.designPrices['images_count'] == undefined) {
+                            this.designPrices['images_count'] = imagesCount;
+                        } else {
+                            this.designPrices['images_count'] += imagesCount;
+                        }
+                    }
+                }
+            }
+        }
+        this.designPrices['sub_total'] = subTotal;
+        this.designPrices['design_areas_price'] = designAreasPrice;
+        this.designPrices['texts_price'] = textsPrice;
+        this.designPrices['images_price'] = imagesPrice;
+
+
+        optionsPrice.addCustomPrices('design_area_price', {price: designAreasPrice, type: 'fixed'});
+        optionsPrice.addCustomPrices('design_text_price', {price: textsPrice, type: 'fixed'});
+        optionsPrice.addCustomPrices('design_image_price', {price: imagesPrice, type: 'fixed'});
+        optionsPrice.setDuplicateIdSuffix('-design');
+        optionsPrice.reload();
+        this.updatePriceMoreInfo(this.designPrices);
+    },
+
+    observePriceMoreInfo: function() {
+        var moreInfoSwitcher = $('price-more-info-switcher');
+        var moreInfoContainer = $('price-more-info');
+        if (moreInfoSwitcher) {
+            moreInfoSwitcher.observe('click', function(e){
+                e.stop();
+                if (moreInfoContainer) {
+                    moreInfoContainer.toggle();
+                }
+            });
+        }
+    },
+
+    updatePriceMoreInfo: function(prices) {
+        $H(this.pricesContainers).each(function(pair) {
+            if (prices.hasOwnProperty(pair.value.id)) {
+                var price = prices[pair.value.id];
+                if (price > 0 && $(pair.value).select('.price')[0]) {
+                    var formattedPrice = optionsPrice.formatPrice(price);
+                    $(pair.value).select('.price')[0].innerHTML = formattedPrice;
+                    $(pair.value).show();
+                } else if (price == 0) {
+                    $(pair.value).hide();
+                }
+            }
+        });
     }
 };
 
@@ -866,7 +1012,7 @@ GoMage.Designer = function(filterUrl){
 };
 
 GoMage.Designer.prototype = {
-    observeImageSelect: function(){
+    observeImageSelect: function() {
         Event.on($('cliparts-list'), 'click', '.clipart-image', function(e, elm){
             e.stop();
             var img = e.target || e.srcElement;
@@ -1855,10 +2001,12 @@ var InsertCommand = function(w, obj, alignByCenter) {
             c.setActiveObject(obj);
             obj.setCoords();
             c.renderAll();
+            w.reloadPrice();
         },
         unexec : function() {
             w.layersManager.removeOnlyLayer(obj);
             c.remove(obj);
+            w.reloadPrice();
         }
     };
 };
@@ -1872,6 +2020,7 @@ var RemoveCommand = function(w, obj) {
         exec : function() {
             w.layersManager.removeOnlyLayer(obj);
             c.remove(obj);
+            w.reloadPrice();
         },
         unexec : function() {
             c.add(obj);
@@ -1879,6 +2028,7 @@ var RemoveCommand = function(w, obj) {
             obj.setCoords();
             c.renderAll();
             w.layersManager.add(obj);
+            w.reloadPrice();
         }
     }
 };

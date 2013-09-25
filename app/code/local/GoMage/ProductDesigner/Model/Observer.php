@@ -24,4 +24,17 @@
 
       $product->setEnableProductDesigner($flag);
     }
+
+     public function addDesignToQuoteItem(Varien_Event_Observer $observer)
+     {
+         $item = $observer->getEvent()->getQuoteItem();
+         if ($design = Mage::app()->getRequest()->getParam('design')) {
+             $item->addOption(array(
+                 "product_id" => $item->getProduct()->getId(),
+                 "product" => $item->getProduct(),
+                 "code" => "design",
+                 "value" => $design
+             ));
+         }
+     }
  }

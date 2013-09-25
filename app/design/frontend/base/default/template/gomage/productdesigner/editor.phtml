@@ -13,6 +13,7 @@ $textEnabled = $this->isTextEnabled() && $_product->getId();
 $imageEnabled = $this->isUploadImageEnabled() && $_product->getId();
 ?>
 <script type="text/javascript">
+    var optionsPrice = new Product.OptionsPrice(<?php echo $this->getPriceJsonConfig(); ?>);
     function initProductDesigner() {
         var settings = {};
         settings.navigation = {
@@ -33,22 +34,14 @@ $imageEnabled = $this->isUploadImageEnabled() && $_product->getId();
             zoom: 'pd_zoom',
             allign_by_center: 'pd_allign_by_center'
         };
+
+        settings.prices = <?php echo $this->getDesignPriceConfigJson(); ?>;
         settings.isCustomerLoggedIn = '<?php echo $this->isCustomerLoggedIn(); ?>';
         settings.isProductSelected = <?php echo $this->isProductSelected() ? 1 : 0; ?>;
         settings.isNavigationEnabled = <?php echo $this->isNavigationEnabled(); ?>;
         settings.isDesignedEnabled = <?php echo $this->isDesignEnabled(); ?>;
         settings.isTextEnabled = <?php echo $this->isTextEnabled(); ?>;
         settings.isUploadImageEnabled = <?php echo $this->isUploadImageEnabled(); ?>;
-
-        settings.currentUrl       = location.toString();
-        settings.prodImagesPath   = "/skin/frontend/base/default/images/gomage/productdesigner/";
-        settings.clipartsBasePath = "/media/gomage/productdesigner/cliparts/";
-
-        settings.socialIcons = {
-            twitter  : settings.prodImagesPath + 'social/twitter.png',
-            email    : settings.prodImagesPath + 'social/email.png',
-            facebook : settings.prodImagesPath + 'social/facebook.png'
-        };
         settings.product = <?php echo $this->getEditorConfigJson(); ?>;
         settings.container = $("pd_container");
         settings.pane = $("pd_pane");
@@ -152,6 +145,27 @@ $imageEnabled = $this->isUploadImageEnabled() && $_product->getId();
             <div id="additional_instructions">
                 <?php echo $this->getChildHtml('additionalInstructions');?>
             </div>
+        </div>
+        <div id="price_container" class="product-designer-price">
+            <?php if ($this->isProductSelected()): ?>
+                <?php echo $this->getChildHtml('product.price');?>
+            <?php endif; ?>
+            <a href="javascript:;" id="price-more-info-switcher" <?php if (!$this->isProductSelected()):?>style="display: none"<?php endif;?>>
+                <?php echo $this->__('More Info'); ?>
+            </a>
+            <ul id="price-more-info" style="display: none">
+                <li id="product_price"><?php echo $this->__('Product Price: ');?>
+                    <span class="price">
+                        <?php if ($this->isProductSelected()): ?>
+                            <?php echo $this->getProduct()->getFinalPrice(); ?>
+                        <?php endif; ?>
+                    </span>
+                </li>
+                <li style="display: none" id="fixed_price"><?php echo $this->__('Fixed Price: ');?><span class="price"></span></li>
+                <li style="display: none" id="design_areas_price"><?php echo $this->__('Design Area Price: ');?><span class="price"></span></li>
+                <li style="display: none" id="images_price"><?php echo $this->__('Images Price: ');?><span class="price"></span></li>
+                <li style="display: none" id="texts_price"><?php echo $this->__('Texts Price: ');?><span class="price"></span></li>
+            </ul>
         </div>
     </div>
 
