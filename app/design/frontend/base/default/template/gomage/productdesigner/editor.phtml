@@ -13,7 +13,7 @@ $textEnabled = $this->isTextEnabled() && $_product->getId();
 $imageEnabled = $this->isUploadImageEnabled() && $_product->getId();
 ?>
 <script type="text/javascript">
-    var optionsPrice = new Product.OptionsPrice(<?php echo $this->getPriceJsonConfig(); ?>);
+    var optionsPrice = new Product.OptionsPrice(<?php echo $this->helper('designer')->getProductPriceConfigJson(); ?>);
     function initProductDesigner() {
         var settings = {};
         settings.navigation = {
@@ -44,7 +44,7 @@ $imageEnabled = $this->isUploadImageEnabled() && $_product->getId();
         settings.isUploadImageEnabled = <?php echo $this->isUploadImageEnabled(); ?>;
         settings.product = <?php echo $this->getEditorConfigJson(); ?>;
         settings.container = $("pd_container");
-        settings.pane = $("pd_pane");
+//        settings.pane = $("pd_pane");
 
         window.w = new GoMage.ProductDesigner(settings,
             '<?php echo Mage::getUrl('*/index/continue')?>',
@@ -146,26 +146,8 @@ $imageEnabled = $this->isUploadImageEnabled() && $_product->getId();
                 <?php echo $this->getChildHtml('additionalInstructions');?>
             </div>
         </div>
-        <div id="price_container" class="product-designer-price">
-            <?php if ($this->isProductSelected()): ?>
-                <?php echo $this->getChildHtml('product.price');?>
-            <?php endif; ?>
-            <a href="javascript:;" id="price-more-info-switcher" <?php if (!$this->isProductSelected()):?>style="display: none"<?php endif;?>>
-                <?php echo $this->__('More Info'); ?>
-            </a>
-            <ul id="price-more-info" style="display: none">
-                <li id="product_price"><?php echo $this->__('Product Price: ');?>
-                    <span class="price">
-                        <?php if ($this->isProductSelected()): ?>
-                            <?php echo $this->getProduct()->getFinalPrice(); ?>
-                        <?php endif; ?>
-                    </span>
-                </li>
-                <li style="display: none" id="fixed_price"><?php echo $this->__('Fixed Price: ');?><span class="price"></span></li>
-                <li style="display: none" id="design_areas_price"><?php echo $this->__('Design Area Price: ');?><span class="price"></span></li>
-                <li style="display: none" id="images_price"><?php echo $this->__('Images Price: ');?><span class="price"></span></li>
-                <li style="display: none" id="texts_price"><?php echo $this->__('Texts Price: ');?><span class="price"></span></li>
-            </ul>
+        <div id="design_price_container" class="product-designer-price">
+            <?php echo $this->getChildHtml('design_price'); ?>
         </div>
     </div>
 

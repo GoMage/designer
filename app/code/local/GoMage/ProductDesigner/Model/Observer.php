@@ -37,4 +37,33 @@
              ));
          }
      }
+
+     public function addDesignPriceToFinalPrice(Varien_Event_Observer $observer)
+     {
+         $product = $observer->getEvent()->getProduct();
+         $qty = $observer->getEvent()->getQty();
+         $buyRequest = $product->getCustomOption('info_buyRequest');
+         if ($buyRequest) {
+             $buyRequest = unserialize($buyRequest->getValue());
+             if (isset($buyRequest['design'])) {
+                 $designId = $buyRequest['design'];
+                 $design = Mage::getModel('gmpd/design')->load($designId);
+                 if ($design && $design->getId() && $design->getPrice() > 0) {
+                     $finalPrice = $product->getData('final_price');
+                     $finalPrice += $design->getPrice();
+                     $product->setFinalPrice($finalPrice);
+                 }
+             }
+         }
+     }
+
+     public function addDesignCustomOptionToProduct(Varien_Event_Observer $observer)
+     {
+        $buyRequest = $observer->getEvent()->getBuyRequest();
+        $product = $observer->getEvent()->getProduct();
+
+        if ($designId = $buyRequest->getDesign()) {
+            $product->addCustomOption('design', $designId);
+        }
+     }
  }

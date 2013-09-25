@@ -25,7 +25,6 @@
  */
 /* @var $this Mage_Catalog_Block_Product_View_Options */
 ?>
-
 <?php $_options = Mage::helper('core')->decorateArray($this->getOptions()) ?>
 <?php $_optionsCount = count($_options); ?>
 <?php if ($_optionsCount):?>
@@ -194,7 +193,8 @@
         <?php echo $this->getOptionHtml($_option); ?>
     <?php endforeach; ?>
     </dl>
-<?php elseif ($this->hasDesignOption()): ?>
+<?php elseif($this->hasDesignOption()): ?>
+    <?php echo 123;die;?>
     <dl>
         <?php echo $this->getDesignOptionHtml(); ?>
     </dl>

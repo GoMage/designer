@@ -191,6 +191,32 @@
                 </setup>
             </gomage_productdesigner_setup>
         </resources>
+        <events>
+            <catalog_product_get_final_price>
+                <observers>
+                    <add_design_to_final_price>
+                        <class>gmpd/observer</class>
+                        <method>addDesignPriceToFinalPrice</method>
+                    </add_design_to_final_price>
+                </observers>
+            </catalog_product_get_final_price>
+            <catalog_product_type_prepare_full_options>
+                <observers>
+                    <add_design_to_final_price>
+                        <class>gmpd/observer</class>
+                        <method>addDesignCustomOptionToProduct</method>
+                    </add_design_to_final_price>
+                </observers>
+            </catalog_product_type_prepare_full_options>
+            <catalog_product_type_prepare_lite_options>
+                <observers>
+                    <add_design_to_final_price>
+                        <class>gmpd/observer</class>
+                        <method>addDesignCustomOptionToProduct</method>
+                    </add_design_to_final_price>
+                </observers>
+            </catalog_product_type_prepare_lite_options>
+        </events>
     </global>
 </config>
 

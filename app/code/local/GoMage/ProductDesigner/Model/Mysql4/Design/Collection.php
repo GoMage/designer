@@ -66,4 +66,16 @@ class GoMage_ProductDesigner_Model_Mysql4_Design_Collection
             ->addUrlRewrite();
         return $collection;
     }
+
+    public function getSelectCountSql()
+    {
+        $select = clone $this->getSelect();
+        $select->reset(Zend_Db_Select::LIMIT_COUNT);
+        $select->reset(Zend_Db_Select::LIMIT_OFFSET);
+
+        $countSelect = clone $select;
+        $countSelect->reset();
+        $countSelect->from(array('count_table' => $select), 'COUNT(*)');
+        return $countSelect;
+    }
 }

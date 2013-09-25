@@ -54,12 +54,24 @@
                 <block type="core/template" name="additionalInstructions" template="gomage/productdesigner/designer/additional_instructions.phtml" />
                 <block type="core/template" name="customer_form_login" as="customer.login" template="gomage/productdesigner/customer/login.phtml"/>
                 <block type="customer/form_register" name="customer_form_register" as="customer.register" template="gomage/productdesigner/customer/register.phtml"/>
-                <block type="catalog/product_price" name="product.price" template="catalog/product/price.phtml">
-                    <action method="setIdSuffix"><id_suffix>-design</id_suffix></action>
+                <block type="core/template" name="design.price" as="design_price" template="gomage/productdesigner/designer/price.phtml">
+                    <action method="setProduct"><product helper="designer/initializeProduct"/></action>
+                    <block type="catalog/product_price" name="product.price" template="catalog/product/price.phtml">
+                        <action method="setIdSuffix"><id_suffix>-design</id_suffix></action>
+                    </block>
                 </block>
             </block>
         </reference>
     </gomage_designer_index_index>
+
+    <gomage_designer_design_price>
+        <block type="core/template" name="design.price" as="design_price" template="gomage/productdesigner/designer/price.phtml" output="toHtml">
+            <action method="setProduct"><product helper="designer/initializeProduct"/></action>
+            <block type="catalog/product_price" name="product.price" template="catalog/product/price.phtml">
+                <action method="setIdSuffix"><id_suffix>-design</id_suffix></action>
+            </block>
+        </block>
+    </gomage_designer_design_price>
 
     <gomage_designer_index_filterproducts>
         <reference name="content">
@@ -137,7 +149,7 @@
                     <block type="page/html_pager" name="pager">
                         <action method="setLimit"><limit>12</limit></action>
                     </block>
-                    <action method="setColumnCount"><count>4</count></action>
+                    <action method="setColumnCount"><count>3</count></action>
                 </block>
             </block>
             <block type="customer/account_dashboard" name="customer.account.link.back" template="customer/account/link/back.phtml"/>
@@ -169,4 +181,11 @@
             <block type="core/template" name="product.info.option.design" as="product_option_design" template="gomage/productdesigner/catalog/product/view/options/design.phtml"/>
         </reference>
     </PRODUCT_TYPE_configurable>
+
+    <checkout_cart_index>
+        <reference name="checkout.cart">
+            <action method="addItemRender"><type>simple</type><block>designer/checkout_cart_item_renderer</block><template>gomage/productdesigner/checkout/cart/item/default.phtml</template></action>
+            <action method="addItemRender"><type>configurable</type><block>designer/checkout_cart_item_renderer_configurable</block><template>gomage/productdesigner/checkout/cart/item/default.phtml</template></action>
+        </reference>
+    </checkout_cart_index>
 </layout>

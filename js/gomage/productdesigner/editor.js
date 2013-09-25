@@ -115,7 +115,21 @@ GoMage.ProductDesigner = function(config, continueUrl, loginUrl, registrationUrl
 }
 
 GoMage.ProductDesigner.prototype = {
-    changeProduct: function(product){
+
+    loadProduct : function(product) {
+        for (var prop in product.images) {
+            if (product.images.hasOwnProperty(prop)) {
+                var prod = product.images[prop];
+                this.addDesignArea(prod);
+                return;
+            }
+        }
+    },
+
+    changeProduct: function(data){
+        var product = data.product_settings;
+        var price = data.design_price;
+
         this.layersManager.clear();
         this.history.clear();
         this.containerLayers = {};
@@ -128,6 +142,15 @@ GoMage.ProductDesigner.prototype = {
         this.showControls();
         this.showAdditionalPannel();
         this.config.isProductSelected = true;
+
+        if (price) {
+            $('design_price_container').update(price);
+            if (optionsPrice != undefined && data.price_config) {
+                optionsPrice.initialize(data.price_config);
+            }
+            this.initPrices();
+            this.reloadPrice();
+        }
     },
 
     changeProductImage : function(id) {
@@ -138,16 +161,6 @@ GoMage.ProductDesigner.prototype = {
 
             this.history.clear();
             this.addDesignArea(prod);
-        }
-    },
-
-    loadProduct : function(product) {
-        for (var prop in product.images) {
-            if (product.images.hasOwnProperty(prop)) {
-                var prod = product.images[prop];
-                this.addDesignArea(prod);
-                return;
-            }
         }
     },
 
@@ -779,7 +792,9 @@ GoMage.ProductDesigner.prototype = {
                 type: "fixed"
             };
             subTotal+=fixedPrice;
-            optionsPrice.addCustomPrices('design_fixed_price', fixedPriceConfig);
+            if (optionsPrice != undefined) {
+                optionsPrice.addCustomPrices('design_fixed_price', fixedPriceConfig);
+            }
             this.designPrices['fixed_price'] = fixedPrice;
         }
 
@@ -840,26 +855,25 @@ GoMage.ProductDesigner.prototype = {
         this.designPrices['texts_price'] = textsPrice;
         this.designPrices['images_price'] = imagesPrice;
 
+        if (optionsPrice != undefined) {
+            optionsPrice.addCustomPrices('design_area_price', {price: designAreasPrice, type: 'fixed'});
+            optionsPrice.addCustomPrices('design_text_price', {price: textsPrice, type: 'fixed'});
+            optionsPrice.addCustomPrices('design_image_price', {price: imagesPrice, type: 'fixed'});
+            optionsPrice.setDuplicateIdSuffix('-design');
+            optionsPrice.reload();
+        }
 
-        optionsPrice.addCustomPrices('design_area_price', {price: designAreasPrice, type: 'fixed'});
-        optionsPrice.addCustomPrices('design_text_price', {price: textsPrice, type: 'fixed'});
-        optionsPrice.addCustomPrices('design_image_price', {price: imagesPrice, type: 'fixed'});
-        optionsPrice.setDuplicateIdSuffix('-design');
-        optionsPrice.reload();
         this.updatePriceMoreInfo(this.designPrices);
     },
 
     observePriceMoreInfo: function() {
-        var moreInfoSwitcher = $('price-more-info-switcher');
-        var moreInfoContainer = $('price-more-info');
-        if (moreInfoSwitcher) {
-            moreInfoSwitcher.observe('click', function(e){
-                e.stop();
-                if (moreInfoContainer) {
-                    moreInfoContainer.toggle();
-                }
-            });
-        }
+        Event.on($('design_price_container'), 'click', '#price-more-info-switcher', function(e, elm){
+            var moreInfoContainer = $('price-more-info');
+            e.stop();
+            if (moreInfoContainer) {
+                moreInfoContainer.toggle();
+            }
+        });
     },
 
     updatePriceMoreInfo: function(prices) {
@@ -997,7 +1011,7 @@ GoMage.ProductNavigation.prototype = {
 
     updateDataOnProductChoose: function(response) {
         if (response.product_settings) {
-            this.productDesigner.changeProduct(response.product_settings);
+            this.productDesigner.changeProduct(response);
         }
     }
 };
@@ -1787,7 +1801,6 @@ fabric.CustomText = fabric.util.createClass(fabric.Group, {
         this.setCurvedData(params);
         var width = this.getWidth();
         var height = this.getHeight();
-        console.log(width);
         if (this.verticalOutput) {
             var rX = ((height / 2) * this.curved.radiusX) / 100;
             var rY = ((height / 2) * this.curved.radiusY) / 100;

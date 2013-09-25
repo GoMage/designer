@@ -62,7 +62,11 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
 
         $product = $this->_initializeProduct();
         $settings = Mage::helper('designer')->getProductSettingForEditor($product);
-        $responseData = array('product_settings' => $settings);
+        $responseData = array(
+            'product_settings' => $settings,
+            'design_price' => $this->_getDesignPriceHtml(),
+            'price_config' => Mage::helper('designer')->getProductPriceConfig()
+        );
         Mage::helper('designer/ajax')->sendSuccess($responseData);
     }
 
@@ -197,6 +201,16 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
         } catch (Exception $e) {
             Mage::helper('designer/ajax')->sendError($e->getMessage());
         }
+    }
+
+    protected function _getDesignPriceHtml()
+    {
+        $layout = $this->getLayout();
+        $update = $layout->getUpdate();
+        $update->load('gomage_designer_design_price');
+        $layout->generateXml();
+        $layout->generateBlocks();
+        return $layout->getOutput();
     }
 
     protected function _getCustomerSession()
