@@ -53,4 +53,19 @@
             <block type="core/template" template="catalog/wysiwyg/js.phtml" name="catalog.wysiwyg.js" />
         </reference>
     </adminhtml_fonts_edit>
+
+    <adminhtml_sales_order_view>
+        <reference name="order_items">
+            <action method="addColumnRender"><column>name</column><block>designer/adminhtml_sales_items_column_name</block><template>gomage/sales/items/column/name.phtml</template></action>
+        </reference>
+    </adminhtml_sales_order_view>
+
+    <adminhtml_designer_design_view>
+        <reference name="content">
+            <block type="designer/adminhtml_design_view" name="design.view" template="gomage/productdesigner/design/view.phtml">
+                <action method="setHeader"><header>View Design</header></action>
+                <action method="setColumnCount"><count>3</count></action>
+            </block>
+        </reference>
+    </adminhtml_designer_design_view>
 </layout>

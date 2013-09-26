@@ -44,4 +44,16 @@ class GoMage_ProductDesigner_Model_Mysql4_Design_Image_Collection
     {
         $this->_init('gmpd/design_image');
     }
+
+    /**
+     * Return images collection filtered by design Id
+     *
+     * @param int $designId Design Id
+     * @return $this
+     */
+    public function getImageCollectionByDesign($designId)
+    {
+        $this->addFieldToFilter('design_id', $designId);
+        return $this;
+    }
 }
