@@ -25,9 +25,7 @@
  */
 
 /**
- * Short description of the class
- *
- * Long description of the class (if any...)
+ * Cart configurable item renderer
  *
  * @category   GoMage
  * @package    GoMage_ProductDesigner
@@ -37,6 +35,11 @@
 class GoMage_ProductDesigner_Block_Checkout_Cart_Item_Renderer_Configurable
     extends Mage_Checkout_Block_Cart_Item_Renderer_Configurable
 {
+    /**
+     * Return item design option value
+     *
+     * @return bool|string
+     */
     public function getDesignOption()
     {
         $item = $this->getItem();
@@ -48,6 +51,11 @@ class GoMage_ProductDesigner_Block_Checkout_Cart_Item_Renderer_Configurable
         return false;
     }
 
+    /**
+     * Return product url
+     *
+     * @return null|string
+     */
     public function getProductUrl()
     {
         if (!is_null($this->_productUrl)) {
@@ -68,5 +76,22 @@ class GoMage_ProductDesigner_Block_Checkout_Cart_Item_Renderer_Configurable
         }
 
         return $product->getUrlModel()->getUrl($product, $params);
+    }
+
+    /**
+     * Get item configure url
+     *
+     * @return string
+     */
+    public function getConfigureUrl()
+    {
+        $params = array('id' => $this->getItem()->getId());
+        if ($designId = $this->getDesignOption()) {
+            $params['design_id'] = $designId;
+        }
+        return $this->getUrl(
+            'checkout/cart/configure',
+            $params
+        );
     }
 }

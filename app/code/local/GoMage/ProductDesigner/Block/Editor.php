@@ -91,6 +91,11 @@ class GoMage_ProductDesigner_Block_Editor extends Mage_Core_Block_Template
         return (bool) $this->getCustomerId();
     }
 
+    /**
+     * Return design price config
+     *
+     * @return array
+     */
     public function getDesignPriceConfig()
     {
         $config = array(
@@ -102,6 +107,11 @@ class GoMage_ProductDesigner_Block_Editor extends Mage_Core_Block_Template
         return $config;
     }
 
+    /**
+     * Return design price config json
+     *
+     * @return string
+     */
     public function getDesignPriceConfigJson()
     {
         return Zend_Json::encode($this->getDesignPriceConfig());

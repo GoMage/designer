@@ -25,6 +25,12 @@
       $product->setEnableProductDesigner($flag);
     }
 
+     /**
+      * Add design option to quote item
+      *
+      * @param Varien_Event_Observer $observer Observer
+      * @return void
+      */
      public function addDesignToQuoteItem(Varien_Event_Observer $observer)
      {
          $item = $observer->getEvent()->getQuoteItem();
@@ -38,10 +44,15 @@
          }
      }
 
+     /**
+      * Add design Price to to final price
+      *
+      * @param Varien_Event_Observer $observer Observer
+      * @return void
+      */
      public function addDesignPriceToFinalPrice(Varien_Event_Observer $observer)
      {
          $product = $observer->getEvent()->getProduct();
-         $qty = $observer->getEvent()->getQty();
          $buyRequest = $product->getCustomOption('info_buyRequest');
          if ($buyRequest) {
              $buyRequest = unserialize($buyRequest->getValue());
@@ -57,6 +68,12 @@
          }
      }
 
+     /**
+      * Add Design custom option to product
+      *
+      * @param Varien_Event_Observer $observer Observer
+      * @return void
+      */
      public function addDesignCustomOptionToProduct(Varien_Event_Observer $observer)
      {
         $buyRequest = $observer->getEvent()->getBuyRequest();

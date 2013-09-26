@@ -36,6 +36,25 @@ class GoMage_ProductDesigner_Model_Design_Image extends Mage_Core_Model_Abstract
 {
     protected $_imageExtension = 'imagick';
 
+    /**
+     * Initialize resource model
+     *
+     * @return void
+     */
+    protected function _construct()
+    {
+        $this->_init('gmpd/design_image');
+    }
+
+    /**
+     * Save design image
+     *
+     * @param array                      $image    Image data
+     * @param int                        $imageId  Original image Id
+     * @param Mage_Catalog_Model_Product $product  Product
+     * @param int                        $designId Design Id
+     * @return void
+     */
     public function saveImage($image, $imageId, $product, $designId)
     {
         $dataHelper = Mage::helper('designer');
@@ -52,22 +71,13 @@ class GoMage_ProductDesigner_Model_Design_Image extends Mage_Core_Model_Abstract
             }
         }
     }
-    /**
-     * Initialize resource model
-     *
-     * @return void
-     */
-    protected function _construct()
-    {
-        $this->_init('gmpd/design_image');
-    }
 
     /**
      * Add Layer to canvas
      *
-     * @param $canvas        Canvas
-     * @param $layer Layer
-     * @param array   $imageSettings Image Settings
+     * @param resource|Imagick $canvas        Canvas
+     * @param resource|Imagick $layer         Layer
+     * @param array            $imageSettings Image Settings
      * @return Imagick|resource
      */
     public function addLayerToCanvas($canvas, $layer, $imageSettings)
@@ -90,7 +100,7 @@ class GoMage_ProductDesigner_Model_Design_Image extends Mage_Core_Model_Abstract
     /**
      * Create layer from image
      *
-     * @param $image
+     * @param string $image Image
      * @return Imagick|resource
      */
     public function createLayer($image)
@@ -109,8 +119,8 @@ class GoMage_ProductDesigner_Model_Design_Image extends Mage_Core_Model_Abstract
      * Create canvas
      *
      * @param string $image Image Path
-     * @param float $width  Width
-     * @param float $height Height
+     * @param float  $width       Width
+     * @param float  $height      Height
      * @return Imagick|resource|boolean
      */
     public function createCanvas($image, $width, $height)

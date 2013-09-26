@@ -130,7 +130,8 @@ class GoMage_ProductDesigner_Adminhtml_Designer_ProductController
             'h'  => $params['h'], // design area height
             'w'  => $params['w'], // design area width
             's'  => $params['s'], // side type [front, back, left, right]
-            'ip' => $params['initial_price']
+            'ip' => $params['initial_price'],
+            'on' => true
         );
 
         return $settings;

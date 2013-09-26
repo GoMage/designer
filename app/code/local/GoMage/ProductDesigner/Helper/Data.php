@@ -14,9 +14,14 @@
  */
 class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
 {
-    protected $allowedProductTypes = array('simple', 'configurable');
+    protected $_allowedProductTypes = array(
+        Mage_Catalog_Model_Product_Type::TYPE_SIMPLE,
+        Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE
+    );
+
     protected $_productSettings;
 
+    protected $_productDesign = null;
 
     public function isEnabled()
     {
@@ -36,6 +41,16 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
     public function getProductDesingAreas()
     {
 
+    }
+
+    /**
+     * Return allowed product types
+     *
+     * @return array
+     */
+    public function getAllowedProductTypes()
+    {
+        return $this->_allowedProductTypes;
     }
 
     /**
@@ -185,9 +200,9 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
             if (!isset($settings[$id]) || isset($editorConfig['images'][$id])) {
                 continue;
             }
-    //            if (!isset($settings[$id]['on']) || $settings[$id]['on'] != 1) {
-    //                continue;
-    //            }
+            if (!isset($settings[$id]['on']) || $settings[$id]['on'] != 1) {
+                continue;
+            }
             unset($settings[$id]['on']);
             $imageUrl = Mage::helper('designer')->getDesignImageUrl($product, $image);
             $conf = $settings[$id];
@@ -199,6 +214,12 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
         return $editorConfig;
     }
 
+    /**
+     * Save product design images
+     *
+     * @return GoMage_ProductDesigner_Model_Design
+     * @throws Exception
+     */
     public function saveProductDesignedImages()
     {
         $product = $this->initializeProduct();
@@ -216,6 +237,11 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
         }
     }
 
+    /**
+     * Initialize current product from request
+     *
+     * @return Mage_Catalog_Model_Product
+     */
     public function initializeProduct()
     {
         $product = Mage::registry('product');
@@ -310,5 +336,28 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
     public function getProductPriceConfigJson()
     {
         return Mage::helper('core')->jsonEncode($this->getProductPriceConfig());
+    }
+
+    /**
+     * Return product design from request
+     *
+     * @param Mage_Catalog_Model_Product $product Product
+     * @return bool|Mage_Core_Model_Abstract
+     */
+    public function getProductDesign($product)
+    {
+        if (is_null($this->_productDesign)) {
+            $designId = (int) Mage::app()->getRequest()->getParam('design_id', false);
+            if ($designId) {
+                $design = Mage::getModel('gmpd/design')->load($designId);
+                if ($design->getId() && $design->getProductId() == $product->getId()) {
+                    $this->_productDesign = $design;
+                } else {
+                    $this->_productDesign = false;
+                }
+            }
+        }
+
+        return $this->_productDesign;
     }
 }

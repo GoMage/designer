@@ -17,8 +17,11 @@
 <config>
   <modules>
     <GoMage_ProductDesigner>
-      <active>true</active>
-      <codePool>local</codePool>
+        <active>true</active>
+        <codePool>local</codePool>
+        <depends>
+            <Mage_Checkout/>
+        </depends>
     </GoMage_ProductDesigner>
   </modules>
 </config>

@@ -188,4 +188,10 @@
             <action method="addItemRender"><type>configurable</type><block>designer/checkout_cart_item_renderer_configurable</block><template>gomage/productdesigner/checkout/cart/item/default.phtml</template></action>
         </reference>
     </checkout_cart_index>
+    <default>
+        <reference name="cart_sidebar">
+            <action method="addItemRender"><type>simple</type><block>designer/checkout_cart_item_renderer</block><template>checkout/cart/sidebar/default.phtml</template></action>
+            <action method="addItemRender"><type>configurable</type><block>designer/checkout_cart_item_renderer_configurable</block><template>checkout/cart/sidebar/default.phtml</template></action>
+        </reference>
+    </default>
 </layout>

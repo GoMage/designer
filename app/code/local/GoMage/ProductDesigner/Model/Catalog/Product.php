@@ -67,7 +67,7 @@ class GoMage_ProductDesigner_Model_Catalog_Product extends Mage_Catalog_Model_Pr
     }
 
     /**
-     * Retrieve Product URL
+     * Retrieve Product URL with design
      *
      * @param string $designId Design Id
      * @param bool   $useSid   Use SID
@@ -89,6 +89,12 @@ class GoMage_ProductDesigner_Model_Catalog_Product extends Mage_Catalog_Model_Pr
         return $this->getUrlModel()->getUrl($this, $params);
     }
 
+    /**
+     * Return design product images
+     *
+     * @param int $designId Design Id
+     * @return mixed
+     */
     public function getDesignProductImages($designId)
     {
         $collection = Mage::getModel('gmpd/design_image')->getCollection()

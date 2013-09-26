@@ -3,6 +3,11 @@ class GoMage_ProductDesigner_Model_Mysql4_Design_Collection
     extends Mage_Core_Model_Resource_Db_Collection_Abstract
 {
 
+    /**
+     * Initialize resource model
+     *
+     * @return void
+     */
     protected function _construct()
     {
         $this->_init('gmpd/design');
@@ -67,6 +72,11 @@ class GoMage_ProductDesigner_Model_Mysql4_Design_Collection
         return $collection;
     }
 
+    /**
+     * Return count sql select
+     *
+     * @return Varien_Db_Select
+     */
     public function getSelectCountSql()
     {
         $select = clone $this->getSelect();

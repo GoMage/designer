@@ -27,7 +27,6 @@
 /**
  * Customer designs block
  *
- *
  * @category   GoMage
  * @package    GoMage_ProductDesigner
  * @subpackage Block
@@ -41,6 +40,11 @@ class GoMage_ProductDesigner_Block_Customer_Designs extends Mage_Catalog_Block_P
 
     protected $_columnCount = 4;
 
+    /**
+     * Return column count
+     *
+     * @return int|mixed
+     */
     public function getColumnCount()
     {
         if ($this->hasData('column_count')) {
@@ -124,5 +128,33 @@ class GoMage_ProductDesigner_Block_Customer_Designs extends Mage_Catalog_Block_P
     public function getImage($design)
     {
         return Mage::helper('designer/image')->init($design->getImage())->resize(135);
+    }
+
+    /**
+     * Retrieve url for add product to cart
+     * Will return product view page URL if product has required options
+     *
+     * @param Mage_Catalog_Model_Product $product    Product
+     * @param array                      $additional Additional params
+     * @return string
+     */
+    public function getAddToCartUrl($product, $additional = array())
+    {
+        if ($product->getTypeInstance(true)->hasRequiredOptions($product)) {
+            if (!isset($additional['_escape'])) {
+                $additional['_escape'] = true;
+            }
+            if (!isset($additional['_query'])) {
+                $additional['_query'] = array();
+            }
+            $additional['_query']['options'] = 'cart';
+            if (isset($additional['design'])) {
+                $additional['_query']['design_id'] = $additional['design'];
+                unset($additional['design_id']);
+            }
+
+            return $this->getProductUrl($product, $additional);
+        }
+        return $this->helper('checkout/cart')->getAddUrl($product, $additional);
     }
 }

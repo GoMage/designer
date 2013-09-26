@@ -25,9 +25,7 @@
  */
 
 /**
- * Short description of the class
- *
- * Long description of the class (if any...)
+ * Catalog Product view option block
  *
  * @category   GoMage
  * @package    GoMage_ProductDesigner
@@ -39,31 +37,33 @@ class GoMage_ProductDesigner_Block_Catalog_Product_View_Options
 {
     protected $_designOption;
 
+    /**
+     * Return product design option
+     *
+     * @return bool|Mage_Catalog_Model_Product_Option
+     */
     public function getDesignOption()
     {
         if (is_null($this->_designOption)) {
-            $designId = (int) $this->getRequest()->getParam('design_id', false);
-            if ($designId) {
-                $design = Mage::getModel('gmpd/design')->load($designId);
-                if ($design->getId() && $design->getProductId() == $this->getProduct()->getId()) {
-                    $option = new Mage_Catalog_Model_Product_Option(array(
-                        'id' => $design->getId(),
-                        'value' => $design->getId(),
-                        'price' => $design->getPrice(),
-                        'price_type' => 'fixed',
-                    ));
+            $design = Mage::helper('designer')->getProductDesign($this->getProduct());
+            if ($design && $design->getId()) {
+                $option = new Mage_Catalog_Model_Product_Option(array(
+                    'id' => $design->getId(),
+                    'value' => $design->getId(),
+                    'price' => $design->getPrice(),
+                    'price_type' => 'fixed',
+                ));
 
-                    if (!$this->hasOptions()) {
-                        $option->setData('decorated_is_last', true);
-                    }
-                    $option->setProduct($this->getProduct());
-                    $priceConfig = $this->_getPriceConfiguration($option);
-                    $option->setPriceConfig(
-                        Mage::helper('core')->jsonEncode($priceConfig)
-                    );
-
-                    $this->_designOption = $option;
+                if (!$this->hasOptions()) {
+                    $option->setData('decorated_is_last', true);
                 }
+                $option->setProduct($this->getProduct());
+                $priceConfig = $this->_getPriceConfiguration($option);
+                $option->setPriceConfig(
+                    Mage::helper('core')->jsonEncode($priceConfig)
+                );
+
+                $this->_designOption = $option;
             } else {
                 $this->_designOption = false;
             }
@@ -72,6 +72,11 @@ class GoMage_ProductDesigner_Block_Catalog_Product_View_Options
         return $this->_designOption;
     }
 
+    /**
+     * Return product design option html
+     *
+     * @return string
+     */
     public function getDesignOptionHtml()
     {
         if ($option = $this->getDesignOption()) {
@@ -83,6 +88,11 @@ class GoMage_ProductDesigner_Block_Catalog_Product_View_Options
         return '';
     }
 
+    /**
+     * Product has design option
+     *
+     * @return bool
+     */
     public function hasDesignOption()
     {
         $option = $this->getDesignOption();

@@ -1,16 +1,34 @@
 <?php
 class GoMage_ProductDesigner_Model_Design extends Mage_Core_Model_Abstract
 {
+    /**
+     * Initialize resource model
+     *
+     * @return void
+     */
     protected function _construct()
     {
         $this->_init('gmpd/design');
     }
 
+    /**
+     * Return design media config
+     *
+     * @return GoMage_ProductDesigner_Model_Design_Config
+     */
     public function getConfig()
     {
         return Mage::getSingleton('gmpd/design_config');
     }
 
+    /**
+     * Save design
+     *
+     * @param array                      $images  Image data
+     * @param Mage_Catalog_Model_Product $product Product
+     * @param array                      $prices  Price Data
+     * @return $this
+     */
     public function saveDesign($images, $product, $prices)
     {
         $customerId = (int) Mage::getSingleton('customer/session')->getCustomerId();

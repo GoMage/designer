@@ -41,7 +41,7 @@ $canApplyMsrp = Mage::helper('catalog')->canApplyMsrp($_item->getProduct(), Mage
             <?php echo $this->htmlEscape($this->getProductName()) ?>
         <?php endif; ?>
         </h2>
-        <?php if (($_options = $this->getOptionList()) || $this->hasDesignOption()):?>
+        <?php if (($_options = $this->getOptionList()) || $this->getDesignOption()):?>
         <dl class="item-options">
             <?php if ($this->getDesignOption()): ?>
                 <dt><?php echo $this->__('Design'); ?></dt>
