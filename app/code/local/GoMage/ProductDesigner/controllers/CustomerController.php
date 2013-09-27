@@ -307,7 +307,9 @@ class GoMage_ProductDesigner_CustomerController extends Mage_Customer_AccountCon
             if ($designId) {
                 $design = Mage::getModel('gmpd/design')->load($designId);
                 if ($design && $design->getId()) {
-                    $design->delete();
+                    if ($session->getCustomerId() == $design->getCustomerId()) {
+                        $design->delete();
+                    }
                 }
             }
             $this->_redirect('*/*/designs');
