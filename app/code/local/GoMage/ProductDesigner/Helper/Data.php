@@ -43,6 +43,11 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
 
     }
 
+    public function isNavigationEnabled()
+    {
+        return Mage::getStoreConfig('gmpd/navigation/enabled', Mage::app()->getStore());
+    }
+
     /**
      * Return allowed product types
      *

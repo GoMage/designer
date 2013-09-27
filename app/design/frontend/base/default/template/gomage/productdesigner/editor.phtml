@@ -59,7 +59,7 @@ $imageEnabled = $this->isUploadImageEnabled() && $_product->getId();
 </script>
 <div id="product-designer">
     <div>
-        <ul id="pd_nav_container">
+        <ul id="pd_nav_container" style="min-width: 600px;">
             <li style="display: <?php echo $navigationEnabled ? 'block': 'none'?>" id="pd_choose_product"><?php echo $this->__('Choose Product'); ?></li>
             <li style="display: <?php echo $designEnabled ? 'block': 'none'?>" id="pd_add_design"><?php echo $this->__('Add Design'); ?></li>
             <li style="display: <?php echo $textEnabled ? 'block': 'none'?>" id="pd_add_text"><?php echo $this->__('Add Text'); ?></li>

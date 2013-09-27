@@ -41,7 +41,12 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
      */
     public function indexAction()
     {
-        $this->_initializeProduct();
+        $product = $this->_initializeProduct();
+        if ($product->getId() && !$product->getDesignAreas()) {
+            $this->_redirectReferer();
+        } elseif (!$product->getId() && !Mage::helper('designer')->isNavigationEnabled()) {
+            $this->_redirectReferer();
+        }
         $this->loadLayout();
         $this->renderLayout();
     }
