@@ -39,6 +39,8 @@ $image = $this->getImage();
         var imgH = '<?php echo $this->getImageHeight(); ?>'
 
         var canvas = new fabric.Canvas('image');
+        window.w = canvas;
+        canvas.selection = false;
 
         var area = new fabric.Rect({
             top:    <?php echo $settings["t"]; ?>,
@@ -46,19 +48,22 @@ $image = $this->getImage();
             width:  <?php echo $settings["w"]; ?>,
             height: <?php echo $settings["h"]; ?>,
             fill: '#d81417',
-            opacity: 0.2
+            opacity: 0.3
         });
 
         $('areaWidth').value = <?php echo $settings["w"] ?>;
         $('areaHeight').value = <?php echo $settings["h"] ?>;
 
         canvas.add(area);
-        canvas.item(0).lockRotation = true;
+        area.lockRotation = true;
+        area.hasRotatingPoint = false;
+        canvas.setActiveObject(area);
+        canvas.renderAll();
 
         canvas.observe('object:moving', function(e) {
             var obj = e.target;
             var l = obj.get('left');
-            var t = obj.get('top')
+            var t = obj.get('top');
             var w = Math.round(obj.getWidth() / 2);
             var h = Math.round(obj.getHeight() / 2);
 
@@ -79,29 +84,41 @@ $image = $this->getImage();
             }
         });
 
-        canvas.renderAll();
+        canvas.observe('object:scaling', function(e){
+            setTimeout(function(){
+                var obj = e.target;
+                var w = Math.round(obj.getWidth());
+                var h = Math.round(obj.getHeight());
+                $('areaWidth').value = w;
+                $('areaHeight').value = h;
+            }, 100)
+        });
+
+
 
         var onTextChangeSize = function(element){
             element.observe('keyup', function() {
-                var widthOrHeight = false;
-                switch(element.id) {
-                    case 'areaWidth' : {
-                        widthOrHeight = 'width';
-                        break;
+                setTimeout(function(){
+                    var widthOrHeight = false;
+                    switch(element.id) {
+                        case 'areaWidth' : {
+                            widthOrHeight = 'width';
+                            break;
+                        }
+                        case 'areaHeight' : {
+                            widthOrHeight = 'height';
+                            break;
+                        }
+                        default: {
+                            widthOrHeight = false;
+                            break;
+                        }
                     }
-                    case 'areaHeight' : {
-                        widthOrHeight = 'height';
-                        break;
+                    if(typeof widthOrHeight === 'string') {
+                        area.set(widthOrHeight,parseInt(element.value));
+                        canvas.renderAll();
                     }
-                    default: {
-                        widthOrHeight = false;
-                        break;
-                    }
-                }
-                if(typeof widthOrHeight === 'string') {
-                    area.set(widthOrHeight,parseInt(element.value));
-                    canvas.renderAll();
-                }
+                }, 1000);
             });
         };
         $$('#areaWidth, #areaHeight').each(onTextChangeSize);
@@ -114,7 +131,7 @@ $image = $this->getImage();
             data['h'] = Math.round(area.getHeight());
             data['s'] = $('side_selector').value;
             data['image_id'] = '<?php echo $this->getImageId(); ?>';
-            data['initial_price'] = $('initialPrice').value;
+            data['ip'] = $('initialPrice').value;
 
             new Ajax.Request('<?php echo $this->getSaveUrl() ?>', {
                 method:'post',

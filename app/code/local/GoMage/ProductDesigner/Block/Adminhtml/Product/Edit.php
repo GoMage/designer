@@ -50,11 +50,14 @@ class GoMage_ProductDesigner_Block_Adminhtml_Product_Edit extends Mage_Core_Bloc
         if (isset($settings[$imageId])) {
             $settings = $settings[$imageId];
         } else {
+            $image = $this->getImage();
+            $imageWidth = $image->getWidth();
+            $imageHeight = $image->getHeight();
             $settings = array(
                 't' => round($imageHeight / 2),
                 'l' => round($imageWidth / 2),
-                'h' => 100,
-                'w' => 100,
+                'h' => 200,
+                'w' => 200,
                 's' => 1,
                 'ip' => 0,
             );

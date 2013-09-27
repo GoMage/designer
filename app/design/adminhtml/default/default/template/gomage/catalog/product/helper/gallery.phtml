@@ -217,10 +217,14 @@ $(function() {
     window.designAreaPopup = new Window({
         className: 'magento',
         title: '<?php echo Mage::helper('designer')->__('Choose design area') ?>',
-        width: 600,
+        width: 550,
+        minWidth: 550,
         height: 600,
-        minimizable: false,
-        maximizable: false,
+        minHeight: 600,
+        maximizable:false,
+        minimizable:false,
+        resizable:false,
+        draggable:false,
         showEffectOptions: {duration:0.4},
         hideEffectOptions: {duration:0.4}
     });

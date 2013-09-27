@@ -125,12 +125,12 @@ class GoMage_ProductDesigner_Adminhtml_Designer_ProductController
         }
 
         $settings[$params['image_id']] = array(
-            't'  => $params['t'], // offset top
-            'l'  => $params['l'], // offset left
-            'h'  => $params['h'], // design area height
-            'w'  => $params['w'], // design area width
-            's'  => $params['s'], // side type [front, back, left, right]
-            'ip' => $params['initial_price'],
+            't'  => isset($params['t']) ? $params['t'] : null, // offset top
+            'l'  => isset($params['l']) ? $params['l'] : null, // offset left
+            'h'  => isset($params['h']) ? $params['h'] : null, // design area height
+            'w'  => isset($params['w']) ? $params['w'] : null, // design area width
+            's'  => isset($params['s']) ? $params['s'] : null, // side type [front, back, left, right]
+            'ip' => isset($params['ip']) ? $params['ip'] : null,
             'on' => true
         );
 
