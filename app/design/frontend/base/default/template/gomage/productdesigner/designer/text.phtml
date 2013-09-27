@@ -4,13 +4,14 @@
  * @var $this GoMage_ProductDesigner_Block_Designer_Text
  */
 $colors = $this->getAvailableColors();
+$defaultFonts = $this->getDefaultFonts();
 $fonts = $this->getFonts();
 $sizes = $this->getFontSizes();
 ?>
 <style type="text/css">
 <?php foreach($fonts as $font):?>
     @font-face {
-        font-family: <?php echo $this->getFontName($font->getFont());?>;
+        font-family: <?php echo $this->getFontName($font);?>;
         src: url("<?php echo $this->getFontUrl($font->getFont());?>");
     }
 <?php endforeach;?>
@@ -22,8 +23,11 @@ $sizes = $this->getFontSizes();
     <div class="pd-element-wrapper">
         <select class="font-picker" id="font-selector">
         <option value="<?php echo $this->getDefaultFontFamily();?>"><?php echo $this->__('Select Font')?></option>
+        <?php foreach ($defaultFonts as $font):?>
+            <option value="<?php echo $font['value']; ?>"><?php echo $font['label']; ?></option>
+        <?php endforeach;?>
         <?php foreach($fonts as $font): ?>
-            <option value="<?php echo $this->getFontName($font->getFont()); ?>"><?php echo $this->getFontName($font->getFont()); ?></option>
+            <option value="<?php echo $this->getFontName($font); ?>"><?php echo $this->getFontName($font); ?></option>
         <?php endforeach; ?>
         </select>
     </div>

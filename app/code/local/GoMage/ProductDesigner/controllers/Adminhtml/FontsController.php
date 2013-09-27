@@ -81,7 +81,7 @@ class GoMage_ProductDesigner_Adminhtml_FontsController extends Mage_Adminhtml_Co
     public function uploadImageAction() {
         try {
             $uploader = new GoMage_ProductDesigner_Model_File_Uploader('image');
-            $uploader->setAllowedExtensions(array('ttf'));
+            $uploader->setAllowedExtensions(array('ttf', 'otf'));
             $uploader->setAllowRenameFiles(true);
             $uploader->setFilesDispersion(true);
             $result = $uploader->save(

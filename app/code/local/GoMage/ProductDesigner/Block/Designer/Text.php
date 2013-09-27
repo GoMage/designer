@@ -21,8 +21,12 @@ class GoMage_ProductDesigner_Block_Designer_Text extends Mage_Core_Block_Templat
      */
     public function getFontName($font)
     {
-        $font = substr(strrchr($font, '/'), 1);
-        return substr($font, 0, strrpos($font, '.'));
+        if ($font->getLabel()) {
+            return $font->getLabel();
+        }
+        $fontName = $font->getFont();
+        $fontName = substr(strrchr($fontName, '/'), 1);
+        return substr($fontName, 0, strrpos($fontName, '.'));
     }
 
     /**
@@ -49,6 +53,16 @@ class GoMage_ProductDesigner_Block_Designer_Text extends Mage_Core_Block_Templat
             $this->_fonts = $fonts;
         }
         return $this->_fonts;
+    }
+
+    /**
+     * Return default fonts
+     *
+     * @return array
+     */
+    public function getDefaultFonts()
+    {
+        return Mage::getModel('gmpd/config_source_font')->toOptionArray();
     }
 
     /**
