@@ -35,7 +35,6 @@
 class GoMage_ProductDesigner_Model_Navigation extends Mage_Core_Model_Abstract
 {
     protected $_collection = null;
-    protected $_availableProductTypes = array('simple', 'configurable');
     protected $_availableFilters = array('category', 'color', 'size');
 
     /**
@@ -51,8 +50,9 @@ class GoMage_ProductDesigner_Model_Navigation extends Mage_Core_Model_Abstract
                 ->addAttributeToSelect('description')
                 ->addAttributeToSelect('color')
                 ->addAttributeToSelect('size')
-                ->addAttributeToFilter('type_id', array('in' => $this->_availableProductTypes))
+                ->addAttributeToFilter('type_id', array('in' => Mage::helper('designer')->getAllowedProductTypes()))
                 ->addAttributeToFilter('enable_product_designer', 1)
+                ->addAttributeToFilter('design_areas', array('notnull' => true))
                 ->addStoreFilter(Mage::app()->getStore())
                 ->addMinimalPrice()
                 ->addFinalPrice()

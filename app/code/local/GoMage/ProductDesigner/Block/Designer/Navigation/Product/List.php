@@ -14,6 +14,7 @@
  */
 class GoMage_ProductDesigner_Block_Designer_Navigation_Product_List extends Mage_Catalog_Block_Product_List
 {
+    protected $_productCollection;
     /**
      * Returns product collection.
      *
@@ -23,7 +24,7 @@ class GoMage_ProductDesigner_Block_Designer_Navigation_Product_List extends Mage
     {
         /* @var $collection     Mage_Catalog_Model_Resource_Product_Collection */
         if(is_null($this->_productCollection)) {
-            $this->_productCollection = Mage::getSingleton('gmpd/navigation')->getProductCollection();
+            $this->_productCollection = Mage::getModel('gmpd/navigation')->getProductCollection();
         }
         return $this->_productCollection;
     }

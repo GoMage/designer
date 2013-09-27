@@ -159,7 +159,8 @@ class GoMage_ProductDesigner_Adminhtml_Designer_ProductController
                 }
                 if (isset($settings[$imageId]) && !$state) {
                     unset($settings[$imageId]);
-                    $product->setDesignAreas(Mage::helper('core')->jsonEncode($settings))->save();
+                    $value = !empty($settings) ? Mage::helper('core')->jsonEncode($settings) : null;
+                    $product->setDesignAreas($value)->save();
                 }
                 Mage::helper('designer/ajax')->sendSuccess();
             } else {
