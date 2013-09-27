@@ -149,7 +149,7 @@
                     <block type="page/html_pager" name="pager">
                         <action method="setLimit"><limit>12</limit></action>
                     </block>
-                    <action method="setColumnCount"><count>3</count></action>
+                    <action method="setColumnCount"><count>4</count></action>
                 </block>
             </block>
             <block type="customer/account_dashboard" name="customer.account.link.back" template="customer/account/link/back.phtml"/>

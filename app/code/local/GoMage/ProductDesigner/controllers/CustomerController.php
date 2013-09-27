@@ -292,4 +292,28 @@ class GoMage_ProductDesigner_CustomerController extends Mage_Customer_AccountCon
         }
         $this->renderLayout();
     }
+
+    public function deleteDesignAction()
+    {
+        $session = $this->_getSession();
+        $designId = (int) $this->getRequest()->getParam('design_id');
+        if (!$session->isLoggedIn()) {
+            $session->addError($this->__('Please, login'));
+            $this->_redirect('');
+            return;
+        }
+
+        try {
+            if ($designId) {
+                $design = Mage::getModel('gmpd/design')->load($designId);
+                if ($design && $design->getId()) {
+                    $design->delete();
+                }
+            }
+            $this->_redirect('*/*/designs');
+        } catch (Exception $e) {
+            $session->addError($e->getMessage());
+            $this->_redirect('');
+        }
+    }
 }

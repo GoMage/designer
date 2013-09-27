@@ -157,4 +157,15 @@ class GoMage_ProductDesigner_Block_Customer_Designs extends Mage_Catalog_Block_P
         }
         return $this->helper('checkout/cart')->getAddUrl($product, $additional);
     }
+
+    /**
+     * Return delete url
+     *
+     * @param int $designId Design Id
+     * @return string
+     */
+    public function getDeleteUrl($designId)
+    {
+        return $this->getUrl('*/customer/deleteDesign', array('design_id' => $designId));
+    }
 }
