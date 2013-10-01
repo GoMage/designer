@@ -14,7 +14,7 @@
 <config>
     <modules>
         <GoMage_ProductDesigner>
-            <version>0.0.20</version>
+            <version>0.0.22</version>
         </GoMage_ProductDesigner>
     </modules>
     <default>
@@ -30,8 +30,7 @@
             </general>
             <navigation>
                 <enabled>1</enabled>
-                <attr_1>color</attr_1>
-                <attr_2>size</attr_2>
+                <color_attribute>color</color_attribute>
             </navigation>
             <design>
                 <enabled>1</enabled>

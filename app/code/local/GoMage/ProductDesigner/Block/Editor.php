@@ -116,4 +116,18 @@ class GoMage_ProductDesigner_Block_Editor extends Mage_Core_Block_Template
     {
         return Zend_Json::encode($this->getDesignPriceConfig());
     }
+
+    public function  getProductColors()
+    {
+        if ($this->isProductSelected() && $this->hasColorAttribute()) {
+            return $this->getProduct()->getProductColors();
+        }
+
+        return false;
+    }
+
+    public function hasColorAttribute()
+    {
+        return Mage::helper('designer')->hasColorAttribute();
+    }
 }

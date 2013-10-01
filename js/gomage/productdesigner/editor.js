@@ -905,6 +905,7 @@ GoMage.ProductNavigation = function(filterUrl, productUrl){
     this.observePager();
     this.observeFiltersChange();
     this.observeProductSelect();
+    this.observeProductColors();
 };
 
 GoMage.ProductNavigation.prototype = {
@@ -962,6 +963,17 @@ GoMage.ProductNavigation.prototype = {
 
     observeProductSelect: function() {
         Event.on($(this.opt.navigationProducts), 'click', '.product-image', function(e, elem){
+            e.stop();
+            var productId = elem.getAttribute('product_id');
+            if (productId && productId != undefined) {
+                var data = { id: productId };
+            }
+            this.prepareAndSubmitData(this.opt.productUrl, this.updateDataOnProductChoose.bind(this), data);
+        }.bind(this));
+    },
+
+    observeProductColors: function() {
+        Event.on($('product-colors'), 'click', '.color-btn', function(e, elem){
             e.stop();
             var productId = elem.getAttribute('product_id');
             if (productId && productId != undefined) {

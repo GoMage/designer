@@ -94,4 +94,31 @@ class GoMage_ProductDesigner_Block_Adminhtml_Catalog_Product_Helper_Form_Gallery
 
         return false;
     }
+
+    public function  getProductColors()
+    {
+        if ($this->getProduct() && $this->hasColorAttribute()) {
+            return $this->getProduct()->getProductColors();
+        }
+
+        return false;
+    }
+
+    public function hasColorAttribute()
+    {
+        return Mage::helper('designer')->hasColorAttribute();
+    }
+
+    public function getColorsSelect()
+    {
+        if ($colors = $this->getProductColors()) {
+            $select = Mage::getBlockSingleton('core/html_select');
+
+            foreach ($colors as $color) {
+                $select->addOption($color['option_id'], $color['value']);
+            }
+        }
+
+        return '';
+    }
 }

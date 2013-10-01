@@ -199,35 +199,14 @@
                 <show_in_store>1</show_in_store>
               </category>
               <!-- Attributes Group -->
-              <attr_1 translate="label comment">
-                <label>Attributes</label>
+              <color_attribute translate="label comment">
+                <label>Color Attribute</label>
                 <frontend_type>text</frontend_type>
                 <sort_order>4</sort_order>
                 <show_in_default>1</show_in_default>
                 <show_in_website>1</show_in_website>
                 <show_in_store>1</show_in_store>
-              </attr_1>
-              <attr_2>
-                <frontend_type>text</frontend_type>
-                <sort_order>5</sort_order>
-                <show_in_default>1</show_in_default>
-                <show_in_website>1</show_in_website>
-                <show_in_store>1</show_in_store>
-              </attr_2>
-              <attr_3>
-                <frontend_type>text</frontend_type>
-                <sort_order>6</sort_order>
-                <show_in_default>1</show_in_default>
-                <show_in_website>1</show_in_website>
-                <show_in_store>1</show_in_store>
-              </attr_3>
-              <attr_4>
-                <frontend_type>text</frontend_type>
-                <sort_order>7</sort_order>
-                <show_in_default>1</show_in_default>
-                <show_in_website>1</show_in_website>
-                <show_in_store>1</show_in_store>
-              </attr_4>
+              </color_attribute>
               <!-- Advanced navigation -->
               <show_help>
                 <label>Show Help Icon</label>

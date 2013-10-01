@@ -33,7 +33,7 @@ $installer->startSetup();
 
 try {
     $table = $installer->getConnection()->newTable($installer->getTable('gmpd/design_image'))
-        ->addColumn('image_id', Varien_Db_Ddl_Table::TYPE_INTEGER, null, array(
+        ->addColumn('id', Varien_Db_Ddl_Table::TYPE_INTEGER, null, array(
             'identity'  => true,
             'unsigned'  => true,
             'nullable'  => false,
@@ -47,7 +47,7 @@ try {
             'unsigned'  => true,
             'nullable'  => false,
         ), "Product Id")
-        ->addColumn('original_image_id', Varien_Db_Ddl_Table::TYPE_INTEGER, null, array(
+        ->addColumn('image_id', Varien_Db_Ddl_Table::TYPE_INTEGER, null, array(
             'unsigned'  => true,
             'nullable'  => false,
         ), "Original Image Id")

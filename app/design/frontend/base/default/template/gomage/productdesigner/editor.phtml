@@ -42,6 +42,7 @@ $imageEnabled = $this->isUploadImageEnabled() && $_product->getId();
         settings.isDesignedEnabled = <?php echo $this->isDesignEnabled(); ?>;
         settings.isTextEnabled = <?php echo $this->isTextEnabled(); ?>;
         settings.isUploadImageEnabled = <?php echo $this->isUploadImageEnabled(); ?>;
+        settings.hasColorAttribute = <?php echo $this->hasColorAttribute(); ?>;
         settings.product = <?php echo $this->getEditorConfigJson(); ?>;
         settings.container = $("pd_container");
 //        settings.pane = $("pd_pane");
@@ -141,6 +142,13 @@ $imageEnabled = $this->isUploadImageEnabled() && $_product->getId();
                         <img width="48" height="48" class="product-image" src="#{url}" data-id="#{image-id}" data-image-id="#{data-image-id}">
                     </li>
                 </script>
+            </div>
+            <div id="product-colors" style="width: 100%; background: white">
+                <?php if ($colors = $this->getProductColors()): ?>
+                    <?php foreach($colors as $color): ?>
+                        <span class="color-btn" product_id="<?php echo $color['product_id']?>" option_id="<?php echo $color['option_id']?>" style="background: <?php echo $color['value']; ?>">&nbsp;</span>
+                    <?php endforeach;?>
+                <?php endif;?>
             </div>
             <div id="additional_instructions">
                 <?php echo $this->getChildHtml('additionalInstructions');?>

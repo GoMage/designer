@@ -8,6 +8,8 @@ $_block = $this;
 $settings = $this->getProductDesignAreas();
 $productDesignerEnabled = $this->isProductDesignerModuleEnabled();
 $product = $this->getProduct();
+$colors = $this->getProductColors();
+
 /* @var $_block GoMage_ProductDesigner_Block_Adminhtml_Catalog_Product_Helper_Form_Gallery_Content */
 ?>
 <div id="<?php echo $_block->getHtmlId() ?>" >
@@ -41,6 +43,9 @@ $product = $this->getProduct();
             <th><?php echo Mage::helper('catalog')->__('Exclude') ?></th>
             <th <?php if (!$productDesignerEnabled): ?>class="last"<?php endif ?>><?php echo Mage::helper('catalog')->__('Remove') ?></th>
             <?php if ($productDesignerEnabled): ?>
+                <?php if ($colors): ?>
+                    <th><?php echo Mage::helper('designer')->__('Color'); ?></th>
+                <?php endif;?>
                 <th class="last"><?php echo Mage::helper('designer')->__('Choose design area') ?></th>
             <?php endif ?>
         </tr>
@@ -55,11 +60,20 @@ $product = $this->getProduct();
             <?php endforeach; ?>
             <td class="cell-disable a-center"><input type="checkbox" <?php if($_block->getElement()->getReadonly()):?> disabled="disabled"<?php endif;?> onclick="<?php echo $_block->getJsObjectName(); ?>.updateImage('__file__')" /></td>
             <td class="cell-remove a-center<?php if (!$productDesignerEnabled): ?> last<?php endif; ?>"><input type="checkbox" <?php if($_block->getElement()->getReadonly()):?> disabled="disabled"<?php endif;?> onclick="<?php echo $_block->getJsObjectName(); ?>.updateImage('__file__')" /></td>
-            <?php if ($productDesignerEnabled): ?>
-                <td class="cell-choose-design-area a-center last">
-                    <input type="checkbox" name="design_area_for[]" value="" onclick="switchDesignArea('__file__', this)" />
-                    [ <a href="javascript:void(0)" onclick="editDesignArea('__file__', this)"><?php echo Mage::helper('designer')->__('Edit') ?></a> ]
-                </td>
+                <?php if ($productDesignerEnabled): ?>
+                    <?php if ($colors): ?>
+                        <td class="cell-color">
+                            <select <?php if($_block->getElement()->getReadonly()):?> disabled="disabled"<?php endif;?> onchange="<?php echo $_block->getJsObjectName(); ?>.updateImage('__file__')" style="width: 100px;">
+                                <?php foreach($colors as $color):?>
+                                    <option value="<?php echo $color['option_id']?>"><?php echo $color['value']?></option>
+                                <?php endforeach;?>
+                            </select>
+                        </td>
+                    <?php endif; ?>
+                    <td class="cell-choose-design-area a-center last">
+                        <input type="checkbox" name="design_area_for[]" value="" onclick="switchDesignArea('__file__', this)" />
+                        [ <a href="javascript:void(0)" onclick="editDesignArea('__file__', this)"><?php echo Mage::helper('designer')->__('Edit') ?></a> ]
+                    </td>
             <?php endif ?>
         </tr>
         <?php if($_block->hasUseDefault()): ?>
@@ -78,6 +92,9 @@ $product = $this->getProduct();
             <td>&nbsp;</td>
             <td <?php if (!$productDesignerEnabled): ?>class="last"<?php endif ?>>&nbsp;</td>
             <?php if ($productDesignerEnabled): ?>
+                <?php if ($colors): ?>
+                    <td>&nbsp;</td>
+                <?php endif;?>
                 <td class="last">&nbsp;</td>
             <?php endif; ?>
         </tr>
@@ -92,6 +109,9 @@ $product = $this->getProduct();
             <td class="cell-disable"><input type="hidden" />&nbsp;</td>
             <td class="cell-remove<?php if (!$productDesignerEnabled): ?> last<?php endif; ?>"><input type="hidden" />&nbsp;</td>
             <?php if ($productDesignerEnabled): ?>
+                <?php if ($colors): ?>
+                    <td class="cell-color"><input type="hidden" />&nbsp;</td>
+                <?php endif;?>
                 <td class="cell-choose-design-area last">&nbsp;</td>
             <?php endif; ?>
         </tr>
@@ -118,8 +138,76 @@ $product = $this->getProduct();
 </div>
 <?php endif ?>
 <script type="text/javascript">
+    Product.Gallery.prototype.updateImage = function(file) {
+        var index = this.getIndexByFile(file);
+        this.images[index].label = this
+            .getFileElement(file, 'cell-label input').value;
+        this.images[index].position = this.getFileElement(file,
+            'cell-position input').value;
+        this.images[index].removed = (this.getFileElement(file,
+            'cell-remove input').checked ? 1 : 0);
+        this.images[index].disabled = (this.getFileElement(file,
+            'cell-disable input').checked ? 1 : 0);
+        <?php if ($colors): ?>
+            this.images[index].color = this.getFileElement(file,
+                'cell-color select').value;
+        <?php endif; ?>
+        this.getElement('save').value = Object.toJSON(this.images);
+        this.updateState(file);
+        this.container.setHasChanges();
+    }
+    Product.Gallery.prototype.updateVisualisation = function(file) {
+        var image = this.getImageByFile(file);
+        this.getFileElement(file, 'cell-label input').value = image.label;
+        <?php if ($colors): ?>
+            this.getFileElement(file, 'cell-color select').value = image.color;
+        <?php endif;?>
+        this.getFileElement(file, 'cell-position input').value = image.position;
+        this.getFileElement(file, 'cell-remove input').checked = (image.removed == 1);
+        this.getFileElement(file, 'cell-disable input').checked = (image.disabled == 1);
+        $H(this.imageTypes)
+            .each(
+                function(pair) {
+                    if (this.imagesValues[pair.key] == file) {
+                        this.getFileElement(file,
+                            'cell-' + pair.key + ' input').checked = true;
+                    }
+                }.bind(this));
+        this.updateState(file);
+    }
+
+    Product.Gallery.prototype.handleUploadComplete = function(files) {
+        files.each( function(item) {
+            if (!item.response.isJSON()) {
+                try {
+                    console.log(item.response);
+                } catch (e2) {
+                    alert(item.response);
+                }
+                return;
+            }
+            var response = item.response.evalJSON();
+            if (response.error) {
+                return;
+            }
+            var newImage = {};
+            newImage.url = response.url;
+            newImage.file = response.file;
+            newImage.label = '';
+            <?php if ($colors): ?>
+                newImage.color = '';
+            <?php endif;?>
+            newImage.position = this.getNextPosition();
+            newImage.disabled = 0;
+            newImage.removed = 0;
+            this.images.push(newImage);
+            this.uploader.removeFile(item.id);
+        }.bind(this));
+        this.container.setHasChanges();
+        this.updateImages();
+    }
 //<![CDATA[
-var <?php echo $_block->getJsObjectName(); ?> = new Product.Gallery('<?php echo $_block->getHtmlId() ?>', <?php if ($_block->getElement()->getReadonly()):?>null<?php else:?><?php echo $_block->getUploader()->getJsObjectName() ?><?php endif;?>, <?php echo $_block->getImageTypesJson() ?>);
+    var <?php echo $_block->getJsObjectName(); ?> = new Product.Gallery('<?php echo $_block->getHtmlId() ?>', <?php if ($_block->getElement()->getReadonly()):?>null<?php else:?><?php echo $_block->getUploader()->getJsObjectName() ?><?php endif;?>, <?php echo $_block->getImageTypesJson() ?>);
 //]]>
 </script>
 <?php if ($productDesignerEnabled): ?>

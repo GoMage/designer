@@ -103,4 +103,18 @@ class GoMage_ProductDesigner_Model_Catalog_Product extends Mage_Catalog_Model_Pr
 
         return $collection;
     }
+
+    /**
+     * Return product colors
+     *
+     * @return bool
+     */
+    public function getProductColors()
+    {
+        if ($this->getTypeId() == Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE) {
+            return Mage::getResourceModel('gmpd/catalog_product_type_configurable')->getProductColors($this->getId());
+        }
+
+        return false;
+    }
 }
