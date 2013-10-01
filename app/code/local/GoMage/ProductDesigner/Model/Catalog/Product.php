@@ -1,6 +1,8 @@
 <?php
 class GoMage_ProductDesigner_Model_Catalog_Product extends Mage_Catalog_Model_Product
 {
+    const GALLERY_ATTRIBUTE_CODE = 'media_gallery';
+
     /**
      * Retrive media gallery images
      *
@@ -15,7 +17,7 @@ class GoMage_ProductDesigner_Model_Catalog_Product extends Mage_Catalog_Model_Pr
                 $designImages = $this->_prepareDesignImages($designImages);
             }
             foreach ($this->getMediaGallery('images') as $image) {
-                if ($image['disabled'] && !$skipExclude) {
+                if ($image['disabled'] && !$skipExclude && !isset($designImages[$image['value_id']])) {
                     continue;
                 }
                 if (!empty($designImages) && isset($designImages[$image['value_id']])) {
@@ -47,19 +49,19 @@ class GoMage_ProductDesigner_Model_Catalog_Product extends Mage_Catalog_Model_Pr
         return $designImagesArray;
     }
 
-    public function getImage()
-    {
-        $imageFile = $this->getData('image');
-        if($imageFile) {
-            $images = $this->getMediaGalleryImages(true);
-            foreach($images as $image) {
-                if($image->getOriginFile() == $imageFile) {
-                    $this->setData('image', $image->getFile());
-                }
-            }
-        }
-        return $this->getData('image');
-    }
+//    public function getImage()
+//    {
+//        $imageFile = $this->getData('image');
+//        if($imageFile) {
+//            $images = $this->getMediaGalleryImages(true);
+//            foreach($images as $image) {
+//                if($image->getOriginFile() == $imageFile) {
+//                    $this->setData('image', $image->getFile());
+//                }
+//            }
+//        }
+//        return $this->getData('image');
+//    }
 
     public function getDesignMediaConfig()
     {
@@ -114,7 +116,22 @@ class GoMage_ProductDesigner_Model_Catalog_Product extends Mage_Catalog_Model_Pr
         if ($this->getTypeId() == Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE) {
             return Mage::getResourceModel('gmpd/catalog_product_type_configurable')->getProductColors($this->getId());
         }
-
         return false;
+    }
+
+    /**
+     * Retrieve media gallery
+     *
+     * @return GoMage_ProductDesigner_Model_Catalog_Product_Attribute_Backend_Media
+     */
+    public function getMediaGalleryAttribute()
+    {
+        $attributes = $this->getTypeInstance(true)->getSetAttributes($this);
+        if (!isset($attributes[self::GALLERY_ATTRIBUTE_CODE])) {
+            return false;
+        }
+        $galleryAttribute = $attributes[self::GALLERY_ATTRIBUTE_CODE];
+
+        return $galleryAttribute->getBackend();
     }
 }

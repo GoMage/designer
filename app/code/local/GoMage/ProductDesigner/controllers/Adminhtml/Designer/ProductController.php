@@ -69,9 +69,9 @@ class GoMage_ProductDesigner_Adminhtml_Designer_ProductController
      * @param Mage_Catalog_Model_Product $product Product
      * @return bool|Varien_Object
      */
-    protected function _initializeProductImage($product)
+    protected function _initializeProductImage($product, $idField = 'img')
     {
-        $imageId = $this->getRequest()->getParam('img');
+        $imageId = $this->getRequest()->getParam($idField);
         if ($product->getId() && $imageId) {
             $images  = $product->getMediaGalleryImages(true);
             $image   = $images->getItemByColumnValue('value_id', $imageId);
@@ -97,9 +97,17 @@ class GoMage_ProductDesigner_Adminhtml_Designer_ProductController
             if (!$product || !$product->getId()){
                 throw new Exception(Mage::helper('designer')->__('Product with id %d not found', $this->getRequest()->getParam('product_id')));
             }
-            $product->setDesignAreas(Mage::helper('core')
-                ->jsonEncode($this->_prepareDesignAreaSettings($product))
-            )->save();
+            $image = $this->_initializeProductImage($product, 'image_id');
+            if (!$image || !$image->getId()) {
+                throw new Exception(Mage::helper('designer')->__('Image with id %d not found', $this->getRequest()->getParam('image_id')));
+            }
+            if ($mediaGalleryAttribute = $product->getMediaGalleryAttribute()){
+                Mage::log(123);
+                $mediaGalleryAttribute->updateImage($product, $image->getFile(), array('design_area' => $this->_prepareDesignAreaSettings()));
+            }
+//            $product->setDesignAreas(Mage::helper('core')
+//                ->jsonEncode()
+//            )->save();
             Mage::helper('designer/ajax')->sendSuccess();
         } catch (Exception $e) {
             Mage::logException($e);
@@ -113,18 +121,19 @@ class GoMage_ProductDesigner_Adminhtml_Designer_ProductController
      * @param Mage_Catalog_Model_Product $product Product
      * @return array
      */
-    protected function _prepareDesignAreaSettings($product)
+    protected function _prepareDesignAreaSettings()
     {
         $params  = $this->getRequest()->getParams();
-        $settings = $product->getDesignAreas();
+//        $settings = $product->getDesignAreas();
 
-        if ($settings == null) {
-            $settings = array();
-        } else {
-            $settings = Mage::helper('designer')->jsonDecode($settings);
-        }
+//        if ($settings == null) {
+//            $settings = array();
+//        } else {
+//            $settings = Mage::helper('designer')->jsonDecode($settings);
+//        }
 
-        $settings[$params['image_id']] = array(
+//        $settings[$params['image_id']] = array(
+        $settings = array(
             't'  => isset($params['t']) ? $params['t'] : null, // offset top
             'l'  => isset($params['l']) ? $params['l'] : null, // offset left
             'h'  => isset($params['h']) ? $params['h'] : null, // design area height
@@ -134,7 +143,7 @@ class GoMage_ProductDesigner_Adminhtml_Designer_ProductController
             'on' => true
         );
 
-        return $settings;
+        return Mage::helper('core')->jsonEncode($settings);
     }
 
     /**

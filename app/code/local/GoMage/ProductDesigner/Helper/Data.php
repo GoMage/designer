@@ -60,11 +60,9 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function hasColorAttribute()
     {
-        $attributeCode = Mage::getStoreConfig('gmpd/navigation/color_attribute');
+        $attributeCode = Mage::getStoreConfig('gmpd/navigation/attr_1');
         $attribute = Mage::getSingleton('eav/config')
-            ->getAttribute(Mage_Catalog_Model_Product::ENTITY, $attributeCode);
-
-        return (bool) $attribute->getId();
+            ->getAttribute(Mage_Catalog_Model_Product::ENTITY, 'color');
     }
 
     /**
@@ -196,7 +194,7 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
             'images' => array()
         );
 
-        if (!$product->getId() || !$product->getDesignAreas()) {
+        if (!$product->getId()) {
             return $editorConfig;
         }
 

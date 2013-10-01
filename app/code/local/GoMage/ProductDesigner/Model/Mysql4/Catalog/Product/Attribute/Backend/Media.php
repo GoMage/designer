@@ -67,7 +67,8 @@ class GoMage_ProductDesigner_Model_Mysql4_Catalog_Product_Attribute_Backend_Medi
                 array(
                     'label_default' => 'label',
                     'position_default' => 'position',
-                    'disabled_default' => 'disabled'
+                    'disabled_default' => 'disabled',
+                    'color_default' => 'color'
                 )
             )
             ->where('main.attribute_id = ?', $object->getAttribute()->getId())
