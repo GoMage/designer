@@ -14,7 +14,7 @@
 <config>
     <modules>
         <GoMage_ProductDesigner>
-            <version>0.0.24</version>
+            <version>0.0.25</version>
         </GoMage_ProductDesigner>
     </modules>
     <default>
@@ -119,6 +119,16 @@
                 </gomage_designer>
             </updates>
         </layout>
+        <events>
+            <catalog_entity_attribute_load_after>
+                <observers>
+                    <gomage_navigation_load_attribute>
+                        <class>gmpd/observer</class>
+                        <method>loadAttribute</method>
+                    </gomage_navigation_load_attribute>
+                </observers>
+            </catalog_entity_attribute_load_after>
+        </events>
     </adminhtml>
     <global>
         <models>
@@ -156,8 +166,21 @@
                     <publishedDesign>
                         <table>gomage_productdesigner_published_design</table>
                     </publishedDesign>
+                    <attribute_option>
+                        <table>gomage_productdesigner_attribute_option</table>
+                    </attribute_option>
                 </entities>
             </gmpd_mysql4>
+            <checkout>
+                <rewrite>
+                    <cart>GoMage_ProductDesigner_Model_Checkout_Cart</cart>
+                </rewrite>
+            </checkout>
+            <catalog_resource_eav_mysql4>
+                <rewrite>
+                    <attribute>GoMage_ProductDesigner_Model_Mysql4_Catalog_Eav_Mysql4_Attribute</attribute>
+                </rewrite>
+            </catalog_resource_eav_mysql4>
         </models>
         <helpers>
             <designer>
@@ -172,6 +195,7 @@
                 <rewrite>
                     <catalog_product_helper_form_gallery_content>GoMage_ProductDesigner_Block_Adminhtml_Catalog_Product_Helper_Form_Gallery_Content</catalog_product_helper_form_gallery_content>
                     <catalog_product_edit_tabs>GoMage_ProductDesigner_Block_Adminhtml_Catalog_Product_Edit_Tabs</catalog_product_edit_tabs>
+                    <catalog_product_attribute_edit_tab_options>GoMage_ProductDesigner_Block_Adminhtml_Catalog_Product_Attribute_Edit_Tab_Options</catalog_product_attribute_edit_tab_options>
                 </rewrite>
             </adminhtml>
             <catalog>

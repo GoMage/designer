@@ -93,7 +93,6 @@ GoMage.ProductDesigner = function(config, continueUrl, loginUrl, registrationUrl
     this.prices = config.prices;
     this.container = config.container;
     this.navigation = config.navigation;
-    this.isNoActiveObjects = false;
     this.currentProd = null;
     this.containerLayers = {},
     this.containerCanvases = {},
@@ -728,10 +727,7 @@ GoMage.ProductDesigner.prototype = {
             }
 
             if (!this.canvas.getActiveObject()) {
-                this.isNoActiveObjects = true;
                 this.layersManager.fireBlurEvent();
-            } else {
-                this.isNoActiveObjects = false;
             }
         }.bind(this));
     },

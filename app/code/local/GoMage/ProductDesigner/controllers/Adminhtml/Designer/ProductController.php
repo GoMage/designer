@@ -169,4 +169,36 @@ class GoMage_ProductDesigner_Adminhtml_Designer_ProductController
             Mage::helper('designer/ajax')->sendError($e->getMessage());
         }
     }
+
+    public function uploadAttributeImageAction()
+    {
+        file_put_contents(Mage::getBaseDir('var').'/data.txt', print_r($_FILES, true));
+
+        $result = array();
+        try {
+            $uploader = new Varien_File_Uploader('option_image');
+            $uploader->setAllowedExtensions(array('jpg','jpeg','gif','png'));
+            $uploader->setAllowRenameFiles(true);
+            $uploader->setFilesDispersion(true);
+            $result = $uploader->save(
+                Mage::getSingleton('catalog/product_media_config')->getBaseTmpMediaPath()
+            );
+
+            $result['url'] = Mage::getSingleton('catalog/product_media_config')->getTmpMediaUrl($result['file']);
+            $result['file'] = $result['file'] . '.tmp';
+            $result['cookie'] = array(
+                'name'     => session_name(),
+                'value'    => $this->_getSession()->getSessionId(),
+                'lifetime' => $this->_getSession()->getCookieLifetime(),
+                'path'     => $this->_getSession()->getCookiePath(),
+                'domain'   => $this->_getSession()->getCookieDomain()
+            );
+        } catch (Exception $e) {
+            $result = array('error'=>$e->getMessage(), 'errorcode'=>$e->getCode());
+        }
+
+        file_put_contents(Mage::getBaseDir('var').'/data-response.txt', print_r($result, true));
+
+        $this->getResponse()->setBody(Mage::helper('core')->jsonEncode($result));
+    }
 }
