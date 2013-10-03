@@ -65,14 +65,25 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
             return;
         }
 
-        $product = $this->_initializeProduct();
-        $settings = Mage::helper('designer')->getProductSettingForEditor($product);
-        $responseData = array(
-            'product_settings' => $settings,
-            'design_price' => $this->_getDesignPriceHtml(),
-            'price_config' => Mage::helper('designer')->getProductPriceConfig()
-        );
-        Mage::helper('designer/ajax')->sendSuccess($responseData);
+        try {
+            $product = $this->_initializeProduct();
+            if (!$product || !$product->getId()) {
+                throw new Exception(Mage::helper('designer')->__('Product with id %d not found',
+                    $this->getRequest()->getParam('id')));
+            }
+            $settings = Mage::helper('designer')->getProductSettingForEditor($product);
+            $responseData = array(
+                'product_settings' => $settings,
+                'design_price' => $this->_getDesignPriceHtml(),
+                'price_config' => Mage::helper('designer')->getProductPriceConfig(),
+            );
+            if ($productColors = $product->getProductColors()) {
+                $responseData['product_colors'] = $productColors;
+            }
+            Mage::helper('designer/ajax')->sendSuccess($responseData);
+        } catch(Exception $e) {
+            Mage::helper('designer/ajax')->sendError($e->getMessage());
+        }
     }
 
     /**

@@ -278,7 +278,7 @@ function openDesignAreaEditor(imageId, target)
 }
 
 $(function() {
-    var $settings = <?php echo $settings ? $settings : '{}'; ?>;
+    var settings = <?php echo $settings ? $settings : '{}'; ?>;
     var object = <?php echo $_block->getJsObjectName(); ?>;
     object._createImageRow = object.createImageRow;
     object.createImageRow = function(img) {
@@ -287,17 +287,17 @@ $(function() {
         $(id).select('td:last-child').each(function(el) {  el.update(""); });
     };
 
-    object.images.each(function(row) {
-        var id = object.prepareId(row.file);
-        $(id).select('td:last-child > input').each(function(el) {
-            el.value = row.value_id;
-            if(typeof $settings !== 'undefined' && typeof $settings[row.value_id] !== 'undefined') {
-                if($settings[row.value_id]['on'] == 1){
+    if (typeof settings !== 'undefined') {
+        object.images.each(function(row) {
+            var id = object.prepareId(row.file);
+            $(id).select('td:last-child > input').each(function(el) {
+                el.value = row.value_id;
+                if(settings[row.value_id] != null) {
                     el.checked = true;
                 }
-            }
+            });
         });
-    });
+    }
     <?php if(!$productDesignerEnabled && $product && $product->getEnableProductDesigner()): ?>
         $('enable_product_designer').up('tr').setStyle({'display':'none'});
     <?php endif; ?>

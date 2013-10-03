@@ -24,13 +24,21 @@ class GoMage_ProductDesigner_Model_Design extends Mage_Core_Model_Abstract
     /**
      * Save design
      *
-     * @param array                      $images  Image data
      * @param Mage_Catalog_Model_Product $product Product
-     * @param array                      $prices  Price Data
+     * @param array                      $data    Data
      * @return $this
      */
-    public function saveDesign($images, $product, $prices)
+    public function saveDesign($product, $data)
     {
+        $images = isset($data['images']) ? $data['images'] : false;
+        $prices = isset($data['prices']) ? $data['prices'] : array();
+        $color  = isset($data['color'])  ? $data['color']  : null;
+
+        if (!$images || empty($images)) {
+            return $this;
+        }
+        $images = Mage::helper('core')->jsonDecode($images);
+        $prices = Mage::helper('core')->jsonDecode($prices);
         $customerId = (int) Mage::getSingleton('customer/session')->getCustomerId();
 
         $this->setData(array(
@@ -38,7 +46,8 @@ class GoMage_ProductDesigner_Model_Design extends Mage_Core_Model_Abstract
             'session_id' => $customerId ? null : Mage::helper('designer')->getDesignerSessionId(),
             'product_id' => $product->getId(),
             'created_date' => Mage::getModel('core/date')->gmtDate(),
-            'price' => isset($prices['sub_total']) ? $prices['sub_total'] : 0
+            'price' => isset($prices['sub_total']) ? $prices['sub_total'] : 0,
+            'color' => $color
         ))->save();
 
         $imagesPrice = isset($prices['images']) ? $prices['images'] : array();

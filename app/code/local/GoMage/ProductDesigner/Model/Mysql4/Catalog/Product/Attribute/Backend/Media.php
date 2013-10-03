@@ -59,7 +59,7 @@ class GoMage_ProductDesigner_Model_Mysql4_Catalog_Product_Attribute_Backend_Medi
             ->joinLeft(
                 array('value' => $this->getTable(self::GALLERY_VALUE_TABLE)),
                 $adapter->quoteInto('main.value_id = value.value_id AND value.store_id = ?', (int)$product->getStoreId()),
-                array('label','position','disabled', 'color')
+                array('label','position','disabled', 'color', 'design_area')
             )
             ->joinLeft( // Joining default values
                 array('default_value' => $this->getTable(self::GALLERY_VALUE_TABLE)),
@@ -68,7 +68,8 @@ class GoMage_ProductDesigner_Model_Mysql4_Catalog_Product_Attribute_Backend_Medi
                     'label_default' => 'label',
                     'position_default' => 'position',
                     'disabled_default' => 'disabled',
-                    'color_default' => 'color'
+                    'color_default' => 'color',
+                    'design_area_default' => 'design_area'
                 )
             )
             ->where('main.attribute_id = ?', $object->getAttribute()->getId())

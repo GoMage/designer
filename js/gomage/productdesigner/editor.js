@@ -99,6 +99,7 @@ GoMage.ProductDesigner = function(config, continueUrl, loginUrl, registrationUrl
     this.containerCanvases = {},
     this.productAdditionalImageTemplate = new Template($('product-image-template').innerHTML);
     this.isCustomerLogin = this.config.isCustomerLoggedIn;
+    this.currentColor = null;
     
     this.loadProduct(config.product);
     this.observeLayerControls();
@@ -106,6 +107,7 @@ GoMage.ProductDesigner = function(config, continueUrl, loginUrl, registrationUrl
     this.observeSaveDesign();
     this.observeContinueBtn();
     this.observeProductImageChange();
+    this.observeProductImageColorChange();
     this.observeCanvasObjectModified();
     this.observeCanvasObjectSelected();
     this.observeCanvasObjectRendered();
@@ -116,11 +118,21 @@ GoMage.ProductDesigner = function(config, continueUrl, loginUrl, registrationUrl
 
 GoMage.ProductDesigner.prototype = {
 
-    loadProduct : function(product) {
-        for (var prop in product.images) {
-            if (product.images.hasOwnProperty(prop)) {
-                var prod = product.images[prop];
-                this.addDesignArea(prod);
+    loadProduct : function(product, color) {
+        if (!color) {
+            color = product.default_color;
+        }
+        if (!product.images.hasOwnProperty(color)) {
+            return;
+        }
+
+        this.currentColor = color;
+        var images = product.images[color];
+
+        for (var prop in images) {
+            if (images.hasOwnProperty(prop)) {
+                var img = images[prop];
+                this.addDesignArea(img);
                 return;
             }
         }
@@ -129,6 +141,7 @@ GoMage.ProductDesigner.prototype = {
     changeProduct: function(data){
         var product = data.product_settings;
         var price = data.design_price;
+        var colors = data.product_colors;
 
         this.layersManager.clear();
         this.history.clear();
@@ -138,6 +151,7 @@ GoMage.ProductDesigner.prototype = {
         this.config.product = product;
         this.loadProduct(product);
         this.updateProductImages(product);
+        this.updateProductColors(colors);
         this.showTabsSwitchers();
         this.showControls();
         this.showAdditionalPannel();
@@ -154,14 +168,26 @@ GoMage.ProductDesigner.prototype = {
     },
 
     changeProductImage : function(id) {
-        var prod = this.config.product.images[id];
-        if(this.currentProd != prod.id) {
+        var img = this.config.product.images[this.currentColor][id];
+        if(img && this.currentProd != img.id) {
             this.containerCanvases[this.currentProd] = this.canvas;
             this.containerLayers[this.currentProd] = this.container.childElements()[0].remove();
 
             this.history.clear();
-            this.addDesignArea(prod);
+            this.addDesignArea(img);
         }
+    },
+
+    changeProductColor: function(color){
+        this.layersManager.clear();
+        this.history.clear();
+        this.containerLayers = {};
+        this.containerCanvases = {};
+        this.container.innerHTML = '';
+        var product = this.config.product;
+        this.loadProduct(product, color);
+        this.updateProductImages(product);
+        this.reloadPrice();
     },
 
     updateProductImages: function(product) {
@@ -170,7 +196,7 @@ GoMage.ProductDesigner.prototype = {
         }
         var productsList = $(this.opt.product_side_id).down('ul');
         productsList.innerHTML = '';
-        var images = product.images;
+        var images = product.images[this.currentColor];
         var imageTemplateData = {};
         var imagesHtml = '';
         for (var id in images) {
@@ -182,6 +208,27 @@ GoMage.ProductDesigner.prototype = {
             }
         }
         productsList.innerHTML = imagesHtml;
+    },
+
+    updateProductColors: function(colors){
+        $('product-colors').innerHTML = '';
+        if (colors) {
+            var colorsHtml = '';
+            for (var id in colors) {
+                if (colors.hasOwnProperty(id)) {
+                    var color = colors[id];
+                    var element = document.createElement('span');
+                    element.addClassName('color-btn');
+                    element.setAttribute('color_id', color['option_id']);
+                    element.setStyle({background: color['value']});
+                    if (this.currentColor == color['option_id']) {
+                        element.addClassName('selected');
+                    }
+                    colorsHtml += element.outerHTML;
+                }
+            }
+            $('product-colors').innerHTML = colorsHtml;
+        }
     },
 
     showTabsSwitchers: function(){
@@ -477,6 +524,9 @@ GoMage.ProductDesigner.prototype = {
             data['id'] = params['id'];
             data['images'] = Object.toJSON(images);
             data['prices'] = Object.toJSON(this.designPrices);
+            if (this.currentColor) {
+                data['color'] = this.currentColor;
+            }
         }
 
         return data;
@@ -692,6 +742,20 @@ GoMage.ProductDesigner.prototype = {
         }.bind(this));
     },
 
+    observeProductImageColorChange: function(){
+        Event.on($('product-colors'), 'click', '.color-btn', function(e, elem){
+            e.stop();
+            var color = elem.getAttribute('color_id');
+            if (this.currentColor != color) {
+                if(!elem.hasClassName('selected')) {
+                    elem.siblings().invoke('removeClassName', 'selected');
+                }
+                elem.addClassName('selected');
+                this.changeProductColor(color);
+            }
+        }.bind(this));
+    },
+
     flipXLayer: function(){
         if ((this.canvas == null) || this.canvas == 'undefined') {
             return;
@@ -804,8 +868,8 @@ GoMage.ProductDesigner.prototype = {
             if (canvas && canvas != 'undefined') {
                 var canvasCount = canvas.getObjects().length;
                 if (canvasCount > 0) {
-                    if (this.config.product.images.hasOwnProperty(id)) {
-                        var designArea = this.config.product.images[id];
+                    if (this.config.product.images[this.currentColor].hasOwnProperty(id)) {
+                        var designArea = this.config.product.images[this.currentColor][id];
                         designAreaPrice = parseInt(designArea.ip);
                         if (designAreaPrice > 0) {
                             designAreasPrice += designAreaPrice;
@@ -905,7 +969,6 @@ GoMage.ProductNavigation = function(filterUrl, productUrl){
     this.observePager();
     this.observeFiltersChange();
     this.observeProductSelect();
-    this.observeProductColors();
 };
 
 GoMage.ProductNavigation.prototype = {
@@ -963,17 +1026,6 @@ GoMage.ProductNavigation.prototype = {
 
     observeProductSelect: function() {
         Event.on($(this.opt.navigationProducts), 'click', '.product-image', function(e, elem){
-            e.stop();
-            var productId = elem.getAttribute('product_id');
-            if (productId && productId != undefined) {
-                var data = { id: productId };
-            }
-            this.prepareAndSubmitData(this.opt.productUrl, this.updateDataOnProductChoose.bind(this), data);
-        }.bind(this));
-    },
-
-    observeProductColors: function() {
-        Event.on($('product-colors'), 'click', '.color-btn', function(e, elem){
             e.stop();
             var productId = elem.getAttribute('product_id');
             if (productId && productId != undefined) {
@@ -1095,7 +1147,7 @@ GoMage.Designer.prototype = {
             e.stop();
             this.filterImages();
         }.bind(this));
-    }
+    },
 };
 
 GoMage.TextEditor = function(defaultFontFamily, defaultFontSize) {

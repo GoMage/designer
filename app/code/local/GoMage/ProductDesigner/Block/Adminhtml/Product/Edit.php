@@ -34,23 +34,14 @@ class GoMage_ProductDesigner_Block_Adminhtml_Product_Edit extends Mage_Core_Bloc
     public function getSettings()
     {
         $product = $this->getProduct();
-        $imageId = $this->getImageId();
+        $image = $this->getImage();
 
         if (!$product->getId()) {
             return array();
         }
-        $settings = $product->getDesignAreas();
+        $settings = Mage::helper('core')->jsonDecode($image->getDesignArea());
 
-        if ($settings == null) {
-            $settings = array();
-        } else {
-            $settings = Mage::helper('designer')->jsonDecode($settings);
-        }
-
-        if (isset($settings[$imageId])) {
-            $settings = $settings[$imageId];
-        } else {
-            $image = $this->getImage();
+        if (is_null($settings) || empty($settings)) {
             $imageWidth = $image->getWidth();
             $imageHeight = $image->getHeight();
             $settings = array(

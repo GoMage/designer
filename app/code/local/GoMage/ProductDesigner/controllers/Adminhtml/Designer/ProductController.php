@@ -67,6 +67,7 @@ class GoMage_ProductDesigner_Adminhtml_Designer_ProductController
      * Initialize product image
      *
      * @param Mage_Catalog_Model_Product $product Product
+     * @param string                     $idField Image Field
      * @return bool|Varien_Object
      */
     protected function _initializeProductImage($product, $idField = 'img')
@@ -102,12 +103,9 @@ class GoMage_ProductDesigner_Adminhtml_Designer_ProductController
                 throw new Exception(Mage::helper('designer')->__('Image with id %d not found', $this->getRequest()->getParam('image_id')));
             }
             if ($mediaGalleryAttribute = $product->getMediaGalleryAttribute()){
-                Mage::log(123);
                 $mediaGalleryAttribute->updateImage($product, $image->getFile(), array('design_area' => $this->_prepareDesignAreaSettings()));
+                $product->save();
             }
-//            $product->setDesignAreas(Mage::helper('core')
-//                ->jsonEncode()
-//            )->save();
             Mage::helper('designer/ajax')->sendSuccess();
         } catch (Exception $e) {
             Mage::logException($e);
@@ -118,29 +116,18 @@ class GoMage_ProductDesigner_Adminhtml_Designer_ProductController
     /**
      * Prepare design area settings
      *
-     * @param Mage_Catalog_Model_Product $product Product
      * @return array
      */
     protected function _prepareDesignAreaSettings()
     {
         $params  = $this->getRequest()->getParams();
-//        $settings = $product->getDesignAreas();
-
-//        if ($settings == null) {
-//            $settings = array();
-//        } else {
-//            $settings = Mage::helper('designer')->jsonDecode($settings);
-//        }
-
-//        $settings[$params['image_id']] = array(
         $settings = array(
             't'  => isset($params['t']) ? $params['t'] : null, // offset top
             'l'  => isset($params['l']) ? $params['l'] : null, // offset left
             'h'  => isset($params['h']) ? $params['h'] : null, // design area height
             'w'  => isset($params['w']) ? $params['w'] : null, // design area width
             's'  => isset($params['s']) ? $params['s'] : null, // side type [front, back, left, right]
-            'ip' => isset($params['ip']) ? $params['ip'] : null,
-            'on' => true
+            'ip' => isset($params['ip']) ? $params['ip'] : null
         );
 
         return Mage::helper('core')->jsonEncode($settings);
@@ -158,22 +145,25 @@ class GoMage_ProductDesigner_Adminhtml_Designer_ProductController
         $state = (int) $this->getRequest()->getParam('state');
 
         try {
-            $product  = $this->_initializeProduct();
-            if ($product && $product->getId()) {
-                $settings = $product->getDesignAreas();
-                if (!$settings) {
-                    $settings = array();
+            if (!$state) {
+                $product  = $this->_initializeProduct();
+                if ($product && $product->getId()) {
+                    $image = $this->_initializeProductImage($product, 'image_id');
+                    if (!$image || !$image->getId()) {
+                        throw new Exception(Mage::helper('designer')->__('Image with id %d not found', $imageId));
+                    }
+                    if ($mediaGalleryAttribute = $product->getMediaGalleryAttribute()){
+                        $mediaGalleryAttribute->updateImage(
+                            $product,
+                            $image->getFile(),
+                            array('design_area' => false)
+                        );
+                        $product->save();
+                    }
+                    Mage::helper('designer/ajax')->sendSuccess();
                 } else {
-                    $settings = Mage::helper('designer')->jsonDecode($settings);
+                    throw new Exception(Mage::helper('designer')->__('Product with id %d not found', $productId));
                 }
-                if (isset($settings[$imageId]) && !$state) {
-                    unset($settings[$imageId]);
-                    $value = !empty($settings) ? Mage::helper('core')->jsonEncode($settings) : null;
-                    $product->setDesignAreas($value)->save();
-                }
-                Mage::helper('designer/ajax')->sendSuccess();
-            } else {
-                throw new Exception(Mage::helper('designer')->__('Product with id %d not found', $productId));
             }
         } catch (Exception $e) {
             Mage::helper('designer/ajax')->sendError($e->getMessage());

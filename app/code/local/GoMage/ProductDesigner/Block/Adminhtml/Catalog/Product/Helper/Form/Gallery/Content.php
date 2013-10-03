@@ -35,13 +35,17 @@ class GoMage_ProductDesigner_Block_Adminhtml_Catalog_Product_Helper_Form_Gallery
      */
     public function getProductDesignAreas()
     {
+
         $product = $this->getProduct();
-
+        $settings = array();
         if ($product && $product->getId()){
-            return $product->getDesignAreas();
-        }
+            foreach ($product->getMediaGallery('images') as $image) {
+                $settings[$image['value_id']] = Mage::helper('core')->jsonDecode($image['design_area']);
+            }
 
-        return false;
+            return Mage::helper('core')->jsonEncode($settings);
+        }
+        return array();
     }
 
     /**
@@ -107,18 +111,5 @@ class GoMage_ProductDesigner_Block_Adminhtml_Catalog_Product_Helper_Form_Gallery
     public function hasColorAttribute()
     {
         return Mage::helper('designer')->hasColorAttribute();
-    }
-
-    public function getColorsSelect()
-    {
-        if ($colors = $this->getProductColors()) {
-            $select = Mage::getBlockSingleton('core/html_select');
-
-            foreach ($colors as $color) {
-                $select->addOption($color['option_id'], $color['value']);
-            }
-        }
-
-        return '';
     }
 }

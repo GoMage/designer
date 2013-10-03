@@ -60,9 +60,10 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function hasColorAttribute()
     {
-        $attributeCode = Mage::getStoreConfig('gmpd/navigation/attr_1');
+        $attributeCode = Mage::getStoreConfig('gmpd/navigation/color_attribute');
         $attribute = Mage::getSingleton('eav/config')
-            ->getAttribute(Mage_Catalog_Model_Product::ENTITY, 'color');
+            ->getAttribute(Mage_Catalog_Model_Product::ENTITY, $attributeCode);
+        return $attribute->getId();
     }
 
     /**
@@ -90,29 +91,24 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
     public function getSettings(Mage_Catalog_Model_Product $product) 
     {
         if (!$this->_productSettings) {
-            $settings = $product->getDesignAreas();
-
-            if ($settings == null) {
-                $settings = array();
-            } else {
-                $settings = $this->jsonDecode($settings);
-            }
-
-            $images = $product->getMediaGalleryImages(true);
+            $settings = array();
+            $images = $product->getMediaGallery('images');
             foreach ($images as $image) {
-                $imageId = $image->getValueId();
-                if (isset($settings[$imageId])) {
+                $designArea = Mage::helper('core')->jsonDecode($image['design_area']);
+                $imageId = $image['value_id'];
+                if ($designArea && !empty($designArea)) {
                     $imageUrl = $this->getDesignImageUrl($product, $image);
                     $dimensions = $this->getImageDimensions($imageUrl);
 
                     $baseUrl = Mage::getBaseUrl('media');
                     $baseDir = Mage::getBaseDir('media') . DS;
 
-                    $settings[$imageId]['path'] = str_replace($baseUrl, $baseDir, $imageUrl);
-                    $settings[$imageId]['dimensions'] = array(
+                    $designArea['path'] = str_replace($baseUrl, $baseDir, $imageUrl);
+                    $designArea['dimensions'] = array(
                         'width' => $dimensions[0],
                         'height' => $dimensions[1]
                     );
+                    $settings[$imageId] = $designArea;
                 }
             }
             $this->_productSettings = $settings;
@@ -178,7 +174,8 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
     {
         $imageWidth = Mage::getStoreConfig('gmpd/design/design_size_width');
         $imageHeight = Mage::getStoreConfig('gmpd/design/design_size_height');
-        $url = Mage::helper('catalog/image')->init($product, 'base_image', $image->getFile())
+        $imageFile = is_object($image) ? $image->getFile() : $image['file'];
+        $url = Mage::helper('catalog/image')->init($product, 'base_image', $imageFile)
             ->resize($imageWidth, $imageHeight)->__toString();
         
         return $url;
@@ -198,31 +195,43 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
             return $editorConfig;
         }
 
-        $images = $product->getMediaGalleryImages(true);
-        $settings = $product->getDesignAreas();
+        $images = $product->getMediaGallery('images');
+        $colorAttributeCode = Mage::getStoreConfig('gmpd/navigation/color_attribute');
 
-        if ($settings == null) {
-            $settings = array();
-        } else {
-            $settings = Mage::helper('designer')->jsonDecode($settings);
-        }
-
+        $defaultColor = null;
         foreach ($images as $image) {
-            $id = $image->getValueId();
-            if (!isset($settings[$id]) || isset($editorConfig['images'][$id])) {
+            $id = $image['value_id'];
+            $settings = Mage::helper('core')->jsonDecode($image['design_area']);
+            if (!$settings || empty($settings)) {
                 continue;
             }
-            if (!isset($settings[$id]['on']) || $settings[$id]['on'] != 1) {
-                continue;
-            }
-            unset($settings[$id]['on']);
             $imageUrl = Mage::helper('designer')->getDesignImageUrl($product, $image);
-            $conf = $settings[$id];
+            $conf = $settings;
             $conf['id'] = $id;
             $conf['u'] = $imageUrl;
             $conf['d'] = Mage::helper('designer')->getImageDimensions($imageUrl);
-            $editorConfig['images'][$id] = $conf;
+//            $editorConfig['images'][$id] = $conf;
+
+            if ($product->getTypeId() == Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE) {
+                if ($image['color']) {
+                    if (is_null($defaultColor)) {
+                        $defaultColor = $image['color'];
+                    }
+                    if (!isset($editorConfig['images'][$image['color']])) {
+                        $editorConfig['images'][$image['color']] = array();
+                    }
+                    $editorConfig['images'][$image['color']][$id] = $conf;
+                } else {
+                    $defaultColor = $product->getData($colorAttributeCode) ?:'none_color';
+                    $editorConfig['images'][$defaultColor][$id] = $conf;
+                }
+            } else {
+                $defaultColor = $product->getData($colorAttributeCode) ?:'none_color';
+                $editorConfig['images'][$defaultColor][$id] = $conf;
+            }
+            $editorConfig['default_color'] = $defaultColor;
         }
+
         return $editorConfig;
     }
 
@@ -236,11 +245,8 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
     {
         $product = $this->initializeProduct();
         $images = Mage::app()->getRequest()->getParam('images');
-        $prices = Mage::app()->getRequest()->getParam('prices', array());
         if ($product->getId() && $images && !empty($images)) {
-            $images = Mage::helper('core')->jsonDecode($images);
-            $prices = Mage::helper('core')->jsonDecode($prices);
-            $design = Mage::getModel('gmpd/design')->saveDesign($images, $product, $prices);
+            $design = Mage::getModel('gmpd/design')->saveDesign($product, $this->_getRequest()->getParams());
             return $design;
         } elseif(!$product->getId()) {
             throw new Exception(Mage::helper('designer')->__('Product is not defined'));

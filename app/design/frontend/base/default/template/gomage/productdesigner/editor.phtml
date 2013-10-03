@@ -42,7 +42,6 @@ $imageEnabled = $this->isUploadImageEnabled() && $_product->getId();
         settings.isDesignedEnabled = <?php echo $this->isDesignEnabled(); ?>;
         settings.isTextEnabled = <?php echo $this->isTextEnabled(); ?>;
         settings.isUploadImageEnabled = <?php echo $this->isUploadImageEnabled(); ?>;
-        settings.hasColorAttribute = <?php echo $this->hasColorAttribute(); ?>
         settings.product = <?php echo $this->getEditorConfigJson(); ?>;
         settings.container = $("pd_container");
 //        settings.pane = $("pd_pane");
@@ -131,7 +130,8 @@ $imageEnabled = $this->isUploadImageEnabled() && $_product->getId();
             <?php $config = $this->getEditorConfig(); ?>
             <div id="pd_sides" style="float: right;">
                 <ul style="float: left">
-                <?php foreach ($config['images'] as $k => $v): ?>
+                <?php $images = $this->getProductImages();?>
+                <?php foreach ($images as $k => $v): ?>
                     <li style="float: left">
                         <img width="48" height="48" class="product-image" src="<?php echo $v['u'] ?>" data-id="<?php echo $k; ?>" data-image-id="<?php echo $v['id'] ?>">
                     </li>
@@ -146,7 +146,9 @@ $imageEnabled = $this->isUploadImageEnabled() && $_product->getId();
             <div id="product-colors" style="width: 100%; background: white">
                 <?php if ($colors = $this->getProductColors()): ?>
                     <?php foreach($colors as $color): ?>
-                        <span class="color-btn" product_id="<?php echo $color['product_id']?>" product_id="<?php echo $color['product_id']?>" style="background: <?php echo $color['value']; ?>">&nbsp;</span>
+                        <?php if (isset($config['images'][$color['option_id']])):?>
+                            <span class="color-btn <?php if ($color['option_id'] == $config['default_color']) echo 'selected'?>" color_id="<?php echo $color['option_id']?>" style="background: <?php echo $color['value']; ?>">&nbsp;</span>
+                        <?php endif;?>
                     <?php endforeach;?>
                 <?php endif;?>
             </div>

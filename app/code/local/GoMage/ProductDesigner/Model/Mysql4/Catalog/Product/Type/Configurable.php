@@ -48,9 +48,12 @@ class GoMage_ProductDesigner_Model_Mysql4_Catalog_Product_Type_Configurable
             ->getAttribute(Mage_Catalog_Model_Product::ENTITY, $colorAttributeCode);
         $statusAttribute = Mage::getSingleton('catalog/product_status')->getProductAttribute('status');
         $storeId = Mage::app()->getStore()->getId();
+        if (!$attribute->getId()) {
+            return array();
+        }
 
         $select = $this->_getReadAdapter()->select()
-            ->from(array('relations' => $this->getMainTable()), array('product_id' => 'relations.product_id'))
+            ->from(array('relations' => $this->getMainTable()), array())
             ->joinInner(
                 array('attribute' => $attribute->getBackendTable()),
                 "attribute.attribute_id = {$attribute->getId()} AND attribute.entity_id = relations.product_id",
@@ -77,11 +80,11 @@ class GoMage_ProductDesigner_Model_Mysql4_Catalog_Product_Type_Configurable
                 array()
             )
             ->columns(array('value' =>
-                            $this->_getReadAdapter()->getCheckSql(
-                                "attr_value_store.value IS NOT NULL",
-                                'attr_value_store.value',
-                                'attr_value_default.value'
-                            ))
+                $this->_getReadAdapter()->getCheckSql(
+                    "attr_value_store.value IS NOT NULL",
+                    'attr_value_store.value',
+                    'attr_value_default.value'
+                ))
             )
             ->where("relations.parent_id = ?", $productId)
             ->where('stock.stock_status = ?', 1)

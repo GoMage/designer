@@ -58,7 +58,7 @@ class GoMage_ProductDesigner_Model_Catalog_Product_Attribute_Backend_Media
         $value = array();
         $value['images'] = array();
         $value['values'] = array();
-        $localAttributes = array('label', 'position', 'disabled', 'color');
+        $localAttributes = array('label', 'position', 'disabled', 'color', 'design_area');
 
         foreach ($this->_getResource()->loadGallery($object, $this) as $image) {
             foreach ($localAttributes as $localAttribute) {
@@ -207,7 +207,9 @@ class GoMage_ProductDesigner_Model_Catalog_Product_Attribute_Backend_Media
             if (isset($image['color'])) {
                 $data['color']    = (int) $image['color'];
             }
-            
+            if (isset($image['design_area'])) {
+                $data['design_area'] = $image['design_area'];
+            }
 
             $this->_getResource()->insertGalleryValueInStore($data);
         }
@@ -346,8 +348,13 @@ class GoMage_ProductDesigner_Model_Catalog_Product_Attribute_Backend_Media
             if ($image['file'] == $file) {
                 foreach ($fieldsMap as $mappedField=>$realField) {
                     if (isset($data[$mappedField])) {
-                        Mage::log($data[$mappedField]);
-                        $image[$realField] = $data[$mappedField];
+                        if ($mappedField == 'design_area' && $data[$mappedField] == false) {
+                            $image[$realField] = null;
+                        } else {
+                            $image[$realField] = $data[$mappedField];
+                        }
+                    } elseif (isset($data[$mappedField]) && $mappedField == 'design_area') {
+                        $image[$realField] == null;
                     }
                 }
             }

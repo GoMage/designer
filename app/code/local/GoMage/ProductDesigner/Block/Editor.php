@@ -51,6 +51,17 @@ class GoMage_ProductDesigner_Block_Editor extends Mage_Core_Block_Template
         return $this->_editorConfig;
     }
 
+    public function getProductImages()
+    {
+        $config = $this->getEditorConfig();
+        $defaultColor = $config['default_color'];
+        if (isset($config['images'][$defaultColor])) {
+            return $config['images'][$defaultColor];
+        }
+
+        return array();
+    }
+
     public function getEditorConfigJson()
     {
         return Zend_Json::encode($this->getEditorConfig());
@@ -119,15 +130,10 @@ class GoMage_ProductDesigner_Block_Editor extends Mage_Core_Block_Template
 
     public function  getProductColors()
     {
-        if ($this->isProductSelected() && $this->hasColorAttribute()) {
+        if ($this->isProductSelected()) {
             return $this->getProduct()->getProductColors();
         }
 
         return false;
-    }
-
-    public function hasColorAttribute()
-    {
-        return Mage::helper('designer')->hasColorAttribute();
     }
 }
