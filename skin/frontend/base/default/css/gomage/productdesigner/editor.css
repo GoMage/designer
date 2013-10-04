@@ -1,6 +1,6 @@
 /** test styles **/
 #pd_panels, #additional_panels {
-    width: 100%;
+    width: 100%; 
 }
 #additional_panels {
     position: relative;
