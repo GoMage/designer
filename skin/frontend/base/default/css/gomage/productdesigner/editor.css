@@ -1,39 +1,115 @@
-/** test styles **/
-#pd_panels, #additional_panels {
-    width: 100%; 
+/**
+* GoMage Product Designer
+*
+* @category     Extension
+* @copyright    Copyright (c) 2013 GoMage (http://www.gomage.com)
+* @author       GoMage
+* @license      http://www.gomage.com/license-agreement/  Single domain license
+* @terms of use http://www.gomage.com/terms-of-use
+* @version      Release: 1.0
+* @since        Available since Release 1.0
+*/
+
+/* Layout
+-------------------------------------------------- */
+.product-designer{
+
+  }
+.product-designer-header{
+
+  }
+  .pd_nav_container{
+    float: left;
+    }  
+  .pd_save_container{
+    float: right;
+    }
+.product-designer-content{
+
+  }
+  .product-designer-sidebar{
+    width: 300px;
+    float: right;
+    }
+  .product-designer-main-col{
+    margin-right: 320px;
+    }
+    
+.pd-box{
+  border: 1px solid #ccc;
+  background: #fff;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  }
+    
+/* Main col
+-------------------------------------------------- */
+.pd_bottom_panel{
+  text-align: center;
+  }
+  
+  
+/* Sidebar
+-------------------------------------------------- */
+
+/* Tabs */
+.pd-tab-content{
+  display: none;
+  margin: 0 0 15px;
+  }
+.pd_sides_list li{
+  display: inline-block;
+  margin: 0 5px 5px 0;
+  }
+  
+/* Clears
+-------------------------------------------------- */
+.product-designer-header:after,
+.product-designer-content:after{
+  content: '';
+  clear: both;
+  display: block;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  font-size: 0;
 }
+
+
+/* Old styles //To Delete
+-------------------------------------------------- */
+
+/* #pd_panels, #additional_panels {
+    width: 100%;
+} */
 #additional_panels {
     position: relative;
-    width: 300px;
+    /* width: 300px; */
     z-index: 1099;
 }
-#additional_instructions {
+/* #additional_instructions {
     background:white;
     width: 100%;
     padding: 15px;
-}
+} */
 #pd_tabs {
-    width: 300px;
+/*     width: 300px; */
     position: relative;
     z-index: 1100;
 }
-.pd-tab-content {
-    display: none;
-    width: 100%;
-    background: white;
-    padding: 15px 0px 15px 15px;
-}
+
 #navigation_panel .pages {
     margin: auto;
 }
-
+/* 
 #pd_sides {
-    background: white;
+background: white;
     width: 300px;
     padding: 15px;
     margin: 10px 0;
 }
-
+ */
 .clipart-image {
     width: 64px;
     height: 64px;
@@ -71,6 +147,7 @@
     border: 1px solid #FF0000;
 }
 
+/* 
 #pd_nav_container,
 #pd_nav_container li {
     display: inline-block;
@@ -111,12 +188,12 @@
     background-image:-o-linear-gradient(top, #fdac1b, #e26008);
     background-image:linear-gradient(to bottom, #fdac1b, #e26008);
     filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#fffdac1b', endColorstr='#ffe26008', GradientType=0);
-}
+} */
 
-#pd_save_container {
+/* #pd_save_container {
     float: right;
     padding-bottom: 20px;
-}
+} */
 
 #pd_save_container li {
     float: left;
@@ -148,11 +225,11 @@
     border: 1px solid #ccc;
     margin: 5px 0;
 }
-
+/* 
 #pd_bottom_panel {
     text-align: center;
 }
-
+ */
 
 .panel-btn {
     font-size: 12pt;
@@ -193,7 +270,7 @@ fieldset[disabled] select {
     text-decoration: underline;
 }
 
-button.pd-btn::-moz-focus-inner { padding:0; border:0; }
+/* button.pd-btn::-moz-focus-inner { padding:0; border:0; }
 button.pd-btn { -webkit-border-fit:lines; }
 button.pd-btn {
     overflow: visible;
@@ -207,7 +284,7 @@ button.pd-btn {
     padding: 0 8px;
     text-align: center;
     white-space: nowrap;
-}
+} */
 
 #pd_container:after{
     content:'';
