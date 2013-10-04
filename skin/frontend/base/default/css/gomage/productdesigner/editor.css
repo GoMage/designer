@@ -367,9 +367,9 @@ li.layer-type-text .layer-icon {
     cursor: pointer;
     margin: 0 1px;
     display: inline-block;
-    width: 20px;
-    height: 20px;
-    border: 1px solid #fff;
+    min-width: 20px;
+    min-height: 20px;
+    border: 1px solid gray;
     -webkit-border-radius:5px;
     -moz-border-radius:5px;
     border-radius:5px;

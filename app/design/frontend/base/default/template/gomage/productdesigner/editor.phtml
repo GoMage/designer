@@ -147,7 +147,7 @@ $imageEnabled = $this->isUploadImageEnabled() && $_product->getId();
                 <?php if ($colors = $this->getProductColors()): ?>
                     <?php foreach($colors as $color): ?>
                         <?php if (isset($config['images'][$color['option_id']])):?>
-                            <span class="color-btn <?php if ($color['option_id'] == $config['default_color']) echo 'selected'?>" color_id="<?php echo $color['option_id']?>" <?php if ($color['image']):?>style="background-image: <?php echo $color['image']; ?>"<?php endif;?>><?php if (!$color['image']): echo $color['value']; endif;?></span>
+                            <span class="color-btn <?php if ($color['option_id'] == $config['default_color']) echo 'selected'?>" color_id="<?php echo $color['option_id']?>" <?php if ($color['image']):?>style="background-image: <?php echo $this->getColorImage($color['image']); ?>; background-position: 50% 50%; background-repeat: no-repeat no-repeat"<?php endif;?>><?php if (!$color['image']): echo $color['value']; endif;?></span>
                         <?php endif;?>
                     <?php endforeach;?>
                 <?php endif;?>
