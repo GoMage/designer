@@ -63,10 +63,40 @@
   margin: 0 5px 5px 0;
   }
   
+/* Colors panel */
+.colors-panel {
+  padding: 0 0 5px 5px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  }
+  .color-btn {
+    cursor: pointer;
+    margin: 5px 2px 0 0;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+    border: 1px solid #ccc;
+    overflow: hidden;
+    border-radius: 5px;
+    -webkit-background-clip: padding-box;
+    -moz-background-clip   : padding-box;
+    background-clip        : padding-box;
+    opacity: .6;
+    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=60);
+    filter: alpha(opacity=60);
+    }
+    .color-btn.selected{
+      opacity: 1;
+      filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+      filter: alpha(opacity=100);
+      }
+  
 /* Clears
 -------------------------------------------------- */
 .product-designer-header:after,
-.product-designer-content:after{
+.product-designer-content:after,
+#pd_container:after{
   content: '';
   clear: both;
   display: block;
@@ -286,7 +316,7 @@ button.pd-btn {
     white-space: nowrap;
 } */
 
-#pd_container:after{
+/* #pd_container:after{
     content:'';
     clear:both;
     display:block;
@@ -294,7 +324,7 @@ button.pd-btn {
     height:0;
     overflow:hidden;
     font-size:0;
-}
+} */
 
 #pd_sides img {
     border: 1px solid #ccc;
@@ -428,33 +458,6 @@ li.layer-type-text .layer-icon {
 .layers-manager-list li.active {
     border-color: #FF0000;
     background-color: #F3F781;
-}
-
-.colors-panel {
-    width: 92%;
-    padding: 5px;
-    border: 1px solid #ccc;
-    -webkit-border-radius:5px;
-    -moz-border-radius:5px;
-    border-radius:5px;
-}
-
-.color-btn {
-    opacity: 0.5;
-    cursor: pointer;
-    margin: 0 1px;
-    display: inline-block;
-    min-width: 20px;
-    min-height: 20px;
-    border: 1px solid gray;
-    -webkit-border-radius:5px;
-    -moz-border-radius:5px;
-    border-radius:5px;
-}
-
-.color-btn.selected {
-    opacity: 1;
-    border: 1px solid #000;
 }
 
 .curved-text-config legend,
