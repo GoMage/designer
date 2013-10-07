@@ -2,23 +2,37 @@
 $categories = $this->getCategoriesCollection();
 $subCategories = $this->getSubCategoriesCollection();
 ?>
-<select name="mainCategoriesSearchField" id="mainCategoriesSearchField">
-    <option value=""><?php echo $this->__('Select Main Category'); ?></option>
-    <?php foreach($categories as $_category): ?>
-        <option value="<?php echo $_category->getId()?>" <?php echo $this->_getSelectedCategoryId() == $_category->getId() ? 'selected="selected"' : ''?>>
-            <?php echo $_category->getName();?>
-        </option>
-    <?php endforeach;?>
-</select>
-
-<select name="subCategoriesSearchField" id="subCategoriesSearchField">
-    <option value=""><?php echo $this->__('Select Child Category'); ?></option>
-    <?php foreach($subCategories as $_category): ?>
-        <option value="<?php echo $_category->getId()?>" <?php echo $this->_getSelectedSubcategoryId() == $_category->getId() ? 'selected="selected"' : ''?>>
-            <?php echo $_category->getName();?>
-        </option>
-    <?php endforeach;?>
-</select>'
-
-<input id="tagsSearchField" name="search" class="cliparts-panel-search" type="search" value="<?php echo $this->_getSearchTags(); ?>" placeholder="<?php echo $this->__('Search by comma separated tags...'); ?>" />
-<button class="cliparts-panel-search-btn" id="cliparts-search-btn"><?php echo $this->__('Search'); ?></button>
+<ul class="form-list">
+  <li>
+    <div class="input-box">
+      <select name="mainCategoriesSearchField" id="mainCategoriesSearchField">
+          <option value=""><?php echo $this->__('Select Main Category'); ?></option>
+          <?php foreach($categories as $_category): ?>
+              <option value="<?php echo $_category->getId()?>" <?php echo $this->_getSelectedCategoryId() == $_category->getId() ? 'selected="selected"' : ''?>>
+                  <?php echo $_category->getName();?>
+              </option>
+          <?php endforeach;?>
+      </select>    
+    </div>
+  </li>
+  <li>
+    <div class="input-box">
+      <select name="subCategoriesSearchField" id="subCategoriesSearchField">
+          <option value=""><?php echo $this->__('Select Child Category'); ?></option>
+          <?php foreach($subCategories as $_category): ?>
+              <option value="<?php echo $_category->getId()?>" <?php echo $this->_getSelectedSubcategoryId() == $_category->getId() ? 'selected="selected"' : ''?>>
+                  <?php echo $_category->getName();?>
+              </option>
+          <?php endforeach;?>
+      </select>    
+    </div>
+  </li>
+  <li>
+    <div class="input-box">
+      <input id="tagsSearchField" name="search" class="input-text cliparts-panel-search" type="search" value="<?php echo $this->_getSearchTags(); ?>" placeholder="<?php echo $this->__('Search by comma separated tags...'); ?>" />
+    </div>
+  </li>
+</ul>
+<div class="actions">
+  <button class="button pd-btn cliparts-panel-search-btn" id="cliparts-search-btn"><span><span><?php echo $this->__('Search'); ?></span></span></button>
+</div>

@@ -91,7 +91,7 @@ $imageEnabled = $this->isUploadImageEnabled() && $_product->getId();
                   <?php endif;?>
                   <?php if ($this->isDesignEnabled()): ?>
                       <div class="pd-tab-content" id="pd_add_design-content">
-                          <div class="pd-header"><?php echo $this->__('Choose A Design'); ?></div>
+                          <h4 class="pd-header"><?php echo $this->__('Choose A Design'); ?></h4>
                           <div class="pd-content">
                               <?php
                               // Add Image
@@ -103,7 +103,7 @@ $imageEnabled = $this->isUploadImageEnabled() && $_product->getId();
                   <?php endif;?>
                   <?php if ($this->isTextEnabled()): ?>
                       <div class="pd-tab-content" id="pd_add_text-content">
-                          <div class="pd-header"><?php echo $this->__('Add Text'); ?></div>
+                          <h4 class="pd-header"><?php echo $this->__('Add Text'); ?></h4>
                           <div class="pd-content">
                               <?php
                               // Add Image Text
@@ -115,7 +115,7 @@ $imageEnabled = $this->isUploadImageEnabled() && $_product->getId();
                   <?php endif;?>
                   <?php if ($this->isUploadImageEnabled()): ?>
                       <div class="pd-tab-content" id="pd_add_image-content">
-                          <div class="pd-header"><?php echo $this->__('Upload Images'); ?></div>
+                          <h4 class="pd-header"><?php echo $this->__('Upload Images'); ?></h4>
                           <div class="pd-content">
                               <?php
                               // Upload Image

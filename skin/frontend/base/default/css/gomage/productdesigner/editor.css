@@ -91,6 +91,19 @@
       filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
       filter: alpha(opacity=100);
       }
+      
+      
+/* Tab design */
+.cliparts-list{
+  margin: 10px 0;
+  }
+  
+  
+/* Price
+-------------------------------------------------- */
+.product-designer-price{
+  text-align: right;
+  }
   
 /* Clears
 -------------------------------------------------- */

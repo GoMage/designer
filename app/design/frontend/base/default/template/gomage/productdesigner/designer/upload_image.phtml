@@ -8,14 +8,18 @@
         <?php echo $this->getChildHtml('uploadedImages'); ?>
     </div>
     <?php if ($this->licenseAgreementsEnabled()):?>
-        <input type="checkbox" name="licence_agreements" id="licence_agreements">
-        <label for="licence_agreements">I have the rights to use these images.</label>
-        <div class="pd_more_info_link">
-            <a href="javascript:;" id="license-agreements-link">More info</a>
-            <div id="license-agreemants" class="pd-license-agreements-popup" style="display: none">
-                <?php echo $this->getLicenceAgreementsText(); ?>
-            </div>
+    <ul class="form-list">
+      <li class="control control-rights">
+        <input type="checkbox" class="checkbox" name="licence_agreements" id="licence_agreements" />
+        <label for="licence_agreements"><?php echo $this->__('I have the rights to use these images.') ?></label>
+      </li>
+    </ul>
+    <div class="pd_more_info_link">
+        <a href="javascript:;" id="license-agreements-link"><?php echo $this->__('More info') ?></a>
+        <div id="license-agreemants" class="pd-license-agreements-popup" style="display: none">
+            <?php echo $this->getLicenceAgreementsText(); ?>
         </div>
+    </div>    
     <?php endif;?>
 </div>
 <div id="file-input-box" <?php echo $this->licenseAgreementsEnabled() ? 'style="display:none;"' : ''?>>
