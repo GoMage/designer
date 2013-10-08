@@ -823,7 +823,114 @@ GoMage.ProductDesigner.prototype = {
 
     // Zoom In
     zoom: function() {
+        this.createZoomWindow();
+        this.zoomWindow.showCenter(true);
+        var currentImg = this.config.product.images[this.currentColor][this.currentProd];
+        var origImage = this.config.product.images[this.currentColor][this.currentProd].orig_image;
+        var scaleX = origImage['dimensions'][0] / currentImg['d'][0];
+        var scaleY = origImage['dimensions'][1] / currentImg['d'][1];
+        var imgUrl = origImage.url;
+        var canvas = $('product-zoom-canvas');
+        canvas.innerHTML = '';
+        canvas.setAttribute('width', 600);
+        canvas.setAttribute('height', 800);
+        $('product-zoom-container').appendChild(canvas);
+        var zoomCanvas = new fabric.Canvas(canvas);
+        window.zoomCanvas = zoomCanvas;
+        zoomCanvas.setHeight(origImage['dimensions'][1]);
+        zoomCanvas.setHeight(origImage['dimensions'][0]);
+        var origImage = this.config.product.images[this.currentColor][this.currentProd].orig_image;
+        zoomCanvas.selection = false;
 
+        var group = new fabric.Group([], {
+            width: origImage.dimensions[0],
+            height: origImage.dimensions[1],
+            top: origImage.dimensions[1]/2,
+            left: origImage.dimensions[0]/2
+        });
+        group.hasControls = false;
+        group.hasBorders = false;
+        zoomCanvas.add(group);
+        zoomCanvas.setActiveGroup(group);
+
+        fabric.Image.fromURL(imgUrl, function(obj) {
+            if (origImage.dimensions[1] < 800 || origImage.dimensions[0] < 600) {
+                var width = 600;
+                var height = 800;
+                obj.lockMovementX = true;
+                obj.lockMovementY = true;
+            } else {
+                var width = origImage.dimensions[0];
+                var height = origImage.dimensions[1];
+            }
+            obj.set({
+                height: height,
+                width: width
+//                left: width/2,
+//                top: height/2
+            });
+            obj.hasControls = false;
+            obj.hasBorders = false;
+            group.addWithUpdate(obj);
+        }.bind(this));
+
+        if (this.containerCanvases[this.currentProd].getObjects().length > 0) {
+            var canvas = this.containerCanvases[this.currentProd];
+            canvas.deactivateAll();
+            canvas.renderAll();
+            var image = canvas.toDataURL();
+            var contextTop = canvas.contextTop;
+            if (contextTop && contextTop != undefined) {
+                canvas.clearContext(contextTop);
+            }
+            fabric.Image.fromURL(image, function(obj){
+                obj.set({
+                    width: currentImg.w,
+                    height: currentImg.h,
+                    top: currentImg.t * scaleY,
+                    left: currentImg.l * scaleX
+                })
+                obj.scaleX = scaleX;
+                obj.scaleY = scaleY;
+                obj.hasControls = false;
+                obj.hasBorders = false;
+                group.addWithUpdate(obj);
+            }.bind(this))
+        }
+        zoomCanvas.renderAll();
+    },
+
+    createZoomWindow: function()
+    {
+        if (!this.zoomWindow) {
+            this.zoomWindow = new Window({
+                className: 'magento',
+                title: 'Zoom In',
+                width: 600,
+                minWidth: 600,
+                height: 800,
+                minHeight: 800,
+                maximizable:false,
+                minimizable:false,
+                resizable:false,
+                draggable:false,
+                recenterAuto: false,
+                showEffect:Effect.BlindDown,
+                hideEffect:Effect.BlindUp,
+                showEffectOptions: {duration: 0.4},
+                hideEffectOptions: {duration: 0.4}
+            });
+            this.zoomWindow.setContent('product-zoom-container', true, true);
+            this.zoomWindow.setZIndex(2000);
+//            var canvas = $('product-zoom-canvas');
+//            canvas.setAttribute('class', 'pd-canvas-pane');
+//            canvas.setAttribute('width', 600);
+//            canvas.setAttribute('height', 800);
+//            $('product-zoom-container').appendChild(canvas);
+//            this.zoomCanvas = new fabric.Canvas(canvas);
+//            var origImage = this.config.product.images[this.currentColor][this.currentProd].orig_image;
+//            this.zoomCanvas.selection = false;
+        }
     },
 
     initPrices: function() {
