@@ -837,22 +837,23 @@ GoMage.ProductDesigner.prototype = {
         $('product-zoom-container').appendChild(canvas);
         var zoomCanvas = new fabric.Canvas(canvas);
         window.zoomCanvas = zoomCanvas;
-        zoomCanvas.setHeight(origImage['dimensions'][1]);
-        zoomCanvas.setHeight(origImage['dimensions'][0]);
+//        zoomCanvas.setHeight(origImage['dimensions'][1]);
+//        zoomCanvas.setHeight(origImage['dimensions'][0]);
         var origImage = this.config.product.images[this.currentColor][this.currentProd].orig_image;
         zoomCanvas.selection = false;
 
-        var group = new fabric.Group([], {
-            width: origImage.dimensions[0],
-            height: origImage.dimensions[1],
-            top: origImage.dimensions[1]/2,
-            left: origImage.dimensions[0]/2
-        });
-        group.hasControls = false;
-        group.hasBorders = false;
-        zoomCanvas.add(group);
-        zoomCanvas.setActiveGroup(group);
-
+//        var group = new fabric.Group([], {
+//            width: origImage.dimensions[0],
+//            height: origImage.dimensions[1],
+//            top: origImage.dimensions[1]/2,
+//            left: origImage.dimensions[0]/2
+//        });
+//        var group = new fabric.Group();
+//        group.hasControls = false;
+//        group.hasBorders = false;
+//        zoomCanvas.add(group);
+//        zoomCanvas.setActiveGroup(group);
+//        zoomCanvas.renderAll();
         fabric.Image.fromURL(imgUrl, function(obj) {
             if (origImage.dimensions[1] < 800 || origImage.dimensions[0] < 600) {
                 var width = 600;
@@ -865,16 +866,19 @@ GoMage.ProductDesigner.prototype = {
             }
             obj.set({
                 height: height,
-                width: width
-//                left: width/2,
-//                top: height/2
+                width: width,
+                left: width/2,
+                top: height/2
             });
             obj.hasControls = false;
             obj.hasBorders = false;
-            group.addWithUpdate(obj);
+            zoomCanvas.add(obj);
+            obj.center();
+            obj.setCoords();
+//            group.add(obj);
         }.bind(this));
 
-        if (this.containerCanvases[this.currentProd].getObjects().length > 0) {
+       /* if (this.containerCanvases[this.currentProd].getObjects().length > 0) {
             var canvas = this.containerCanvases[this.currentProd];
             canvas.deactivateAll();
             canvas.renderAll();
@@ -896,8 +900,14 @@ GoMage.ProductDesigner.prototype = {
                 obj.hasBorders = false;
                 group.addWithUpdate(obj);
             }.bind(this))
-        }
+        }*/
         zoomCanvas.renderAll();
+        var zoomObjects = zoomCanvas.getObjects();
+        window.zoomObjects = zoomCanvas.getObjects();
+        zoomObjects.each(function(image){
+            console.log(image);
+        });
+//        var group = new fabric.Group([Object.clone(w.canvas.item(0)), Object.clone(w.canvas.item(1))], {left: 285/2, top: 262/2}); w.canvas.clear().renderAll(); w.canvas.add(group); w.canvas.setActiveGroup(group);
     },
 
     createZoomWindow: function()
