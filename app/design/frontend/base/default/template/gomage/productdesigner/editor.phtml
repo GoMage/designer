@@ -44,7 +44,6 @@ $imageEnabled = $this->isUploadImageEnabled() && $_product->getId();
         settings.isUploadImageEnabled = <?php echo $this->isUploadImageEnabled(); ?>;
         settings.product = <?php echo $this->getEditorConfigJson(); ?>;
         settings.container = $("pd_container");
-//        settings.pane = $("pd_pane");
 
         window.w = new GoMage.ProductDesigner(settings,
             '<?php echo Mage::getUrl('*/index/continue')?>',
@@ -177,6 +176,6 @@ $imageEnabled = $this->isUploadImageEnabled() && $_product->getId();
     <?php echo $this->getChildHtml('customer.login');?>
     <?php echo $this->getChildHtml('customer.register');?>
 <?php endif;?>
-<div id="product-zoom-container" style="width: 600px; height: 800px;">
+<div id="product-zoom-container" style="width: 650px; height: 850px;">
     <canvas id="product-zoom-canvas"></canvas>
 </div>

@@ -821,93 +821,101 @@ GoMage.ProductDesigner.prototype = {
         this.history.push(cmd);
     },
 
-    // Zoom In
-    zoom: function() {
+    zoom: function()
+    {
         this.createZoomWindow();
         this.zoomWindow.showCenter(true);
-        var currentImg = this.config.product.images[this.currentColor][this.currentProd];
+    },
+
+    // Zoom In
+    showZoomCanvas: function() {
+        if (this.config.product.images[this.currentColor][this.currentProd].orig_image == undefined) {
+            return;
+        }
         var origImage = this.config.product.images[this.currentColor][this.currentProd].orig_image;
-        var scaleX = origImage['dimensions'][0] / currentImg['d'][0];
-        var scaleY = origImage['dimensions'][1] / currentImg['d'][1];
         var imgUrl = origImage.url;
         var canvas = $('product-zoom-canvas');
         canvas.innerHTML = '';
+        $('product-zoom-container').innerHTML = '';
         canvas.setAttribute('width', 600);
         canvas.setAttribute('height', 800);
         $('product-zoom-container').appendChild(canvas);
         var zoomCanvas = new fabric.Canvas(canvas);
-        window.zoomCanvas = zoomCanvas;
-//        zoomCanvas.setHeight(origImage['dimensions'][1]);
-//        zoomCanvas.setHeight(origImage['dimensions'][0]);
-        var origImage = this.config.product.images[this.currentColor][this.currentProd].orig_image;
+
         zoomCanvas.selection = false;
-
-//        var group = new fabric.Group([], {
-//            width: origImage.dimensions[0],
-//            height: origImage.dimensions[1],
-//            top: origImage.dimensions[1]/2,
-//            left: origImage.dimensions[0]/2
-//        });
-//        var group = new fabric.Group();
-//        group.hasControls = false;
-//        group.hasBorders = false;
-//        zoomCanvas.add(group);
-//        zoomCanvas.setActiveGroup(group);
-//        zoomCanvas.renderAll();
         fabric.Image.fromURL(imgUrl, function(obj) {
-            if (origImage.dimensions[1] < 800 || origImage.dimensions[0] < 600) {
-                var width = 600;
-                var height = 800;
-                obj.lockMovementX = true;
-                obj.lockMovementY = true;
+            var backgroundImage = this.prepareBackgroundZoomImage(obj);
+            if (this.containerCanvases[this.currentProd].getObjects().length > 0) {
+                var canvas = this.containerCanvases[this.currentProd];
+                canvas.deactivateAll();
+                canvas.renderAll();
+                var image = canvas.toDataURL();
+                var contextTop = canvas.contextTop;
+                if (contextTop && contextTop != undefined) {
+                    canvas.clearContext(contextTop);
+                }
+                fabric.Image.fromURL(image, function(obj){
+                    var designImage = this.prepareDesignImageForZoom(obj)
+                    var group = new fabric.Group([designImage, backgroundImage], {
+                        width: origImage.dimensions[0],
+                        height: origImage.dimensions[1],
+                        left: 300,
+                        top: 400
+                    });
+                    zoomCanvas.add(group);
+                }.bind(this))
             } else {
-                var width = origImage.dimensions[0];
-                var height = origImage.dimensions[1];
+                var group = new fabric.Group([backgroundImage], {
+                    width: origImage.dimensions[0],
+                    height: origImage.dimensions[1],
+                    left: 300,
+                    top: 400
+                });
+                zoomCanvas.add(group);
             }
-            obj.set({
-                height: height,
-                width: width,
-                left: width/2,
-                top: height/2
-            });
-            obj.hasControls = false;
-            obj.hasBorders = false;
-            zoomCanvas.add(obj);
-            obj.center();
-            obj.setCoords();
-//            group.add(obj);
         }.bind(this));
+    },
 
-       /* if (this.containerCanvases[this.currentProd].getObjects().length > 0) {
-            var canvas = this.containerCanvases[this.currentProd];
-            canvas.deactivateAll();
-            canvas.renderAll();
-            var image = canvas.toDataURL();
-            var contextTop = canvas.contextTop;
-            if (contextTop && contextTop != undefined) {
-                canvas.clearContext(contextTop);
-            }
-            fabric.Image.fromURL(image, function(obj){
-                obj.set({
-                    width: currentImg.w,
-                    height: currentImg.h,
-                    top: currentImg.t * scaleY,
-                    left: currentImg.l * scaleX
-                })
-                obj.scaleX = scaleX;
-                obj.scaleY = scaleY;
-                obj.hasControls = false;
-                obj.hasBorders = false;
-                group.addWithUpdate(obj);
-            }.bind(this))
-        }*/
-        zoomCanvas.renderAll();
-        var zoomObjects = zoomCanvas.getObjects();
-        window.zoomObjects = zoomCanvas.getObjects();
-        zoomObjects.each(function(image){
-            console.log(image);
+    prepareBackgroundZoomImage: function(obj) {
+        var origImage = this.config.product.images[this.currentColor][this.currentProd].orig_image;
+        if (origImage.dimensions[1] < 800 || origImage.dimensions[0] < 600) {
+            var width = 600;
+            var height = 800;
+            obj.lockMovementX = true;
+            obj.lockMovementY = true;
+        } else {
+            var width = origImage.dimensions[0];
+            var height = origImage.dimensions[1];
+        }
+        obj.set({
+            height: height,
+            width: width,
+            left: width/2,
+            top: height/2,
+            hasControls: false,
+            hasBorders: false
         });
-//        var group = new fabric.Group([Object.clone(w.canvas.item(0)), Object.clone(w.canvas.item(1))], {left: 285/2, top: 262/2}); w.canvas.clear().renderAll(); w.canvas.add(group); w.canvas.setActiveGroup(group);
+
+        return obj;
+    },
+
+    prepareDesignImageForZoom: function(obj){
+        var currentImg = this.config.product.images[this.currentColor][this.currentProd];
+        var origImage = this.config.product.images[this.currentColor][this.currentProd].orig_image;
+        var scaleX = origImage['dimensions'][0] / currentImg['d'][0];
+        var scaleY = origImage['dimensions'][1] / currentImg['d'][1];
+        obj.set({
+            width: currentImg.w,
+            height: currentImg.h,
+            top: currentImg.t * scaleY,
+            left: currentImg.l * scaleX
+        });
+        obj.scaleX = scaleX;
+        obj.scaleY = scaleY;
+        obj.hasControls = false;
+        obj.hasBorders = false;
+
+        return obj;
     },
 
     createZoomWindow: function()
@@ -928,18 +936,11 @@ GoMage.ProductDesigner.prototype = {
                 showEffect:Effect.BlindDown,
                 hideEffect:Effect.BlindUp,
                 showEffectOptions: {duration: 0.4},
-                hideEffectOptions: {duration: 0.4}
+                hideEffectOptions: {duration: 0.4},
+                onShow: this.showZoomCanvas.bind(this)
             });
             this.zoomWindow.setContent('product-zoom-container', true, true);
             this.zoomWindow.setZIndex(2000);
-//            var canvas = $('product-zoom-canvas');
-//            canvas.setAttribute('class', 'pd-canvas-pane');
-//            canvas.setAttribute('width', 600);
-//            canvas.setAttribute('height', 800);
-//            $('product-zoom-container').appendChild(canvas);
-//            this.zoomCanvas = new fabric.Canvas(canvas);
-//            var origImage = this.config.product.images[this.currentColor][this.currentProd].orig_image;
-//            this.zoomCanvas.selection = false;
         }
     },
 
