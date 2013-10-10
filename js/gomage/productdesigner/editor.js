@@ -863,6 +863,7 @@ GoMage.ProductDesigner.prototype = {
                         top: parseInt(this.config.imageMinSize.height) / 2
                     });
                     zoomCanvas.add(group);
+                    zoomCanvas.renderAll();
                 }.bind(this))
             } else {
                 var group = new fabric.Group([backgroundImage], {
@@ -875,6 +876,7 @@ GoMage.ProductDesigner.prototype = {
                 group.hasControls = false;
                 group.hasBorders = false;
                 zoomCanvas.add(group);
+                zoomCanvas.renderAll();
             }
         }.bind(this));
     },
