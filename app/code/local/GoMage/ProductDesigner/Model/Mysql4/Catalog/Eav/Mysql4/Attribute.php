@@ -39,6 +39,11 @@ class GoMage_ProductDesigner_Model_Mysql4_Catalog_Eav_Mysql4_Attribute
 {
     protected function _saveOption(Mage_Core_Model_Abstract $object)
     {
+        $colorAttributeCode = Mage::getStoreConfig('gmpd/navigation/color_attribute');
+        if (!$colorAttributeCode || $object->getAttributeCode() !=$colorAttributeCode) {
+            return parent::_saveOption($object);
+        }
+
         $option = $object->getOption();
         if (is_array($option)) {
             $write = $this->_getWriteAdapter();
