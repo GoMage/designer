@@ -205,12 +205,16 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
             if (!$settings || empty($settings)) {
                 continue;
             }
-            $imageUrl = Mage::helper('designer')->getDesignImageUrl($product, $image);
+            $imageUrl = $this->getDesignImageUrl($product, $image);
+            $originImageUrl = Mage::helper('catalog/image')->init($product, 'base_image', is_object($image) ? $image->getFile() : $image['file'])->__toString();
             $conf = $settings;
             $conf['id'] = $id;
             $conf['u'] = $imageUrl;
-            $conf['d'] = Mage::helper('designer')->getImageDimensions($imageUrl);
-//            $editorConfig['images'][$id] = $conf;
+            $conf['d'] = $this->getImageDimensions($imageUrl);
+            $conf['orig_image'] = array(
+                'url' => $originImageUrl,
+                'dimensions' => $this->getImageDimensions($originImageUrl)
+            );
 
             if ($product->getTypeId() == Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE) {
                 if ($image['color']) {
