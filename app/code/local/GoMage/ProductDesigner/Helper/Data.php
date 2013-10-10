@@ -170,15 +170,47 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
      * @param Varien_Object              $image   Image
      * @return string
      */
-    public function getDesignImageUrl(Mage_Catalog_Model_Product $product, $image)
+    public function getDesignImageUrl(Mage_Catalog_Model_Product $product, $image, $size = array())
     {
-        $imageWidth = Mage::getStoreConfig('gmpd/design/design_size_width');
-        $imageHeight = Mage::getStoreConfig('gmpd/design/design_size_height');
+        if (empty($size)) {
+            $imageWidth = Mage::getStoreConfig('gmpd/design/design_size_width');
+            $imageHeight = Mage::getStoreConfig('gmpd/design/design_size_height');
+        } else {
+            list($imageWidth, $imageHeight) = $size;
+        }
+
         $imageFile = is_object($image) ? $image->getFile() : $image['file'];
         $url = Mage::helper('catalog/image')->init($product, 'base_image', $imageFile)
             ->resize($imageWidth, $imageHeight)->__toString();
         
         return $url;
+    }
+
+    public function getOriginalImage(Mage_Catalog_Model_Product $product, $image)
+    {
+        $imageFile = is_object($image) ? $image->getFile() : $image['file'];
+        $imagePath = $product->getMediaConfig()->getMediaPath($imageFile);
+        $minWidth = Mage::getStoreConfig('gmpd/design/zoom_size_width');
+        $minHeight = Mage::getStoreConfig('gmpd/design/zoom_size_height');
+        if (file_exists($imagePath)) {
+            $imageObj = new Varien_Image($imagePath);
+            $width = $imageObj->getOriginalWidth();
+            $height = $imageObj->getOriginalHeight();
+            $dimensions = array();
+            if ($width < $minWidth || $height < $minHeight) {
+                $dimensions[0] = $minWidth;
+                $dimensions[1] = $minHeight;
+            } else {
+                $dimensions[0] = $width;
+                $dimensions[1] = $height;
+            }
+            return array(
+                'url' => $this->getDesignImageUrl($product, $image, $dimensions),
+                'dimensions' => $dimensions
+            );
+        }
+
+        return array();
     }
 
     public function getProductSettingForEditor(Mage_Catalog_Model_Product $product = null)
@@ -206,15 +238,11 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
                 continue;
             }
             $imageUrl = $this->getDesignImageUrl($product, $image);
-            $originImageUrl = Mage::helper('catalog/image')->init($product, 'base_image', is_object($image) ? $image->getFile() : $image['file'])->__toString();
             $conf = $settings;
             $conf['id'] = $id;
             $conf['u'] = $imageUrl;
             $conf['d'] = $this->getImageDimensions($imageUrl);
-            $conf['orig_image'] = array(
-                'url' => $originImageUrl,
-                'dimensions' => $this->getImageDimensions($originImageUrl)
-            );
+            $conf['orig_image'] = $this->getOriginalImage($product, $image);
 
             if ($product->getTypeId() == Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE) {
                 if ($image['color']) {
