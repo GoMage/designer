@@ -115,7 +115,14 @@ class GoMage_ProductDesigner_Model_Catalog_Product extends Mage_Catalog_Model_Pr
     {
         if ($this->getTypeId() == Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE
             && Mage::helper('designer')->hasColorAttribute()) {
-            return Mage::getResourceModel('gmpd/catalog_product_type_configurable')->getProductColors($this->getId());
+            $colors = Mage::getResourceModel('gmpd/catalog_product_type_configurable')->getProductColors($this->getId());
+            foreach ($colors as &$color) {
+                if (isset($color['image']) && $color['image'] != null) {
+                    $color['image'] = Mage::getBaseUrl('media') . 'option_image'. DS . $color['image'];
+                }
+            }
+
+            return $colors;
         }
 
         return false;
