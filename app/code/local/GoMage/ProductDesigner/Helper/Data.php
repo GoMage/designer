@@ -210,7 +210,6 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
             $conf['id'] = $id;
             $conf['u'] = $imageUrl;
             $conf['d'] = Mage::helper('designer')->getImageDimensions($imageUrl);
-//            $editorConfig['images'][$id] = $conf;
 
             if ($product->getTypeId() == Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE) {
                 if ($image['color']) {

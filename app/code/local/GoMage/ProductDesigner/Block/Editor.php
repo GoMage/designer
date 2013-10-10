@@ -136,9 +136,4 @@ class GoMage_ProductDesigner_Block_Editor extends Mage_Core_Block_Template
 
         return false;
     }
-
-    public function getColorImage($file)
-    {
-        return Mage::getBaseUrl('media') . 'option_image'. DS . $file;
-    }
 }

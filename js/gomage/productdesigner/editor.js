@@ -216,10 +216,22 @@ GoMage.ProductDesigner.prototype = {
             for (var id in colors) {
                 if (colors.hasOwnProperty(id)) {
                     var color = colors[id];
+                    if (!this.config.product.images.hasOwnProperty(color['option_id'])) {
+                        continue;
+                    }
                     var element = document.createElement('span');
                     element.addClassName('color-btn');
                     element.setAttribute('color_id', color['option_id']);
-                    element.setStyle({background: color['value']});
+                    if (color['image']) {
+                        element.setStyle({
+                            'background-image': 'url('+ color['image'] +')',
+                            'background-position': '50% 50%',
+                            'background-repeat': 'no-repeat no-repeat'
+                        });
+                    } else {
+                        element.innerHTML = color['value'];
+                    }
+
                     if (this.currentColor == color['option_id']) {
                         element.addClassName('selected');
                     }
@@ -227,6 +239,9 @@ GoMage.ProductDesigner.prototype = {
                 }
             }
             $('product-colors').innerHTML = colorsHtml;
+            if (!$('product-colors').visible() && colorsHtml != '') {
+                $('product-colors').show();
+            }
         }
     },
 

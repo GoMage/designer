@@ -86,7 +86,6 @@ class GoMage_ProductDesigner_Model_Checkout_Cart extends Mage_Checkout_Model_Car
                 }
                 if ($product->hasDesignColorValidationFail()) {
                     $result = $result . "\n" . Mage::helper('designer')->__('Сonfiguration of your design does not match the configuration of the product');
-                    Mage::log($result);
                 }
                 Mage::throwException($result);
             }
