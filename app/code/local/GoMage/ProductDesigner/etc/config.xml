@@ -38,6 +38,8 @@
                 <navigation>1</navigation>
                 <design_size_width>500</design_size_width>
                 <design_size_height>700</design_size_height>
+                <zoom_size_width>600</zoom_size_width>
+                <zoom_size_height>800</zoom_size_height>
                 <max_layers>2</max_layers>
             </design>
             <text>

@@ -320,11 +320,38 @@
                 <show_in_store>1</show_in_store>
                 <validate>validate-number</validate>
               </design_size_height>
+                <!-- Zoom popup size -->
+                <zoom_size translate="label comment">
+                    <label>Zoom popup size</label>
+                    <frontend_type>label</frontend_type>
+                    <sort_order>7</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                </zoom_size>
+                <zoom_size_width>
+                    <label>Width, px</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>8</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <validate>validate-number</validate>
+                </zoom_size_width>
+                <zoom_size_height>
+                    <label>Height, px</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>9</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <validate>validate-number</validate>
+                </zoom_size_height>
               <!-- Maximum Layers Quantity -->
               <max_layers>
                 <label>Maximum Layers Qty</label>
                 <frontend_type>text</frontend_type>
-                <sort_order>7</sort_order>
+                <sort_order>10</sort_order>
                 <show_in_default>1</show_in_default>
                 <show_in_website>1</show_in_website>
                 <show_in_store>1</show_in_store>
@@ -335,7 +362,7 @@
                 <label>Show Help Icon</label>
                 <frontend_type>select</frontend_type>
                 <source_model>adminhtml/system_config_source_yesno</source_model>
-                <sort_order>8</sort_order>
+                <sort_order>11</sort_order>
                 <show_in_default>1</show_in_default>
                 <show_in_website>1</show_in_website>
                 <show_in_store>1</show_in_store>
@@ -343,7 +370,7 @@
               <popup_text>
                 <label>Help Icon text</label>
                 <frontend_type>textarea</frontend_type>
-                <sort_order>9</sort_order>
+                <sort_order>12</sort_order>
                 <show_in_default>1</show_in_default>
                 <show_in_website>1</show_in_website>
                 <show_in_store>1</show_in_store>
@@ -351,7 +378,7 @@
               <popup_width>
                 <label>Popup Width, px</label>
                 <frontend_type>text</frontend_type>
-                <sort_order>10</sort_order>
+                <sort_order>13</sort_order>
                 <show_in_default>1</show_in_default>
                 <show_in_website>1</show_in_website>
                 <show_in_store>1</show_in_store>
@@ -360,7 +387,7 @@
               <popup_height>
                 <label>Popup Height, px</label>
                 <frontend_type>text</frontend_type>
-                <sort_order>11</sort_order>
+                <sort_order>14</sort_order>
                 <show_in_default>1</show_in_default>
                 <show_in_website>1</show_in_website>
                 <show_in_store>1</show_in_store>

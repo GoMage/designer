@@ -821,14 +821,14 @@ GoMage.ProductDesigner.prototype = {
         this.history.push(cmd);
     },
 
+    // Zoom In
     zoom: function()
     {
         this.createZoomWindow();
         this.zoomWindow.showCenter(true);
     },
 
-    // Zoom In
-    showZoomCanvas: function() {
+    createZoomCanvas: function() {
         if (this.config.product.images[this.currentColor][this.currentProd].orig_image == undefined) {
             return;
         }
@@ -837,8 +837,8 @@ GoMage.ProductDesigner.prototype = {
         var canvas = $('product-zoom-canvas');
         canvas.innerHTML = '';
         $('product-zoom-container').innerHTML = '';
-        canvas.setAttribute('width', 600);
-        canvas.setAttribute('height', 800);
+        canvas.setAttribute('width', parseInt(this.config.imageMinSize.width));
+        canvas.setAttribute('height', parseInt(this.config.imageMinSize.height));
         $('product-zoom-container').appendChild(canvas);
         var zoomCanvas = new fabric.Canvas(canvas);
 
@@ -859,8 +859,8 @@ GoMage.ProductDesigner.prototype = {
                     var group = new fabric.Group([designImage, backgroundImage], {
                         width: origImage.dimensions[0],
                         height: origImage.dimensions[1],
-                        left: 300,
-                        top: 400
+                        left: parseInt(this.config.imageMinSize.width) / 2,
+                        top: parseInt(this.config.imageMinSize.height) / 2
                     });
                     zoomCanvas.add(group);
                 }.bind(this))
@@ -868,9 +868,12 @@ GoMage.ProductDesigner.prototype = {
                 var group = new fabric.Group([backgroundImage], {
                     width: origImage.dimensions[0],
                     height: origImage.dimensions[1],
-                    left: 300,
-                    top: 400
+                    left: parseInt(this.config.imageMinSize.width) / 2,
+                    top: parseInt(this.config.imageMinSize.width) / 2,
+
                 });
+                group.hasControls = false;
+                group.hasBorders = false;
                 zoomCanvas.add(group);
             }
         }.bind(this));
@@ -878,20 +881,18 @@ GoMage.ProductDesigner.prototype = {
 
     prepareBackgroundZoomImage: function(obj) {
         var origImage = this.config.product.images[this.currentColor][this.currentProd].orig_image;
-        if (origImage.dimensions[1] < 800 || origImage.dimensions[0] < 600) {
-            var width = 600;
-            var height = 800;
+        var width = origImage.dimensions[0];
+        var height = origImage.dimensions[1];
+        if (height == parseInt(this.config.imageMinSize.height) && width == parseInt(this.config.imageMinSize.width)) {
             obj.lockMovementX = true;
             obj.lockMovementY = true;
-        } else {
-            var width = origImage.dimensions[0];
-            var height = origImage.dimensions[1];
         }
+
         obj.set({
             height: height,
             width: width,
-            left: width/2,
-            top: height/2,
+            left: width / 2,
+            top: height / 2,
             hasControls: false,
             hasBorders: false
         });
@@ -924,10 +925,10 @@ GoMage.ProductDesigner.prototype = {
             this.zoomWindow = new Window({
                 className: 'magento',
                 title: 'Zoom In',
-                width: 600,
-                minWidth: 600,
-                height: 800,
-                minHeight: 800,
+                width: parseInt(this.config.imageMinSize.width),
+                minWidth: parseInt(this.config.imageMinSize.width),
+                height: parseInt(this.config.imageMinSize.height),
+                minHeight: parseInt(this.config.imageMinSize.height),
                 maximizable:false,
                 minimizable:false,
                 resizable:false,
@@ -937,7 +938,7 @@ GoMage.ProductDesigner.prototype = {
                 hideEffect:Effect.BlindUp,
                 showEffectOptions: {duration: 0.4},
                 hideEffectOptions: {duration: 0.4},
-                onShow: this.showZoomCanvas.bind(this)
+                onShow: this.createZoomCanvas.bind(this)
             });
             this.zoomWindow.setContent('product-zoom-container', true, true);
             this.zoomWindow.setZIndex(2000);

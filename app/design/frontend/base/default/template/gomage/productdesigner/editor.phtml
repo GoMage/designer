@@ -11,6 +11,8 @@ $textEnabled = $this->isTextEnabled() && $_product->getId();
 
 //Is Image (Upload Image) Tab Enabled
 $imageEnabled = $this->isUploadImageEnabled() && $_product->getId();
+
+$productImageMinSize = $this->getProductOriginalImageMinSizes();
 ?>
 <script type="text/javascript">
     var optionsPrice = new Product.OptionsPrice(<?php echo $this->helper('designer')->getProductPriceConfigJson(); ?>);
@@ -34,6 +36,8 @@ $imageEnabled = $this->isUploadImageEnabled() && $_product->getId();
             zoom: 'pd_zoom',
             allign_by_center: 'pd_allign_by_center'
         };
+
+        settings.imageMinSize = <?php echo $this->getProductOriginalImageMinSizesJson(); ?>;
 
         settings.prices = <?php echo $this->getDesignPriceConfigJson(); ?>;
         settings.isCustomerLoggedIn = '<?php echo $this->isCustomerLoggedIn(); ?>';
@@ -183,6 +187,6 @@ $imageEnabled = $this->isUploadImageEnabled() && $_product->getId();
     <?php echo $this->getChildHtml('customer.login');?>
     <?php echo $this->getChildHtml('customer.register');?>
 <?php endif;?>
-<div id="product-zoom-container" style="width: 650px; height: 850px;">
+<div id="product-zoom-container" style="width: <?php echo $productImageMinSize['width'] + 5 ?>px; height: <?php echo $productImageMinSize['height']+5 ?>px;">
     <canvas id="product-zoom-canvas"></canvas>
 </div>

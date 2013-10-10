@@ -97,6 +97,19 @@ class GoMage_ProductDesigner_Block_Editor extends Mage_Core_Block_Template
         return $imageWidth = Mage::getStoreConfig('gmpd/design/design_size_width');
     }
 
+    public function getProductOriginalImageMinSizes()
+    {
+        return array(
+            'width' => Mage::getStoreConfig('gmpd/design/zoom_size_width'),
+            'height' => Mage::getStoreConfig('gmpd/design/zoom_size_height')
+        );
+    }
+
+    public function getProductOriginalImageMinSizesJson()
+    {
+        return Zend_Json::encode($this->getProductOriginalImageMinSizes());
+    }
+
     public function isCustomerLoggedIn()
     {
         return (bool) $this->getCustomerId();
