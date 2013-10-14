@@ -132,7 +132,7 @@ class GoMage_ProductDesigner_Model_Design_Image extends Mage_Core_Model_Abstract
                 $canvas = new Imagick();
                 $canvas->setsize($width, $height);
                 $canvas->readimage($image);
-                $canvas->setImageFormat('jpeg');
+                $canvas->setImageFormat($this->_getImageExtensionForSave());
             } else {
                 $imageExtension = $this->_prepareImageExtension($image);
                 $imageCreateFunction = 'imagecreatefrom' . $imageExtension;
@@ -164,13 +164,32 @@ class GoMage_ProductDesigner_Model_Design_Image extends Mage_Core_Model_Abstract
         $configPath = $designConfig->getBaseMediaPath();
 
         if($currentProduct && $currentProduct->getId()) {
-            $fileToSave = $this->_prepareFileForSave($canvas);
+            $fileToSave = $this->_prepareFileForSave();
             if (extension_loaded($this->_imageExtension)){
                 $canvas->writeImage($fileToSave);
                 $canvas->destroy();
             } else {
-                imagejpeg($canvas, $fileToSave);
-                imagedestroy($canvas);
+                $imageExtension = strtolower(pathinfo($fileToSave, PATHINFO_EXTENSION));
+                if ($imageExtension == 'pdf') {
+                    $fileToSave = str_replace($imageExtension, '', $fileToSave);
+                    imagejpeg($canvas, $fileToSave . 'jpg');
+                    imagedestroy($canvas);
+                    $pdf = new Zend_Pdf();
+                    $image = Zend_Pdf_Image::imageWithPath($fileToSave . 'jpg');
+                    $pdfPage = $pdf->newPage($image->getPixelWidth(). ':'. $image->getPixelHeight());
+                    $pdfPage->drawImage($image, 0, 0, $image->getPixelWidth(), $image->getPixelHeight());
+                    $pdf->pages[] = $pdfPage;
+                    $pdf->save($fileToSave.$imageExtension);
+                    unlink($fileToSave. 'jpg');
+                } else {
+                    $saveFunction = 'image' . $imageExtension;
+                    if (function_exists($saveFunction)) {
+                        $saveFunction($canvas, $fileToSave);
+                        imagedestroy($canvas);
+                    }
+                }
+
+
             }
 
             $this->addData(array(
@@ -186,17 +205,12 @@ class GoMage_ProductDesigner_Model_Design_Image extends Mage_Core_Model_Abstract
     /**
      * Prepare file for save
      *
-     * @param Imagick $canvas Canvas
      * @return string
      */
-    protected function _prepareFileForSave($canvas)
+    protected function _prepareFileForSave()
     {
         $pathToSave = $this->_preparePathToSave();
-        if (extension_loaded($this->_imageExtension)) {
-            $imageExtension = $canvas->getImageFormat();
-        } else {
-            $imageExtension = 'jpeg';
-        }
+        $imageExtension = $this->_getImageExtensionForSave();
 
         $fileName = Mage::helper('core')->getRandomString(16) . '.' . $imageExtension;
 
@@ -237,12 +251,15 @@ class GoMage_ProductDesigner_Model_Design_Image extends Mage_Core_Model_Abstract
      */
     protected function _prepareImageExtension($imagePath)
     {
-        $imagePathExploded = explode('.', $imagePath);
-        $imageExtension = array_pop($imagePathExploded);
-        $imageExtension = strtolower($imageExtension);
+        $imageExtension = pathinfo($imagePath, PATHINFO_EXTENSION);
         if(in_array($imageExtension, array('jpg', 'jpeg'))) {
             $imageExtension = 'jpeg';
         }
         return $imageExtension;
+    }
+
+    protected function _getImageExtensionForSave()
+    {
+        return Mage::getStoreConfig('gmpd/general/format');
     }
 }

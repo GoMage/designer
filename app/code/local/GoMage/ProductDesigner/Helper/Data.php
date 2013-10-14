@@ -23,6 +23,8 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
 
     protected $_productDesign = null;
 
+    protected $_editorConfig = null;
+
     public function isEnabled()
     {
         return Mage::getStoreConfig('gmpd/general/enabled', Mage::app()->getStore());
@@ -215,56 +217,58 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function getProductSettingForEditor(Mage_Catalog_Model_Product $product = null)
     {
-        if (is_null($product)) {
-            $product = Mage::registry('product');
-        }
-
-        $editorConfig = array(
-            'images' => array()
-        );
-
-        if (!$product->getId()) {
-            return $editorConfig;
-        }
-
-        $images = $product->getMediaGallery('images');
-        $colorAttributeCode = Mage::getStoreConfig('gmpd/navigation/color_attribute');
-
-        $defaultColor = null;
-        foreach ($images as $image) {
-            $id = $image['value_id'];
-            $settings = Mage::helper('core')->jsonDecode($image['design_area']);
-            if (!$settings || empty($settings)) {
-                continue;
+        if (!$this->_editorConfig) {
+            if (is_null($product)) {
+                $product = Mage::registry('product');
             }
-            $imageUrl = $this->getDesignImageUrl($product, $image);
-            $conf = $settings;
-            $conf['id'] = $id;
-            $conf['u'] = $imageUrl;
-            $conf['d'] = $this->getImageDimensions($imageUrl);
-            $conf['orig_image'] = $this->getOriginalImage($product, $image);
 
-            if ($product->getTypeId() == Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE) {
-                if ($image['color']) {
-                    if (is_null($defaultColor)) {
-                        $defaultColor = $image['color'];
+            $editorConfig = array(
+                'images' => array()
+            );
+
+            if (!$product->getId()) {
+                return $editorConfig;
+            }
+
+            $images = $product->getMediaGallery('images');
+            $colorAttributeCode = Mage::getStoreConfig('gmpd/navigation/color_attribute');
+            $defaultColor = null;
+            foreach ($images as $image) {
+                $id = $image['value_id'];
+                $settings = Mage::helper('core')->jsonDecode($image['design_area']);
+                if (!$settings || empty($settings)) {
+                    continue;
+                }
+                $imageUrl = $this->getDesignImageUrl($product, $image);
+                $conf = $settings;
+                $conf['id'] = $id;
+                $conf['u'] = $imageUrl;
+                $conf['d'] = $this->getImageDimensions($imageUrl);
+                $conf['orig_image'] = $this->getOriginalImage($product, $image);
+
+                if ($product->getTypeId() == Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE) {
+                    if ($image['color']) {
+                        if (is_null($defaultColor)) {
+                            $defaultColor = $image['color'];
+                        }
+                        if (!isset($editorConfig['images'][$image['color']])) {
+                            $editorConfig['images'][$image['color']] = array();
+                        }
+                        $editorConfig['images'][$image['color']][$id] = $conf;
+                    } else {
+                        $defaultColor = $product->getData($colorAttributeCode) ?:'none_color';
+                        $editorConfig['images'][$defaultColor][$id] = $conf;
                     }
-                    if (!isset($editorConfig['images'][$image['color']])) {
-                        $editorConfig['images'][$image['color']] = array();
-                    }
-                    $editorConfig['images'][$image['color']][$id] = $conf;
                 } else {
                     $defaultColor = $product->getData($colorAttributeCode) ?:'none_color';
                     $editorConfig['images'][$defaultColor][$id] = $conf;
                 }
-            } else {
-                $defaultColor = $product->getData($colorAttributeCode) ?:'none_color';
-                $editorConfig['images'][$defaultColor][$id] = $conf;
+                $editorConfig['default_color'] = $defaultColor;
+                $this->_editorConfig = $editorConfig;
             }
-            $editorConfig['default_color'] = $defaultColor;
         }
 
-        return $editorConfig;
+        return $this->_editorConfig;
     }
 
     /**

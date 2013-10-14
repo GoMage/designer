@@ -21,7 +21,7 @@
         <gmpd>
             <general>
                 <add_to_cart_button>0</add_to_cart_button>
-                <format>JPG</format>
+                <format>jpg</format>
                 <fixed_price>0</fixed_price>
                 <price_for_text>0</price_for_text>
                 <price_for_image>0</price_for_image>
