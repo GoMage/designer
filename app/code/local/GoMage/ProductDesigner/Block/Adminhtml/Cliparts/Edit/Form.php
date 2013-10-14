@@ -10,7 +10,7 @@ class GoMage_ProductDesigner_Block_Adminhtml_Cliparts_Edit_Form extends Mage_Adm
         $this->setChild('save_button',
             $this->getLayout()->createBlock('adminhtml/widget_button')
                 ->setData(array(
-                    'label'     => Mage::helper('catalog')->__('Save Category'),
+                    'label'     => Mage::helper('catalog')->__('Save Cliparts'),
                     'onclick'   => "categorySubmit('" . $this->getSaveUrl() . "', true)",
                     'class' => 'save'
                 ))
