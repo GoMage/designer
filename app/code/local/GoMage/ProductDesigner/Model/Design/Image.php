@@ -205,7 +205,6 @@ class GoMage_ProductDesigner_Model_Design_Image extends Mage_Core_Model_Abstract
     /**
      * Prepare file for save
      *
-     * @param Imagick $canvas Canvas
      * @return string
      */
     protected function _prepareFileForSave()
@@ -252,9 +251,7 @@ class GoMage_ProductDesigner_Model_Design_Image extends Mage_Core_Model_Abstract
      */
     protected function _prepareImageExtension($imagePath)
     {
-        $imagePathExploded = explode('.', $imagePath);
-        $imageExtension = array_pop($imagePathExploded);
-        $imageExtension = strtolower($imageExtension);
+        $imageExtension = pathinfo($imagePath, PATHINFO_EXTENSION);
         if(in_array($imageExtension, array('jpg', 'jpeg'))) {
             $imageExtension = 'jpeg';
         }
