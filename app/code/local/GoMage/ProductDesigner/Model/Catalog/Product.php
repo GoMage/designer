@@ -143,4 +143,14 @@ class GoMage_ProductDesigner_Model_Catalog_Product extends Mage_Catalog_Model_Pr
 
         return $galleryAttribute->getBackend();
     }
+
+    public function hasImagesForDesign()
+    {
+        $config = Mage::helper('designer')->getProductSettingForEditor($this);
+        if (empty($config['images'])) {
+            return false;
+        }
+
+        return true;
+    }
 }
