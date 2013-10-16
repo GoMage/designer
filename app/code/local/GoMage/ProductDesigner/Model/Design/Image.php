@@ -92,16 +92,15 @@ class GoMage_ProductDesigner_Model_Design_Image extends Mage_Core_Model_Abstract
         $origImageHeight = $imageSettings['original_image']['dimensions'][1];
         if ($origImageWidth / $origImageHeight >= $frameWidth / $frameHeight) {
             $dstHeight = floor($frameWidth / $origImageWidth * $origImageHeight);
+            $scale = $origImageWidth / $frameWidth;
         } else {
             $dstWidth = floor($frameHeight / $origImageHeight * $origImageWidth);
+            $scale = $origImageHeight / $frameHeight;
         }
-        $scaleX = $origImageWidth / $frameWidth;
-        $scaleY = $origImageHeight / $frameHeight;
         $widthScale = $origImageWidth / $dstWidth;
         $heightScale = $origImageHeight / $dstHeight;
-        $designAreaLeft = floor(($designAreaLeft * $scaleX) - ($frameWidth / 2 * ($frameWidth / $dstWidth - 1)));
-        $designAreaTop = floor(($designAreaTop * $scaleY) - ($frameHeight / 2 * ($frameHeight / $dstHeight - 1)));
-
+        $designAreaLeft = floor(($designAreaLeft * $scale) - ($frameWidth - $dstWidth));
+        $designAreaTop = floor(($designAreaTop * $scale) - ($frameHeight - $dstHeight));
         if (extension_loaded($this->_imageExtension)) {
             $layer->resizeImage(
                 floor($imageSettings['w'] * $widthScale),
