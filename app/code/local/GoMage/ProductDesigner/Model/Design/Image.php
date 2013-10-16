@@ -166,7 +166,8 @@ class GoMage_ProductDesigner_Model_Design_Image extends Mage_Core_Model_Abstract
                 $canvas = new Imagick();
                 $canvas->setsize($width, $height);
                 $canvas->readimage($image);
-                $canvas->setImageResolution(600, 600);
+                $resolution = $this->_getImageExtensionForSave() == 'pdf' ? 300 : 600;
+                $canvas->setImageResolution($resolution, $resolution);
                 $canvas->setImageFormat($this->_getImageExtensionForSave());
             } else {
                 $imageExtension = $this->_prepareImageExtension($image);
@@ -217,9 +218,16 @@ class GoMage_ProductDesigner_Model_Design_Image extends Mage_Core_Model_Abstract
                     $pdf->save($fileToSave.$imageExtension);
                     unlink($fileToSave. 'jpg');
                 } else {
-                    $saveFunction = 'image' . $imageExtension;
+                    if ($imageExtension = 'jpg') {
+                        $saveFunction = 'imagejpeg';
+                    } else {
+                        $saveFunction = 'image' . $imageExtension;
+                    }
                     if (function_exists($saveFunction)) {
                         $saveFunction($canvas, $fileToSave, 100);
+                        $image = file_get_contents($fileToSave);
+                        $image = substr_replace($image, pack("Cnn", 0x01, 300, 300), 13, 5);
+                        file_put_contents($fileToSave, $image);
                         imagedestroy($canvas);
                     }
                 }
