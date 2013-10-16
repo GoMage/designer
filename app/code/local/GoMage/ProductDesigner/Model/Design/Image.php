@@ -60,8 +60,10 @@ class GoMage_ProductDesigner_Model_Design_Image extends Mage_Core_Model_Abstract
         $dataHelper = Mage::helper('designer');
         $imageSettings = $dataHelper->getImageSettings($product, $imageId);
         if ($imageSettings) {
-            $dimensions = $imageSettings['dimensions'];
-            $canvas = $this->createCanvas($imageSettings['path'], $dimensions['width'], $dimensions['height']);
+            $dimensions = $imageSettings['original_image']['dimensions'];
+            $canvas = $this->createCanvas(
+                $imageSettings['original_image']['path'], $dimensions[0], $dimensions[1]
+            );
             if ($canvas) {
                 $layer = $this->createLayer($image);
                 if ($layer) {
@@ -84,13 +86,46 @@ class GoMage_ProductDesigner_Model_Design_Image extends Mage_Core_Model_Abstract
     {
         $designAreaLeft = $imageSettings['l'] - $imageSettings['w']/2;
         $designAreaTop = $imageSettings['t'] - $imageSettings['h']/2;
+        $frameWidth = $dstWidth = $imageSettings['dimensions']['width'];
+        $frameHeight = $dstHeight = $imageSettings['dimensions']['height'];
+        $origImageWidth = $imageSettings['original_image']['dimensions'][0];
+        $origImageHeight = $imageSettings['original_image']['dimensions'][1];
+        if ($origImageWidth / $origImageHeight >= $frameWidth / $frameHeight) {
+            $dstHeight = floor($frameWidth / $origImageWidth * $origImageHeight);
+        } else {
+            $dstWidth = floor($frameHeight / $origImageHeight * $origImageWidth);
+        }
+        $scaleX = $origImageWidth / $frameWidth;
+        $scaleY = $origImageHeight / $frameHeight;
+        $widthScale = $origImageWidth / $dstWidth;
+        $heightScale = $origImageHeight / $dstHeight;
+        $designAreaLeft = floor(($designAreaLeft * $scaleX) - ($frameWidth / 2 * ($frameWidth / $dstWidth - 1)));
+        $designAreaTop = floor(($designAreaTop * $scaleY) - ($frameHeight / 2 * ($frameHeight / $dstHeight - 1)));
+
         if (extension_loaded($this->_imageExtension)) {
+            $layer->resizeImage(
+                floor($imageSettings['w'] * $widthScale),
+                floor($imageSettings['h'] * $heightScale),
+                Imagick::FILTER_LANCZOS,
+                1
+            );
             $canvas->compositeImage($layer, $layer->getImageCompose(), $designAreaLeft, $designAreaTop);
             $layer->destroy();
         } else {
-            $layerWidth = imagesx($layer);
-            $layerHeight = imagesy($layer);
-            imagecopy($canvas, $layer, $designAreaLeft, $designAreaTop, 0, 0, $layerWidth, $layerHeight);
+            $layerWidth = floor(imagesx($layer) * $widthScale);
+            $layerHeight = floor(imagesy($layer) * $heightScale);
+            imagecopyresized(
+                $canvas,
+                $layer,
+                $designAreaLeft,
+                $designAreaTop,
+                0,
+                0,
+                $layerWidth,
+                $layerHeight,
+                imagesx($layer),
+                imagesy($layer)
+            );
             imagedestroy($layer);
         }
 
@@ -132,6 +167,7 @@ class GoMage_ProductDesigner_Model_Design_Image extends Mage_Core_Model_Abstract
                 $canvas = new Imagick();
                 $canvas->setsize($width, $height);
                 $canvas->readimage($image);
+                $canvas->setImageResolution(600, 600);
                 $canvas->setImageFormat('jpeg');
             } else {
                 $imageExtension = $this->_prepareImageExtension($image);
@@ -169,7 +205,7 @@ class GoMage_ProductDesigner_Model_Design_Image extends Mage_Core_Model_Abstract
                 $canvas->writeImage($fileToSave);
                 $canvas->destroy();
             } else {
-                imagejpeg($canvas, $fileToSave);
+                imagejpeg($canvas, $fileToSave, 100);
                 imagedestroy($canvas);
             }
 
