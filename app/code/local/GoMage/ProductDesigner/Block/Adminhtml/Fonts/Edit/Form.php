@@ -10,7 +10,7 @@ class GoMage_ProductDesigner_Block_Adminhtml_Fonts_Edit_Form extends Mage_Adminh
         $this->setChild('save_button',
             $this->getLayout()->createBlock('adminhtml/widget_button')
                 ->setData(array(
-                    'label'     => Mage::helper('catalog')->__('Save Category'),
+                    'label'     => Mage::helper('catalog')->__('Save Fonts'),
                     'onclick'   => "categorySubmit('" . $this->getSaveUrl() . "', true)",
                     'class' => 'save'
                 ))

@@ -139,6 +139,11 @@ $image = $this->getImage();
                 onSuccess: function(transport) {
                     var response = transport.responseText.evalJSON();
                     if (response.status == 'success') {
+                        if (window.designAreaPopup.galleryObject && window.designAreaPopup.updateImageFile) {
+                            window.designAreaPopup.galleryObject.updateImageDesignArea(
+                                window.designAreaPopup.updateImageFile, Object.toJSON(data)
+                            );
+                        }
                         if (window.designAreaPopup.target != undefined) {
                             var state = window.designAreaPopup.target.previous();
                             if (state != undefined && state.type == 'checkbox') {

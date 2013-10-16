@@ -1,33 +1,7 @@
 <?php
-class GoMage_ProductDesigner_Model_UploadedImage extends Mage_Core_Model_Abstract {
-    /**
-     * Entity code.
-     * Can be used as part of method name for entity processing
-     */
-    const ENTITY                = 'uploadedImage';
-
-    const CACHE_TAG             = 'designer_uploadedImage';
-
+class GoMage_ProductDesigner_Model_UploadedImage extends Mage_Core_Model_Abstract
+{
     protected $_urlModel;
-
-    /**
-     * Prefix of model events names
-     *
-     * @var string
-     */
-    protected $_eventPrefix     = 'designer_uploadedImage';
-
-    /**
-     * Parameter name in event
-     *
-     * @var string
-     */
-    protected $_eventObject     = 'designer_uploadedImage';
-
-    /**
-     * Model cache tag for clear cache in after save and after delete
-     */
-    protected $_cacheTag        = self::CACHE_TAG;
 
     protected function _construct()
     {

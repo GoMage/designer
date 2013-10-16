@@ -6,7 +6,7 @@
 <?php
 $_block = $this;
 $settings = $this->getProductDesignAreas();
-$productDesignerEnabled = $this->isProductDesignerModuleEnabled();
+$productDesignerEnabled = $this->isProductDesignerEnabled();
 $product = $this->getProduct();
 $colors = $this->getProductColors();
 
@@ -72,7 +72,7 @@ $colors = $this->getProductColors();
                     <?php endif; ?>
                     <td class="cell-choose-design-area a-center last">
                         <input type="checkbox" name="design_area_for[]" value="" onclick="switchDesignArea('__file__', this)" />
-                        [ <a href="javascript:void(0)" onclick="editDesignArea('__file__', this)"><?php echo Mage::helper('designer')->__('Edit') ?></a> ]
+                        [ <a href="javascript:void(0)" onclick="openDesignAreaEditor('__file__', this)"><?php echo Mage::helper('designer')->__('Edit') ?></a> ]
                     </td>
             <?php endif ?>
         </tr>
@@ -131,12 +131,6 @@ $colors = $this->getProductColors();
 <input type="hidden" id="<?php echo $_block->getHtmlId() ?>_save" name="<?php echo $_block->getElement()->getName() ?>[images]" value="<?php echo $_block->htmlEscape($_block->getImagesJson()) ?>" />
 <input type="hidden" id="<?php echo $_block->getHtmlId() ?>_save_image" name="<?php echo $_block->getElement()->getName() ?>[values]" value="<?php echo $_block->htmlEscape($_block->getImagesValuesJson()) ?>" />
 
-<?php if (false): ?>
-<div>
-    <input type="checkbox" name="enable_product_designer" value="1" id="enable_product_designer" <?php if ($productDesignerEnabled == 1): ?>checked="checked"<?php endif ?> />
-    <label for="enable_product_designer"><?php echo Mage::helper('designer')->__('Enable Product Designer for this product') ?></label>
-</div>
-<?php endif ?>
 <script type="text/javascript">
     Product.Gallery.prototype.updateImage = function(file) {
         var index = this.getIndexByFile(file);
@@ -156,6 +150,15 @@ $colors = $this->getProductColors();
         this.updateState(file);
         this.container.setHasChanges();
     }
+
+    Product.Gallery.prototype.updateImageDesignArea = function(file, value) {
+        var index = this.getIndexByFile(file);
+        this.images[index].design_area = value;
+        this.getElement('save').value = Object.toJSON(this.images);
+        this.updateState(file);
+        this.container.setHasChanges();
+    }
+
     Product.Gallery.prototype.updateVisualisation = function(file) {
         var image = this.getImageByFile(file);
         this.getFileElement(file, 'cell-label input').value = image.label;
@@ -218,44 +221,41 @@ function switchDesignArea(f, self)
 {
     var url = '<?php echo $this->getUpdateStateUrl(); ?>'
     //<![CDATA[
-    var v = <?php echo $_block->getJsObjectName(); ?>.getIndexByFile(f);
-    v = <?php echo $_block->getJsObjectName(); ?>.images[v].value_id;
+    var imageIndex = <?php echo $_block->getJsObjectName(); ?>.getIndexByFile(f);
+    var imageId = <?php echo $_block->getJsObjectName(); ?>.images[imageIndex].value_id;
     //]]>
 
-    if (!v) {
+    if (!imageId) {
         return false;
     }
 
     if (self.checked == false) {
         new Ajax.Request(url, {
             method:'post',
-            parameters: {'state' : 0, 'image_id' : v},
+            parameters: {'state' : 0, 'image_id' : imageId},
             onSuccess: function(transport) {
                 var response = transport.responseText.evalJSON();
                 if (response.status == 'error') {
                     console.log(response.message);
+                } else if (response.status == "success") {
+                    <?php echo $_block->getJsObjectName(); ?>.updateImageDesignArea(f, "");
                 }
             }
         });
     } else {
-        openDesignAreaEditor(v);
+        openDesignAreaEditor(f);
     }
 }
 
-function editDesignArea(f, self)
+function openDesignAreaEditor(file, target)
 {
     //<![CDATA[
-    var v = <?php echo $_block->getJsObjectName(); ?>.getIndexByFile(f);
-    v = <?php echo $_block->getJsObjectName(); ?>.images[v].value_id;
+    var imageIndex = <?php echo $_block->getJsObjectName(); ?>.getIndexByFile(file);
+    var imageId = <?php echo $_block->getJsObjectName(); ?>.images[imageIndex].value_id;
     //]]>
-    if (!v) {
+    if (!imageId) {
         return false;
     }
-    openDesignAreaEditor(v, self);
-}
-
-function openDesignAreaEditor(imageId, target)
-{
     new Ajax.Request('<?php echo $this->getEditDesignAreaUrl()?>', {
         method: 'post',
         parameters: { img: imageId },
@@ -269,6 +269,8 @@ function openDesignAreaEditor(imageId, target)
                 if (target != undefined) {
                     window.designAreaPopup.target = target;
                 }
+                window.designAreaPopup.updateImageFile = file;
+                window.designAreaPopup.galleryObject = <?php echo $_block->getJsObjectName(); ?>;
             } else if(response.status == 'error') {
                 $('design-area-popup').update('');
                 alert(response.message);
@@ -298,9 +300,6 @@ $(function() {
             });
         });
     }
-    <?php if(!$productDesignerEnabled && $product && $product->getEnableProductDesigner()): ?>
-        $('enable_product_designer').up('tr').setStyle({'display':'none'});
-    <?php endif; ?>
 
     window.designAreaPopup = new Window({
         className: 'magento',
@@ -313,6 +312,7 @@ $(function() {
         minimizable:false,
         resizable:false,
         draggable:false,
+        recenterAuto: false,
         showEffectOptions: {duration:0.4},
         hideEffectOptions: {duration:0.4}
     });

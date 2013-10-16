@@ -40,12 +40,21 @@ class GoMage_ProductDesigner_Block_Adminhtml_Catalog_Product_Attribute_Edit_Tab_
     public function __construct()
     {
         parent::__construct();
-        $this->setTemplate('gomage/catalog/product/attribute/options.phtml');
+        $colorAttributeCode = Mage::getStoreConfig('gmpd/navigation/color_attribute');
+        if ($colorAttributeCode && ($this->getAttributeObject()->getAttributeCode() == $colorAttributeCode)) {
+            $this->setTemplate('gomage/catalog/product/attribute/options.phtml');
+        }
+
     }
 
     public function getOptionValues()
     {
-        if ($values = parent::getOptionValues()) {
+        $values = parent::getOptionValues();
+        $colorAttributeCode = Mage::getStoreConfig('gmpd/navigation/color_attribute');
+        if (!$colorAttributeCode || !($this->getAttributeObject()->getAttributeCode() == $colorAttributeCode)) {
+            return $values;
+        }
+        if ($values) {
             $images = $this->getAttributeObject()->getOptionImages();
             foreach ($values as $value) {
                 if (isset($images[$value['id']])) {
