@@ -872,25 +872,28 @@ GoMage.ProductDesigner.prototype = {
                 fabric.Image.fromURL(image, function(obj){
                     var designImage = this.prepareDesignImageForZoom(obj)
                     var group = new fabric.Group([designImage, backgroundImage], {
-                        width: origImage.dimensions[0],
-                        height: origImage.dimensions[1],
                         left: parseInt(this.config.imageMinSize.width) / 2,
-                        top: parseInt(this.config.imageMinSize.height) / 2
+                        top: parseInt(this.config.imageMinSize.height) / 2,
+                        hasControls: false,
+                        hasBorders: false
                     });
+                    group.padding = this.config.imageMinSize.width > this.config.imageMinSize.height
+                        ? this.config.imageMinSize.width : this.config.imageMinSize.height;
                     zoomCanvas.add(group);
+                    zoomCanvas.setActiveObject(group);
                     zoomCanvas.renderAll();
                 }.bind(this))
             } else {
                 var group = new fabric.Group([backgroundImage], {
-                    width: origImage.dimensions[0],
-                    height: origImage.dimensions[1],
                     left: parseInt(this.config.imageMinSize.width) / 2,
                     top: parseInt(this.config.imageMinSize.width) / 2,
-
+                    hasControls: false,
+                    hasBorders: false
                 });
-                group.hasControls = false;
-                group.hasBorders = false;
+                group.padding = this.config.imageMinSize.width > this.config.imageMinSize.height
+                    ? this.config.imageMinSize.width : this.config.imageMinSize.height;
                 zoomCanvas.add(group);
+                zoomCanvas.setActiveObject(group);
                 zoomCanvas.renderAll();
             }
         }.bind(this));
@@ -911,7 +914,7 @@ GoMage.ProductDesigner.prototype = {
             left: width / 2,
             top: height / 2,
             hasControls: false,
-            hasBorders: false
+            hasBorders: true
         });
 
         return obj;
@@ -920,18 +923,29 @@ GoMage.ProductDesigner.prototype = {
     prepareDesignImageForZoom: function(obj){
         var currentImg = this.config.product.images[this.currentColor][this.currentProd];
         var origImage = this.config.product.images[this.currentColor][this.currentProd].orig_image;
+        var frameWidth = dstWidth = currentImg.d[0];
+        var frameHeight = dstHeight = currentImg.d[1];
+
+        if ((origImage['dimensions'][0] / origImage['dimensions'][1]) >= frameWidth / frameHeight) {
+            var dstHeight = Math.round((frameWidth / origImage['dimensions'][0]) * origImage['dimensions'][1]);
+        } else {
+            var dstWidth = Math.round((frameHeight / origImage['dimensions'][1]) * origImage['dimensions'][0])
+        }
+
         var scaleX = origImage['dimensions'][0] / currentImg['d'][0];
         var scaleY = origImage['dimensions'][1] / currentImg['d'][1];
+        var widthScale = origImage['dimensions'][0] / dstWidth;
+        var heightScale = origImage['dimensions'][1] / dstHeight;
+
+
         obj.set({
-            width: currentImg.w,
-            height: currentImg.h,
-            top: currentImg.t * scaleY,
-            left: currentImg.l * scaleX
+            width: Math.round(currentImg.w * widthScale),
+            height: Math.round(currentImg.h * heightScale),
+            top: Math.round((currentImg.t * scaleY) - (frameHeight / 2 * (frameHeight / dstHeight - 1))),
+            left: Math.round((currentImg.l * scaleX) - (frameWidth / 2 * (frameWidth / dstWidth - 1))),
+            hasControls: false,
+            hasBorders: false
         });
-        obj.scaleX = scaleX;
-        obj.scaleY = scaleY;
-        obj.hasControls = false;
-        obj.hasBorders = false;
 
         return obj;
     },

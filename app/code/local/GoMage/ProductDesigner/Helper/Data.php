@@ -70,7 +70,7 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
 
     /**
      * Return Image Settings
-     * 
+     *
      * @param Mage_Catalog_Model_Product $product Product
      * @param int                        $imageId Image Id
      * @return boolean|array
@@ -86,11 +86,11 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
 
     /**
      * Return Product images settings
-     * 
+     *
      * @param Mage_Catalog_Model_Product $product Product
      * @return array
      */
-    public function getSettings(Mage_Catalog_Model_Product $product) 
+    public function getSettings(Mage_Catalog_Model_Product $product)
     {
         if (!$this->_productSettings) {
             $settings = array();
@@ -110,6 +110,12 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
                         'width' => $dimensions[0],
                         'height' => $dimensions[1]
                     );
+                    $designArea['original_image'] = $this->getOriginalImage($product, $image);
+                    if (isset($designArea['original_image']['url'])) {
+                        $designArea['original_image']['path'] = str_replace(
+                            $baseUrl, $baseDir, $designArea['original_image']['url']
+                        );
+                    }
                     $settings[$imageId] = $designArea;
                 }
             }
@@ -146,7 +152,7 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
         return array(0, 0);
     }
 
-    public function prepareDesignerSessionId() 
+    public function prepareDesignerSessionId()
     {
         $customerSession = $this->_getCustomerSession();
         if(!$customerSession->getDesignerSessionId()) {
@@ -154,20 +160,20 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
         }
     }
 
-    public function getDesignerSessionId() 
+    public function getDesignerSessionId()
     {
         $sessionId = $this->_getCustomerSession()->getEncryptedSessionId();
         return $sessionId;
     }
 
-    protected function _getCustomerSession() 
+    protected function _getCustomerSession()
     {
         return Mage::getSingleton('customer/session');
     }
-    
+
     /**
      * Return Image Url
-     * 
+     *
      * @param Mage_Catalog_Model_Product $product Product
      * @param Varien_Object              $image   Image
      * @return string
@@ -184,7 +190,7 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
         $imageFile = is_object($image) ? $image->getFile() : $image['file'];
         $url = Mage::helper('catalog/image')->init($product, 'base_image', $imageFile)
             ->resize($imageWidth, $imageHeight)->__toString();
-        
+
         return $url;
     }
 
