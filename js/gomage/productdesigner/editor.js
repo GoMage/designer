@@ -928,12 +928,12 @@ GoMage.ProductDesigner.prototype = {
 
         if ((origImage['dimensions'][0] / origImage['dimensions'][1]) >= frameWidth / frameHeight) {
             var dstHeight = Math.round((frameWidth / origImage['dimensions'][0]) * origImage['dimensions'][1]);
+            var scale = origImage['dimensions'][0] / frameWidth;
         } else {
             var dstWidth = Math.round((frameHeight / origImage['dimensions'][1]) * origImage['dimensions'][0])
+            var scale = origImage['dimensions'][1] / frameHeight;
         }
 
-        var scaleX = origImage['dimensions'][0] / currentImg['d'][0];
-        var scaleY = origImage['dimensions'][1] / currentImg['d'][1];
         var widthScale = origImage['dimensions'][0] / dstWidth;
         var heightScale = origImage['dimensions'][1] / dstHeight;
 
@@ -941,8 +941,8 @@ GoMage.ProductDesigner.prototype = {
         obj.set({
             width: Math.round(currentImg.w * widthScale),
             height: Math.round(currentImg.h * heightScale),
-            top: Math.round((currentImg.t * scaleY) - (frameHeight / 2 * (frameHeight / dstHeight - 1))),
-            left: Math.round((currentImg.l * scaleX) - (frameWidth / 2 * (frameWidth / dstWidth - 1))),
+            top: Math.round((currentImg.t * scale) - (frameHeight - dstHeight)),
+            left: Math.round((currentImg.l * scale) - (frameWidth - dstWidth)),
             hasControls: false,
             hasBorders: false
         });
