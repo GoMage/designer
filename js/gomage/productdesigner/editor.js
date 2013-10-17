@@ -278,6 +278,11 @@ GoMage.ProductDesigner.prototype = {
             var buttonId = e.target.id || e.srcElement.id;
             var tabContentElement = $(buttonId+'-content');
             if(tabContentElement) {
+                if (buttonId == 'pd_add_text') {
+                    var event = document.createEvent('Event');
+                    event.initEvent('addTextTabShow', true, true);
+                    document.dispatchEvent(event);
+                }
                 tabContentElement.siblings().invoke('setStyle', {display:'none'});
                 if(tabContentElement.getStyle('display') == 'none') {
                     tabContentElement.setStyle({display:'block'});
@@ -323,6 +328,9 @@ GoMage.ProductDesigner.prototype = {
             this.canvas.selection = false;
         }
         this.currentProd = prod.id;
+        var event = document.createEvent('Event');
+        event.initEvent('addTextTabShow', true, true);
+        document.dispatchEvent(event);
     },
 
     calculateOffsetByY : function(prod) {
@@ -673,15 +681,22 @@ GoMage.ProductDesigner.prototype = {
         this.canvas.observe('object:modified', function(e) {
             var orig = e.target.originalState;
             // CASE 1: object has been moved
-            if (orig.left != e.target.left || orig.top != e.target.top) {
-                var cmd = new MovingCommand(
-                    this.canvas,
-                    this.canvas.getActiveObject(),
-                    {left : orig.left, top: orig.top},
-                    {left : e.target.left, top: e.target.top}
-                );
-                this.history.push(cmd);
-            }
+            setTimeout(function(){
+                if (orig.left != e.target.left || orig.top != e.target.top) {
+                    if ((e.target.left + e.target.width/2 <= 0) || (e.target.left - e.target.width/2 >= this.canvas.getWidth())) {
+                        return;
+                    } else if ((e.target.top + e.target.height/2 <= 0) || (e.target.top - e.target.height/2 >= this.canvas.getHeight())) {
+                        return;
+                    }
+                    var cmd = new MovingCommand(
+                        this.canvas,
+                        this.canvas.getActiveObject(),
+                        {left : orig.left, top: orig.top},
+                        {left : e.target.left, top: e.target.top}
+                    );
+                    this.history.push(cmd);
+                }
+            }.bind(this), 1000);
 
             // CASE 2: object has been rotated
             if (orig.angle != e.target.angle) {
@@ -1346,6 +1361,7 @@ GoMage.TextEditor = function(defaultFontFamily, defaultFontSize) {
     this.addTextColorsPanel = $('add_text_colors_panel');
     this.outlineStrokeWidthRange = $('outline_range');
 
+    this.observeTextTabShow();
     this.initColorPickers();
     this.observeTextColorChange();
     this.observeFontChange();
@@ -1361,6 +1377,41 @@ GoMage.TextEditor = function(defaultFontFamily, defaultFontSize) {
 };
 
 GoMage.TextEditor.prototype = {
+    observeTextTabShow: function() {
+        document.observe('addTextTabShow', function(e){
+            var textObj = e.obj
+            if (textObj) {
+                this.addTextTextarea.value = textObj.text;
+                if (textObj.fontFamily) {
+                    this.fontSelector.value = textObj.fontFamily;
+                }
+                if (textObj.fontSize) {
+                    this.fontSizeSelector.value = textObj.fontSize;
+                }
+                if (textObj.strokeWidth) {
+                    this.outlineStrokeWidthRange.value = textObj.strokeWidth;
+                }
+                if (textObj.textShadowParams.x) {
+                    $('shadow_x_range').value = textObj.textShadowParams.x;
+                }
+                if (textObj.textShadowParams.y) {
+                    $('shadow_y_range').value = textObj.textShadowParams.y;
+                }
+                if (textObj.textShadowParams.blur) {
+                    $('shadow_blur').value = textObj.textShadowParams.blur;
+                }
+            } else {
+                this.addTextTextarea.value = '';
+                this.fontSelector.value = this.defaultTextOpt.fontFamily;
+                this.fontSizeSelector.value = this.defaultTextOpt.fontsize;
+                this.outlineStrokeWidthRange.value = this.outlineStrokeWidthRange.getAttribute('min');
+                $('shadow_x_range').value = 0;
+                $('shadow_y_range').value = 0;
+                $('shadow_blur').value = 0;
+            }
+
+        }.bind(this));
+    },
 
     initColorPickers: function() {
         var colorPickers = $$('.color-picker');
@@ -1533,11 +1584,7 @@ GoMage.TextEditor.prototype = {
 
     openConfigContainer: function(elem) {
         elem.siblings().invoke('removeClassName', 'active');
-        if (elem.hasClassName('active')) {
-            elem.removeClassName('active');
-        } else {
-            elem.addClassName('active');
-        }
+        elem.addClassName('active');
         var configClass = elem.id.replace('-button', '-config');
         var configElement = $$('.' + configClass)[0];
         configElement.siblings().invoke('setStyle', {display:'none'});
@@ -1623,7 +1670,7 @@ GoMage.TextEditor.prototype = {
         this.btnOutlineText.observe('click', function(e){
             var elem = e.target || e.srcElement;
             if (elem.hasClassName('active')){
-                elem.value = 0;
+                this.outlineStrokeWidthRange.value = 0;
                 this.setOutline({strokeWidth: 0, strokeStyle: ''});
             }
             this.openConfigContainer(elem);
@@ -2104,9 +2151,25 @@ var LayersManager = function(w) {
 
     document.observe('PdLayerSelect', function(e) {
         var obj = e.obj;
-        if (self.active == obj.get('uid')) return;
+        if (self.active == obj.get('uid')) {
+            return;
+        }
         self.active = obj.get('uid');
-    });
+
+        if (obj.type == 'image' && this.w.config.isDesignedEnabled) {
+            var tabContentElement = $('pd_add_design-content');
+        } else if (obj.type == 'custom_text' && this.w.config.isTextEnabled) {
+            var tabContentElement = $('pd_add_text-content');
+            var event = document.createEvent('Event');
+            event.obj = obj;
+            event.initEvent('addTextTabShow', true, true);
+            document.dispatchEvent(event);
+        }
+        if(tabContentElement && !tabContentElement.visible()) {
+            tabContentElement.siblings().invoke('hide');
+            tabContentElement.setStyle({display: 'block'});
+        }
+    }.bind(this));
 
     document.observe('PdLayerBlur', function(e) {
         if (self.active == null) return;
@@ -2270,6 +2333,7 @@ var RemoveCommand = function(w, obj) {
     var c = w.canvas;
     return {
         exec : function() {
+            w.layersManager.removeOutsideMark(obj.get('uid'));
             w.layersManager.removeOnlyLayer(obj);
             c.remove(obj);
             w.reloadPrice();
@@ -2277,6 +2341,11 @@ var RemoveCommand = function(w, obj) {
         unexec : function() {
             c.add(obj);
             c.setActiveObject(obj);
+            if ((obj.left + obj.width/2 <= 0) || (obj.left - obj.width/2 >= c.getWidth())) {
+                obj.center();
+            } else if ((obj.top + obj.height/2 <= 0) || (obj.top - obj.height/2 >= c.getHeight())) {
+                obj.center();
+            }
             obj.setCoords();
             c.renderAll();
             w.layersManager.add(obj);
