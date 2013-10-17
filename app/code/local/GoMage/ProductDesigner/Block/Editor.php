@@ -45,7 +45,12 @@ class GoMage_ProductDesigner_Block_Editor extends Mage_Core_Block_Template
     public function getEditorConfig()
     {
         if (is_null($this->_editorConfig)) {
-            $this->_editorConfig = Mage::helper('designer')->getProductSettingForEditor();
+            if ($this->isProductSelected()) {
+                $this->_editorConfig = Mage::helper('designer')->getProductSettingForEditor();
+            } else {
+                $this->_editorConfig = false;
+            }
+
         }
 
         return $this->_editorConfig;
@@ -89,7 +94,9 @@ class GoMage_ProductDesigner_Block_Editor extends Mage_Core_Block_Template
 
     public function isProductSelected()
     {
-        return (bool) $this->getProduct()->getId();
+        $product = $this->getProduct();
+        return (bool) $product->getId() && ($product->getEnableProductDesigner()
+            && $product->hasImagesForDesign());
     }
 
     public function getProductImageWidth()

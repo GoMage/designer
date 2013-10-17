@@ -119,6 +119,9 @@ GoMage.ProductDesigner = function(config, continueUrl, loginUrl, registrationUrl
 GoMage.ProductDesigner.prototype = {
 
     loadProduct : function(product, color) {
+        if (!product) {
+            return;
+        }
         if (!color) {
             color = product.default_color;
         }
@@ -158,6 +161,9 @@ GoMage.ProductDesigner.prototype = {
         this.config.isProductSelected = true;
 
         if (price) {
+            if (!$('design_price_container').visible()) {
+                $('design_price_container').show();
+            }
             $('design_price_container').update(price);
             if (optionsPrice != undefined && data.price_config) {
                 optionsPrice.initialize(data.price_config);

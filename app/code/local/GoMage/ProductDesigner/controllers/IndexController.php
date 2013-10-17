@@ -42,7 +42,8 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
     public function indexAction()
     {
         $product = $this->_initializeProduct();
-        if ($product->getId() && (!$product->getEnableProductDesigner() || !$product->hasImagesForDesign())) {
+        if ($product->getId() && (!$product->getEnableProductDesigner() || !$product->hasImagesForDesign())
+            && !Mage::helper('designer')->isNavigationEnabled()) {
             $this->_redirectReferer();
         } elseif (!$product->getId() && !Mage::helper('designer')->isNavigationEnabled()) {
             $this->_redirectReferer();
@@ -174,8 +175,13 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
             $customerId = (int) $this->_getCustomerSession()->getCustomerId();
 
             $baseMediaPath = Mage::getSingleton('gmpd/uploadedImage_config')->getBaseMediaPath();
-
+            $allowedFormats = Mage::getStoreConfig('gmpd/upload_image/format');
+            $allowedFormats = explode(',', $allowedFormats);
             foreach ($files as $file) {
+                $imageExtension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+                if (!in_array($imageExtension, $allowedFormats)) {
+                    continue;
+                }
                 $fileName = substr(sha1(microtime()), 0, 20) . $this->getConvertHelper()->format($file['name']);
                 $fileDir = '/' . ($customerId ? $customerId : $sessionId) . '/';
                 $destinationDir = $baseMediaPath . $fileDir;

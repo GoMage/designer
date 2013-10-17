@@ -64,9 +64,9 @@ $productImageMinSize = $this->getProductOriginalImageMinSizes();
     <div class="product-designer-header">
         <ul id="pd_nav_container" class="pd_nav_container">
             <li style="display: <?php echo $navigationEnabled ? 'block': 'none'?>" id="pd_choose_product"><?php echo $this->__('Choose Product'); ?></li>
-            <li style="display: <?php echo $designEnabled ? 'block': 'none'?>" id="pd_add_design"><?php echo $this->__('Add Design'); ?></li>
-            <li style="display: <?php echo $textEnabled ? 'block': 'none'?>" id="pd_add_text"><?php echo $this->__('Add Text'); ?></li>
-            <li style="display: <?php echo $imageEnabled ? 'block': 'none' ?>" id="pd_add_image"><?php echo $this->__('Upload Image'); ?></li>
+            <li style="display: <?php echo $designEnabled && $this->isProductSelected() ? 'block': 'none'?>" id="pd_add_design"><?php echo $this->__('Add Design'); ?></li>
+            <li style="display: <?php echo $textEnabled && $this->isProductSelected()? 'block': 'none'?>" id="pd_add_text"><?php echo $this->__('Add Text'); ?></li>
+            <li style="display: <?php echo $imageEnabled && $this->isProductSelected()? 'block': 'none' ?>" id="pd_add_image"><?php echo $this->__('Upload Image'); ?></li>
         </ul>
         <div id="pd_save_container" class="pd_save_container" style="display: <?php echo $this->isProductSelected() ? 'block': 'none'?>">
           <button class="button pd-btn" id="pd_save_design"><span><span><?php echo Mage::helper('designer')->__('Save  Design') ?></span></span></button>
@@ -162,7 +162,7 @@ $productImageMinSize = $this->getProductOriginalImageMinSizes();
                   <?php echo $this->getChildHtml('additionalInstructions');?>
               </div>
           </div>
-          <div id="design_price_container" class="product-designer-price">
+          <div id="design_price_container" class="product-designer-price" style="<?php if (!$this->isProductSelected()) echo "display: none"?>">
               <?php echo $this->getChildHtml('design_price'); ?>
           </div>
       </div>

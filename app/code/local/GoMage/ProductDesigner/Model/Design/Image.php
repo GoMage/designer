@@ -292,7 +292,7 @@ class GoMage_ProductDesigner_Model_Design_Image extends Mage_Core_Model_Abstract
      */
     protected function _prepareImageExtension($imagePath)
     {
-        $imageExtension = pathinfo($imagePath, PATHINFO_EXTENSION);
+        $imageExtension = strtolower(pathinfo($imagePath, PATHINFO_EXTENSION));
         if(in_array($imageExtension, array('jpg', 'jpeg'))) {
             $imageExtension = 'jpeg';
         }

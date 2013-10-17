@@ -270,8 +270,9 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
                     $editorConfig['images'][$defaultColor][$id] = $conf;
                 }
                 $editorConfig['default_color'] = $defaultColor;
-                $this->_editorConfig = $editorConfig;
             }
+
+            $this->_editorConfig = $editorConfig;
         }
 
         return $this->_editorConfig;
