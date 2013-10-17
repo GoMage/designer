@@ -108,6 +108,7 @@ GoMage.ProductDesigner = function(config, continueUrl, loginUrl, registrationUrl
     this.observeProductImageChange();
     this.observeProductImageColorChange();
     this.observeCanvasObjectModified();
+    this.observeCanvasObjectMoving();
     this.observeCanvasObjectSelected();
     this.observeCanvasObjectRendered();
     this.initPrices();
@@ -699,6 +700,28 @@ GoMage.ProductDesigner.prototype = {
                 );
                 this.history.push(cmd);
             }
+        }.bind(this));
+    },
+
+    observeCanvasObjectMoving: function() {
+        if ((this.canvas == null) || this.canvas == 'undefined') {
+            return;
+        }
+
+        this.canvas.observe('object:moving', function(e){
+            var obj = this.canvas.getActiveObject();
+            if (!obj) {
+                return;
+            }
+            setTimeout(function(){
+                if ((obj.left + obj.width/2 <= 0) || (obj.left - obj.width/2 >= this.canvas.getWidth())) {
+                    this.layersManager.removeById(obj.get('uid'));
+                }
+
+                if ((obj.top + obj.height/2 <= 0) || (obj.top - obj.height/2 >= this.canvas.getHeight())) {
+                    this.layersManager.removeById(obj.get('uid'));
+                }
+            }.bind(this), 1000);
         }.bind(this));
     },
 
@@ -2102,6 +2125,9 @@ LayersManager.prototype = {
     },
 
     removeById : function(id) {
+        if (!this.layers[id]) {
+            return;
+        }
         var cmd = new RemoveCommand(this.w, this.layers[id]);
         cmd.exec();
         this.w.history.push(cmd);
@@ -2109,6 +2135,9 @@ LayersManager.prototype = {
     },
 
     removeOnlyLayer : function(obj) {
+        if (!obj) {
+            return;
+        }
         var id = obj.get('uid');
         this.layers[id] = null;
     },
