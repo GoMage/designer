@@ -214,7 +214,7 @@ $colors = $this->getProductColors();
 //]]>
 </script>
 <?php if ($productDesignerEnabled): ?>
-    <div id="design-area-popup"></div>
+    <div id="design-area-popup" style="width: <?php echo $this->getDesignAreaPopupWidth()+20; ?>px;"></div>
 <?php endif;?>
 <script type="text/javascript">
 function switchDesignArea(f, self)
@@ -262,9 +262,12 @@ function openDesignAreaEditor(file, target)
         onSuccess: function(transport){
             var response = transport.responseText.evalJSON();
             if (response.status == 'success') {
-                $('design-area-popup').update(response.design_area);
-                window.designAreaPopup.setContent('design-area-popup', true, true);
-                window.designAreaPopup.setZIndex(2000);
+                if ($('design-area-popup').innerHTML == '') {
+                    $('design-area-popup').update(response.design_area);
+                    window.designAreaPopup.setContent('design-area-popup', true, false);
+                } else {
+                    $('design-area-popup').update(response.design_area);
+                }
                 window.designAreaPopup.showCenter(true);
                 if (target != undefined) {
                     window.designAreaPopup.target = target;
@@ -304,10 +307,6 @@ $(function() {
     window.designAreaPopup = new Window({
         className: 'magento',
         title: '<?php echo Mage::helper('designer')->__('Choose design area') ?>',
-        width: 550,
-        minWidth: 550,
-        height: 600,
-        minHeight: 600,
         maximizable:false,
         minimizable:false,
         resizable:false,
@@ -316,5 +315,6 @@ $(function() {
         showEffectOptions: {duration:0.4},
         hideEffectOptions: {duration:0.4}
     });
+    window.designAreaPopup.setZIndex(2000);
 })();
 </script>

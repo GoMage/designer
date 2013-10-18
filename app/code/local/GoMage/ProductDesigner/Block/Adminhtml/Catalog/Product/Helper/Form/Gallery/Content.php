@@ -114,4 +114,9 @@ class GoMage_ProductDesigner_Block_Adminhtml_Catalog_Product_Helper_Form_Gallery
     {
         return Mage::helper('designer')->hasColorAttribute();
     }
+
+    public function getDesignAreaPopupWidth()
+    {
+        return Mage::getStoreConfig('gmpd/design/design_size_width');
+    }
 }

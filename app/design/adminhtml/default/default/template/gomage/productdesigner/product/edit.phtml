@@ -1,40 +1,22 @@
-<?php
-$image = $this->getImage();
-?>
+<?php $image = $this->getImage(); ?>
 <?php if($image && $image->getId()): ?>
-    <?php
-    $w = 0;
-    if ($this->getImageWidth() < 800) {
-        $w = 400 - round($this->getImageWidth() / 2);
-    }
-    $settings = $this->getSettings();
-    ?>
-    <div id="textsize">
+    <?php $settings = $this->getSettings();?>
+    <div id="textsize" style="width:<?php echo $this->getImageWidth(); ?>px;">
         <?php echo $this->__('Width'); ?> <input type="text" name="areaWidth" id="areaWidth" value="0" /><?php echo $this->__('px'); ?>
         <?php echo $this->__('Height'); ?> <input type="text" name="areaHeight" id="areaHeight" value="0" /><?php echo $this->__('px'); ?>
     </div>
-    <div id="image_wrapper" style="margin-left:<?php echo $w; ?>px;width:<?php echo $this->getImageWidth(); ?>px;height:<?php echo $this->getImageHeight(); ?>px;background: url(<?php echo $this->getImage()->getUrl(); ?>) no-repeat center;border:1px solid #ccc">
+    <div id="image_wrapper" style="width:<?php echo $this->getImageWidth(); ?>px;height:<?php echo $this->getImageHeight(); ?>px;background: url(<?php echo $this->getImage()->getUrl(); ?>) no-repeat center;border:1px solid #ccc">
         <canvas id="image" width="<?php echo $this->getImageWidth(); ?>" height="<?php echo $this->getImageHeight(); ?>"></canvas>
     </div>
 
-    <div id="controls" class="form-buttons" style="margin-top:10px;width:100%;text-align:right;">
+    <div id="controls" class="form-buttons" style="width:<?php echo $this->getImageWidth(); ?>px;">
         <?php echo $this->__('Design Area used initial Cost'); ?>:
         <input type="text" id="initialPrice" name="initialPrice" value="<?php echo $settings['ip'] ? $settings['ip'] : 0; ?>" />
-        <label for="side_selector"><?php echo Mage::helper('designer')->__('Choose a Side') ?> : </label>
-        <select id="side_selector">
-            <option value="1"><?php echo Mage::helper('designer')->__('Front') ?></option>
-            <option value="2"><?php echo Mage::helper('designer')->__('Back') ?></option>
-            <option value="3"><?php echo Mage::helper('designer')->__('Left') ?></option>
-            <option value="4"><?php echo Mage::helper('designer')->__('Right') ?></option>
-        </select>
         <button class="pd-btn scalable" type="button" id="save_settings"><?php echo Mage::helper('designer')->__('Save settings') ?></button>
     </div>
 
     <script type="text/javascript">
     (function() {
-        var options = $$('select#side_selector option');
-        options['<?php echo $settings["s"] - 1; ?>'].selected = true;
-
         var imgW = '<?php echo $this->getImageWidth(); ?>';
         var imgH = '<?php echo $this->getImageHeight(); ?>'
 
@@ -129,7 +111,6 @@ $image = $this->getImage();
             data['l'] = Math.round(area.getLeft());
             data['w'] = Math.round(area.getWidth());
             data['h'] = Math.round(area.getHeight());
-            data['s'] = $('side_selector').value;
             data['image_id'] = '<?php echo $this->getImageId(); ?>';
             data['ip'] = $('initialPrice').value;
 
