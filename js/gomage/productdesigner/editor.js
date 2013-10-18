@@ -2175,7 +2175,7 @@ var LayersManager = function(w) {
             event.initEvent('addTextTabShow', true, true);
             document.dispatchEvent(event);
         }
-        if(tabContentElement && !tabContentElement.visible()) {
+        if(tabContentElement) {
             tabContentElement.siblings().invoke('hide');
             tabContentElement.setStyle({display: 'block'});
         }
