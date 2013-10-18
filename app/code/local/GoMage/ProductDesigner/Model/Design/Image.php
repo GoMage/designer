@@ -34,7 +34,7 @@
  */
 class GoMage_ProductDesigner_Model_Design_Image extends Mage_Core_Model_Abstract
 {
-    protected $_imageExtension = 'imagick';
+    protected $_imageExtension = 'imagic';
 
     /**
      * Initialize resource model
@@ -203,6 +203,11 @@ class GoMage_ProductDesigner_Model_Design_Image extends Mage_Core_Model_Abstract
             $fileToSave = $this->_prepareFileForSave();
             if (extension_loaded($this->_imageExtension)){
                 $canvas->writeImage($fileToSave);
+                if ($this->_getImageExtensionForSave() == 'pdf') {
+                    $fileToSaveJpg = str_replace('.pdf', '.jpg', $fileToSave);
+                    $canvas->setImageFormat('jpg');
+                    $canvas->writeImage($fileToSaveJpg);
+                }
                 $canvas->destroy();
             } else {
                 $imageExtension = strtolower(pathinfo($fileToSave, PATHINFO_EXTENSION));
@@ -215,8 +220,8 @@ class GoMage_ProductDesigner_Model_Design_Image extends Mage_Core_Model_Abstract
                     $pdfPage = $pdf->newPage($image->getPixelWidth(). ':'. $image->getPixelHeight());
                     $pdfPage->drawImage($image, 0, 0, $image->getPixelWidth(), $image->getPixelHeight());
                     $pdf->pages[] = $pdfPage;
-                    $pdf->save($fileToSave.$imageExtension);
-                    unlink($fileToSave. 'jpg');
+                    $fileToSave = $fileToSave.$imageExtension;
+                    $pdf->save($fileToSave);
                 } else {
                     if ($imageExtension = 'jpg') {
                         $saveFunction = 'imagejpeg';

@@ -56,6 +56,14 @@ class GoMage_ProductDesigner_Helper_Image extends Mage_Core_Helper_Data
         $this->_height = null;
         $this->_filename = $filename;
         $this->_baseDir = Mage::getSingleton('gmpd/design_config')->getBaseMediaPath();
+        $imageExtension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+        if ($imageExtension == 'pdf') {
+            $filename = str_replace('.pdf', '.jpg', $filename);
+            if (file_exists($this->_baseDir . $filename)) {
+                $this->_filename = $filename;
+            }
+        }
+
         return $this;
     }
 
