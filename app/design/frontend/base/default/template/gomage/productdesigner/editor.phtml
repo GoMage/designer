@@ -25,7 +25,8 @@ $productImageMinSize = $this->getProductOriginalImageMinSizes();
             addImage : $("pd_add_image"),
             designGallery : $("pd_design_gallery"),
             saveDesign: $("pd_save_design"),
-            continue : $('pd_gt_product')
+            continue : $('pd_gt_product'),
+            zoom: $('pd_zoom')
         };
 
         settings.controls = {
@@ -33,8 +34,8 @@ $productImageMinSize = $this->getProductOriginalImageMinSizes();
             redo: 'pd_redo',
             flip_x: 'pd_flip_horizontal',
             flip_y: 'pd_flip_vertical',
-            zoom: 'pd_zoom',
-            allign_by_center: 'pd_allign_by_center'
+            allign_by_center: 'pd_allign_by_center',
+            remove: 'pd_delete'
         };
 
         settings.imageMinSize = <?php echo $this->getProductOriginalImageMinSizesJson(); ?>;
@@ -69,8 +70,9 @@ $productImageMinSize = $this->getProductOriginalImageMinSizes();
             <button class="button pd-btn" style="<?php echo !$imageEnabled || !$this->isProductSelected()? 'display:none' : ''; ?>" id="pd_add_image"><span><span><?php echo Mage::helper('designer')->__('Upload Image') ?></span></span></button>
         </div>
         <div id="pd_save_container" class="pd_save_container" style="display: <?php echo $this->isProductSelected() ? 'block': 'none'?>">
-          <button class="button pd-btn" id="pd_save_design"><span><span><?php echo Mage::helper('designer')->__('Save  Design') ?></span></span></button>
-          <button class="button pd-btn" id="pd_gt_product"><span><span><?php echo Mage::helper('designer')->__('Continue') ?></span></span></button>
+            <button class="button pd-btn" id="pd_zoom"><span><span><?php echo Mage::helper('designer')->__('Preview') ?></span></span></button>
+            <button class="button pd-btn" id="pd_save_design"><span><span><?php echo Mage::helper('designer')->__('Save  Design') ?></span></span></button>
+            <button class="button pd-btn" id="pd_gt_product"><span><span><?php echo Mage::helper('designer')->__('Continue') ?></span></span></button>
         </div>
     </div>
     
@@ -173,7 +175,7 @@ $productImageMinSize = $this->getProductOriginalImageMinSizes();
         <div id="pd_bottom_panel" class="pd_bottom_panel" style="width: <?php echo $this->getProductImageWidth();?>px; display: <?php echo !$this->isProductSelected() ? 'none' : 'block'?>">
             <button class="button pd-btn" id="pd_flip_horizontal"><span><span><?php echo Mage::helper('designer')->__('Horizontal Flip') ?></span></span></button>
             <button class="button pd-btn" id="pd_flip_vertical"><span><span><?php echo Mage::helper('designer')->__('Vertical Flip') ?></span></span></button>
-            <button class="button pd-btn" id="pd_zoom"><span><span><?php echo Mage::helper('designer')->__('Zoom') ?></span></span></button>
+            <button class="button pd-btn" id="pd_delete"><span><span><?php echo Mage::helper('designer')->__('Remove') ?></span></span></button>
             <button class="button pd-btn" id="pd_allign_by_center"><span><span><?php echo Mage::helper('designer')->__('Align by center') ?></span></span></button>
             <button class="button pd-btn" id="pd_undo"><span><span><?php echo Mage::helper('designer')->__('Undo') ?></span></span></button>
             <button class="button pd-btn" id="pd_redo"><span><span><?php echo Mage::helper('designer')->__('Redo') ?></span></span></button>

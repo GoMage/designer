@@ -103,6 +103,7 @@ GoMage.ProductDesigner = function(config, continueUrl, loginUrl, registrationUrl
     this.loadProduct(config.product);
     this.observeLayerControls();
     this.observeTabs();
+    this.observeZoomBtn();
     this.observeSaveDesign();
     this.observeContinueBtn();
     this.observeProductImageChange();
@@ -641,7 +642,7 @@ GoMage.ProductDesigner.prototype = {
                 this.history.redo();
             }
 
-            if ((e.ctrlKey != false && e.altKey == false) && (e.which == 46 || e.which == 8)) {
+            if (e.which == 46 || e.which == 8) {
                 if ((this.canvas == null) || this.canvas == 'undefined') {
                     return;
                 }
@@ -651,7 +652,15 @@ GoMage.ProductDesigner.prototype = {
                 }
             }
         }.bind(this));
-        
+
+        $(this.config.controls.remove).observe('click', function(e){
+            e.stop();
+            var obj = this.canvas.getActiveObject();
+            if (obj) {
+                this.layersManager.removeById(obj.get('uid'));
+            }
+        }.bind(this));
+
         $(this.config.controls.undo).observe('click', function(e){
             e.stop();
             this.history.undo();
@@ -671,11 +680,6 @@ GoMage.ProductDesigner.prototype = {
             e.stop();
             this.flipYLayer();
         }.bind(this));
-
-        $(this.config.controls.zoom).observe('click', function(e){
-            e.stop();
-            this.zoom();
-        }.bind(this))
 
         $(this.config.controls.allign_by_center).observe('click', function(e){
             e.stop();
@@ -884,7 +888,18 @@ GoMage.ProductDesigner.prototype = {
         this.history.push(cmd);
     },
 
-    // Zoom In
+    observeZoomBtn: function()
+    {
+        if (!this.config.navigation.zoom) {
+            return;
+        }
+        this.config.navigation.zoom.observe('click', function(e){
+            e.stop();
+            this.zoom();
+        }.bind(this))
+    },
+
+    // Preview result image
     zoom: function()
     {
         this.createZoomWindow();
