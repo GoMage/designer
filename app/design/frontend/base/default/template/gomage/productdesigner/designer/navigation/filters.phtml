@@ -1,7 +1,13 @@
 <?php $availableFilters = $this->getAvailableFilters();?>
+<?php $count = 0;?>
 <ul class="form-list">
   <?php foreach ($availableFilters as $_filter):?>
-    <li>
+    <?php if ($count == 0 || $count == 1):?>
+    <li<?php echo $count === 1 ? "class='fields'" : ''?>>
+    <?php endif;?>
+    <?php if ($count == 1 || $count == 2): ?>
+    <div class="field">
+    <?php endif;?>
       <div class="input-box">
         <?php $options = $this->getAvailableFiltersOptions($_filter);?>
         <select name="<?php echo $_filter?>" id="<?php echo $_filter?>_selector" class="filter_selector">
@@ -11,6 +17,12 @@
             <?php endforeach;?>
         </select>
       </div>
+    <?php if ($count == 1 || $count == 2): ?>
+    </div>
+    <?php endif;?>
+    <?php if ($count == 0 || $count == 2):?>
     </li>
+    <?php endif;?>
+    <?php $count++;?>
   <?php endforeach;?>
 </ul>

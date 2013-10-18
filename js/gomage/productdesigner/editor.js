@@ -281,7 +281,11 @@ GoMage.ProductDesigner.prototype = {
 
     observeTabs: function(){
         $('pd_nav_container').childElements().invoke('observe', 'click', function(e){
-            var buttonId = e.target.id || e.srcElement.id;
+            var elm = e.target || e.srcElement;
+            if (elm.tagName == 'SPAN') {
+                elm = elm.up('button');
+            }
+            var buttonId = elm.id;
             var tabContentElement = $(buttonId+'-content');
             if(tabContentElement) {
                 if (buttonId == 'pd_add_text') {

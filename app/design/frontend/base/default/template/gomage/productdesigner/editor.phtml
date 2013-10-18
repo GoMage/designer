@@ -62,12 +62,12 @@ $productImageMinSize = $this->getProductOriginalImageMinSizes();
 </script>
 <div id="product-designer" class="product-designer">
     <div class="product-designer-header">
-        <ul id="pd_nav_container" class="pd_nav_container">
-            <li style="display: <?php echo $navigationEnabled ? 'block': 'none'?>" id="pd_choose_product"><?php echo $this->__('Choose Product'); ?></li>
-            <li style="display: <?php echo $designEnabled && $this->isProductSelected() ? 'block': 'none'?>" id="pd_add_design"><?php echo $this->__('Add Design'); ?></li>
-            <li style="display: <?php echo $textEnabled && $this->isProductSelected()? 'block': 'none'?>" id="pd_add_text"><?php echo $this->__('Add Text'); ?></li>
-            <li style="display: <?php echo $imageEnabled && $this->isProductSelected()? 'block': 'none' ?>" id="pd_add_image"><?php echo $this->__('Upload Image'); ?></li>
-        </ul>
+        <div id="pd_nav_container" class="pd_nav_container">
+            <button class="button pd-btn" style="<?php echo !$navigationEnabled ? 'display:none' : ''; ?>" id="pd_choose_product"><span><span><?php echo Mage::helper('designer')->__('Choose Product') ?></span></span></button>
+            <button class="button pd-btn" style="<?php echo !$designEnabled || !$this->isProductSelected() ? 'display:none' : '';?>" id="pd_add_design"><span><span><?php echo Mage::helper('designer')->__('Add Design') ?></span></span></button>
+            <button class="button pd-btn" style="<?php echo !$textEnabled || !$this->isProductSelected()? 'display:none' : ''; ?>" id="pd_add_text"><span><span><?php echo Mage::helper('designer')->__('Add Text') ?></span></span></button>
+            <button class="button pd-btn" style="<?php echo !$imageEnabled || !$this->isProductSelected()? 'display:none' : ''; ?>" id="pd_add_image"><span><span><?php echo Mage::helper('designer')->__('Upload Image') ?></span></span></button>
+        </div>
         <div id="pd_save_container" class="pd_save_container" style="display: <?php echo $this->isProductSelected() ? 'block': 'none'?>">
           <button class="button pd-btn" id="pd_save_design"><span><span><?php echo Mage::helper('designer')->__('Save  Design') ?></span></span></button>
           <button class="button pd-btn" id="pd_gt_product"><span><span><?php echo Mage::helper('designer')->__('Continue') ?></span></span></button>
