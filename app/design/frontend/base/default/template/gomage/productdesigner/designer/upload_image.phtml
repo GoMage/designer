@@ -24,7 +24,7 @@
 </div>
 <div id="file-input-box" <?php echo $this->licenseAgreementsEnabled() ? 'style="display:none;"' : ''?>>
     <form target="iframeSave" id="uploadImages" enctype="multipart/form-data" action="<?php echo Mage::getUrl('designer/index/uploadImages'); ?>" method="post">
-        <input name="filesToUpload[]" id="filesToUpload" type="file" multiple="true"/>
+        <input name="filesToUpload[]" id="filesToUpload" type="file" multiple="true" accept="<?php echo $this->getAllowedImageExtensions(); ?>"/>
         <input type="submit" value="<?php echo $this->__('Save'); ?>" />
         <iframe id="iframeSave" name="iframeSave" style="display:none;" src=""></iframe>
     </form>

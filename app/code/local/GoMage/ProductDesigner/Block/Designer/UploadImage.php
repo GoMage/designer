@@ -42,5 +42,14 @@ class GoMage_ProductDesigner_Block_Designer_UploadImage extends Mage_Core_Block_
         return Mage::getStoreConfig('gmpd/upload_image/conditions_text');
     }
 
+    public function getAllowedImageExtensions()
+    {
+        $allowedFormats = Mage::getStoreConfig('gmpd/upload_image/format');
+        $allowedFormats = explode(',', $allowedFormats);
+        foreach ($allowedFormats as &$format) {
+            $format = '.'.$format;
+        }
 
+        return implode(',', $allowedFormats);
+    }
 }
