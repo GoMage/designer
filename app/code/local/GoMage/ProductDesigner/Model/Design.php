@@ -32,7 +32,7 @@ class GoMage_ProductDesigner_Model_Design extends Mage_Core_Model_Abstract
     {
         $images = isset($data['images']) ? $data['images'] : false;
         $prices = isset($data['prices']) ? $data['prices'] : array();
-        $color  = isset($data['color'])  ? $data['color']  : null;
+        $color  = isset($data['color']) && $data['color'] != 'none_color'  ? $data['color']  : null;
 
         if (!$images || empty($images)) {
             return $this;

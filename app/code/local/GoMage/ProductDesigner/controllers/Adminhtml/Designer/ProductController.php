@@ -74,8 +74,15 @@ class GoMage_ProductDesigner_Adminhtml_Designer_ProductController
     {
         $imageId = $this->getRequest()->getParam($idField);
         if ($product->getId() && $imageId) {
-            $images  = $product->getMediaGalleryImages(true);
-            $image   = $images->getItemByColumnValue('value_id', $imageId);
+            $images  = $product->getMediaGallery('images');
+            $image = new Varien_Object();
+            foreach ($images as $_image) {
+                if ($_image['value_id'] == $imageId) {
+                    $_image['id'] = $_image['value_id'];
+                    $image->setData($_image);
+                    break;
+                }
+            }
             if ($image && $image->getId()) {
                 Mage::register('current_image', $image);
                 return $image;

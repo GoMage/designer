@@ -266,7 +266,7 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
                         $editorConfig['images'][$defaultColor][$id] = $conf;
                     }
                 } else {
-                    $defaultColor = $product->getData($colorAttributeCode) ?:'none_color';
+                    $defaultColor = 'none_color';
                     $editorConfig['images'][$defaultColor][$id] = $conf;
                 }
                 $editorConfig['default_color'] = $defaultColor;

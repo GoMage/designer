@@ -8,22 +8,43 @@ class GoMage_ProductDesigner_Model_Catalog_Product extends Mage_Catalog_Model_Pr
      *
      * @return Varien_Data_Collection
      */
-    public function getMediaGalleryImages($skipExclude = false)
+    public function getMediaGalleryImages()
     {
         if(!$this->hasData('media_gallery_images') && is_array($this->getMediaGallery('images'))) {
             $images = new Varien_Data_Collection();
-            if ($designId = Mage::app()->getRequest()->getParam('design_id', false)) {
-                $designImages = $this->getDesignProductImages($designId);
-                $designImages = $this->_prepareDesignImages($designImages);
+            $designId = (int) Mage::app()->getRequest()->getParam('design_id', false);
+            if ($designId) {
+                $design = Mage::getModel('gmpd/design')->load($designId);
+                $designColor = $design->getColor();
+                $designImagesCollection = $this->getDesignProductImages($designId);
+                $designImages = array();
+                foreach ($designImagesCollection as $_designImage) {
+                    $designImages[$_designImage->getImageId()] = $_designImage;
+                }
             }
             foreach ($this->getMediaGallery('images') as $image) {
-                if ($image['disabled'] && !$skipExclude && !isset($designImages[$image['value_id']])) {
+                $imageDisabled = $image['disabled'];
+                if ($designId && $designColor) {
+                    if ($designColor == $image['color']) {
+                        $imageDisabled = false;
+                    } else {
+                        $imageDisabled = true;
+                    }
+                } elseif (isset($designImages[$image['value_id']])) {
+                    $imageDisabled = false;
+                }
+
+                if ($imageDisabled) {
                     continue;
                 }
                 if (!empty($designImages) && isset($designImages[$image['value_id']])) {
                     $designImage = $designImages[$image['value_id']];
                     $mediaConfig = $this->getDesignMediaConfig();
-                    $image['origin_file'] = $image['file'];
+                    $imageExtension = strtolower(pathinfo($designImage['image'], PATHINFO_EXTENSION));
+                    if ($imageExtension == 'pdf') {
+                        $designImage['image'] = str_replace('.pdf', '.jpg', $designImage['image']);
+                    }
+                    $image['original_file'] = $image['file'];
                     $image['file'] = $designImage['image'];
                     $image['design_id'] = $designId;
                 } else {
@@ -40,28 +61,24 @@ class GoMage_ProductDesigner_Model_Catalog_Product extends Mage_Catalog_Model_Pr
         return $this->getData('media_gallery_images');
     }
 
-    protected function _prepareDesignImages($designImages)
+    public function getImage()
     {
-        $designImagesArray = array();
-        foreach($designImages as $designImage) {
-            $designImagesArray[$designImage->getImageId()] = $designImage;
+        $designId = (int) Mage::app()->getRequest()->getParam('design_id', false);
+        if ($designId) {
+            $images = $this->getMediaGalleryImages();
+            $baseImage = null;
+            foreach ($images as $image) {
+                if (is_null($baseImage) || $image->getOriginalFile() == $this->getData('image')) {
+                    $baseImage = $image->getFile();
+                }
+            }
+            if ($baseImage) {
+                $this->setData('image', $baseImage);
+            }
         }
-        return $designImagesArray;
-    }
 
-//    public function getImage()
-//    {
-//        $imageFile = $this->getData('image');
-//        if($imageFile) {
-//            $images = $this->getMediaGalleryImages(true);
-//            foreach($images as $image) {
-//                if($image->getOriginFile() == $imageFile) {
-//                    $this->setData('image', $image->getFile());
-//                }
-//            }
-//        }
-//        return $this->getData('image');
-//    }
+        return $this->getData('image');
+    }
 
     public function getDesignMediaConfig()
     {
