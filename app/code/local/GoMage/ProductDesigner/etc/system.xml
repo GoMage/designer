@@ -207,6 +207,14 @@
                 <show_in_website>1</show_in_website>
                 <show_in_store>1</show_in_store>
               </color_attribute>
+                <size_attribute translate="label comment">
+                    <label>Size Attribute</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>4</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                </size_attribute>
               <!-- Advanced navigation -->
               <show_help>
                 <label>Show Help Icon</label>
