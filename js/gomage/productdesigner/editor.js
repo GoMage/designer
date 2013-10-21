@@ -1441,7 +1441,7 @@ GoMage.TextEditor.prototype = {
     initColorPickers: function() {
         var colorPickers = $$('.color-picker');
         colorPickers.each(function(element) {
-            this.colorPicker = new ColorPicker(element, 20, 230);
+            this.colorPicker = new ColorPicker(element);
             this.colorPicker.getNode().observe('select', this.selectColorOnPicker.bind(this));
         }.bind(this));
     },
@@ -1813,12 +1813,9 @@ GoMage.ImageUploader.prototype = {
 
 
 // COLOR PICKER
-var ColorPicker = function(canvasObj, height, width) {
+var ColorPicker = function(canvasObj) {
     var self   = this;
     var canvas = canvasObj;
-
-    canvas.height = height;
-    canvas.width  = width;
 
     var colorctx = canvas.getContext('2d');
     var gradient = colorctx.createLinearGradient(0, 0, canvas.width, 0);
