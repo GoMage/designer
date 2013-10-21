@@ -26,7 +26,6 @@
 /**
  * GoMage ProductDesigner navigation filters block
  *
- * @todo       Add multiple filters fuctional
  * @category   GoMage
  * @package    GoMage_ProductDesigner
  * @subpackage Block
@@ -37,75 +36,6 @@ class GoMage_ProductDesigner_Block_Designer_Navigation_Filters extends Mage_Core
     protected $_productCollection = null;
 
     /**
-     * Prepare layout
-     * Apply filters to product collection
-     *
-     * @return void
-     */
-    protected function _prepareLayout()
-    {
-//        $this->applyFilters();
-    }
-
-    /**
-     * Apply filters to product collection
-     *
-     * @return void
-     */
-    public function applyFilters()
-    {
-        $request = $this->getRequest();
-        $filters = $this->getAvailableFilters();
-        $collection = $this->getProductCollection();
-
-        foreach ($filters as $_filter) {
-            if ($value = $request->getParam($_filter)) {
-                Mage::getSingleton('gmpd/navigation')->applyFilter($collection, $_filter, $value);
-            }
-        }
-    }
-
-    /**
-     * Return product collection
-     *
-     * @return Mage_Catalog_Model_Resource_Product_Collection
-     */
-    public function getProductCollection()
-    {
-        if (is_null($this->_productCollection)) {
-            $this->_productCollection = Mage::getSingleton('gmpd/navigation')->getProductCollection();
-        }
-
-        return $this->_productCollection;
-    }
-
-    /**
-     * Prepare category filter options
-     *
-     * @param Mage_Catalog_Model_Resource_Product_Collection $productCollection Product Collection
-     * @return null|Mage_Catalog_Model_Mysql_Category_Collection
-     */
-    protected function _prepareCategoryFilters($productCollection)
-    {
-        $categoryIds = array();
-        foreach ($productCollection as $_product) {
-            $categoryIds = array_merge($categoryIds, $_product->getCategoryIds());
-        }
-
-        $categoryIds = array_unique($categoryIds);
-
-        if (!empty($categoryIds)) {
-            $categoryCollection = Mage::getModel('catalog/category')->getCollection();
-            $categoryCollection->addFieldToFilter('entity_id', array('in' => $categoryIds))
-                ->addAttributeToSelect('name');
-
-            return $categoryCollection;
-        }
-
-        return null;
-    }
-
-    /**
      * Return available filter options
      *
      * @param string $filter Filter Name
@@ -114,25 +44,6 @@ class GoMage_ProductDesigner_Block_Designer_Navigation_Filters extends Mage_Core
     public function getAvailableFilterOptions($filter)
     {
         $filters = Mage::getSingleton('gmpd/navigation')->getFilterOptions($filter, $this->getRequest());
-//        $productCollection = $this->getProductCollection();
-//        if ($filter == 'category') {
-//            return $this->_prepareCategoryFilters($productCollection);
-//        }
-
-//        $filters = new Varien_Data_Collection();
-//        foreach($productCollection as $product) {
-//            if($value = $product->getData($filter)) {
-//                if ($filters->getItemById($value)) {
-//                    continue;
-//                }
-//                $item = new Varien_Object(array(
-//                    'id' => $value,
-//                    'name' => $product->getAttributeText($filter)
-//                ));
-//                $filters->addItem($item);
-//            }
-//        }
-
         return $filters;
     }
 
