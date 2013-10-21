@@ -44,7 +44,7 @@ class GoMage_ProductDesigner_Block_Designer_Navigation_Filters extends Mage_Core
      */
     protected function _prepareLayout()
     {
-        $this->applyFilters();
+//        $this->applyFilters();
     }
 
     /**
@@ -111,26 +111,27 @@ class GoMage_ProductDesigner_Block_Designer_Navigation_Filters extends Mage_Core
      * @param string $filter Filter Name
      * @return Mage_Catalog_Model_Mysql_Category_Collection|null|Varien_Data_Collection
      */
-    public function getAvailableFiltersOptions($filter)
+    public function getAvailableFilterOptions($filter)
     {
-        $productCollection = $this->getProductCollection();
-        if ($filter == 'category') {
-            return $this->_prepareCategoryFilters($productCollection);
-        }
+        $filters = Mage::getSingleton('gmpd/navigation')->getFilterOptions($filter, $this->getRequest());
+//        $productCollection = $this->getProductCollection();
+//        if ($filter == 'category') {
+//            return $this->_prepareCategoryFilters($productCollection);
+//        }
 
-        $filters = new Varien_Data_Collection();
-        foreach($productCollection as $product) {
-            if($value = $product->getData($filter)) {
-                if ($filters->getItemById($value)) {
-                    continue;
-                }
-                $item = new Varien_Object(array(
-                    'id' => $value,
-                    'name' => $product->getAttributeText($filter)
-                ));
-                $filters->addItem($item);
-            }
-        }
+//        $filters = new Varien_Data_Collection();
+//        foreach($productCollection as $product) {
+//            if($value = $product->getData($filter)) {
+//                if ($filters->getItemById($value)) {
+//                    continue;
+//                }
+//                $item = new Varien_Object(array(
+//                    'id' => $value,
+//                    'name' => $product->getAttributeText($filter)
+//                ));
+//                $filters->addItem($item);
+//            }
+//        }
 
         return $filters;
     }

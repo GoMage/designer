@@ -35,7 +35,104 @@
 class GoMage_ProductDesigner_Model_Navigation extends Mage_Core_Model_Abstract
 {
     protected $_collection = null;
-    protected $_availableFilters = array('category', 'color', 'size');
+    protected $_availableFilters = array();
+
+    protected function _prepareProductCollection()
+    {
+        $mediaGalleryAttribute = Mage::getSingleton('eav/config')
+            ->getAttribute(Mage_Catalog_Model_Product::ENTITY, 'media_gallery');
+        $storeId = Mage::app()->getStore()->getId();
+        $collection = Mage::getModel('catalog/product')->getCollection()
+            ->addAttributeToFilter('type_id', array('in' => Mage::helper('designer')->getAllowedProductTypes()))
+            ->addAttributeToFilter('enable_product_designer', 1)
+            ->addStoreFilter(Mage::app()->getStore())
+            ->addCategoryIds();
+        $this->_addFiltersAttributes($collection);
+
+        Mage::getSingleton('catalog/product_status')->addVisibleFilterToCollection($collection);
+        Mage::getSingleton('catalog/product_visibility')->addVisibleInCatalogFilterToCollection($collection);
+
+        if ($mediaGalleryAttribute->getId()) {
+            $collection->getSelect()->joinInner(
+                array('media_gallery' => $collection->getTable(Mage_Catalog_Model_Resource_Product_Attribute_Backend_Media::GALLERY_TABLE)),
+                "e.entity_id = media_gallery.entity_id AND media_gallery.attribute_id = {$mediaGalleryAttribute->getId()}",
+                array()
+            )->joinLeft(
+                array('media_gallery_value' => $collection->getTable(Mage_Catalog_Model_Resource_Product_Attribute_Backend_Media::GALLERY_VALUE_TABLE)),
+                "media_gallery.value_id = media_gallery_value.value_id AND media_gallery_value.store_id = {$storeId}",
+                array()
+            )->joinLeft(
+                array('media_gallery_value_default' => $collection->getTable(Mage_Catalog_Model_Resource_Product_Attribute_Backend_Media::GALLERY_VALUE_TABLE)),
+                "media_gallery.value_id = media_gallery_value_default.value_id AND media_gallery_value_default.store_id = 0",
+                array('media_gallery_value_default.design_area')
+            )
+            ->where('IFNULL(media_gallery_value.design_area, media_gallery_value_default.design_area) IS NOT NULL')
+            ->group('e.entity_id');
+        }
+
+        return $collection;
+    }
+
+    protected function _addFiltersAttributes($collection)
+    {
+        $colorAttributeCode = Mage::getStoreConfig('gmpd/navigation/color_attribute');
+        $colorAttribute = Mage::getSingleton('eav/config')
+            ->getAttribute(Mage_Catalog_Model_Product::ENTITY, $colorAttributeCode);
+        $sizeAttributeCode = Mage::getStoreConfig('gmpd/navigation/size_attribute');
+        $sizeAttribute = Mage::getSingleton('eav/config')
+            ->getAttribute(Mage_Catalog_Model_Product::ENTITY, $sizeAttributeCode);
+
+//        if ($colorAttribute && $colorAttribute->getId()) {
+//            $collection->joinLeft(
+//                array('color' => $colorAttribute->getBackendTable()),
+//                "color.attribute_id = {$colorAttribute->getId()} AND color.entity_id = e.entity_id",
+//                array('color' => 'color.value_id')
+//            );
+//        }
+//        if ($colorAttribute && $colorAttribute->getId()) {
+//            $collection->joinLeft(
+//                array('color' => $colorAttribute->getBackendTable()),
+//                "color.attribute_id = {$colorAttribute->getId()} AND color.entity_id = e.entity_id",
+//                array('color' => 'color.value_id')
+//            );
+//        }
+        if ($colorAttribute && $colorAttribute->getId()) {
+            $collection->addAttributeToSelect($colorAttributeCode, true);
+        }
+
+        if ($sizeAttribute && $sizeAttribute->getId()) {
+            $collection->addAttributeToSelect($sizeAttributeCode, true);
+        }
+    }
+
+    /**
+     * @param string $filter Filter
+     * @param Mage_Catalog_Model_Resource_Product_Collection $collection Collection
+     */
+    public function getFilterOptions($filter, $request)
+    {
+        $collection = $this->_prepareProductCollection();
+        $this->applyFilters($collection, $request, $filter);
+
+        $options = array();
+        foreach ($collection as $_item) {
+            if (($value = $_item->getData($filter)) && ($label = $_item->getAttributeText($filter))) {
+                $options[$value] = $label;
+            }
+        }
+        $ids = $collection->getAllIds();
+        $configurableCollection = Mage::getResourceModel('catalog/product_type_configurable_product_collection');
+        $this->_addFiltersAttributes($configurableCollection);
+        $configurableCollection->getSelect()->where("link_table.parent_id IN (?)", $ids);
+        $this->applyFilters($configurableCollection, $request, $filter);
+        foreach ($configurableCollection as $_item) {
+            if (($value = $_item->getData($filter)) && ($label = $_item->getAttributeText($filter))) {
+                $options[$value] = $label;
+            }
+        }
+
+        return $options;
+    }
 
     /**
      * Return product collection
@@ -45,114 +142,21 @@ class GoMage_ProductDesigner_Model_Navigation extends Mage_Core_Model_Abstract
     public function getProductCollection()
     {
         if (is_null($this->_collection)) {
-            $mediaGalleryAttribute = Mage::getSingleton('eav/config')
-                ->getAttribute(Mage_Catalog_Model_Product::ENTITY, 'media_gallery');
-            $colorAttributeCode = Mage::getStoreConfig('gmpd/navigation/color_attribute');
-            $colorAttribute = Mage::getSingleton('eav/config')
-                ->getAttribute(Mage_Catalog_Model_Product::ENTITY, $colorAttributeCode);
-            $sizeAttributeCode = Mage::getStoreConfig('gmpd/navigation/size_attribute');
-            $sizeAttribute = Mage::getSingleton('eav/config')
-                ->getAttribute(Mage_Catalog_Model_Product::ENTITY, $sizeAttributeCode);
-            $storeId = Mage::app()->getStore()->getId();
-            $collection = Mage::getModel('catalog/product')->getCollection()
-                ->addAttributeToSelect(Mage::getSingleton('catalog/config')->getProductAttributes())
-                ->addAttributeToFilter('type_id', array('in' => Mage::helper('designer')->getAllowedProductTypes()))
-                ->addAttributeToFilter('enable_product_designer', 1)
-                ->addStoreFilter(Mage::app()->getStore())
+
+            $collection = $this->_prepareProductCollection();
+            $collection->addAttributeToSelect(Mage::getSingleton('catalog/config')->getProductAttributes())
                 ->addMinimalPrice()
-                ->addFinalPrice()
-                ->addCategoryIds();
-
-            Mage::getSingleton('catalog/product_status')->addVisibleFilterToCollection($collection);
-            Mage::getSingleton('catalog/product_visibility')->addVisibleInCatalogFilterToCollection($collection);
-
+                ->addFinalPrice();
             $collection->getSelect()->joinLeft(
-                array('relation' => $collection->getTable('catalog/product_super_link')),
-                "e.entity_id = relation.parent_id",
+                array('link_table' => $collection->getTable('catalog/product_super_link')),
+                "link_table.parent_id = e.entity_id",
                 array()
-            )->joinInner(
-                array('color' => $colorAttribute->getBackendTable()),
-                "color.attribute_id = {$colorAttribute->getId()} AND color.entity_id = relation.product_id",
-                array('colors' => 'GROUP_CONCAT(DISTINCT color.value)')
             );
-
-            if ($mediaGalleryAttribute->getId()) {
-                $collection->getSelect()->joinInner(
-                    array('media_gallery' => $collection->getTable(Mage_Catalog_Model_Resource_Product_Attribute_Backend_Media::GALLERY_TABLE)),
-                    "e.entity_id = media_gallery.entity_id AND media_gallery.attribute_id = {$mediaGalleryAttribute->getId()}",
-                    array()
-                )->joinLeft(
-                    array('media_gallery_value' => $collection->getTable(Mage_Catalog_Model_Resource_Product_Attribute_Backend_Media::GALLERY_VALUE_TABLE)),
-                    "media_gallery.value_id = media_gallery_value.value_id AND media_gallery_value.store_id = {$storeId}",
-                    array()
-                )->joinLeft(
-                    array('media_gallery_value_default' => $collection->getTable(Mage_Catalog_Model_Resource_Product_Attribute_Backend_Media::GALLERY_VALUE_TABLE)),
-                    "media_gallery.value_id = media_gallery_value_default.value_id AND media_gallery_value_default.store_id = 0",
-                    array('media_gallery_value_default.design_area')
-                )
-                ->where('IFNULL(media_gallery_value.design_area, media_gallery_value_default.design_area) IS NOT NULL')
-                ->group('e.entity_id');
-            }
-
-            if ($colorAttribute->getId()) {
-
-            }
-
-            echo $collection->getSelect();
-
+            $this->applyFilters($collection, Mage::app()->getRequest());
             $this->_collection = $collection;
         }
 
         return $this->_collection;
-    }
-
-    public function getFilterCollection()
-    {
-        $mediaGalleryAttribute = Mage::getSingleton('eav/config')
-            ->getAttribute(Mage_Catalog_Model_Product::ENTITY, 'media_gallery');
-        $colorAttributeCode = Mage::getStoreConfig('gmpd/navigation/color_attribute');
-        $colorAttribute = Mage::getSingleton('eav/config')
-            ->getAttribute(Mage_Catalog_Model_Product::ENTITY, $colorAttributeCode);
-        $sizeAttributeCode = Mage::getStoreConfig('gmpd/navigation/size_attribute');
-        $sizeAttribute = Mage::getSingleton('eav/config')
-            ->getAttribute(Mage_Catalog_Model_Product::ENTITY, $sizeAttributeCode);
-        $storeId = Mage::app()->getStore()->getId();
-        $collection = Mage::getModel('catalog/product')->getCollection()
-            ->addAttributeToFilter('type_id', array('in' => Mage::helper('designer')->getAllowedProductTypes()))
-            ->addAttributeToFilter('enable_product_designer', 1)
-            ->addStoreFilter(Mage::app()->getStore())
-            ->addCategoryIds();
-
-        Mage::getSingleton('catalog/product_status')->addVisibleFilterToCollection($collection);
-        Mage::getSingleton('catalog/product_visibility')->addVisibleInCatalogFilterToCollection($collection);
-
-        $collection->getSelect()->joinLeft(
-            array('relation' => $collection->getTable('catalog/product_super_link')),
-            "e.entity_id = relation.parent_id",
-            array()
-        )->joinInner(
-                array('color' => $colorAttribute->getBackendTable()),
-                "color.attribute_id = {$colorAttribute->getId()} AND color.entity_id = relation.product_id",
-                array('colors' => 'GROUP_CONCAT(DISTINCT color.value)')
-            );
-
-        if ($mediaGalleryAttribute->getId()) {
-            $collection->getSelect()->joinInner(
-                array('media_gallery' => $collection->getTable(Mage_Catalog_Model_Resource_Product_Attribute_Backend_Media::GALLERY_TABLE)),
-                "e.entity_id = media_gallery.entity_id AND media_gallery.attribute_id = {$mediaGalleryAttribute->getId()}",
-                array()
-            )->joinLeft(
-                    array('media_gallery_value' => $collection->getTable(Mage_Catalog_Model_Resource_Product_Attribute_Backend_Media::GALLERY_VALUE_TABLE)),
-                    "media_gallery.value_id = media_gallery_value.value_id AND media_gallery_value.store_id = {$storeId}",
-                    array()
-                )->joinLeft(
-                    array('media_gallery_value_default' => $collection->getTable(Mage_Catalog_Model_Resource_Product_Attribute_Backend_Media::GALLERY_VALUE_TABLE)),
-                    "media_gallery.value_id = media_gallery_value_default.value_id AND media_gallery_value_default.store_id = 0",
-                    array('media_gallery_value_default.design_area')
-                )
-                ->where('IFNULL(media_gallery_value.design_area, media_gallery_value_default.design_area) IS NOT NULL')
-                ->group('e.entity_id');
-        }
     }
 
     /**
@@ -162,7 +166,10 @@ class GoMage_ProductDesigner_Model_Navigation extends Mage_Core_Model_Abstract
      */
     public function getAvailableFilters()
     {
-        return $this->_availableFilters;
+        return array(
+            Mage::getStoreConfig('gmpd/navigation/color_attribute'),
+            Mage::getStoreConfig('gmpd/navigation/size_attribute')
+        );
     }
 
     /**
@@ -171,12 +178,14 @@ class GoMage_ProductDesigner_Model_Navigation extends Mage_Core_Model_Abstract
      * @param Object $request Request
      * @return $this
      */
-    public function applyFilters($request)
+    public function applyFilters($collection, $request, $excludeFilter = null)
     {
         $filters = $this->getAvailableFilters();
         foreach ($filters as $_filter) {
             if ($value = $request->getParam($_filter)) {
-                $this->_applyFilter($_filter, $value);
+                if ($excludeFilter === null || $excludeFilter != $_filter) {
+                    $this->applyFilter($collection, $_filter, $value);
+                }
             }
         }
 
