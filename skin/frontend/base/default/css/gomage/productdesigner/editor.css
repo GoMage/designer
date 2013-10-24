@@ -588,11 +588,13 @@ li.layer-type-text .layer-icon {
 }
 
 .pd-license-agreements-popup {
-    position: absolute;
-    z-index: 1001;
-    background-color: white;
-    border: 1px solid;
-}
+  position: absolute;
+  z-index: 1001;
+  background: #fff;
+  border: 1px solid #ccc;
+  padding: 5px;
+  border-radius: 3px;
+  }
 
 .pd-image-conditions-popup {
     position: absolute;
