@@ -46,6 +46,9 @@
 #product-zoom-container{
   display: none;
   }
+  .dialog #product-zoom-container{
+    display: block;
+    }
     
 /* Main col
 -------------------------------------------------- */
