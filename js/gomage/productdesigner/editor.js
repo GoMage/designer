@@ -1539,10 +1539,8 @@ GoMage.TextEditor.prototype = {
                 if(obj  && (obj.type == 'text' || obj.type == 'custom_text')) {
                     if(currentValue != obj.getText()) {
                         var params = {
-                            fontsize: this.fontSizeSelector.value,
-                            text: currentValue,
-                            left: obj.left,
-                            top: obj.top
+//                            fontsize: this.fontSizeSelector.value,
+                            text: currentValue
                         };
                         var cmd = new TransformCommand(this.productDesigner.canvas, obj, params);
                         cmd.exec();
@@ -1635,18 +1633,7 @@ GoMage.TextEditor.prototype = {
             var elem = e.target || e.srcElement;
             var obj = this.productDesigner.canvas.getActiveObject();
             if (obj && obj.type == 'custom_text') {
-                if (obj.verticalOutput) {
-                    curvedTextParams.radiusX = elem.max;
-                    curvedTextParams.radiusY = elem.value;
-                    curvedTextParams.startAngle = 1/2;
-                    curvedTextParams.endAngle = 3/2 + 0.1;
-                } else {
-                    curvedTextParams.radiusX = elem.value;
-                    curvedTextParams.radiusY = elem.max;
-                }
-
-                var origin = obj.originalState;
-                var cmd = new CurveTextCommand(this.productDesigner.canvas, obj, origin, curvedTextParams);
+                var cmd = new TransformCommand(this.productDesigner.canvas, obj, {curved: elem.value});
                 cmd.exec();
                 this.productDesigner.history.push(cmd);
             }
@@ -1901,6 +1888,7 @@ fabric.CustomText = fabric.util.createClass(fabric.Group, {
     fontsize : 16,
 
     verticalOutput : false,
+    curvedText: false,
 
     textShadow : '#0000 0px 0px 0px',
 
@@ -1910,9 +1898,9 @@ fabric.CustomText = fabric.util.createClass(fabric.Group, {
 
     strokeWidth : 0.05,
     centerTransform: false,
+    spacing: 0,
 
     initialize : function(text, options) {
-//        this.centerTransform = false;
         this.text = text;
         this.canvas = w.canvas;
         if(typeof options === 'undefined') {
@@ -1928,16 +1916,10 @@ fabric.CustomText = fabric.util.createClass(fabric.Group, {
                 textShadow : this.textShadow,
                 textShadowParams : this.textShadowParams,
                 strokeStyle : this.strokeStyle,
-                strokeWidth : this.strokeWidth
+                strokeWidth : this.strokeWidth,
+                spacing: 0
             };
         }
-        this.curved = {
-            radiusX: 0,
-            radiusY: 100,
-            startAngle: 1,
-            endAngle: 2.1
-        }
-        this.stateProperties.push('curved');
         this.callSuper('initialize', this._createGroupFromText(text), options);
         this.setData(options);
         options && this.set('name', options.name);
@@ -2018,6 +2000,8 @@ fabric.CustomText = fabric.util.createClass(fabric.Group, {
     setText : function(text) {
         this.initialize(text);
         this.text = text;
+        this.setVerticalOutput(this.verticalOutput);
+        this.setCurved();
     },
 
     setFontsize : function(value) {
@@ -2036,11 +2020,13 @@ fabric.CustomText = fabric.util.createClass(fabric.Group, {
 
         this._calcBounds();
         this._updateObjectsCoords();
+        this.saveCoords();
 
         this.top  = gt;
         this.left = gl;
 
         this.setVerticalOutput(this.verticalOutput);
+        this.setCurved();
     },
 
     setColor : function(value) {
@@ -2077,6 +2063,7 @@ fabric.CustomText = fabric.util.createClass(fabric.Group, {
                 this.objects[i].left = gl + (fs/2) * i ;
                 this.objects[i].top  = gt;
             }
+            this.objects[i].setAngle(0);
         }
 
         this._calcBounds();
@@ -2084,62 +2071,75 @@ fabric.CustomText = fabric.util.createClass(fabric.Group, {
 
         this.top  = gt;
         this.left = gl;
-    },
-
-    setCurvedData: function(params){
-        for (var name in params) {
-            if (params.hasOwnProperty(name)) {
-                this.curved[name] = params[name];
-            }
-        }
-    },
-
-    setArc : function(params) {
-//        if (!this.originalState.curved) {
-//            this.originalState.curved = {};
-//        }
-//
-//        this.originalState.curved = Object.clone(this.curved);
-        this.setCurvedData(params);
-        var width = this.getWidth();
-        var height = this.getHeight();
         if (this.verticalOutput) {
-            var rX = ((height / 2) * this.curved.radiusX) / 100;
-            var rY = ((height / 2) * this.curved.radiusY) / 100;
+            this.curvedRadius = this.getHeight();
         } else {
-            var rX = ((width / 2) * this.curved.radiusX) / 100;
-            var rY = ((width / 2) * this.curved.radiusY) / 100;
+            this.curvedRadius = this.getWidth();
         }
+        this.setCurved();
+    },
+
+    setCurved : function(spacing) {
+        if (spacing) {
+            this.spacing = spacing;
+        }
+        spacing = spacing ? spacing : this.spacing;
+        var isZeroSpacing = (spacing >=0 && spacing < 5) || (spacing <=0 && spacing > -5) ? true : false;
+        if (isZeroSpacing && !this.isCurvedText) {
+            return;
+        } else if (isZeroSpacing) {
+            this.isCurvedText = false;
+        }
+        if (!this.curvedRadius) {
+            this.curvedRadius = this.getWidth();
+        }
+
         var gl = this.left;
         var gt = this.top;
-
         var objects = this.getObjects();
-
+        var multiplier = spacing < 0 ? 1 : -1;
+        var spacing = Math.abs(spacing);
+        var radius = this.curvedRadius;
         var count = objects.length;
-        var i = this.curved.startAngle * Math.PI;
-        var m = this.curved.endAngle * Math.PI;
-        var s = (m - i) / count;
-        for (var j = 0; j < count; j++) {
-            var left = this.left + (rY * Math.cos(i));
-            var top = this.top + (rX * Math.sin(i));
-            objects[j].top  = top;
-            objects[j].left = left;
-            i+=s;
+        var align = (spacing / 2) * (count - 1);
+
+        var fs = parseInt(this.fontsize);
+        for (var i = 0; i < count; i++) {
+            if (isZeroSpacing) {
+                var curAngle = 0;
+                if (this.verticalOutput) {
+                    var left = gl;
+                    var top = gt + (objects[i].getHeight()*i);
+                } else {
+                    var top = gt;
+                    var left = gl+(fs/2) * i;
+                }
+            } else {
+                var curAngle = (multiplier * -i * parseInt(spacing, 10)) + (multiplier * align);
+                if (this.verticalOutput) {
+                    curAngle+=90;
+                }
+                var angleRadians = curAngle * (Math.PI / 180);
+                var top = multiplier * Math.cos(angleRadians) * radius;
+                var left = multiplier * -Math.sin(angleRadians) * radius;
+
+            }
+
+            objects[i].top  = top;
+            objects[i].left = left;
+            objects[i].setAngle(curAngle);
         }
 
         this._calcBounds();
         this._updateObjectsCoords();
+        this.saveCoords();
 
         this.left = gl;
         this.top  = gt;
-
-
-        if (this.verticalOutput) {
-            this.setHeight(height);
-        } else{
-            this.setWidth(width);
-        }
+        this.isCurvedText = true;
     },
+
+
 
     _createGroupFromText : function(text) {
         var t = text.split('');
@@ -2153,6 +2153,8 @@ fabric.CustomText = fabric.util.createClass(fabric.Group, {
 
         return g;
     }
+
+
 });
 
 
@@ -2383,7 +2385,9 @@ var TransformCommand = function(canvas, obj, params) {
     var state = {};
 
     for (var k in params) {
-        if (params.hasOwnProperty(k)) state[k] = obj[k];
+        if (params.hasOwnProperty(k)) {
+            state[k] = obj[k];
+        }
     }
 
     var update = function(obj, conf) {
