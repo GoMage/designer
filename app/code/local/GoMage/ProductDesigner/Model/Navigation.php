@@ -36,9 +36,11 @@ class GoMage_ProductDesigner_Model_Navigation extends Mage_Core_Model_Abstract
 {
     protected $_collection = null;
     protected $_availableFilters = array('category');
+    protected $_category;
 
     protected function _prepareProductCollection()
     {
+        $category = $this->_getRootCategory();
         $mediaGalleryAttribute = Mage::getSingleton('eav/config')
             ->getAttribute(Mage_Catalog_Model_Product::ENTITY, 'media_gallery');
         $storeId = Mage::app()->getStore()->getId();
@@ -46,6 +48,7 @@ class GoMage_ProductDesigner_Model_Navigation extends Mage_Core_Model_Abstract
             ->addAttributeToFilter('type_id', array('in' => Mage::helper('designer')->getAllowedProductTypes()))
             ->addAttributeToFilter('enable_product_designer', 1)
             ->addStoreFilter(Mage::app()->getStore())
+            ->addCategoryFilter($category)
             ->addCategoryIds();
         $this->_addFiltersAttributes($collection);
 
@@ -66,20 +69,34 @@ class GoMage_ProductDesigner_Model_Navigation extends Mage_Core_Model_Abstract
                 "media_gallery.value_id = media_gallery_value_default.value_id AND media_gallery_value_default.store_id = 0",
                 array('media_gallery_value_default.design_area')
             )
-            ->where('IFNULL(media_gallery_value.design_area, media_gallery_value_default.design_area) IS NOT NULL')
-            ->group('e.entity_id');
+            ->where('IFNULL(media_gallery_value.design_area, media_gallery_value_default.design_area) IS NOT NULL');
+
         }
+        $collection->getSelect()->group('e.entity_id');
 
         return $collection;
+    }
+
+    protected function _getRootCategory()
+    {
+        if (is_null($this->_category)) {
+            $categoryId = Mage::getStoreConfig('gmpd/navigation/category')
+                ?: Mage::app()->getStore()->getRootCategoryId();
+            $this->_category = Mage::getModel('catalog/category')->load($categoryId);
+        }
+
+        return $this->_category;
     }
 
     protected function _getAssociatedProductCollection($ids = array())
     {
         $collection = Mage::getResourceModel('catalog/product_type_configurable_product_collection');
+        $collection->addCategoryIds();
         $this->_addFiltersAttributes($collection);
         if (!empty($ids)) {
             $collection->getSelect()->where("link_table.parent_id IN (?)", $ids);
         }
+        $collection->getSelect()->group('e.entity_id');
 
         return $collection;
     }
@@ -116,6 +133,12 @@ class GoMage_ProductDesigner_Model_Navigation extends Mage_Core_Model_Abstract
 
         if ($filter == 'category') {
             $categoryIds = array();
+            $availableCategories = $this->_getRootCategory()->getAllChildren();
+            if (!$availableCategories) {
+                return $options;
+            }
+            $availableCategories = explode(',', $availableCategories);
+
             foreach ($collection as $_item) {
                 $categoryIds = array_merge($categoryIds, $_item->getCategoryIds());
             }
@@ -125,12 +148,12 @@ class GoMage_ProductDesigner_Model_Navigation extends Mage_Core_Model_Abstract
                 $categoryIds = array_merge($categoryIds, $_item->getCategoryIds());
             }
             $categoryIds = array_unique($categoryIds);
+            $categoryIds = array_intersect($availableCategories, $categoryIds);
 
             if (!empty($categoryIds)) {
                 $categoryCollection = Mage::getModel('catalog/category')->getCollection();
                 $categoryCollection->addFieldToFilter('entity_id', array('in' => $categoryIds))
                     ->addAttributeToSelect('name');
-
                 foreach ($categoryCollection as $_category) {
                     $options[$_category->getId()] = $_category->getName();
                 }

@@ -42,6 +42,9 @@ class GoMage_ProductDesigner_Block_Designer_Design_Filters extends Mage_Core_Blo
      */
     protected function _prepareLayout()
     {
+        if (!$this->navigationEnabled() && !$this->searchEnabled()) {
+            return;
+        }
         $cliparts = Mage::getSingleton('gmpd/clipart')->getCliparts();
         $this->_applyFilters($cliparts);
     }
@@ -130,5 +133,23 @@ class GoMage_ProductDesigner_Block_Designer_Design_Filters extends Mage_Core_Blo
         }
 
         return $subCategoriesCollection;
+    }
+
+    public function navigationEnabled()
+    {
+        return (bool) Mage::getStoreConfig('gmpd/design/navigation');
+    }
+
+    public function searchEnabled()
+    {
+        return (bool) Mage::getStoreConfig('gmpd/design/search');
+    }
+
+    protected function _toHtml()
+    {
+        if (!$this->navigationEnabled() && !$this->searchEnabled()) {
+            return '';
+        }
+        return parent::_toHtml();
     }
 }
