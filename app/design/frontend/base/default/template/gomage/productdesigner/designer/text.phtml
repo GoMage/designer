@@ -53,7 +53,7 @@ $sizes = $this->getFontSizes();
             <legend><?php echo $this->__('Curved Text'); ?></legend>
             <div class="pd-element-wrapper">
                 <label for="rx_range"><?php echo $this->__('Radius'); ?>: </label>
-                <input type="range" value="0" id="rx_range" min='-40' max='40' step="1">
+                <input type="range" value="0" id="rx_range" min='-40' max='40' step="0.2" style="width: 250px;">
             </div>
         </fieldset>
         <fieldset class="shadow-config" style="display: none;">
@@ -94,8 +94,27 @@ $sizes = $this->getFontSizes();
         <canvas height="40" width="276" id="color" class="color-picker"></canvas>
     </div>
 </div>
+
 <script type="text/javascript">
     document.observe("dom:loaded", function(e){
         var textEditor = new GoMage.TextEditor('<?php echo $this->getDefaultFontFamily();?>', '<?php echo $this->getDefaultFontSize()?>');
     }.bind(this))
+    var fonts = '<?php echo $this->getImplodedFontsString();?>'.split(',');
+    if (fonts != '') {
+        WebFontConfig = {
+            custom: {
+                families: fonts
+            }
+        };
+
+        (function() {
+            var wf = document.createElement('script');
+            wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+                '://ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js';
+            wf.type = 'text/javascript';
+            wf.async = 'true';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(wf, s);
+        })();
+    }
 </script>

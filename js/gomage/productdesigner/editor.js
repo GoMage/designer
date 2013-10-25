@@ -1403,6 +1403,7 @@ GoMage.TextEditor = function(defaultFontFamily, defaultFontSize) {
 
 GoMage.TextEditor.prototype = {
     observeTextTabShow: function() {
+        return;
         document.observe('addTextTabShow', function(e){
             var textObj = e.obj
             if (textObj) {
@@ -1512,12 +1513,11 @@ GoMage.TextEditor.prototype = {
                 return;
             }
             var textObjectData = {
-                fontsize : this.fontSizeSelector.value,
+                fontSize : parseInt(this.fontSizeSelector.value),
                 fontFamily : this.fontSelector.value
             };
-            var textObject = new fabric.CustomText(this.addTextTextarea.value, this.defaultTextOpt);
-            textObject.setFontsize(this.fontSizeSelector.value);
-            textObject.setData(textObjectData);
+            var textObject = new fabric.CustomText2(this.addTextTextarea.value, textObjectData);
+            textObject._render();
 
             var cmd = new InsertCommand(this.productDesigner, textObject, true);
             cmd.exec();
@@ -1525,6 +1525,7 @@ GoMage.TextEditor.prototype = {
         }.bind(this));
 
         this.addTextTextarea.observe('keyup', function(e) {
+            return;
             if (this.timeout != 'undefined' || this.timeout != null) {
                 clearTimeout(this.timeout);
             }
@@ -1556,7 +1557,7 @@ GoMage.TextEditor.prototype = {
             var elem = e.target || e.srcElement;
             var obj = this.productDesigner.canvas.getActiveObject();
             if (obj && (obj.type == 'text' || obj.type == 'custom_text')) {
-                var cmd = new TransformCommand(this.productDesigner.canvas, obj, {fontsize: parseInt(elem.value)});
+                var cmd = new TransformCommand(this.productDesigner.canvas, obj, {fontSize: parseInt(elem.value)});
                 cmd.exec();
                 this.productDesigner.history.push(cmd);
             }
@@ -1567,7 +1568,7 @@ GoMage.TextEditor.prototype = {
         this.addTextBtnBold.observe('click', function(e) {
             var obj = this.productDesigner.canvas.getActiveObject();
             if (obj && (obj.type == 'text' || obj.type == 'custom_text')) {
-                var params = {fontWeight: (obj.fontWeight == '400' ? 'bold' : '400')}
+                var params = {fontWeight: (!obj.fontWeight || obj.fontWeight == '400' ? 'bold' : '400')}
                 var cmd = new TransformCommand(this.productDesigner.canvas, obj, params);
                 cmd.exec();
                 this.productDesigner.history.push(cmd);
@@ -1577,7 +1578,7 @@ GoMage.TextEditor.prototype = {
         this.addTextBtnItalic.observe('click', function(e) {
             var obj = this.productDesigner.canvas.getActiveObject();
             if (obj && (obj.type == 'text' || obj.type == 'custom_text')) {
-                var params = {fontStyle: (obj.fontStyle == '' ? 'italic' : '')}
+                var params = {fontStyle: (!obj.fontStyle ? 'italic' : '')}
                 var cmd = new TransformCommand(this.productDesigner.canvas, obj, params);
                 cmd.exec();
                 this.productDesigner.history.push(cmd);
@@ -1587,7 +1588,7 @@ GoMage.TextEditor.prototype = {
         this.addTextBtnUnderline.observe('click', function(e) {
             var obj = this.productDesigner.canvas.getActiveObject();
             if (obj && (obj.type == 'text' || obj.type == 'custom_text')) {
-                var params = {textDecoration: (obj.textDecoration == '' ? 'underline' : '')}
+                var params = {textDecoration: (!obj.textDecoration ? 'underline' : '')}
                 var cmd = new TransformCommand(this.productDesigner.canvas, obj, params);
                 cmd.exec();
                 this.productDesigner.history.push(cmd);
@@ -1861,6 +1862,86 @@ ColorPicker.prototype = {
 // ------------------------------------------------------
 // Extending Fabric.js classes
 // ------------------------------------------------------
+
+fabric.CustomText2 = fabric.util.createClass(fabric.Group, {
+    type: 'custom_text',
+    text: '',
+    defaultOptions: {
+        fontFamily : 'Arial',
+        fontWeight : '400',
+        fontStyle: '',
+        textDecoration: '',
+        color : '#000000',
+        fontSize : 16,
+        spacing: 0
+    },
+
+    delegatedProperties: {
+        fontFamily: true,
+        fontWeight: true,
+        fontStyle: true,
+        textDecoration: true,
+        color: true,
+        fontSize: true
+    },
+
+    initialize: function(text, options){
+        this.canvas = w.canvas;
+        this.text = text;
+        this.setData(options);
+        this.callSuper('initialize', this._createGroupFromText(text));
+    },
+
+    setData : function(name, value) {
+        if(typeof name == 'string') {
+            this[name] = value;
+        } else if(typeof name == 'array' || typeof name == 'object') {
+            for(var key in name) {
+                this.setData(key, name[key]);
+            }
+        }
+    },
+
+    _createGroupFromText : function(text) {
+        var t = text.split('');
+        var g = [];
+        var fs = parseInt(this.fontsize ? this.fontsize : this.defaultOptions.fontsize);
+
+        for (var i = 0; i < t.length; i++) {
+            var ch = new fabric.Text(t[i], {left: (fs/2)*i});
+            g.push(ch);
+        }
+
+        return g;
+    },
+
+    _render: function() {
+        var gt = this.get('top');
+        var gl = this.get('left');
+        var objects = this.getObjects();
+        var count = objects.length;
+        var offset = 0;
+        for (i = 0; i < count; i++) {
+            for (k in this.delegatedProperties) {
+                var value = this.get(k) ? this.get(k) : this.defaultOptions[k];
+                objects[i].set(k, value);
+            }
+            var size = this.objects[i].fontSize < this.objects[i].getWidth() ? this.objects[i].getWidth()
+                : this.objects[i].fontSize;
+            console.log(this.objects[i].getHeight());
+            this.objects[i].top  = gt;
+            this.objects[i].left = gl + size + offset;
+            offset += size;
+        }
+
+        this._calcBounds();
+        this._updateObjectsCoords();
+        this.saveCoords();
+
+        this.top  = gt;
+        this.left = gl;
+    }
+});
 
 /**
  * fabric.CustomText
@@ -2401,6 +2482,7 @@ var TransformCommand = function(canvas, obj, params) {
                 obj[k] = conf[k];
             }
         }
+        obj._render();
     };
 
     return {
