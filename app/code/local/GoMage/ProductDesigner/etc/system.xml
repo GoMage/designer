@@ -157,16 +157,6 @@
                 <show_in_website>1</show_in_website>
                 <show_in_store>1</show_in_store>
               </show_comment>
-              <!-- Enable Save Design -->
-              <save_design translate="label comment">
-                <label>Enable Save Design</label>
-                <frontend_type>select</frontend_type>
-                <source_model>adminhtml/system_config_source_yesno</source_model>
-                <sort_order>9</sort_order>
-                <show_in_default>1</show_in_default>
-                <show_in_website>1</show_in_website>
-                <show_in_store>1</show_in_store>
-              </save_design>
             </fields>
           </general>
           <!-- Module Navigation Settings -->
@@ -191,8 +181,8 @@
               <!-- Category -->
               <category translate="label comment">
                 <label>Category</label>
-                <frontend_type>multiselect</frontend_type>
-                <source_model>adminhtml/system_config_source_category</source_model>
+                <frontend_type>select</frontend_type>
+                <source_model>gmpd/config_source_category</source_model>
                 <sort_order>2</sort_order>
                 <show_in_default>1</show_in_default>
                 <show_in_website>1</show_in_website>
@@ -234,7 +224,7 @@
                 <show_in_store>1</show_in_store>
               </popup_text>
               <popup_width>
-                <label>Popup Width, px</label>
+                <label>Help Popup Width, px</label>
                 <frontend_type>text</frontend_type>
                 <sort_order>10</sort_order>
                 <show_in_default>1</show_in_default>
@@ -243,7 +233,7 @@
                 <validate>validate-number</validate>
               </popup_width>
               <popup_height>
-                <label>Popup Height, px</label>
+                <label>Help Popup Height, px</label>
                 <frontend_type>text</frontend_type>
                 <sort_order>11</sort_order>
                 <show_in_default>1</show_in_default>
@@ -251,15 +241,6 @@
                 <show_in_store>1</show_in_store>
                 <validate>validate-number</validate>
               </popup_height>
-              <filter_reset>
-                <label>Show Reset Link</label>
-                <frontend_type>select</frontend_type>
-                <source_model>adminhtml/system_config_source_yesno</source_model>
-                <sort_order>12</sort_order>
-                <show_in_default>1</show_in_default>
-                <show_in_website>1</show_in_website>
-                <show_in_store>1</show_in_store>
-              </filter_reset>
             </fields>
           </navigation>
           <!-- Add design -->
@@ -355,16 +336,6 @@
                     <show_in_store>1</show_in_store>
                     <validate>validate-number</validate>
                 </zoom_size_height>
-              <!-- Maximum Layers Quantity -->
-              <max_layers>
-                <label>Maximum Layers Qty</label>
-                <frontend_type>text</frontend_type>
-                <sort_order>10</sort_order>
-                <show_in_default>1</show_in_default>
-                <show_in_website>1</show_in_website>
-                <show_in_store>1</show_in_store>
-                <validate>validate-number</validate>
-              </max_layers>
               <!-- Help -->
               <show_help>
                 <label>Show Help Icon</label>
@@ -384,7 +355,7 @@
                 <show_in_store>1</show_in_store>
               </popup_text>
               <popup_width>
-                <label>Popup Width, px</label>
+                <label>Help Popup Width, px</label>
                 <frontend_type>text</frontend_type>
                 <sort_order>13</sort_order>
                 <show_in_default>1</show_in_default>
@@ -393,7 +364,7 @@
                 <validate>validate-number</validate>
               </popup_width>
               <popup_height>
-                <label>Popup Height, px</label>
+                <label>Help Popup Height, px</label>
                 <frontend_type>text</frontend_type>
                 <sort_order>14</sort_order>
                 <show_in_default>1</show_in_default>
@@ -452,16 +423,6 @@
                 <show_in_website>1</show_in_website>
                 <show_in_store>1</show_in_store>
               </size>
-              <!-- Maximum Layers Quantity -->
-              <max_layers>
-                <label>Maximum Layers Qty</label>
-                <frontend_type>text</frontend_type>
-                <sort_order>5</sort_order>
-                <show_in_default>1</show_in_default>
-                <show_in_website>1</show_in_website>
-                <show_in_store>1</show_in_store>
-                <validate>validate-number</validate>
-              </max_layers>
               <!-- Help -->
               <show_help>
                 <label>Show Help Icon</label>
@@ -481,7 +442,7 @@
                 <show_in_store>1</show_in_store>
               </popup_text>
               <popup_width>
-                <label>Popup Width, px</label>
+                <label>Help Popup Width, px</label>
                 <frontend_type>text</frontend_type>
                 <sort_order>10</sort_order>
                 <show_in_default>1</show_in_default>
@@ -490,7 +451,7 @@
                 <validate>validate-number</validate>
               </popup_width>
               <popup_height>
-                <label>Popup Height, px</label>
+                <label>Help Popup Height, px</label>
                 <frontend_type>text</frontend_type>
                 <sort_order>11</sort_order>
                 <show_in_default>1</show_in_default>
@@ -613,7 +574,7 @@
                 <show_in_store>1</show_in_store>
               </popup_text>
               <popup_width>
-                <label>Popup Width, px</label>
+                <label>Help Popup Width, px</label>
                 <frontend_type>text</frontend_type>
                 <sort_order>12</sort_order>
                 <show_in_default>1</show_in_default>
@@ -622,7 +583,7 @@
                 <validate>validate-number</validate>
               </popup_width>
               <popup_height>
-                <label>Popup Height, px</label>
+                <label>Help Popup Height, px</label>
                 <frontend_type>text</frontend_type>
                 <sort_order>13</sort_order>
                 <show_in_default>1</show_in_default>
@@ -632,145 +593,6 @@
               </popup_height>
             </fields>
           </upload_image>
-          <!-- Designs Ideas -->
-          <!--<ideas translate="label">
-            <label>Design Ideas</label>
-            <frontend_type>text</frontend_type>
-            <sort_order>60</sort_order>
-            <show_in_default>1</show_in_default>
-            <show_in_website>1</show_in_website>
-            <show_in_store>1</show_in_store>
-            <fields>
-              <enabled translate="label comment">
-                <label>Enable Design Ideas Tab</label>
-                <frontend_type>select</frontend_type>
-                <source_model>adminhtml/system_config_source_yesno</source_model>
-                <sort_order>1</sort_order>
-                <show_in_default>1</show_in_default>
-                <show_in_website>1</show_in_website>
-                <show_in_store>1</show_in_store>
-              </enabled>
-              <search translate="label comment">
-                <label>Show Search Field</label>
-                <frontend_type>select</frontend_type>
-                <source_model>adminhtml/system_config_source_yesno</source_model>
-                <sort_order>2</sort_order>
-                <show_in_default>1</show_in_default>
-                <show_in_website>1</show_in_website>
-                <show_in_store>1</show_in_store>
-              </search>
-              <navigation translate="label comment">
-                <label>Show Navigation</label>
-                <frontend_type>select</frontend_type>
-                <source_model>adminhtml/system_config_source_yesno</source_model>
-                <sort_order>3</sort_order>
-                <show_in_default>1</show_in_default>
-                <show_in_website>1</show_in_website>
-                <show_in_store>1</show_in_store>
-              </navigation>
-              &lt;!&ndash; Help &ndash;&gt;
-              <show_help>
-                <label>Show Help Icon</label>
-                <frontend_type>select</frontend_type>
-                <source_model>adminhtml/system_config_source_yesno</source_model>
-                <sort_order>10</sort_order>
-                <show_in_default>1</show_in_default>
-                <show_in_website>1</show_in_website>
-                <show_in_store>1</show_in_store>
-              </show_help>
-              <popup_text>
-                <label>Help Icon text</label>
-                <frontend_type>textarea</frontend_type>
-                <sort_order>11</sort_order>
-                <show_in_default>1</show_in_default>
-                <show_in_website>1</show_in_website>
-                <show_in_store>1</show_in_store>
-              </popup_text>
-              <popup_width>
-                <label>Popup Width, px</label>
-                <frontend_type>text</frontend_type>
-                <sort_order>12</sort_order>
-                <show_in_default>1</show_in_default>
-                <show_in_website>1</show_in_website>
-                <show_in_store>1</show_in_store>
-                <validate>validate-number</validate>
-              </popup_width>
-              <popup_height>
-                <label>Popup Height, px</label>
-                <frontend_type>text</frontend_type>
-                <sort_order>13</sort_order>
-                <show_in_default>1</show_in_default>
-                <show_in_website>1</show_in_website>
-                <show_in_store>1</show_in_store>
-                <validate>validate-number</validate>
-              </popup_height>
-            </fields>
-          </ideas>-->
-          <!-- Saved Designs -->
-          <saved translate="label">
-            <label>Saved Designs</label>
-            <frontend_type>text</frontend_type>
-            <sort_order>70</sort_order>
-            <show_in_default>1</show_in_default>
-            <show_in_website>1</show_in_website>
-            <show_in_store>1</show_in_store>
-            <fields>
-              <search translate="label comment">
-                <label>Show Search Field</label>
-                <frontend_type>select</frontend_type>
-                <source_model>adminhtml/system_config_source_yesno</source_model>
-                <sort_order>1</sort_order>
-                <show_in_default>1</show_in_default>
-                <show_in_website>1</show_in_website>
-                <show_in_store>1</show_in_store>
-              </search>
-              <navigation translate="label comment">
-                <label>Show Navigation</label>
-                <frontend_type>select</frontend_type>
-                <source_model>adminhtml/system_config_source_yesno</source_model>
-                <sort_order>2</sort_order>
-                <show_in_default>1</show_in_default>
-                <show_in_website>1</show_in_website>
-                <show_in_store>1</show_in_store>
-              </navigation>
-              <!-- Help -->
-              <show_help>
-                <label>Show Help Icon</label>
-                <frontend_type>select</frontend_type>
-                <source_model>adminhtml/system_config_source_yesno</source_model>
-                <sort_order>10</sort_order>
-                <show_in_default>1</show_in_default>
-                <show_in_website>1</show_in_website>
-                <show_in_store>1</show_in_store>
-              </show_help>
-              <popup_text>
-                <label>Help Icon text</label>
-                <frontend_type>textarea</frontend_type>
-                <sort_order>11</sort_order>
-                <show_in_default>1</show_in_default>
-                <show_in_website>1</show_in_website>
-                <show_in_store>1</show_in_store>
-              </popup_text>
-              <popup_width>
-                <label>Popup Width, px</label>
-                <frontend_type>text</frontend_type>
-                <sort_order>12</sort_order>
-                <show_in_default>1</show_in_default>
-                <show_in_website>1</show_in_website>
-                <show_in_store>1</show_in_store>
-                <validate>validate-number</validate>
-              </popup_width>
-              <popup_height>
-                <label>Popup Height, px</label>
-                <frontend_type>text</frontend_type>
-                <sort_order>13</sort_order>
-                <show_in_default>1</show_in_default>
-                <show_in_website>1</show_in_website>
-                <show_in_store>1</show_in_store>
-                <validate>validate-number</validate>
-              </popup_height>
-            </fields>
-          </saved>
           <!-- Share settings -->
           <share translate="label">
             <label>Share Settings</label>

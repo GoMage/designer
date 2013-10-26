@@ -156,4 +156,30 @@ class GoMage_ProductDesigner_Block_Editor extends Mage_Core_Block_Template
 
         return false;
     }
+
+    public function isHelpEnabled($area)
+    {
+        return (bool) Mage::getStoreConfig('gmpd/'. $area .'/show_help') &&
+            $this->getHelpText($area);
+    }
+
+    public function getHelpPopupWidth($area)
+    {
+        return Mage::getStoreConfig('gmpd/'. $area .'/popup_width');
+    }
+
+    public function getHelpPopupHeight($area)
+    {
+        return Mage::getStoreConfig('gmpd/'. $area .'/popup_height');
+    }
+
+    public function getHelpText($area)
+    {
+        return Mage::getStoreConfig('gmpd/'. $area .'/popup_text');
+    }
+
+    public function additionalInstructionsEnabled()
+    {
+        return (bool) Mage::getStoreConfig('gmpd/general/show_comment');
+    }
 }

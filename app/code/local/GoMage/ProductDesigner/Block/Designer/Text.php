@@ -116,4 +116,9 @@ class GoMage_ProductDesigner_Block_Designer_Text extends Mage_Core_Block_Templat
 
         return implode(',', $fontsArray);
     }
+
+    public function effectsEnabled()
+    {
+        return (bool) Mage::getStoreConfig('gmpd/text/effects');
+    }
 }

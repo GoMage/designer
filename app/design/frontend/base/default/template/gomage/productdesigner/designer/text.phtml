@@ -22,9 +22,8 @@ $sizes = $this->getFontSizes();
     </div>
     <div class="pd-element-wrapper">
         <select class="font-picker" id="font-selector">
-        <option value="<?php echo $this->getDefaultFontFamily();?>"><?php echo $this->__('Select Font')?></option>
         <?php foreach ($defaultFonts as $font):?>
-            <option value="<?php echo $font['value']; ?>"><?php echo $font['label']; ?></option>
+            <option value="<?php echo $font['value']; ?>" <?php echo $this->getDefaultFontFamily() == $font['value'] ? 'selected="selected"' : ''?>><?php echo $font['label']; ?></option>
         <?php endforeach;?>
         <?php foreach($fonts as $font): ?>
             <option value="<?php echo $this->getFontName($font); ?>"><?php echo $this->getFontName($font); ?></option>
@@ -43,48 +42,50 @@ $sizes = $this->getFontSizes();
         <button class="panel-btn pd-btn-underline" id="add_text_btn_underline"><?php echo $this->__('U'); ?></button>
         <button class="panel-btn pd-btn-vert-output" id="add_text_btn_vert_out" data-state="horizontal">|</button>
     </div>
-    <div class="pd-element-wrapper">
-        <button id="curved-text-button" class="panel-btn">↭</button>
-        <button id="shadow-button" class="panel-btn"><?php echo $this->__('Shadow'); ?></button>
-        <button id="outline-button" class="panel-btn"><?php echo $this->__('Outline'); ?></button>
-    </div>
-    <div>
-        <fieldset class="curved-text-config" style="display: none;">
-            <legend><?php echo $this->__('Curved Text'); ?></legend>
-            <div class="pd-element-wrapper">
-                <label for="rx_range"><?php echo $this->__('Radius'); ?>: </label>
-                <input type="range" value="0" id="rx_range" min='-40' max='40' step="0.2" style="width: 250px;">
-            </div>
-        </fieldset>
-        <fieldset class="shadow-config" style="display: none;">
-            <legend><?php echo $this->__('Shadow'); ?></legend>
-            <div class="pd-element-wrapper">
-                <label><?php echo $this->__('Offset Y'); ?>: </label>
-                <input type="range" value="0" id="shadow_y_range" min="-25" max="25" step="1">
-            </div>
-            <div class="pd-element-wrapper">
-                <label><?php echo $this->__('Offset X'); ?>: </label>
-                <input type="range" value="0" id="shadow_x_range" min="-25" max="25" step="1">
-            </div>
-            <div class="pd-element-wrapper">
-                <label><?php echo $this->__('Blur'); ?>: </label>
-                <input type="range" value="0" id="shadow_blur" min="0" max="50" step="1">
-            </div>
-            <div class="pd-element-wrapper">
-                <canvas height="20" width="230" id="textShadow" class="color-picker"></canvas>
-            </div>
-        </fieldset>
-        <fieldset class="outline-config" style="display: none;">
-            <legend>Outline</legend>
-            <div class="pd-element-wrapper">
-                <label>Size: </label>
-                <input type="range" value="0" id="outline_range" min="0.05" max="2" step="0.05">
-            </div>
-            <div class="pd-element-wrapper">
-                <canvas height="20" width="230" id="strokeStyle" class="color-picker"></canvas>
-            </div>
-        </fieldset>
-    </div>
+    <?php if ($this->effectsEnabled()):?>
+        <div class="pd-element-wrapper">
+            <button id="curved-text-button" class="panel-btn">↭</button>
+            <button id="shadow-button" class="panel-btn"><?php echo $this->__('Shadow'); ?></button>
+            <button id="outline-button" class="panel-btn"><?php echo $this->__('Outline'); ?></button>
+        </div>
+        <div>
+            <fieldset class="curved-text-config" style="display: none;">
+                <legend><?php echo $this->__('Curved Text'); ?></legend>
+                <div class="pd-element-wrapper">
+                    <label for="rx_range"><?php echo $this->__('Radius'); ?>: </label>
+                    <input type="range" value="0" id="rx_range" min='-40' max='40' step="1">
+                </div>
+            </fieldset>
+            <fieldset class="shadow-config" style="display: none;">
+                <legend><?php echo $this->__('Shadow'); ?></legend>
+                <div class="pd-element-wrapper">
+                    <label><?php echo $this->__('Offset Y'); ?>: </label>
+                    <input type="range" value="0" id="shadow_y_range" min="-25" max="25" step="1">
+                </div>
+                <div class="pd-element-wrapper">
+                    <label><?php echo $this->__('Offset X'); ?>: </label>
+                    <input type="range" value="0" id="shadow_x_range" min="-25" max="25" step="1">
+                </div>
+                <div class="pd-element-wrapper">
+                    <label><?php echo $this->__('Blur'); ?>: </label>
+                    <input type="range" value="0" id="shadow_blur" min="0" max="50" step="1">
+                </div>
+                <div class="pd-element-wrapper">
+                    <canvas height="20" width="230" id="textShadow" class="color-picker"></canvas>
+                </div>
+            </fieldset>
+            <fieldset class="outline-config" style="display: none;">
+                <legend>Outline</legend>
+                <div class="pd-element-wrapper">
+                    <label>Size: </label>
+                    <input type="range" value="0" id="outline_range" min="0.05" max="2" step="0.05">
+                </div>
+                <div class="pd-element-wrapper">
+                    <canvas height="20" width="230" id="strokeStyle" class="color-picker"></canvas>
+                </div>
+            </fieldset>
+        </div>
+    <?php endif;?>
     <div class="colors-panel" id="add_text_colors_panel">
         <?php foreach($colors as $color): ?>
             <span class="color-btn color-code-<?php echo $color; ?>" style="background-color:#<?php echo $color; ?>">&nbsp;</span>

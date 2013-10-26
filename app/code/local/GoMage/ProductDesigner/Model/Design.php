@@ -33,6 +33,7 @@ class GoMage_ProductDesigner_Model_Design extends Mage_Core_Model_Abstract
         $images = isset($data['images']) ? $data['images'] : false;
         $prices = isset($data['prices']) ? $data['prices'] : array();
         $color  = isset($data['color']) && $data['color'] != 'none_color'  ? $data['color']  : null;
+        $comment = isset($data['comment']) ? $data['comment'] : null;
 
         if (!$images || empty($images)) {
             return $this;
@@ -47,7 +48,8 @@ class GoMage_ProductDesigner_Model_Design extends Mage_Core_Model_Abstract
             'product_id' => $product->getId(),
             'created_date' => Mage::getModel('core/date')->gmtDate(),
             'price' => isset($prices['sub_total']) ? $prices['sub_total'] : 0,
-            'color' => $color
+            'color' => $color,
+            'comment' => $comment
         ))->save();
 
         $imagesPrice = isset($prices['images']) ? $prices['images'] : array();

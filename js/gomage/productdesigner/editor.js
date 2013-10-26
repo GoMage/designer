@@ -115,10 +115,10 @@ GoMage.ProductDesigner = function(config, continueUrl, loginUrl, registrationUrl
     this.initPrices();
     this.reloadPrice();
     this.observePriceMoreInfo();
+    this.observeHelpIcons();
 }
 
 GoMage.ProductDesigner.prototype = {
-
     loadProduct : function(product, color) {
         if (!product) {
             return;
@@ -561,6 +561,10 @@ GoMage.ProductDesigner.prototype = {
             if (this.currentColor) {
                 data['color'] = this.currentColor;
             }
+            var commentField = $('design_comment');
+            if (commentField && commentField.value) {
+                data['comment'] = commentField.value;
+            }
         }
 
         return data;
@@ -899,7 +903,6 @@ GoMage.ProductDesigner.prototype = {
         }.bind(this))
     },
 
-    // Preview result image
     zoom: function()
     {
         this.createZoomWindow();
@@ -1162,6 +1165,17 @@ GoMage.ProductDesigner.prototype = {
                 }
             }
         });
+    },
+
+    observeHelpIcons: function(){
+        $$('.tab-help-icon').each(function(obj){
+            obj.observe('mouseover', function(e){
+                obj.next().show();
+            });
+            obj.observe('mouseout', function(e){
+                obj.next().hide();
+            });
+        }.bind(this));
     }
 };
 
@@ -1319,9 +1333,13 @@ GoMage.Designer.prototype = {
     filterImages: function() {
         var data = {};
         data['ajax'] = true;
-        data['mainCategory'] = $('mainCategoriesSearchField').value;
-        data['subCategory'] = $('subCategoriesSearchField').value;
-        data['tags'] = $('tagsSearchField').value;
+        if ($('mainCategoriesSearchField') && $('subCategoriesSearchField')) {
+            data['mainCategory'] = $('mainCategoriesSearchField').value;
+            data['subCategory'] = $('subCategoriesSearchField').value;
+        }
+        if ($('tagsSearchField')) {
+            data['tags'] = $('tagsSearchField').value;
+        }
 
         new Ajax.Request(this.opt.filterUrl, {
             method:'post',
@@ -1348,15 +1366,19 @@ GoMage.Designer.prototype = {
     },
 
     observeFilterFields: function(){
-        Event.on($('cliparts-search-btn'), 'click', '#cliparts-search-btn', function(e, elm){
-            e.stop();
-            this.filterImages();
-        }.bind(this));
-        Event.on($('cliparts-filters'), 'change', '#mainCategoriesSearchField, #subCategoriesSearchField', function(e, elm){
-            e.stop();
-            this.filterImages();
-        }.bind(this));
-    },
+        if ($('cliparts-search-btn')) {
+            Event.on($('cliparts-search-btn'), 'click', '#cliparts-search-btn', function(e, elm){
+                e.stop();
+                this.filterImages();
+            }.bind(this));
+        }
+        if ($('mainCategoriesSearchField') && $('subCategoriesSearchField')) {
+            Event.on($('cliparts-filters'), 'change', '#mainCategoriesSearchField, #subCategoriesSearchField', function(e, elm){
+                e.stop();
+                this.filterImages();
+            }.bind(this));
+        }
+    }
 };
 
 GoMage.TextEditor = function(defaultFontFamily, defaultFontSize) {
@@ -1620,6 +1642,9 @@ GoMage.TextEditor.prototype = {
     },
 
     observeCurvedTextButton: function(){
+        if (!this.curvedTextButton) {
+            return;
+        }
         this.curvedTextButton.observe('click', function(e){
             var elem = e.target || e.srcElement;
             this.openConfigContainer(elem);
@@ -1627,9 +1652,10 @@ GoMage.TextEditor.prototype = {
     },
 
     observeCurvedTextControls: function(){
-        var curvedTextParams = Object.clone(this.curvedTextOpt);
         var rxRangeInput = $('rx_range');
-
+        if (!rxRangeInput) {
+            return;
+        }
         rxRangeInput.observe('change', function(e) {
             var elem = e.target || e.srcElement;
             var obj = this.productDesigner.canvas.getActiveObject();
@@ -1642,6 +1668,9 @@ GoMage.TextEditor.prototype = {
     },
 
     observeShadowButton: function(){
+        if (!this.btnShadowText) {
+            return;
+        }
         this.btnShadowText.observe('click', function(e){
             var elem = e.target || e.srcElement;
             this.openConfigContainer(elem);
@@ -1652,6 +1681,10 @@ GoMage.TextEditor.prototype = {
         var shadowOffsetY =  $('shadow_y_range');
         var shadowOffsetX =  $('shadow_x_range');
         var shadowBlur =  $('shadow_blur');
+
+        if (!shadowOffsetY || !shadowOffsetX || !shadowBlur) {
+            return;
+        }
 
         shadowOffsetY.observe('change', function(e) {
             var elem = e.target || e.srcElement;
@@ -1680,6 +1713,9 @@ GoMage.TextEditor.prototype = {
     },
 
     observeOutlineButton: function(){
+        if (!this.btnOutlineText) {
+            return;
+        }
         this.btnOutlineText.observe('click', function(e){
             var elem = e.target || e.srcElement;
             if (elem.hasClassName('active')){
@@ -1691,6 +1727,9 @@ GoMage.TextEditor.prototype = {
     },
 
     observeOutlineControls: function(){
+        if (!this.outlineStrokeWidthRange) {
+            return;
+        }
         this.outlineStrokeWidthRange.observe('change', function(e) {
             if (this.timeout != 'undefined' || this.timeout != null) {
                 clearTimeout(this.timeout);

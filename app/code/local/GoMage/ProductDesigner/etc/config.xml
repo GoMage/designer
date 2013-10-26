@@ -26,7 +26,6 @@
                 <price_for_text>0</price_for_text>
                 <price_for_image>0</price_for_image>
                 <show_comment>1</show_comment>
-                <save_design>1</save_design>
             </general>
             <navigation>
                 <enabled>1</enabled>
@@ -41,14 +40,12 @@
                 <design_size_height>700</design_size_height>
                 <zoom_size_width>600</zoom_size_width>
                 <zoom_size_height>800</zoom_size_height>
-                <max_layers>2</max_layers>
             </design>
             <text>
                 <enabled>1</enabled>
                 <effects>1</effects>
                 <font>Arial</font>
                 <size>16</size>
-                <max_layers>2</max_layers>
             </text>
             <upload_image>
                 <enabled>1</enabled>
@@ -57,15 +54,6 @@
                 <max_size_width>500</max_size_width>
                 <max_size_height>700</max_size_height>
             </upload_image>
-            <ideas>
-                <enabled>1</enabled>
-                <search>1</search>
-                <navigation>1</navigation>
-            </ideas>
-            <saved>
-                <search>1</search>
-                <navigation>1</navigation>
-            </saved>
             <share>
                 <email>1</email>
                 <email_sender>general</email_sender>
