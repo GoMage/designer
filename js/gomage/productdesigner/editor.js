@@ -1539,8 +1539,6 @@ GoMage.TextEditor.prototype = {
                 fontFamily : this.fontSelector.value
             };
             var textObject = new fabric.CustomText2(this.addTextTextarea.value, textObjectData);
-            textObject._render();
-
             var cmd = new InsertCommand(this.productDesigner, textObject, true);
             cmd.exec();
             this.productDesigner.history.push(cmd);
@@ -1909,17 +1907,17 @@ fabric.CustomText2 = fabric.util.createClass(fabric.Group, {
         fontFamily : 'Arial',
         fontWeight : '400',
         fontStyle: '',
-        textDecoration: '',
         color : '#000000',
         fontSize : 16,
         spacing: 0
     },
 
+    hasDecoration: false,
+
     delegatedProperties: {
         fontFamily: true,
         fontWeight: true,
         fontStyle: true,
-        textDecoration: true,
         color: true,
         fontSize: true
     },
@@ -1928,7 +1926,8 @@ fabric.CustomText2 = fabric.util.createClass(fabric.Group, {
         this.canvas = w.canvas;
         this.text = text;
         this.setData(options);
-        this.callSuper('initialize', this._createGroupFromText(text));
+        this.callSuper('initialize', this._createGroupFromText(text), {padding: 0});
+        this._render();
     },
 
     setData : function(name, value) {
@@ -1944,10 +1943,11 @@ fabric.CustomText2 = fabric.util.createClass(fabric.Group, {
     _createGroupFromText : function(text) {
         var t = text.split('');
         var g = [];
-        var fs = parseInt(this.fontsize ? this.fontsize : this.defaultOptions.fontsize);
+        var fs = parseInt(this.fontSize ? this.fontSize : this.defaultOptions.fontSize);
 
         for (var i = 0; i < t.length; i++) {
-            var ch = new fabric.Text(t[i], {left: (fs/2)*i});
+            var ch = new fabric.Text(t[i], {left: (fs/2)* i, fontSize: fs});
+            console.log(ch.getHeight());
             g.push(ch);
         }
 
@@ -1960,25 +1960,69 @@ fabric.CustomText2 = fabric.util.createClass(fabric.Group, {
         var objects = this.getObjects();
         var count = objects.length;
         var offset = 0;
+        var groupHeight = 0;
+        if (!count) {
+            return;
+        }
         for (i = 0; i < count; i++) {
+            if (objects[i].type != 'text') continue;
+
             for (k in this.delegatedProperties) {
                 var value = this.get(k) ? this.get(k) : this.defaultOptions[k];
-                objects[i].set(k, value);
+                if (typeof objects[i]['set' + $ucfirst(k)] == 'function') {
+                    objects[i]['set' + $ucfirst(k)](value);
+                } else {
+                    objects[i].set(k, value);
+                }
             }
-            var size = this.objects[i].fontSize < this.objects[i].getWidth() ? this.objects[i].getWidth()
-                : this.objects[i].fontSize;
-            console.log(this.objects[i].getHeight());
+            var size = this.objects[i].fontSize;
             this.objects[i].top  = gt;
             this.objects[i].left = gl + size + offset;
+            this.objects[i].set('padding', 0);
+            this.objects[i].setHeight(this.objects[i].fontSize);
             offset += size;
         }
 
+        this._setUnderlineDecoration();
+
+        this.set('padding', 0.05 * this.fontSize);
         this._calcBounds();
         this._updateObjectsCoords();
         this.saveCoords();
 
+
         this.top  = gt;
         this.left = gl;
+    },
+
+    _setUnderlineDecoration: function() {
+        var objects = this.getObjects();
+        var count = objects.length;
+
+        if (this.textDecoration == 'underline') {
+            var lastLetterIndex = this.hasDecoration ? count - 2 : count - 1;
+            var x1 = objects[0].left - objects[0].fontSize / 2,
+                x2 = objects[lastLetterIndex].left + objects[lastLetterIndex].fontSize / 2,
+                y = objects[0].top + (objects[0].getHeight() / 2) + (this.fontSize / 4);
+
+            if (!this.hasDecoration) {
+                var line = new fabric.Line([x1, y, x2, y]);
+                this.add(line);
+                this.hasDecoration = true;
+            } else if (this.hasDecoration && objects[count-1].type == 'line') {
+                var line = objects[count-1];
+                line.set('x1', x1);
+                line.set('y1', y);
+                line.set('x2', x2);
+                line.set('y2', y);
+                line._setWidthHeight();
+            }
+            line.setFill(this.color);
+        } else if (this.hasDecoration) {
+            var line = objects[count-1];
+            this.remove(line);
+            this.hasDecoration = false;
+        }
     }
 });
 
