@@ -1660,7 +1660,7 @@ GoMage.TextEditor.prototype = {
             var elem = e.target || e.srcElement;
             var obj = this.productDesigner.canvas.getActiveObject();
             if (obj && obj.type == 'custom_text') {
-                var cmd = new TransformCommand(this.productDesigner.canvas, obj, {curved: elem.value});
+                var cmd = new TransformCommand(this.productDesigner.canvas, obj, {curved: parseFloat(elem.value)});
                 cmd.exec();
                 this.productDesigner.history.push(cmd);
             }
