@@ -229,7 +229,7 @@ GoMage.ProductDesigner.prototype = {
                     }
                     var element = document.createElement('span');
                     element.addClassName('color-btn');
-                    element.setAttribute('color_id', color['option_id']);
+                    element.setAttribute('data-color_id', color['option_id']);
                     if (color['image']) {
                         element.setStyle({
                             'background-image': 'url('+ color['image'] +')',
@@ -812,7 +812,7 @@ GoMage.ProductDesigner.prototype = {
     observeProductImageColorChange: function(){
         Event.on($('product-colors'), 'click', '.color-btn', function(e, elem){
             e.stop();
-            var color = elem.getAttribute('color_id');
+            var color = elem.getAttribute('data-color_id');
             if (this.currentColor != color) {
                 if(!elem.hasClassName('selected')) {
                     elem.siblings().invoke('removeClassName', 'selected');
@@ -1250,7 +1250,7 @@ GoMage.ProductNavigation.prototype = {
     observeProductSelect: function() {
         Event.on($(this.opt.navigationProducts), 'click', '.product-image', function(e, elem){
             e.stop();
-            var productId = elem.getAttribute('product_id');
+            var productId = elem.getAttribute('data-product_id');
             if (productId && productId != undefined) {
                 var data = { id: productId };
             }

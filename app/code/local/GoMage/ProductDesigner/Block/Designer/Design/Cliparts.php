@@ -44,7 +44,7 @@ class GoMage_ProductDesigner_Block_Designer_Design_Cliparts extends Mage_Core_Bl
     public function getCliparts()
     {
         if (is_null($this->_cliparts)) {
-            $this->_cliparts = Mage::getSingleton('gmpd/clipart')->getCliparts();
+            $this->_cliparts = Mage::getModel('gmpd/clipart')->getCliparts();
         }
 
         return $this->_cliparts;

@@ -80,7 +80,7 @@ class GoMage_ProductDesigner_Model_Clipart extends Mage_Core_Model_Abstract {
     {
         //TODO What a fuck??
         if (is_null($this->_cliparts)) {
-            $collection = $this->getCollection()->addFieldToFilter('disabled', 0)->load();
+            $collection = $this->getCollection()->addFieldToFilter('disabled', 0);
             $this->_cliparts = $collection;
         }
 

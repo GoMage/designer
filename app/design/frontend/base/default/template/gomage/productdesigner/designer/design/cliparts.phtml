@@ -2,5 +2,5 @@
 $cliparts = $this->getCliparts();
 ?>
 <?php foreach($cliparts as $_clipart): ?>
-    <img src="<?php echo $this->getClipartUrl($_clipart->getImage()); ?>" class="clipart-image" />
+    <img src="<?php echo $this->getClipartUrl($_clipart->getImage()); ?>" class="clipart-image" alt="<?php echo $_clipart->getLabel()?>" title="<?php echo $_clipart->getLabel()?>"/>
 <?php endforeach; ?>

@@ -1,5 +1,5 @@
 <?php foreach($this->getUploadedImages() as $image): ?>
-    <img src="<?php echo $this->getImageUrl($image['image']); ?>" class="clipart-image" />
+    <img src="<?php echo $this->getImageUrl($image['image']); ?>" class="clipart-image" alt="" title=""/>
 <?php endforeach; ?>
 <?php if ($error = $this->getError()): ?>
     <div><?php echo $error; ?></div>
