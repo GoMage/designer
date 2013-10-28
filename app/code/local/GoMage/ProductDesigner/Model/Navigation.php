@@ -35,9 +35,15 @@
 class GoMage_ProductDesigner_Model_Navigation extends Mage_Core_Model_Abstract
 {
     protected $_collection = null;
-    protected $_availableFilters = array('category');
+    protected $_additionalFilters = array('category' => 'Category');
+    protected $_availableFilters;
     protected $_category;
 
+    /**
+     * Prepare product collection
+     *
+     * @return Mage_Catalog_Model_Resource_Product_Collection
+     */
     protected function _prepareProductCollection()
     {
         $category = $this->_getRootCategory();
@@ -57,6 +63,11 @@ class GoMage_ProductDesigner_Model_Navigation extends Mage_Core_Model_Abstract
         return $collection;
     }
 
+    /**
+     * Return root category
+     *
+     * @return Mage_Catalog_Model_Category
+     */
     protected function _getRootCategory()
     {
         if (is_null($this->_category)) {
@@ -68,6 +79,12 @@ class GoMage_ProductDesigner_Model_Navigation extends Mage_Core_Model_Abstract
         return $this->_category;
     }
 
+    /**
+     * Return associated product collection
+     *
+     * @param array $ids Parent Product Ids
+     * @return Mage_Catalog_Model_Resource_Product_Collection
+     */
     protected function _getAssociatedProductCollection($ids = array())
     {
         $category = $this->_getRootCategory();
@@ -84,6 +101,13 @@ class GoMage_ProductDesigner_Model_Navigation extends Mage_Core_Model_Abstract
         return $collection;
     }
 
+    /**
+     * Add Design area filter
+     * @param Mage_Catalog_Model_Resource_Product_Collection $collection Product collection
+     * @param string $tableAlias Table Alias
+     * @param string $joinField Join Field
+     * @return Mage_Catalog_Model_Resource_Product_Collection
+     */
     protected function _addDesignAreaFilter($collection, $tableAlias = 'e', $joinField = 'entity_id')
     {
         $storeId = Mage::app()->getStore()->getId();
@@ -109,28 +133,24 @@ class GoMage_ProductDesigner_Model_Navigation extends Mage_Core_Model_Abstract
         return $collection;
     }
 
+    /**
+     * Add filter attribute to product collection
+     *
+     * @param Mage_Catalog_Model_Resource_Product_Collection $collection Product Collection
+     * return void
+     */
     protected function _addFiltersAttributes($collection)
     {
-        $colorAttributeCode = Mage::getStoreConfig('gmpd/navigation/color_attribute');
-        $colorAttribute = Mage::getSingleton('eav/config')
-            ->getAttribute(Mage_Catalog_Model_Product::ENTITY, $colorAttributeCode);
-        $sizeAttributeCode = Mage::getStoreConfig('gmpd/navigation/size_attribute');
-        $sizeAttribute = Mage::getSingleton('eav/config')
-            ->getAttribute(Mage_Catalog_Model_Product::ENTITY, $sizeAttributeCode);
-
-
-        if ($colorAttribute && $colorAttribute->getId()) {
-            $collection->addAttributeToSelect($colorAttributeCode, true);
-        }
-
-        if ($sizeAttribute && $sizeAttribute->getId()) {
-            $collection->addAttributeToSelect($sizeAttributeCode, true);
+        foreach ($this->getAvailableFilters() as $filter) {
+            $collection->addAttributeToSelect($filter->getAttributeCode(), true);
         }
     }
 
     /**
+     * Return filter options
+     *
      * @param string $filter Filter
-     * @param Mage_Catalog_Model_Resource_Product_Collection $collection Collection
+     * @return array
      */
     public function getFilterOptions($filter)
     {
@@ -227,16 +247,52 @@ class GoMage_ProductDesigner_Model_Navigation extends Mage_Core_Model_Abstract
      */
     public function getAvailableFilters()
     {
-        return array_merge($this->_availableFilters, array(
-            Mage::getStoreConfig('gmpd/navigation/color_attribute'),
-            Mage::getStoreConfig('gmpd/navigation/size_attribute')
-        ));
+        if (is_null($this->_availableFilters)) {
+            $filters = array();
+            foreach (array(Mage::getStoreConfig('gmpd/navigation/color_attribute'),
+                 Mage::getStoreConfig('gmpd/navigation/size_attribute')) as $filter) {
+                if ($attribute = $this->_getFilterAttribute($filter)) {
+                    $filters[] = $attribute;
+                }
+            }
+            $this->_availableFilters = $filters;
+        }
+
+        return $this->_availableFilters;
+    }
+
+    /**
+     * Return additional filters
+     *
+     * @return array
+     */
+    public function getAdditionalFilters()
+    {
+        return $this->_additionalFilters;
+    }
+
+    /**
+     * Return filter attribute
+     *
+     * @param string $code Attribute Code
+     * @return bool|Mage_Eav_Model_Attribute
+     */
+    protected  function _getFilterAttribute($code)
+    {
+        $attribute = Mage::getSingleton('eav/config')
+            ->getAttribute(Mage_Catalog_Model_Product::ENTITY, $code);
+        if ($attribute && $attribute->getId()) {
+            return $attribute;
+        }
+
+        return false;
     }
 
     /**
      * Apply filters to collection
      *
-     * @param Object $request Request
+     * @param Mage_Catalog_Model_Resource_Product_Collection $collection Product Collection
+     * @param string $excludeFilter Exclude filter attribute code
      * @return $this
      */
     public function applyFilters($collection, $excludeFilter = null)
@@ -244,9 +300,9 @@ class GoMage_ProductDesigner_Model_Navigation extends Mage_Core_Model_Abstract
         $request = Mage::app()->getRequest();
         $filters = $this->getAvailableFilters();
         foreach ($filters as $_filter) {
-            if ($value = $request->getParam($_filter)) {
-                if ($excludeFilter === null || $excludeFilter != $_filter) {
-                    $this->applyFilter($collection, $_filter, $value);
+            if ($value = $request->getParam($_filter->getAttributeCode())) {
+                if ($excludeFilter === null || $excludeFilter != $_filter->getAttributeCode()) {
+                    $this->applyFilter($collection, $_filter->getAttributeCode(), $value);
                 }
             }
         }

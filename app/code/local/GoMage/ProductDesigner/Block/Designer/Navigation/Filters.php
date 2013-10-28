@@ -33,8 +33,6 @@
  */
 class GoMage_ProductDesigner_Block_Designer_Navigation_Filters extends Mage_Core_Block_Template
 {
-    protected $_productCollection = null;
-
     /**
      * Return available filter options
      *
@@ -54,7 +52,13 @@ class GoMage_ProductDesigner_Block_Designer_Navigation_Filters extends Mage_Core
      */
     public function getAvailableFilters()
     {
-        return Mage::getSingleton('gmpd/navigation')->getAvailableFilters();
+        $filters = array();
+        $items = Mage::getSingleton('gmpd/navigation')->getAvailableFilters();
+        foreach ($items as $item) {
+            $filters[$item->getAttributeCode()] = $item->getFrontendLabel();
+        }
+
+        return array_merge(Mage::getSingleton('gmpd/navigation')->getAdditionalFilters(), $filters);
     }
 
     /**
