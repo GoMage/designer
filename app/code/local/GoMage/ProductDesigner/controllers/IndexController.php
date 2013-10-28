@@ -169,17 +169,27 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
     public function uploadImagesAction()
     {
         $files = @$_FILES['filesToUpload'];
+        $forbiddenExtensions = array();
+        $this->loadLayout();
+        $block = $this->getLayout()->getBlock('uploadedImages');
+        $uploadedFilesCount = 0;
+
         if (is_array($files)) {
-            $files = $this->prepareFilesArray($files);
             $sessionId = $this->getSessionId();
             $customerId = (int) $this->_getCustomerSession()->getCustomerId();
 
             $baseMediaPath = Mage::getSingleton('gmpd/uploadedImage_config')->getBaseMediaPath();
             $allowedFormats = Mage::getStoreConfig('gmpd/upload_image/format');
             $allowedFormats = explode(',', $allowedFormats);
+            $files = $this->prepareFilesArray($files);
             foreach ($files as $file) {
+                if (!$file['name']) {
+                    continue;
+                }
+                $uploadedFilesCount++;
                 $imageExtension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
                 if (!in_array($imageExtension, $allowedFormats)) {
+                    $forbiddenExtensions[] = $imageExtension;
                     continue;
                 }
                 $fileName = substr(sha1(microtime()), 0, 20) . $this->getConvertHelper()->format($file['name']);
@@ -202,10 +212,21 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
                 }
             }
 
-            $this->loadLayout();
-            $content = preg_replace('/\t+|\n+|\s{2,}/', '', $this->getLayout()->getBlock('uploadedImages')->toHtml());
-            $this->getResponse()->setBody($content);
+            if ($uploadedFilesCount > 0) {
+                if (!empty($forbiddenExtensions)) {
+                    $errorText = Mage::helper('designer')->__('You can not upload file(s) in %s extension(s)',
+                        implode(', ', $forbiddenExtensions));
+                    $block->setError($errorText);
+                }
+                $content = preg_replace('/\t+|\n+|\s{2,}/', '', $block->toHtml());
+                $this->getResponse()->setBody($content);
+                return;
+            }
         }
+        $errorText = Mage::helper('designer')->__('Please, select files for upload');
+        $block->setError($errorText);
+        $content = preg_replace('/\t+|\n+|\s{2,}/', '', $block->toHtml());
+        $this->getResponse()->setBody($content);
     }
 
     public function saveDesignAction()
@@ -254,6 +275,7 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
     {
         $filesArray = array();
         foreach ($files as $key => $values) {
+
             foreach ($values as $valueKey => $value) {
                 $filesArray[$valueKey][$key] = $value;
             }
