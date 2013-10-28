@@ -29,7 +29,7 @@
             <action method="addJs"><script>gomage/productdesigner/vendor/fabric.min.js</script></action>
             <action method="addJs"><script>gomage/productdesigner/vendor/excanvas.compiled.js</script></action>
             <action method="addJs"><script>gomage/productdesigner/editor.js</script></action>
-            <action method="addItem"><type>skin_css</type><name>css/gomage/productdesigner.css</name><params/></action>
+            <action method="addItem"><type>skin_css</type><name>css/gomage/productdesigner/editor.css</name><params/></action>
         </reference>
         <reference name="content">
             <block type="designer/editor" name="product_designer_editor" template="gomage/productdesigner/editor.phtml">
@@ -146,9 +146,7 @@
                     <title>My Saved Designs</title>
                 </action>
                 <block type="designer/customer_designs" name="customer.design.list" as="design.list" template="gomage/productdesigner/customer/designs/list.phtml">
-                    <block type="page/html_pager" name="pager">
-                        <action method="setLimit"><limit>12</limit></action>
-                    </block>
+                    <block type="page/html_pager" name="pager"/>
                     <action method="setColumnCount"><count>4</count></action>
                 </block>
             </block>

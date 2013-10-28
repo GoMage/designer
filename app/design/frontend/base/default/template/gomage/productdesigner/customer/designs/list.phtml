@@ -26,7 +26,7 @@
                     <?php else: ?>
                         <p class="availability out-of-stock"><span><?php echo $this->__('Out of stock') ?></span></p>
                     <?php endif; ?>
-                    <button type="button" title="<?php echo $this->__('Delete') ?>" class="button btn-cart" onclick="setLocation('<?php echo $this->getDeleteUrl($_design->getId()) ?>')"><span><span><?php echo $this->__('Delete') ?></span></span></button>
+                    <button type="button" title="<?php echo $this->__('Delete') ?>" class="button btn-cart" onclick="confirmDelete('<?php echo $this->getDeleteUrl($_design->getId()) ?>');"><span><span><?php echo $this->__('Delete') ?></span></span></button>
                 </div>
             </li>
             <?php if ($i%$_columnCount==0 || $i==$_collectionSize): ?>
@@ -37,3 +37,10 @@
     </div>
     <?php echo $this->getPagerHtml(); ?>
 <?php endif; ?>
+<script type="text/javascript">
+    function confirmDelete(url) {
+        if (confirm('<?php echo $this->__('Are you sure want to remove this design?')?>')) {
+            setLocation(url);
+        }
+    }
+</script>
