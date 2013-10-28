@@ -359,7 +359,7 @@ GoMage.ProductDesigner.prototype = {
             this.navigation.saveDesign.observe('click', function(e) {
                 e.stop();
                 if (!this.canvasesHasLayers()) {
-                    alert('Please add to canvas thogh one layer');
+                    alert('Please add to canvas though one layer');
                     return;
                 }
                 if (!this.isCustomerLogin) {
