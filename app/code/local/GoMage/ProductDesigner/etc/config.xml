@@ -89,6 +89,14 @@
                     </add_design_to_quote_item>
                 </observers>
             </sales_quote_add_item>
+            <catalog_product_collection_load_before>
+                <observers>
+                    <add_product_design_enabled>
+                        <class>gmpd/observer</class>
+                        <method>addDesignEnabledToProducts</method>
+                    </add_product_design_enabled>
+                </observers>
+            </catalog_product_collection_load_before>
         </events>
     </frontend>
     <admin>
