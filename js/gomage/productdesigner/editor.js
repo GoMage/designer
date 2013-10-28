@@ -646,7 +646,7 @@ GoMage.ProductDesigner.prototype = {
                 this.history.redo();
             }
 
-            if (e.which == 46 || e.which == 8) {
+            if (e.ctrlKey == true && (e.which == 46 || e.which == 8)) {
                 if ((this.canvas == null) || this.canvas == 'undefined') {
                     return;
                 }
@@ -1477,19 +1477,18 @@ GoMage.TextEditor.prototype = {
                 var data;
                 switch(elem.id) {
                     case 'color': {
-                        data = e.hex;
+                        this.setTextColor(e.hex);
                         break;
                     }
                     case 'textShadow': {
-                        data = {color : e.hex};
+                        this.setShadow({textShadowColor : e.hex})
                         break;
                     }
-                    default: {
-                        data = e.hex;
+                    case 'strokeStyle': {
+                        this.setOutline({strokeStyle : e.hex});
+                        break;
                     }
                 }
-                obj['set' + $ucfirst(elem.id)](data);
-                this.productDesigner.canvas.renderAll();
             }
         }
     },
@@ -1497,14 +1496,7 @@ GoMage.TextEditor.prototype = {
     /**
      * Set Text Color function
      */
-    setTextColor: function(e) {
-        var elem = e.target || e.srcElement;
-        if(!elem.hasClassName('selected')) {
-            elem.siblings().invoke('removeClassName', 'selected');
-        }
-        elem.addClassName('selected');
-        var color = elem.className.match(/color-code-([0-9A-Z]{6})/)[1];
-        var color = '#' + color;
+    setTextColor: function(color) {
         var obj = this.productDesigner.canvas.getActiveObject();
         if (obj && (obj.type == 'text' || obj.type == 'custom_text')) {
             var cmd = new TransformCommand(this.productDesigner.canvas, obj, {color: color});
@@ -1514,7 +1506,16 @@ GoMage.TextEditor.prototype = {
     },
 
     observeTextColorChange: function(){
-        this.addTextColorsPanel.childElements().invoke('observe', 'click', this.setTextColor.bind(this));
+        this.addTextColorsPanel.childElements().invoke('observe', 'click', function(e){
+            var elem = e.target || e.srcElement;
+            if(!elem.hasClassName('selected')) {
+                elem.siblings().invoke('removeClassName', 'selected');
+            }
+            elem.addClassName('selected');
+            var color = elem.className.match(/color-code-([0-9A-Z]{6})/)[1];
+            var color = '#' + color;
+            this.setTextColor(color);
+        }.bind(this));
     },
 
     observeFontChange: function(){
@@ -1530,45 +1531,47 @@ GoMage.TextEditor.prototype = {
     },
 
     observeAddText: function(){
+        var timeout
         this.addTextButton.observe('click', function() {
             if (!this.addTextTextarea.value){
                 return;
             }
+            var text = this.addTextTextarea.value;
             var textObjectData = {
                 fontSize : parseInt(this.fontSizeSelector.value),
                 fontFamily : this.fontSelector.value
             };
-            var textObject = new fabric.CustomText2(this.addTextTextarea.value, textObjectData);
+            var textObject = new fabric.CustomText2(text, textObjectData);
             var cmd = new InsertCommand(this.productDesigner, textObject, true);
             cmd.exec();
             this.productDesigner.history.push(cmd);
         }.bind(this));
 
         this.addTextTextarea.observe('keyup', function(e) {
-            return;
-            if (this.timeout != 'undefined' || this.timeout != null) {
-                clearTimeout(this.timeout);
+            var obj = this.productDesigner.canvas.getActiveObject();
+            if (!obj || obj.type != 'custom_text') {
+                return;
             }
-            this.timeout = setTimeout(function(){
+
+            if (timeout != 'undefined' || timeout != null) {
+                clearTimeout(timeout);
+            }
+
+            timeout = setTimeout(function(){
                 var elem = e.target || e.srcElement;
                 if (!elem.value) {
                     this.productDesigner.layersManager.removeById(obj.get('uid'));
                     return;
                 }
                 var currentValue = elem.value;
-                var obj = this.productDesigner.canvas.getActiveObject();
                 if(obj  && (obj.type == 'text' || obj.type == 'custom_text')) {
                     if(currentValue != obj.getText()) {
-                        var params = {
-//                            fontsize: this.fontSizeSelector.value,
-                            text: currentValue
-                        };
-                        var cmd = new TransformCommand(this.productDesigner.canvas, obj, params);
+                        var cmd = new TransformCommand(this.productDesigner.canvas, obj, {text: currentValue});
                         cmd.exec();
                         this.productDesigner.history.push(cmd);
                     }
                 }
-            }.bind(this), 2500);
+            }.bind(this), 1000);
         }.bind(this));
     },
 
@@ -1686,26 +1689,37 @@ GoMage.TextEditor.prototype = {
 
         shadowOffsetY.observe('change', function(e) {
             var elem = e.target || e.srcElement;
-            this.setShadow({textShadow: {y : elem.value}});
+            this.setShadow({textShadowOffsetY : parseInt(elem.value)});
         }.bind(this));
 
         shadowOffsetX.observe('change', function(e) {
             var elem = e.target || e.srcElement;
-            this.setShadow({textShadow: {x : elem.value}});
+            this.setShadow({textShadowOffsetX : parseInt(elem.value)});
         }.bind(this));
 
         shadowBlur.observe('change', function(e) {
             var elem = e.target || e.srcElement;
-            this.setShadow({textShadow: {blur : elem.value}});
+            this.setShadow({textShadowBlur : parseInt(elem.value)});
         }.bind(this));
     },
 
     setShadow: function(shadowParams) {
-        var obj = Object.clone(this.productDesigner.canvas.getActiveObject());
+        var obj = this.productDesigner.canvas.getActiveObject();
         if (obj && obj.type == 'custom_text') {
-            var cmd = new TransformCommand(this.productDesigner.canvas, obj, shadowParams);
+            if (shadowParams != undefined) {
+                if (!shadowParams.hasOwnProperty('textShadowOffsetX')) {
+                    shadowParams['textShadowOffsetX'] = obj.textShadowOffsetX;
+                }
+                if (!shadowParams.hasOwnProperty('textShadowOffsetY')) {
+                    shadowParams['textShadowOffsetY'] = obj.textShadowOffsetY;
+                }
+                if (!shadowParams.hasOwnProperty('textShadowBlur')) {
+                    shadowParams['textShadowBlur'] = obj.textShadowBlur;
+                }
+            }
+
+            var cmd = new TransformCommand(this.productDesigner.canvas, obj, {textShadow : shadowParams});
             cmd.exec();
-            //TODO Fix history
             this.productDesigner.history.push(cmd);
         }
     },
@@ -1716,10 +1730,6 @@ GoMage.TextEditor.prototype = {
         }
         this.btnOutlineText.observe('click', function(e){
             var elem = e.target || e.srcElement;
-            if (elem.hasClassName('active')){
-                this.outlineStrokeWidthRange.value = 0;
-                this.setOutline({strokeWidth: 0, strokeStyle: ''});
-            }
             this.openConfigContainer(elem);
         }.bind(this));
     },
@@ -1734,7 +1744,7 @@ GoMage.TextEditor.prototype = {
             }
             this.timeout = setTimeout(function(){
                 var elem = e.target || e.srcElement;
-                this.setOutline({strokeWidth: elem.value});
+                this.setOutline({strokeWidth: parseFloat(elem.value)});
             }.bind(this), 500);
 
         }.bind(this));
@@ -1745,7 +1755,6 @@ GoMage.TextEditor.prototype = {
         if (!obj || obj.type != 'custom_text') {
             return;
         }
-        this.outlineStrokeWidthRange.value = strokeData.strokeWidth;
         var cmd = new TransformCommand(this.productDesigner.canvas, obj, strokeData);
         cmd.exec();
         this.productDesigner.history.push(cmd);
@@ -1903,23 +1912,30 @@ ColorPicker.prototype = {
 fabric.CustomText2 = fabric.util.createClass(fabric.Group, {
     type: 'custom_text',
     text: '',
-    defaultOptions: {
-        fontFamily : 'Arial',
-        fontWeight : '400',
-        fontStyle: '',
-        color : '#000000',
-        fontSize : 16,
-        spacing: 0
-    },
-
+    fontFamily : 'Arial',
+    fontWeight : '400',
+    fontStyle: '',
+    color : '#000000',
+    fontSize : 16,
+    textShadow: '',
+    textShadowOffsetX: 0,
+    textShadowOffsetY: 0,
+    textShadowColor: '#000000',
+    textShadowBlur: 0,
+    strokeStyle : '',
+    strokeWidth : 0.00001,
     hasDecoration: false,
+    verticalOutput: false,
 
     delegatedProperties: {
         fontFamily: true,
         fontWeight: true,
         fontStyle: true,
         color: true,
-        fontSize: true
+        fontSize: true,
+        textShadow: true,
+        strokeWidth: true,
+        strokeStyle: true
     },
 
     initialize: function(text, options){
@@ -1943,11 +1959,10 @@ fabric.CustomText2 = fabric.util.createClass(fabric.Group, {
     _createGroupFromText : function(text) {
         var t = text.split('');
         var g = [];
-        var fs = parseInt(this.fontSize ? this.fontSize : this.defaultOptions.fontSize);
+        var fs = this.fontSize;
 
         for (var i = 0; i < t.length; i++) {
             var ch = new fabric.Text(t[i], {left: (fs/2)* i, fontSize: fs});
-            console.log(ch.getHeight());
             g.push(ch);
         }
 
@@ -1968,7 +1983,7 @@ fabric.CustomText2 = fabric.util.createClass(fabric.Group, {
             if (objects[i].type != 'text') continue;
 
             for (k in this.delegatedProperties) {
-                var value = this.get(k) ? this.get(k) : this.defaultOptions[k];
+                var value = this.get(k);
                 if (typeof objects[i]['set' + $ucfirst(k)] == 'function') {
                     objects[i]['set' + $ucfirst(k)](value);
                 } else {
@@ -2023,6 +2038,37 @@ fabric.CustomText2 = fabric.util.createClass(fabric.Group, {
             this.remove(line);
             this.hasDecoration = false;
         }
+    },
+
+    setTextShadow: function(params) {
+        if (typeof params == 'string') {
+            this.textShadow = params;
+        } else if (typeof params == 'object') {
+            this.setData(params);
+            this.textShadowColor = params['color'] ? params['color'] : this.textShadowColor;
+            this.textShadow = this.textShadowColor + ' ' + this.textShadowOffsetX + 'px ' + this.textShadowOffsetY + 'px ' + this.textShadowBlur + 'px';
+        } else if (params == undefined) {
+            this.textShadow = '';
+        }
+    },
+
+    setText: function(text) {
+        while (this.objects.length > text.length) {
+            this.remove(this.objects[this.objects.length - 1]);
+        }
+        for (var i = 0; i < text.length; i++) {
+            if (this.objects[i] === undefined) {
+                var ch = new fabric.Text(text[i], {left: (this.fontSize/2)* i, fontSize: this.fontSize});
+                this.add(ch);
+            } else {
+                this.objects[i].setText(text[i]);
+            }
+        }
+        this.text = text;
+    },
+
+    getText: function() {
+        return this.text;
     }
 });
 
