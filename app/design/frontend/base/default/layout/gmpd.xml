@@ -13,7 +13,6 @@
  */
  -->
 <layout version="0.1.0">
-    <!-- Editor page /designer -->
     <gomage_designer_index_index translate="label">
         <label>GoMage Product Designer</label>
         <remove name="right"/>
