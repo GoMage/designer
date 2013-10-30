@@ -1376,6 +1376,12 @@ GoMage.Designer.prototype = {
                 this.filterImages({tags: $('tagsSearchField').value});
             }.bind(this));
         }
+        if ($('tagsSearchField')) {
+            Event.on($('cliparts-filters'), 'search', '#tagsSearchField', function(e, elm){
+                e.stop();
+                this.filterImages({tags: $('tagsSearchField').value});
+            }.bind(this));
+        }
         if ($('mainCategoriesSearchField') || $('subCategoriesSearchField')) {
             Event.on($('cliparts-filters'), 'change', '#mainCategoriesSearchField, #subCategoriesSearchField', function(e, elm){
                 e.stop();
