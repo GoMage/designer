@@ -312,7 +312,7 @@ class GoMage_ProductDesigner_CustomerController extends Mage_Customer_AccountCon
                     }
                 }
             }
-            $this->_redirect('*/*/designs');
+            $this->_redirectReferer('*/*/designs');
         } catch (Exception $e) {
             $session->addError($e->getMessage());
             $this->_redirect('');

@@ -18,15 +18,15 @@ class GoMage_ProductDesigner_Adminhtml_ClipartsController extends Mage_Adminhtml
          * @var $category GoMage_ProductDesigner_Model_Clipart_Category
          */
         $request = $this->getRequest();
-        $categoryId = (int)$request->getParam('id');
-
+        $categoryId = (int) $request->getParam('id', false);
+        $category = Mage::getModel('gmpd/clipart_category');
         $this->loadLayout();
 
         //If edit exist category
-        if($categoryId > 0) {
-            $category = Mage::getModel('gmpd/clipart_category')->load($categoryId);
-            //If category realy exists, add it to Register
-            if($category) {
+        if ($categoryId) {
+            $category->load($categoryId);
+            if($category->getId())
+            {
                 Mage::register('category', $category);
             }
         }
@@ -34,7 +34,7 @@ class GoMage_ProductDesigner_Adminhtml_ClipartsController extends Mage_Adminhtml
         // If Request is AJAX
         if ($this->getRequest()->getQuery('isAjax')) {
             $breadcrumbsPath = '';
-            if($category) {
+            if($category->getId()) {
                 // prepare breadcrumbs of selected category, if any
                 $breadcrumbsPath = $category->getPath();
                 if (!empty($breadcrumbsPath)) {
@@ -49,12 +49,8 @@ class GoMage_ProductDesigner_Adminhtml_ClipartsController extends Mage_Adminhtml
                 }
             }
 
-            $this->loadLayout();
-
             $eventResponse = new Varien_Object(array(
-                'content' => $this->getLayout()->getBlock('cliparts_edit')->getFormHtml()
-                . $this->getLayout()->getBlock('cliparts_categories_tree')
-                    ->getBreadcrumbsJavascript($breadcrumbsPath, 'editingCategoryBreadcrumbs'),
+                'content' => $this->getLayout()->getBlock('cliparts_edit')->getFormHtml(),
                 'messages' => $this->getLayout()->getMessagesBlock()->getGroupedHtml(),
             ));
 
@@ -107,7 +103,7 @@ class GoMage_ProductDesigner_Adminhtml_ClipartsController extends Mage_Adminhtml
             try {
                 //Unset Default state
                 $data['is_default'] = 0;
-
+                $data['is_active'] = 1;
                 $category = Mage::getModel('gmpd/clipart_category');
                 $category->setData($data);
                 $category->save();
@@ -127,7 +123,7 @@ class GoMage_ProductDesigner_Adminhtml_ClipartsController extends Mage_Adminhtml
                                 'category_id' => $category->getId(),
                                 'label' => $image['label'],
                                 'image' => $imagePath,
-                                'tags' => '',
+                                'tags' => $image['tags'],
                                 'position' => $image['position'],
                                 'disabled' => $image['disabled'],
                             ));
