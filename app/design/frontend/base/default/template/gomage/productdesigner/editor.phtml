@@ -149,7 +149,7 @@ $productImageMinSize = $this->getProductOriginalImageMinSizes();
                   <?php $images = $this->getProductImages();?>
                   <?php foreach ($images as $k => $v): ?>
                       <li>
-                        <img width="48" height="48" class="product-image" src="<?php echo $v['u'] ?>" data-id="<?php echo $k; ?>" data-image-id="<?php echo $v['id'] ?>">
+                        <img width="48" height="48" class="product-image" src="<?php echo $v['u'] ?>" data-id="<?php echo $k; ?>" data-image-id="<?php echo $v['id'] ?>" alt="">
                       </li>
                   <?php endforeach ?>
                   </ul>

@@ -20,6 +20,6 @@ class GoMage_ProductDesigner_Block_Designer_UploadImage_Images extends Mage_Core
      */
     public function getImageUrl($image)
     {
-        return Mage::getSingleton('gmpd/uploadedImage_config')->getMediaUrl($image);
+        return Mage::getSingleton('gmpd/uploadedImage_config')->getMediaUrl(rawurlencode($image));
     }
 }
