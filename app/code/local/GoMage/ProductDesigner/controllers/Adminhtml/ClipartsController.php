@@ -123,7 +123,7 @@ class GoMage_ProductDesigner_Adminhtml_ClipartsController extends Mage_Adminhtml
                                 'category_id' => $category->getId(),
                                 'label' => $image['label'],
                                 'image' => $imagePath,
-                                'tags' => '',
+                                'tags' => $image['tags'],
                                 'position' => $image['position'],
                                 'disabled' => $image['disabled'],
                             ));

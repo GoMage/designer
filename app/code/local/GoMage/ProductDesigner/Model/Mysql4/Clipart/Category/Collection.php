@@ -34,4 +34,22 @@ class GoMage_ProductDesigner_Model_Mysql4_Clipart_Category_Collection
         $this->addFieldToFilter('is_active', 1);
         return $this;
     }
+
+    public function addClipartCountFilter()
+    {
+        $concatExpr = $this->getConnection()->getConcatSql(array('main_table.path', $this->_conn->quote('/%')));
+        $countSelect = $this->getConnection()->select()
+            ->from(array('clipart_category' => $this->getMainTable()), null)
+            ->joinLeft(
+                array('cliparts' => $this->getTable('gmpd/clipart')),
+                'clipart_category.category_id=cliparts.category_id',
+                array('COUNT(DISTINCT cliparts.clipart_id)'))
+            ->where('clipart_category.category_id = main_table.category_id')
+            ->orWhere('clipart_category.path LIKE ?', $concatExpr);
+        $countExpr = $this->getConnection()
+            ->quoteInto(new Zend_Db_Expr('('. $countSelect .') > ?'), 0);
+        $this->getSelect()->where($countExpr);
+
+        return $this;
+    }
 }

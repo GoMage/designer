@@ -1330,18 +1330,20 @@ GoMage.Designer.prototype = {
         }.bind(this));
     },
 
-    filterImages: function() {
-        var data = {};
+    filterImages: function(data) {
+        var data = data || {};
         data['ajax'] = true;
-        if ($('mainCategoriesSearchField')) {
-            data['mainCategory'] = $('mainCategoriesSearchField').value;
-        }
-        if ($('subCategoriesSearchField')) {
-            data['subCategory'] = $('subCategoriesSearchField').value;
-        }
-        if ($('tagsSearchField')) {
+        if (data.hasOwnProperty('tags')) {
+            if ($('mainCategoriesSearchField') && $('mainCategoriesSearchField').value) {
+                data['mainCategory'] = $('mainCategoriesSearchField').value;
+            }
+            if ($('subCategoriesSearchField') && $('subCategoriesSearchField').value) {
+                data['subCategory'] = $('subCategoriesSearchField').value;
+            }
+        } else if ($('tagsSearchField') && $('tagsSearchField').value) {
             data['tags'] = $('tagsSearchField').value;
         }
+
 
         new Ajax.Request(this.opt.filterUrl, {
             method:'post',
@@ -1369,15 +1371,20 @@ GoMage.Designer.prototype = {
 
     observeFilterFields: function(){
         if ($('cliparts-search-btn')) {
-            Event.on($('cliparts-search-btn'), 'click', '#cliparts-search-btn', function(e, elm){
+            Event.on($('cliparts-filters'), 'click', '#cliparts-search-btn', function(e, elm){
                 e.stop();
-                this.filterImages();
+                this.filterImages({tags: $('tagsSearchField').value});
             }.bind(this));
         }
         if ($('mainCategoriesSearchField') || $('subCategoriesSearchField')) {
             Event.on($('cliparts-filters'), 'change', '#mainCategoriesSearchField, #subCategoriesSearchField', function(e, elm){
                 e.stop();
-                this.filterImages();
+                var data = {};
+                data[elm.name] = elm.value;
+                if (elm.name == 'subCategory') {
+                    data['mainCategory'] = $('mainCategoriesSearchField').value;
+                }
+                this.filterImages(data);
             }.bind(this));
         }
     }

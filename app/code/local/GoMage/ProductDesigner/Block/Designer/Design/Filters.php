@@ -34,19 +34,6 @@
  */
 class GoMage_ProductDesigner_Block_Designer_Design_Filters extends Mage_Core_Block_Template
 {
-    protected $_cliparts;
-    /**
-     * Return clipart collection
-     *
-     * @return GoMage_ProductDesigner_Model_Mysql4_Clipart_Collection
-     */
-    protected function _getClipartCollection()
-    {
-        if (is_null($this->_cliparts)) {
-            $cliparts = Mage::getSingleton('gmpd/clipart')->getCliparts();
-        }
-    }
-
     /**
      * Return clipart categories collection
      *
@@ -59,8 +46,8 @@ class GoMage_ProductDesigner_Block_Designer_Design_Filters extends Mage_Core_Blo
 
         $categoriesCollection = $category->getCollection()
             ->addVisibleFilter()
-            ->addFieldToFilter('parent_id', $defaultCategoryId);
-
+            ->addFieldToFilter('parent_id', $defaultCategoryId)
+            ->addClipartCountFilter();
         return $categoriesCollection;
     }
 
@@ -78,7 +65,8 @@ class GoMage_ProductDesigner_Block_Designer_Design_Filters extends Mage_Core_Blo
             if ($category->getId()) {
                 $subCategoriesCollection = $category->getCollection()
                     ->addVisibleFilter()
-                    ->addFieldToFilter('path', array('like' => $category->getPath(). '/%'));
+                    ->addFieldToFilter('path', array('like' => $category->getPath(). '/%'))
+                    ->addClipartCountFilter();
             }
 
         }

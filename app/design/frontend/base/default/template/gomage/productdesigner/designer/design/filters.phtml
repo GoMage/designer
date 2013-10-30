@@ -7,7 +7,7 @@ $subCategories = $this->getSubCategoriesCollection();
         <li>
         <div class="input-box">
             <?php if ($categories->getSize()): ?>
-              <select name="mainCategoriesSearchField" id="mainCategoriesSearchField">
+              <select name="mainCategory" id="mainCategoriesSearchField">
                   <option value=""><?php echo $this->__('Select Main Category'); ?></option>
                   <?php foreach($categories as $_category): ?>
                       <option value="<?php echo $_category->getId()?>" <?php echo $this->_getSelectedCategoryId() == $_category->getId() ? 'selected="selected"' : ''?>>
@@ -21,7 +21,7 @@ $subCategories = $this->getSubCategoriesCollection();
         <li>
         <div class="input-box">
             <?php if ($subCategories->getSize()): ?>
-              <select name="subCategoriesSearchField" id="subCategoriesSearchField">
+              <select name="subCategory" id="subCategoriesSearchField">
                   <option value=""><?php echo $this->__('Select Child Category'); ?></option>
                   <?php foreach($subCategories as $_category): ?>
                       <option value="<?php echo $_category->getId()?>" <?php echo $this->_getSelectedSubcategoryId() == $_category->getId() ? 'selected="selected"' : ''?>>

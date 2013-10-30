@@ -207,7 +207,6 @@ class GoMage_ProductDesigner_Block_Adminhtml_Cliparts_Tree extends Mage_Adminhtm
     {
         $result = $this->escapeHtml($node->getName());
         if ($this->_withProductCount) {
-            Mage::log(get_class($node));
              $result .= ' (' . $node->getProductCount() . ')';
         }
         return $result;
