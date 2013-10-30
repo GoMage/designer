@@ -54,11 +54,15 @@ class GoMage_ProductDesigner_Block_Designer_Navigation_Filters extends Mage_Core
     {
         $filters = array();
         $items = Mage::getSingleton('gmpd/navigation')->getAvailableFilters();
-        foreach ($items as $item) {
-            $filters[$item->getAttributeCode()] = $item->getFrontendLabel();
+        foreach ($items as $_code => $item) {
+            if (is_object($item)) {
+                $filters[$item->getAttributeCode()] = $item->getFrontendLabel();
+            } elseif(is_string($item)) {
+                $filters[$_code] = $item;
+            }
         }
 
-        return array_merge(Mage::getSingleton('gmpd/navigation')->getAdditionalFilters(), $filters);
+        return $filters;
     }
 
     /**

@@ -141,8 +141,13 @@ class GoMage_ProductDesigner_Model_Navigation extends Mage_Core_Model_Abstract
      */
     protected function _addFiltersAttributes($collection)
     {
-        foreach ($this->getAvailableFilters() as $filter) {
-            $collection->addAttributeToSelect($filter->getAttributeCode(), true);
+        foreach ($this->getAvailableFilters() as $_code => $filter) {
+            if (is_object($filter)) {
+                $collection->addAttributeToSelect($filter->getAttributeCode(), true);
+            } elseif (is_string($filter)) {
+                $collection->addAttributeToSelect($_code);
+            }
+
         }
     }
 
@@ -252,10 +257,11 @@ class GoMage_ProductDesigner_Model_Navigation extends Mage_Core_Model_Abstract
             foreach (array(Mage::getStoreConfig('gmpd/navigation/color_attribute'),
                  Mage::getStoreConfig('gmpd/navigation/size_attribute')) as $filter) {
                 if ($attribute = $this->_getFilterAttribute($filter)) {
-                    $filters[] = $attribute;
+                    $filters[$attribute->getAttributeCode()] = $attribute;
                 }
             }
-            $this->_availableFilters = $filters;
+
+            $this->_availableFilters = array_merge($this->getAdditionalFilters(), $filters);
         }
 
         return $this->_availableFilters;
@@ -299,10 +305,14 @@ class GoMage_ProductDesigner_Model_Navigation extends Mage_Core_Model_Abstract
     {
         $request = Mage::app()->getRequest();
         $filters = $this->getAvailableFilters();
-        foreach ($filters as $_filter) {
-            if ($value = $request->getParam($_filter->getAttributeCode())) {
-                if ($excludeFilter === null || $excludeFilter != $_filter->getAttributeCode()) {
-                    $this->applyFilter($collection, $_filter->getAttributeCode(), $value);
+        foreach ($filters as $_code => $_filter) {
+            if ($value = $request->getParam($_code)) {
+                if ($excludeFilter === null || $excludeFilter != $_code) {
+                    if (is_object($_filter)) {
+                        $this->applyFilter($collection, $_filter->getAttributeCode(), $value);
+                    } elseif (is_string($_filter)) {
+                        $this->applyFilter($collection, $_code, $value);
+                    }
                 }
             }
         }
