@@ -7,52 +7,49 @@ class GoMage_ProductDesigner_Model_Clipart_Category extends Mage_Core_Model_Abst
      */
     const ENTITY                = 'clipart_category';
 
-    const TREE_ROOT_ID          = 1;
-
+    /**
+     * Model cache tag
+     */
     const CACHE_TAG             = 'designer_cliparts_category';
-
-    /**
-     * Prefix of model events names
-     *
-     * @var string
-     */
-    protected $_eventPrefix     = 'designer_cliparts_category';
-
-    /**
-     * Parameter name in event
-     *
-     * @var string
-     */
-    protected $_eventObject     = 'designer_cliparts_category';
 
     /**
      * Model cache tag for clear cache in after save and after delete
      */
     protected $_cacheTag        = self::CACHE_TAG;
 
-    protected $defaultCategory, $parentCategory;
+    /**
+     * Root category Id
+     */
+    const TREE_ROOT_ID          = 1;
+
+    protected $_defaultCategory;
+
+    protected $parentCategory;
 
     protected function _construct()
     {
         $this->_init('gmpd/clipart_category');
     }
 
-    public function getDefaultCategory() {
-        if(!$this->defaultCategory) {
+    public function getDefaultCategory()
+    {
+        if(!$this->_defaultCategory) {
             $category = new self;
-            $defaultCategory = $category->load(1, 'is_default');
-            $this->defaultCategory = $defaultCategory;
+            $defaultCategory = $category->load(self::TREE_ROOT_ID);
+            $this->_defaultCategory = $defaultCategory;
         }
-        return $this->defaultCategory;
+        return $this->_defaultCategory;
     }
 
-    public function getDefaultCategoryId() {
+    public function getDefaultCategoryId()
+    {
         if($this->getDefaultCategory()) {
             return $this->getDefaultCategory()->getId();
         }
     }
 
-    public function getParentCategory() {
+    public function getParentCategory()
+    {
         if(!$this->parentCategory) {
             if($this->getParentId() == $this->getDefaultCategoryId()) {
                 $parentCategory = $this->getDefaultCategory();
@@ -84,6 +81,7 @@ class GoMage_ProductDesigner_Model_Clipart_Category extends Mage_Core_Model_Abst
         $parentCategory = $this->getParentCategory();
         if($parentCategory && $parentCategory->getPath()) {
             $this->setPath($parentCategory->getPath() . '/'. $this->getId());
+            $this->setLevel(count(explode('/', $parentCategory->getPath())));
         }
         $this->getResource()->save($this);
     }

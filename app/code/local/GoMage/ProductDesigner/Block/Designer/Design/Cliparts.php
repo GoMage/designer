@@ -44,7 +44,19 @@ class GoMage_ProductDesigner_Block_Designer_Design_Cliparts extends Mage_Core_Bl
     public function getCliparts()
     {
         if (is_null($this->_cliparts)) {
-            $this->_cliparts = Mage::getModel('gmpd/clipart')->getCliparts();
+            $collection = Mage::getModel('gmpd/clipart')->getCliparts();
+            if ($subCategoryId = $this->getRequest()->getParam('subCategory')) {
+                $collection->addFieldToFilter('main_table.category_id', $subCategoryId);
+            }
+            if ($categoryId = $this->getRequest()->getParam('mainCategory')) {
+                $collection->addCategoryFilter($categoryId);
+            }
+
+            if ($tags = $this->getRequest()->getParam('tags')) {
+                $collection->addTagsFilter($tags);
+            }
+
+            $this->_cliparts = $collection;
         }
 
         return $this->_cliparts;
