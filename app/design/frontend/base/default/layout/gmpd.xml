@@ -101,6 +101,9 @@
     </gomage_designer_index_uploadimages>
     <!-- Override templates to add "Customize it" button near "Add to cart button" -->
     <catalog_category_default>
+        <reference name="head">
+          <action method="addItem"><type>skin_css</type><name>css/gomage/productdesigner.css</name><params/></action>
+        </reference>
         <reference name="product_list">
             <action method="setTemplate">
                 <template>gomage/productdesigner/catalog/product/list.phtml</template>
@@ -108,6 +111,9 @@
         </reference>
     </catalog_category_default>
     <catalog_category_layered>
+        <reference name="head">
+          <action method="addItem"><type>skin_css</type><name>css/gomage/productdesigner.css</name><params/></action>
+        </reference>
         <reference name="product_list">
             <action method="setTemplate">
                 <template>gomage/productdesigner/catalog/product/list.phtml</template>
