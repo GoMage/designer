@@ -84,11 +84,11 @@
                     <?php if($_product->isSaleable()): ?>
                         <button type="button" title="<?php echo $this->__('Add to Cart') ?>" class="button btn-cart" onclick="setLocation('<?php echo $this->getAddToCartUrl($_product) ?>')"><span><span><?php echo $this->__('Add to Cart') ?></span></span></button>
                         <?php if ($_product->getEnableProductDesigner()): ?>
-                        <p>
+                        <div class="gpd-button">
                             <button type="button" title="<?php echo Mage::helper('designer')->__('Design It') ?>" class="button btn-cart" onclick="setLocation('/designer?id=<?php echo $_product->getId() ?>')">
                                 <span><span><?php echo $this->__('Design It') ?></span></span>
                             </button>
-                        </p>
+                        </div>
                         <?php endif ?>
                     <?php else: ?>
                         <p class="availability out-of-stock"><span><?php echo $this->__('Out of stock') ?></span></p>
