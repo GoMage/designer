@@ -145,35 +145,6 @@ class GoMage_ProductDesigner_Block_Adminhtml_Cliparts_Tree extends Mage_Adminhtm
     }
 
     /**
-     * Get JSON of array of categories, that are breadcrumbs for specified category path
-     *
-     * @param string $path
-     * @param string $javascriptVarName
-     * @return string
-     */
-    public function getBreadcrumbsJavascript($path, $javascriptVarName)
-    {
-        if (empty($path)) {
-            return '';
-        }
-
-        $categories = Mage::getResourceSingleton('gmpd/clipart_category_tree')
-            ->loadBreadcrumbsArray($path);
-        if (empty($categories)) {
-            return '';
-        }
-        foreach ($categories as $key => $category) {
-            $categories[$key] = $this->_getNodeJson($category);
-        }
-        return
-            '<script type="text/javascript">'
-            . $javascriptVarName . ' = ' . Mage::helper('core')->jsonEncode($categories) . ';'
-            . ($this->canAddSubCategory() ? '$("add_subcategory_button").show();' : '$("add_subcategory_button").hide();')
-            . '</script>';
-    }
-
-
-    /**
      * Get JSON of a tree node or an associative array
      *
      * @param Varien_Data_Tree_Node|array $node
@@ -207,6 +178,7 @@ class GoMage_ProductDesigner_Block_Adminhtml_Cliparts_Tree extends Mage_Adminhtm
         if ((int)$node->getChildrenCount()>0) {
             $item['children'] = array();
         }
+        $item['allowAddSubCategory'] = $node->getLevel() < 2;
 
         $isParent = $this->_isParentSelectedCategory($node);
 
@@ -233,8 +205,9 @@ class GoMage_ProductDesigner_Block_Adminhtml_Cliparts_Tree extends Mage_Adminhtm
      */
     public function buildNodeName($node)
     {
-        $result = $this->htmlEscape($node->getName());
+        $result = $this->escapeHtml($node->getName());
         if ($this->_withProductCount) {
+            Mage::log(get_class($node));
              $result .= ' (' . $node->getProductCount() . ')';
         }
         return $result;

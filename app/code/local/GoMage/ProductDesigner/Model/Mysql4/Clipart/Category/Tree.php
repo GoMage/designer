@@ -59,7 +59,6 @@ class GoMage_ProductDesigner_Model_Mysql4_Clipart_Category_Tree extends Mage_Cat
                 ->where('main_table.category_id IN(?)', $pathIds)
                 ->order($this->_conn->getLengthSql('main_table.path') . ' ' . Varien_Db_Select::SQL_ASC);
             $result = $this->_conn->fetchAll($select);
-            $this->_updateAnchorProductCount($result);
         }
         return $result;
     }
@@ -82,7 +81,7 @@ class GoMage_ProductDesigner_Model_Mysql4_Clipart_Category_Tree extends Mage_Cat
         return $collection;
     }
 
-    protected function _createCollectionDataSelect($sorted = true)
+    protected function _createCollectionDataSelect($sorted = true, $optionalAttributes = array())
     {
         $select = $this->_getDefaultCollection($sorted ? $this->_orderField : false)
             ->getSelect();

@@ -1333,8 +1333,10 @@ GoMage.Designer.prototype = {
     filterImages: function() {
         var data = {};
         data['ajax'] = true;
-        if ($('mainCategoriesSearchField') && $('subCategoriesSearchField')) {
+        if ($('mainCategoriesSearchField')) {
             data['mainCategory'] = $('mainCategoriesSearchField').value;
+        }
+        if ($('subCategoriesSearchField')) {
             data['subCategory'] = $('subCategoriesSearchField').value;
         }
         if ($('tagsSearchField')) {
@@ -1372,7 +1374,7 @@ GoMage.Designer.prototype = {
                 this.filterImages();
             }.bind(this));
         }
-        if ($('mainCategoriesSearchField') && $('subCategoriesSearchField')) {
+        if ($('mainCategoriesSearchField') || $('subCategoriesSearchField')) {
             Event.on($('cliparts-filters'), 'change', '#mainCategoriesSearchField, #subCategoriesSearchField', function(e, elm){
                 e.stop();
                 this.filterImages();

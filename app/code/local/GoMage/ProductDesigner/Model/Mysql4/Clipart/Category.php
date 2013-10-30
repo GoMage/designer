@@ -7,7 +7,7 @@ class GoMage_ProductDesigner_Model_Mysql4_Clipart_Category extends Mage_Core_Mod
         $this->_init('gmpd/clipart_category', 'category_id');
     }
 
-    public function changeParent(Mage_Catalog_Model_Category $category, Mage_Catalog_Model_Category $newParent,
+    public function changeParent(GoMage_ProductDesigner_Model_Clipart_Category $category, GoMage_ProductDesigner_Model_Clipart_Category $newParent,
                                  $afterCategoryId = null)
     {
         $table          = $this->getMainTable();

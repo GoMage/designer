@@ -6,26 +6,30 @@ $subCategories = $this->getSubCategoriesCollection();
     <?php if ($this->navigationEnabled()): ?>
         <li>
         <div class="input-box">
-          <select name="mainCategoriesSearchField" id="mainCategoriesSearchField">
-              <option value=""><?php echo $this->__('Select Main Category'); ?></option>
-              <?php foreach($categories as $_category): ?>
-                  <option value="<?php echo $_category->getId()?>" <?php echo $this->_getSelectedCategoryId() == $_category->getId() ? 'selected="selected"' : ''?>>
-                      <?php echo $_category->getName();?>
-                  </option>
-              <?php endforeach;?>
-          </select>
+            <?php if ($categories->getSize()): ?>
+              <select name="mainCategoriesSearchField" id="mainCategoriesSearchField">
+                  <option value=""><?php echo $this->__('Select Main Category'); ?></option>
+                  <?php foreach($categories as $_category): ?>
+                      <option value="<?php echo $_category->getId()?>" <?php echo $this->_getSelectedCategoryId() == $_category->getId() ? 'selected="selected"' : ''?>>
+                          <?php echo $_category->getName();?>
+                      </option>
+                  <?php endforeach;?>
+              </select>
+            <?php endif;?>
         </div>
         </li>
         <li>
         <div class="input-box">
-          <select name="subCategoriesSearchField" id="subCategoriesSearchField">
-              <option value=""><?php echo $this->__('Select Child Category'); ?></option>
-              <?php foreach($subCategories as $_category): ?>
-                  <option value="<?php echo $_category->getId()?>" <?php echo $this->_getSelectedSubcategoryId() == $_category->getId() ? 'selected="selected"' : ''?>>
-                      <?php echo $_category->getName();?>
-                  </option>
-              <?php endforeach;?>
-          </select>
+            <?php if ($subCategories->getSize()): ?>
+              <select name="subCategoriesSearchField" id="subCategoriesSearchField">
+                  <option value=""><?php echo $this->__('Select Child Category'); ?></option>
+                  <?php foreach($subCategories as $_category): ?>
+                      <option value="<?php echo $_category->getId()?>" <?php echo $this->_getSelectedSubcategoryId() == $_category->getId() ? 'selected="selected"' : ''?>>
+                          <?php echo $_category->getName();?>
+                      </option>
+                  <?php endforeach;?>
+              </select>
+            <?php endif;?>
         </div>
         </li>
     <?php endif;?>

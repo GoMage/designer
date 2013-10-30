@@ -29,7 +29,7 @@
             <action method="addJs"><script>gomage/productdesigner/vendor/fabric.min.js</script></action>
             <action method="addJs"><script>gomage/productdesigner/vendor/excanvas.compiled.js</script></action>
             <action method="addJs"><script>gomage/productdesigner/editor.js</script></action>
-            <action method="addItem"><type>skin_css</type><name>css/gomage/productdesigner/editor.css</name><params/></action>
+            <action method="addItem"><type>skin_css</type><name>css/gomage/productdesigner.css</name><params/></action>
         </reference>
         <reference name="content">
             <block type="designer/editor" name="product_designer_editor" template="gomage/productdesigner/editor.phtml">

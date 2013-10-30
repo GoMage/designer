@@ -35,41 +35,6 @@
 class GoMage_ProductDesigner_Block_Designer_Design_Filters extends Mage_Core_Block_Template
 {
     /**
-     * Prepare layout
-     * Filters clipart collection
-     *
-     * @return Mage_Core_Block_Abstract|void
-     */
-    protected function _prepareLayout()
-    {
-        if (!$this->navigationEnabled() && !$this->searchEnabled()) {
-            return;
-        }
-        $cliparts = Mage::getSingleton('gmpd/clipart')->getCliparts();
-        $this->_applyFilters($cliparts);
-    }
-
-    /**
-     * Apply filter to clipart collection
-     *
-     * @param GoMage_ProductDesigner_Model_Mysql4_Clipart_Collection $collection Collection
-     * @return void
-     */
-    protected function _applyFilters(GoMage_ProductDesigner_Model_Mysql4_Clipart_Collection $collection)
-    {
-        if($subCategoryId = $this->_getSelectedSubcategoryId()) {
-            $collection->addCategoryFilter($subCategoryId);
-        } elseif($categoryId = $this->_getSelectedCategoryId()) {
-            $collection->addCategoryFilter($categoryId);
-        } else {
-            $collection->addVisibleCategoriesFilter();
-        }
-        if($searchTags = $this->_getSearchTags()) {
-            $collection->addTagsFilter($searchTags);
-        }
-    }
-
-    /**
      * Return selected category id
      *
      * @return int
@@ -113,6 +78,7 @@ class GoMage_ProductDesigner_Block_Designer_Design_Filters extends Mage_Core_Blo
             ->addVisibleFilter()
             ->addFieldToFilter('parent_id', $defaultCategoryId);
 
+        echo $categoriesCollection->getSelect();
         return $categoriesCollection;
     }
 
@@ -126,10 +92,13 @@ class GoMage_ProductDesigner_Block_Designer_Design_Filters extends Mage_Core_Blo
         $categoryId = $this->_getSelectedCategoryId();
         $subCategoriesCollection = new Varien_Data_Collection();
         if($categoryId) {
-            $category = Mage::getSingleton('gmpd/clipart_category');
-            $subCategoriesCollection = $category->getCollection()
-                ->addVisibleFilter()
-                ->addFieldToFilter('parent_id', $categoryId);
+            $category = Mage::getSingleton('gmpd/clipart_category')->load($categoryId);
+            if ($category->getId()) {
+                $subCategoriesCollection = $category->getCollection()
+                    ->addVisibleFilter()
+                    ->addFieldToFilter('path', array('like' => $category->getPath(). '/%'));
+            }
+
         }
 
         return $subCategoriesCollection;
