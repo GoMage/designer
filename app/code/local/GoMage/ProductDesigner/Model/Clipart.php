@@ -65,7 +65,8 @@ class GoMage_ProductDesigner_Model_Clipart extends Mage_Core_Model_Abstract {
     public function getCliparts()
     {
         if (is_null($this->_cliparts)) {
-            $collection = $this->getCollection()->addFieldToFilter('disabled', 0);
+            $collection = $this->getCollection()->addFieldToFilter('disabled', 0)
+                ->setOrder('position', 'asc');
             $this->_cliparts = $collection;
         }
 
