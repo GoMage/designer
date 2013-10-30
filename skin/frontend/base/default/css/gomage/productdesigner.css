@@ -173,6 +173,15 @@
     font-weight: 700;
     color: #C76200;
     }
+    
+/* Designer Buttons
+-------------------------------------------------- */
+.products-grid .gpd-button{
+  margin: 5px 0;
+  }
+.products-grid li.item{
+  padding-bottom: 100px;
+  }
   
 /* Clears
 -------------------------------------------------- */
