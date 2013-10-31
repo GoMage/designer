@@ -42,12 +42,14 @@ $colors = $this->getProductColors();
             <?php endforeach; ?>
             <th><?php echo Mage::helper('catalog')->__('Exclude') ?></th>
             <th <?php if (!$productDesignerEnabled): ?>class="last"<?php endif ?>><?php echo Mage::helper('catalog')->__('Remove') ?></th>
-            <?php if ($productDesignerEnabled): ?>
-                <?php if ($colors): ?>
-                    <th><?php echo Mage::helper('designer')->__('Color'); ?></th>
-                <?php endif;?>
-                <th class="last"><?php echo Mage::helper('designer')->__('Choose design area') ?></th>
-            <?php endif ?>
+            <?php if ($colors):?>
+                <th id="color-heading" <?php if (!$productDesignerEnabled): ?>style="display: none"<?php endif;?>>
+                    <?php echo Mage::helper('designer')->__('Color'); ?>
+                </th>
+            <?php endif;?>
+            <th id="design-area-heading" class="last" <?php if (!$productDesignerEnabled): ?>style="display: none"<?php endif;?>>
+                <?php echo Mage::helper('designer')->__('Choose design area') ?>
+            </th>
         </tr>
     </thead>
     <tbody id="<?php echo $_block->getHtmlId() ?>_list">
@@ -60,21 +62,19 @@ $colors = $this->getProductColors();
             <?php endforeach; ?>
             <td class="cell-disable a-center"><input type="checkbox" <?php if($_block->getElement()->getReadonly()):?> disabled="disabled"<?php endif;?> onclick="<?php echo $_block->getJsObjectName(); ?>.updateImage('__file__')" /></td>
             <td class="cell-remove a-center<?php if (!$productDesignerEnabled): ?> last<?php endif; ?>"><input type="checkbox" <?php if($_block->getElement()->getReadonly()):?> disabled="disabled"<?php endif;?> onclick="<?php echo $_block->getJsObjectName(); ?>.updateImage('__file__')" /></td>
-                <?php if ($productDesignerEnabled): ?>
-                    <?php if ($colors): ?>
-                        <td class="cell-color">
-                            <select <?php if($_block->getElement()->getReadonly()):?> disabled="disabled"<?php endif;?> onchange="<?php echo $_block->getJsObjectName(); ?>.updateImage('__file__')" style="width: 100px;">
-                                <?php foreach($colors as $color):?>
-                                    <option value="<?php echo $color['option_id']?>"><?php echo $color['value']?></option>
-                                <?php endforeach;?>
-                            </select>
-                        </td>
-                    <?php endif; ?>
-                    <td class="cell-choose-design-area a-center last">
-                        <input type="checkbox" class="validate-one-design-area-required" name="design_area_for[]" value="" onclick="switchDesignArea('__file__', this)" />
-                        [ <a href="javascript:void(0)" onclick="openDesignAreaEditor('__file__', this)"><?php echo Mage::helper('designer')->__('Edit') ?></a> ]
-                    </td>
-            <?php endif ?>
+            <?php if ($colors): ?>
+            <td class="cell-color" <?php if (!$productDesignerEnabled): ?>style="display: none"<?php endif;?>>
+                <select <?php if($_block->getElement()->getReadonly()):?> disabled="disabled"<?php endif;?> onchange="<?php echo $_block->getJsObjectName(); ?>.updateImage('__file__')" style="width: 100px;">
+                    <?php foreach($colors as $color):?>
+                        <option value="<?php echo $color['option_id']?>"><?php echo $color['value']?></option>
+                    <?php endforeach;?>
+                </select>
+            </td>
+            <?php endif;?>
+            <td class="cell-choose-design-area a-center last" <?php if (!$productDesignerEnabled): ?>style="display: none"<?php endif;?>>
+                <input type="checkbox" class="validate-one-design-area-required" name="design_area_for[]" value="" onclick="switchDesignArea('__file__', this)" />
+                [ <a href="javascript:void(0)" onclick="openDesignAreaEditor('__file__', this)"><?php echo Mage::helper('designer')->__('Edit') ?></a> ]
+            </td>
         </tr>
         <?php if($_block->hasUseDefault()): ?>
         <tr id="<?php echo $_block->getHtmlId() ?>_default">
@@ -91,12 +91,10 @@ $colors = $this->getProductColors();
             <?php endforeach; ?>
             <td>&nbsp;</td>
             <td <?php if (!$productDesignerEnabled): ?>class="last"<?php endif ?>>&nbsp;</td>
-            <?php if ($productDesignerEnabled): ?>
-                <?php if ($colors): ?>
-                    <td>&nbsp;</td>
-                <?php endif;?>
-                <td class="last">&nbsp;</td>
-            <?php endif; ?>
+            <?php if ($colors): ?>
+                <td <?php if (!$productDesignerEnabled): ?>style="display: none"<?php endif;?>>&nbsp;</td>
+            <?php endif;?>
+            <td class="last" <?php if (!$productDesignerEnabled): ?>style="display: none"<?php endif;?>>&nbsp;</td>
         </tr>
         <?php endif ?>
         <tr id="<?php echo $_block->getHtmlId() ?>-image-0">
@@ -108,12 +106,10 @@ $colors = $this->getProductColors();
             <?php endforeach; ?>
             <td class="cell-disable"><input type="hidden" />&nbsp;</td>
             <td class="cell-remove<?php if (!$productDesignerEnabled): ?> last<?php endif; ?>"><input type="hidden" />&nbsp;</td>
-            <?php if ($productDesignerEnabled): ?>
-                <?php if ($colors): ?>
-                    <td class="cell-color"><input type="hidden" />&nbsp;</td>
-                <?php endif;?>
-                <td class="cell-choose-design-area last">&nbsp;</td>
-            <?php endif; ?>
+            <?php if ($colors): ?>
+                <td class="cell-color" <?php if (!$productDesignerEnabled): ?>style="display: none" <?php endif;?>><input type="hidden" />&nbsp;</td>
+            <?php endif;?>
+            <td class="cell-choose-design-area last" <?php if (!$productDesignerEnabled): ?>style="display: none" <?php endif;?>>&nbsp;</td>
         </tr>
     </tbody>
     <?php if (!$_block->getElement()->getReadonly()):?>
@@ -130,7 +126,7 @@ $colors = $this->getProductColors();
 </div>
 <input type="hidden" id="<?php echo $_block->getHtmlId() ?>_save" name="<?php echo $_block->getElement()->getName() ?>[images]" value="<?php echo $_block->htmlEscape($_block->getImagesJson()) ?>" />
 <input type="hidden" id="<?php echo $_block->getHtmlId() ?>_save_image" name="<?php echo $_block->getElement()->getName() ?>[values]" value="<?php echo $_block->htmlEscape($_block->getImagesValuesJson()) ?>" />
-
+<div id="design-area-popup" style="width: <?php echo $this->getDesignAreaPopupWidth()+20; ?>px;"></div>
 <script type="text/javascript">
     Product.Gallery.prototype.updateImage = function(file) {
         var index = this.getIndexByFile(file);
@@ -213,9 +209,7 @@ $colors = $this->getProductColors();
     var <?php echo $_block->getJsObjectName(); ?> = new Product.Gallery('<?php echo $_block->getHtmlId() ?>', <?php if ($_block->getElement()->getReadonly()):?>null<?php else:?><?php echo $_block->getUploader()->getJsObjectName() ?><?php endif;?>, <?php echo $_block->getImageTypesJson() ?>);
 //]]>
 </script>
-<?php if ($productDesignerEnabled): ?>
-    <div id="design-area-popup" style="width: <?php echo $this->getDesignAreaPopupWidth()+20; ?>px;"></div>
-<?php endif;?>
+
 <script type="text/javascript">
 function switchDesignArea(f, self)
 {
@@ -345,7 +339,6 @@ $(function() {
 Validation.add('validate-one-design-area-required','<?php echo $this->__("Please, select one of the design area") ?>', function (v,elm) {
     var inputs = $$('input[name="' + elm.name.replace(/([\\"])/g, '\\$1') + '"]');
     var error = 1;
-    console.log($('enable_product_designer').value);
     if (!$('enable_product_designer') || parseInt($('enable_product_designer').value) === 0) {
         return true;
     }
@@ -363,4 +356,38 @@ Validation.add('validate-one-design-area-required','<?php echo $this->__("Please
         return false;
     }
 });
+$(function(){
+   if ($('enable_product_designer')) {
+       $('enable_product_designer').observe('change', function(e){
+           var elm = e.target || e.srcElement;
+           var columns = [];
+           if ($('design-area-heading')) {
+               columns.push($('design-area-heading'));
+           }
+           if ($('color-heading')) {
+               columns.push($('color-heading'));
+           }
+
+           columns = columns.concat($$('.cell-choose-design-area'));
+           columns = columns.concat($$('.cell-color'));
+           if (parseInt(elm.value) === 0) {
+               toggleDesignareaColumns(columns, 'hide')
+           } else if (parseInt(elm.value) === 1) {
+               toggleDesignareaColumns(columns, 'show')
+           }
+       });
+
+   }
+
+    function toggleDesignareaColumns(columns, action) {
+        columns.invoke(action);
+        columns.each(function(elm){
+            if (action == 'show' && elm.previous().hasClassName('last')) {
+                elm.previous().removeClassName('last');
+            } else if (action == 'hide' && !elm.previous().hasClassName('last')) {
+                elm.previous().addClassName('last');
+            }
+        });
+    }
+})();
 </script>
