@@ -51,16 +51,10 @@
                 <enabled>1</enabled>
                 <copyright>1</copyright>
                 <format>png</format>
+                <size>1</size>
                 <max_size_width>500</max_size_width>
                 <max_size_height>700</max_size_height>
             </upload_image>
-            <share>
-                <email>1</email>
-                <email_sender>general</email_sender>
-                <facebook>1</facebook>
-                <twitter>1</twitter>
-                <print>1</print>
-            </share>
         </gmpd>
     </default>
     <frontend>

@@ -169,30 +169,38 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
 
     public function uploadImagesAction()
     {
-        $files = @$_FILES['filesToUpload'];
-        $forbiddenExtensions = array();
         $this->loadLayout();
         $block = $this->getLayout()->getBlock('uploadedImages');
+        $baseMediaPath = Mage::getSingleton('gmpd/uploadedImage_config')->getBaseMediaPath();
+        $allowedFormatsString = Mage::getStoreConfig('gmpd/upload_image/format');
+        $maxUploadFileSize = Mage::getStoreConfig('gmpd/upload_image/size');
+        $allowedFormats = explode(',', $allowedFormatsString);
+        $sessionId = $this->getSessionId();
+        $customerId = (int) $this->_getCustomerSession()->getCustomerId();
         $uploadedFilesCount = 0;
+        $errors = array();
 
-        if (is_array($files)) {
-            $sessionId = $this->getSessionId();
-            $customerId = (int) $this->_getCustomerSession()->getCustomerId();
-
-            $baseMediaPath = Mage::getSingleton('gmpd/uploadedImage_config')->getBaseMediaPath();
-            $allowedFormats = Mage::getStoreConfig('gmpd/upload_image/format');
-            $allowedFormats = explode(',', $allowedFormats);
-            $files = $this->prepareFilesArray($files);
+        try {
+            if (!isset($_FILES['filesToUpload'])) {
+                throw new Exception(Mage::helper('designer')->__('Please, select files for upload'));
+            }
+            $files = $this->prepareFilesArray($_FILES['filesToUpload']);
             foreach ($files as $file) {
                 if (!$file['name']) {
                     continue;
                 }
-                $uploadedFilesCount++;
-                $imageExtension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-                if (!in_array($imageExtension, $allowedFormats)) {
-                    $forbiddenExtensions[] = $imageExtension;
+                if ($file['error'] === UPLOAD_ERR_INI_SIZE || $file['error'] === UPLOAD_ERR_FORM_SIZE
+                    || $file['size'] > $maxUploadFileSize * 1024 * 1024) {
+                    $errors['size'] = Mage::helper('designer')->__('You can not upload file more than %d MB', $maxUploadFileSize);
                     continue;
                 }
+
+                $imageExtension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+                if (!in_array($imageExtension, $allowedFormats)) {
+                    $errors['type'] = Mage::helper('designer')->__('Cannot upload the file. The format is not supported. Supported file formats are: %s', $allowedFormatsString);
+                    continue;
+                }
+
                 $fileName = substr(sha1(microtime()), 0, 20) . $this->getConvertHelper()->format($file['name']);
                 $fileDir = '/' . ($customerId ? $customerId : $sessionId) . '/';
                 $destinationDir = $baseMediaPath . $fileDir;
@@ -210,22 +218,21 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
                     $uploadImage = Mage::getModel('gmpd/uploadedImage');
                     $uploadImage->setData($imageData);
                     $uploadImage->save();
+                    $uploadedFilesCount++;
                 }
             }
 
-            if ($uploadedFilesCount > 0) {
-                if (!empty($forbiddenExtensions)) {
-                    $errorText = Mage::helper('designer')->__('You can not upload file(s) in %s extension(s)',
-                        implode(', ', $forbiddenExtensions));
-                    $block->setError($errorText);
-                }
-                $content = preg_replace('/\t+|\n+|\s{2,}/', '', $block->toHtml());
-                $this->getResponse()->setBody($content);
-                return;
+            if (!empty($errors)) {
+                throw new Exception(implode("\n", $errors));
             }
+            if ($uploadedFilesCount == 0) {
+                throw new Exception(Mage::helper('designer')->__('Please, select files for upload'));
+            }
+
+        } catch (Exception $e) {
+            $block->setError($e->getMessage());
         }
-        $errorText = Mage::helper('designer')->__('Please, select files for upload');
-        $block->setError($errorText);
+
         $content = preg_replace('/\t+|\n+|\s{2,}/', '', $block->toHtml());
         $this->getResponse()->setBody($content);
     }
