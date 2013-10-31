@@ -173,6 +173,9 @@
             </action>
             <block type="core/template" name="product.info.option.design" as="product_option_design" template="gomage/productdesigner/catalog/product/view/options/design.phtml"/>
         </reference>
+        <reference name="product.info.addtocart">
+            <block type="designer/catalog_product_view" name="product.info.design" template="gomage/productdesigner/catalog/product/view/addtodesign.phtml" />
+        </reference>
     </PRODUCT_TYPE_simple>
 
     <PRODUCT_TYPE_configurable translate="label" module="catalog">
@@ -181,6 +184,9 @@
                 <template>gomage/productdesigner/catalog/product/view/options.phtml</template>
             </action>
             <block type="core/template" name="product.info.option.design" as="product_option_design" template="gomage/productdesigner/catalog/product/view/options/design.phtml"/>
+        </reference>
+        <reference name="product.info.addtocart">
+            <block type="designer/catalog_product_view" name="product.info.design" template="gomage/productdesigner/catalog/product/view/addtodesign.phtml" />
         </reference>
     </PRODUCT_TYPE_configurable>
 
