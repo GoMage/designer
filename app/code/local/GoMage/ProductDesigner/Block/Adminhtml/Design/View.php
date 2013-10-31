@@ -38,6 +38,8 @@ class GoMage_ProductDesigner_Block_Adminhtml_Design_View extends Mage_Core_Block
 
     protected $_columnCount = 3;
 
+    protected $_design;
+
     /**
      * Return column count
      *
@@ -109,5 +111,19 @@ class GoMage_ProductDesigner_Block_Adminhtml_Design_View extends Mage_Core_Block
     public function getDownloadUrl($imageId)
     {
         return Mage::helper('adminhtml')->getUrl('*/designer_design/download', array('image_id' => $imageId));
+    }
+
+    public function getDesign()
+    {
+        if (is_null($this->_design)) {
+            if ($designId = $this->getDesignId()) {
+                $design = Mage::getModel('gmpd/design')->load($designId);
+                if ($design && $design->getId()) {
+                    $this->_design = $design;
+                }
+            }
+        }
+
+        return $this->_design;
     }
 }
