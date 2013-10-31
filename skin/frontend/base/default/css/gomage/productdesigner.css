@@ -182,6 +182,9 @@
 .products-grid li.item{
   padding-bottom: 100px;
   }
+.add-to-cart button.btn-design{
+  margin-left: 5px;
+  }
   
 /* Clears
 -------------------------------------------------- */
