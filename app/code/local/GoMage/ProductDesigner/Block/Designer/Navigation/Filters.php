@@ -76,4 +76,9 @@ class GoMage_ProductDesigner_Block_Designer_Navigation_Filters extends Mage_Core
     {
         return $this->getRequest()->getParam($filter) == $value ? true : false;
     }
+
+    public function filterIsVisible($filer, $options)
+    {
+        return $filer == 'category' ? count($options) > 0 : count($options) > 1;
+    }
 }

@@ -3,7 +3,7 @@
 <ul class="form-list">
   <?php foreach ($availableFilters as $_filter => $_label):?>
     <?php $options = $this->getAvailableFilterOptions($_filter);?>
-    <?php if (count($options) > 0): ?>
+    <?php if ($this->filterIsVisible($_filter, $options)): ?>
         <?php if ($count == 0 || $count == 1):?>
         <li<?php echo $count === 1 ? " class='fields'" : ''?>>
         <?php endif;?>
