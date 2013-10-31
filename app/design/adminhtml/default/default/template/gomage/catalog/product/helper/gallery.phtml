@@ -336,7 +336,7 @@ $(function() {
         );
     }.bind(this));
 })();
-Validation.add('validate-one-design-area-required','<?php echo $this->__("Please, select one of the design area") ?>', function (v,elm) {
+Validation.add('validate-one-design-area-required','<?php echo $this->__("Please set a design area") ?>', function (v,elm) {
     var inputs = $$('input[name="' + elm.name.replace(/([\\"])/g, '\\$1') + '"]');
     var error = 1;
     if (!$('enable_product_designer') || parseInt($('enable_product_designer').value) === 0) {
