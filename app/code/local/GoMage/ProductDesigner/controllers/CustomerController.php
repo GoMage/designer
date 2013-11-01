@@ -318,4 +318,29 @@ class GoMage_ProductDesigner_CustomerController extends Mage_Customer_AccountCon
             $this->_redirect('');
         }
     }
+
+    /**
+     * Identify referer url via all accepted methods (HTTP_REFERER, regular or base64-encoded request param)
+     *
+     * @return string
+     */
+    protected function _getRefererUrl()
+    {
+        $refererUrl = $this->getRequest()->getServer('HTTP_REFERER');
+        Mage::log($refererUrl);
+        if ($url = $this->getRequest()->getParam(self::PARAM_NAME_REFERER_URL)) {
+            $refererUrl = $url;
+        }
+        if ($url = $this->getRequest()->getParam(self::PARAM_NAME_BASE64_URL)) {
+            $refererUrl = Mage::helper('core')->urlDecode($url);
+        }
+        if ($url = $this->getRequest()->getParam(self::PARAM_NAME_URL_ENCODED)) {
+            $refererUrl = Mage::helper('core')->urlDecode($url);
+        }
+
+        if (!$this->_isUrlInternal($refererUrl)) {
+            $refererUrl = Mage::app()->getStore()->getBaseUrl();
+        }
+        return $refererUrl;
+    }
 }

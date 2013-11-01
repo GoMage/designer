@@ -52,13 +52,18 @@ class GoMage_ProductDesigner_Block_Designer_Navigation_Filters extends Mage_Core
      */
     public function getAvailableFilters()
     {
+        $storeId = Mage::app()->getStore()->getId();
         $filters = array();
         $items = Mage::getSingleton('gmpd/navigation')->getAvailableFilters();
-        foreach ($items as $item) {
-            $filters[$item->getAttributeCode()] = $item->getFrontendLabel();
+        foreach ($items as $_code => $item) {
+            if (is_object($item)) {
+                $filters[$item->getAttributeCode()] = $item->getStoreLabel($storeId);
+            } elseif(is_string($item)) {
+                $filters[$_code] = $item;
+            }
         }
 
-        return array_merge(Mage::getSingleton('gmpd/navigation')->getAdditionalFilters(), $filters);
+        return $filters;
     }
 
     /**
@@ -71,5 +76,10 @@ class GoMage_ProductDesigner_Block_Designer_Navigation_Filters extends Mage_Core
     public function isFilterOptionSelected($filter, $value)
     {
         return $this->getRequest()->getParam($filter) == $value ? true : false;
+    }
+
+    public function filterIsVisible($filer, $options)
+    {
+        return $filer == 'category' ? count($options) > 0 : count($options) > 1;
     }
 }

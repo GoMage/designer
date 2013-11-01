@@ -628,7 +628,7 @@ GoMage.ProductDesigner.prototype = {
             this.navigation.continue.observe('click', function(e) {
                 e.stop();
                 if (!this.canvasesHasLayers()) {
-                    alert('Please add to canvas thogh one layer');
+                    alert('Please add to canvas though one layer');
                     return;
                 }
                 this.saveDesign(this.urls.continue, this.continueCallback);
@@ -1330,16 +1330,20 @@ GoMage.Designer.prototype = {
         }.bind(this));
     },
 
-    filterImages: function() {
-        var data = {};
+    filterImages: function(data) {
+        var data = data || {};
         data['ajax'] = true;
-        if ($('mainCategoriesSearchField') && $('subCategoriesSearchField')) {
-            data['mainCategory'] = $('mainCategoriesSearchField').value;
-            data['subCategory'] = $('subCategoriesSearchField').value;
-        }
-        if ($('tagsSearchField')) {
+        if (data.hasOwnProperty('tags')) {
+            if ($('mainCategoriesSearchField') && $('mainCategoriesSearchField').value) {
+                data['mainCategory'] = $('mainCategoriesSearchField').value;
+            }
+            if ($('subCategoriesSearchField') && $('subCategoriesSearchField').value) {
+                data['subCategory'] = $('subCategoriesSearchField').value;
+            }
+        } else if ($('tagsSearchField') && $('tagsSearchField').value) {
             data['tags'] = $('tagsSearchField').value;
         }
+
 
         new Ajax.Request(this.opt.filterUrl, {
             method:'post',
@@ -1367,15 +1371,26 @@ GoMage.Designer.prototype = {
 
     observeFilterFields: function(){
         if ($('cliparts-search-btn')) {
-            Event.on($('cliparts-search-btn'), 'click', '#cliparts-search-btn', function(e, elm){
+            Event.on($('cliparts-filters'), 'click', '#cliparts-search-btn', function(e, elm){
                 e.stop();
-                this.filterImages();
+                this.filterImages({tags: $('tagsSearchField').value});
             }.bind(this));
         }
-        if ($('mainCategoriesSearchField') && $('subCategoriesSearchField')) {
+        if ($('tagsSearchField')) {
+            Event.on($('cliparts-filters'), 'search', '#tagsSearchField', function(e, elm){
+                e.stop();
+                this.filterImages({tags: $('tagsSearchField').value});
+            }.bind(this));
+        }
+        if ($('mainCategoriesSearchField') || $('subCategoriesSearchField')) {
             Event.on($('cliparts-filters'), 'change', '#mainCategoriesSearchField, #subCategoriesSearchField', function(e, elm){
                 e.stop();
-                this.filterImages();
+                var data = {};
+                data[elm.name] = elm.value;
+                if (elm.name == 'subCategory') {
+                    data['mainCategory'] = $('mainCategoriesSearchField').value;
+                }
+                this.filterImages(data);
             }.bind(this));
         }
     }
@@ -1754,13 +1769,16 @@ GoMage.TextEditor.prototype = {
     }
 };
 
-GoMage.ImageUploader = function(){
+GoMage.ImageUploader = function(maxUploadFileSize, allowedImageExtensions, allowedImageExtensionsFormated){
+    this.maxUploadFileSize = maxUploadFileSize;
+    this.allowedImageExtension = allowedImageExtensions;
+    this.allowedImageExtensionsFormated = allowedImageExtensionsFormated;
     this.observeLicenseAgreements();
     this.observeLicenseAgreementsMoreInfo();
-    this.observeImageConditions();
     window.onload = this.observeSubmitForm.bind(this);
     this.productDesigner = window.w;
     this.observeImageSelect();
+    this.observeFilesSelect();
 };
 
 GoMage.ImageUploader.prototype = {
@@ -1792,31 +1810,51 @@ GoMage.ImageUploader.prototype = {
         }.bind(this));
     },
 
-    observeImageConditions: function() {
-        if (!$('image-conditions')) {
-            return;
-        }
-
-        $('filesToUpload').observe('mouseover', function(){
-            $('image-conditions').show();
-        });
-
-        $('filesToUpload').observe('mouseout', function(){
-            $('image-conditions').hide();
-        });
-    },
-
     /**
      * TODO Add upload for IE
      */
     observeSubmitForm: function(){
         $('uploadImages').onsubmit = function(){
-            $('uploadImages').target = 'iframeSave';
-            $('iframeSave').onload = function() {
-                var response = window.frames['iframeSave'].document.body.innerHTML;
-                $('uploadedImages').update(response);
-                $('filesToUpload').value = '';
-            }.bind(this);
+            if ($('filesToUpload')) {
+                var errorContainer = $('upload-image-error');
+                var files = $('filesToUpload').files;
+                var errors = {};
+                var errorsCount = 0;
+                errorContainer.innerHTML = '';
+                errorContainer.hide();
+                for (var prop in files){
+                    if (files.hasOwnProperty(prop)) {
+                        var file = files[prop];
+                        if (file.size && file.size > this.maxUploadFileSize)  {
+                            errors['size'] = 'You can not upload files larger than ' + this.maxUploadFileSize/1024/1024 + ' MB';
+                        }
+                        if (file.type && this.allowedImageExtension.indexOf(file.type) < 0) {
+                            errors['type'] = 'Cannot upload the file. The format is not supported. Supported file formats are: ' + this.allowedImageExtensionsFormated;
+                        }
+                    }
+                }
+
+                for (var prop in errors) {
+                    if (errors.hasOwnProperty(prop)) {
+                        errorsCount++;
+                        // Sorry for hardcode
+                        errorContainer.insert('<p>' + errors[prop] + '</p>');
+                    }
+                }
+                if (errorsCount > 0) {
+                    errorContainer.show();
+                    return false;
+                } else {
+                    errorContainer.hide();
+                }
+
+                $('uploadImages').target = 'iframeSave';
+                $('iframeSave').onload = function() {
+                    var response = window.frames['iframeSave'].document.body.innerHTML;
+                    $('uploadedImages').update(response);
+                    $('filesToUpload').value = '';
+                }.bind(this);
+            }
         }.bind(this);
     },
 
@@ -1835,6 +1873,10 @@ GoMage.ImageUploader.prototype = {
                 this.productDesigner.history.push(cmd);
             }.bind(this));
         }.bind(this));
+    },
+
+    observeFilesSelect: function() {
+
     }
 };
 

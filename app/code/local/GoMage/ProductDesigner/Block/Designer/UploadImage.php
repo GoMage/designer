@@ -44,12 +44,32 @@ class GoMage_ProductDesigner_Block_Designer_UploadImage extends Mage_Core_Block_
 
     public function getAllowedImageExtensions()
     {
+        return Mage::getStoreConfig('gmpd/upload_image/format');
+    }
+
+    protected function _getAllowedImageMimeTypes()
+    {
         $allowedFormats = Mage::getStoreConfig('gmpd/upload_image/format');
         $allowedFormats = explode(',', $allowedFormats);
         foreach ($allowedFormats as &$format) {
-            $format = '.'.$format;
+            $format = 'image/'.$format;
         }
 
-        return implode(',', $allowedFormats);
+        return $allowedFormats;
+    }
+
+    public function getAllowedImageMimeTypesJson()
+    {
+        return Mage::helper('core')->jsonEncode($this->_getAllowedImageMimeTypes());
+    }
+
+    public function getAllowedImageMimeTypesString()
+    {
+        return implode(', ', $this->_getAllowedImageMimeTypes());
+    }
+
+    public function getMaxUploadFileSize()
+    {
+        return (int) Mage::getStoreConfig('gmpd/upload_image/size') * 1024 * 1024;
     }
 }

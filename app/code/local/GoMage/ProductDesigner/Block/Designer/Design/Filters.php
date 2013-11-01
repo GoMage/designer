@@ -35,38 +35,43 @@
 class GoMage_ProductDesigner_Block_Designer_Design_Filters extends Mage_Core_Block_Template
 {
     /**
-     * Prepare layout
-     * Filters clipart collection
+     * Return clipart categories collection
      *
-     * @return Mage_Core_Block_Abstract|void
+     * @return GoMage_ProductDesigner_Model_Mysql4_Clipart_Category_Collection
      */
-    protected function _prepareLayout()
+    public function getCategoriesCollection()
     {
-        if (!$this->navigationEnabled() && !$this->searchEnabled()) {
-            return;
-        }
-        $cliparts = Mage::getSingleton('gmpd/clipart')->getCliparts();
-        $this->_applyFilters($cliparts);
+        $category = Mage::getSingleton('gmpd/clipart_category');
+        $defaultCategoryId = $category->getDefaultCategoryId();
+
+        $categoriesCollection = $category->getCollection()
+            ->addVisibleFilter()
+            ->addFieldToFilter('parent_id', $defaultCategoryId)
+            ->addClipartCountFilter();
+        return $categoriesCollection;
     }
 
     /**
-     * Apply filter to clipart collection
+     * Return clipart subcategories collection
      *
-     * @param GoMage_ProductDesigner_Model_Mysql4_Clipart_Collection $collection Collection
-     * @return void
+     * @return GoMage_ProductDesigner_Model_Mysql4_Clipart_Category_Collection
      */
-    protected function _applyFilters(GoMage_ProductDesigner_Model_Mysql4_Clipart_Collection $collection)
+    public function getSubCategoriesCollection()
     {
-        if($subCategoryId = $this->_getSelectedSubcategoryId()) {
-            $collection->addCategoryFilter($subCategoryId);
-        } elseif($categoryId = $this->_getSelectedCategoryId()) {
-            $collection->addCategoryFilter($categoryId);
-        } else {
-            $collection->addVisibleCategoriesFilter();
+        $categoryId = $this->_getSelectedCategoryId();
+        $subCategoriesCollection = new Varien_Data_Collection();
+        if($categoryId) {
+            $category = Mage::getSingleton('gmpd/clipart_category')->load($categoryId);
+            if ($category->getId()) {
+                $subCategoriesCollection = $category->getCollection()
+                    ->addVisibleFilter()
+                    ->addFieldToFilter('path', array('like' => $category->getPath(). '/%'))
+                    ->addClipartCountFilter();
+            }
+
         }
-        if($searchTags = $this->_getSearchTags()) {
-            $collection->addTagsFilter($searchTags);
-        }
+
+        return $subCategoriesCollection;
     }
 
     /**
@@ -97,42 +102,6 @@ class GoMage_ProductDesigner_Block_Designer_Design_Filters extends Mage_Core_Blo
     protected function _getSearchTags()
     {
         return strip_tags($this->getRequest()->getParam('tags'));
-    }
-
-    /**
-     * Return clipart categories collection
-     *
-     * @return GoMage_ProductDesigner_Model_Mysql4_Clipart_Category_Collection
-     */
-    public function getCategoriesCollection()
-    {
-        $category = Mage::getSingleton('gmpd/clipart_category');
-        $defaultCategoryId = $category->getDefaultCategoryId();
-
-        $categoriesCollection = $category->getCollection()
-            ->addVisibleFilter()
-            ->addFieldToFilter('parent_id', $defaultCategoryId);
-
-        return $categoriesCollection;
-    }
-
-    /**
-     * Return clipart subcategories collection
-     *
-     * @return GoMage_ProductDesigner_Model_Mysql4_Clipart_Category_Collection
-     */
-    public function getSubCategoriesCollection()
-    {
-        $categoryId = $this->_getSelectedCategoryId();
-        $subCategoriesCollection = new Varien_Data_Collection();
-        if($categoryId) {
-            $category = Mage::getSingleton('gmpd/clipart_category');
-            $subCategoriesCollection = $category->getCollection()
-                ->addVisibleFilter()
-                ->addFieldToFilter('parent_id', $categoryId);
-        }
-
-        return $subCategoriesCollection;
     }
 
     public function navigationEnabled()

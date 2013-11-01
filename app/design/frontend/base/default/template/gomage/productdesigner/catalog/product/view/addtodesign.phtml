@@ -1,0 +1,5 @@
+<?php if (!$this->hasDesign() && $this->getProduct()->getEnableProductDesigner()): ?>
+    <button type="button" title="<?php echo $this->__('Design It'); ?>" class="button btn-design" onclick="setLocation('<?php echo $this->getDesignUrl(); ?>');">
+        <span><span><?php echo $this->__('Design It'); ?></span></span>
+    </button>
+<?php endif;?>

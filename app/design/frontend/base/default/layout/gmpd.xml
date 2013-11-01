@@ -13,7 +13,6 @@
  */
  -->
 <layout version="0.1.0">
-    <!-- Editor page /designer -->
     <gomage_designer_index_index translate="label">
         <label>GoMage Product Designer</label>
         <remove name="right"/>
@@ -29,7 +28,7 @@
             <action method="addJs"><script>gomage/productdesigner/vendor/fabric.min.js</script></action>
             <action method="addJs"><script>gomage/productdesigner/vendor/excanvas.compiled.js</script></action>
             <action method="addJs"><script>gomage/productdesigner/editor.js</script></action>
-            <action method="addItem"><type>skin_css</type><name>css/gomage/productdesigner/editor.css</name><params/></action>
+            <action method="addItem"><type>skin_css</type><name>css/gomage/productdesigner.css</name><params/></action>
         </reference>
         <reference name="content">
             <block type="designer/editor" name="product_designer_editor" template="gomage/productdesigner/editor.phtml">
@@ -160,6 +159,9 @@
     </gomage_designer_customer_designs>
 
     <catalog_product_view>
+        <reference name="head">
+          <action method="addItem"><type>skin_css</type><name>css/gomage/productdesigner.css</name><params/></action>
+        </reference>
         <reference name="product.info.media">
             <action method="setTemplate">
                 <template>gomage/productdesigner/catalog/product/view/media.phtml</template>
@@ -174,6 +176,14 @@
             </action>
             <block type="core/template" name="product.info.option.design" as="product_option_design" template="gomage/productdesigner/catalog/product/view/options/design.phtml"/>
         </reference>
+        <reference name="product.info.addtocart">
+            <block type="designer/catalog_product_view" name="product.info.design" template="gomage/productdesigner/catalog/product/view/addtodesign.phtml" />
+        </reference>
+        <reference name="product.info.addtocart">
+            <action method="setTemplate">
+                <template>gomage/productdesigner/catalog/product/view/addtocart.phtml</template>
+            </action>
+        </reference>
     </PRODUCT_TYPE_simple>
 
     <PRODUCT_TYPE_configurable translate="label" module="catalog">
@@ -182,6 +192,14 @@
                 <template>gomage/productdesigner/catalog/product/view/options.phtml</template>
             </action>
             <block type="core/template" name="product.info.option.design" as="product_option_design" template="gomage/productdesigner/catalog/product/view/options/design.phtml"/>
+        </reference>
+        <reference name="product.info.addtocart">
+            <block type="designer/catalog_product_view" name="product.info.design" template="gomage/productdesigner/catalog/product/view/addtodesign.phtml" />
+        </reference>
+        <reference name="product.info.addtocart">
+            <action method="setTemplate">
+                <template>gomage/productdesigner/catalog/product/view/addtocart.phtml</template>
+            </action>
         </reference>
     </PRODUCT_TYPE_configurable>
 
@@ -238,6 +256,9 @@
     </sales_order_view>
 
     <sales_order_print>
+        <reference name="sales.order.print">
+            <action method="addItemRender"><type>default</type><block>designer/sales_order_item_renderer_default</block><template>gomage/productdesigner/sales/order/items/renderer/default.phtml</template></action>
+        </reference>
         <reference name="sales_order_print">
             <action method="addItemRender"><type>default</type><block>designer/sales_order_item_renderer_default</block><template>gomage/productdesigner/sales/order/items/renderer/default.phtml</template></action>
         </reference>
