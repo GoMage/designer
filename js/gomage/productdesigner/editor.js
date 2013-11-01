@@ -179,18 +179,15 @@ GoMage.ProductDesigner.prototype = {
         if(img && this.currentProd != img.id) {
             this.containerCanvases[this.currentProd] = this.canvas;
             this.containerLayers[this.currentProd] = this.container.childElements()[0].remove();
-
             this.history.clear();
             this.addDesignArea(img);
         }
     },
 
     changeProductColor: function(color){
-        this.layersManager.clear();
         this.history.clear();
-        this.containerLayers = {};
-        this.containerCanvases = {};
-        this.container.innerHTML = '';
+        this.containerCanvases[this.currentProd] = this.canvas;
+        this.containerLayers[this.currentProd] = this.container.childElements()[0].remove();
         var product = this.config.product;
         this.loadProduct(product, color);
         this.updateProductImages(product);
@@ -536,9 +533,10 @@ GoMage.ProductDesigner.prototype = {
         if ((this.canvas == null) || this.canvas == 'undefined') {
             return data;
         }
+        var colorImages = this.config.product.images[this.currentColor];
         var images = {};
         for (var imageId in this.containerCanvases) {
-            if (this.containerCanvases.hasOwnProperty(imageId)) {
+            if (this.containerCanvases.hasOwnProperty(imageId) && colorImages.hasOwnProperty(imageId)) {
                 var canvas = this.containerCanvases[imageId];
                 if (canvas.getObjects().length > 0) {
                     canvas.deactivateAll();
