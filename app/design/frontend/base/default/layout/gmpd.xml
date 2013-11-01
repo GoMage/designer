@@ -246,6 +246,9 @@
     </sales_order_view>
 
     <sales_order_print>
+        <reference name="sales.order.print">
+            <action method="addItemRender"><type>default</type><block>designer/sales_order_item_renderer_default</block><template>gomage/productdesigner/sales/order/items/renderer/default.phtml</template></action>
+        </reference>
         <reference name="sales_order_print">
             <action method="addItemRender"><type>default</type><block>designer/sales_order_item_renderer_default</block><template>gomage/productdesigner/sales/order/items/renderer/default.phtml</template></action>
         </reference>
