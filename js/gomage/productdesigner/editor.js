@@ -571,10 +571,13 @@ GoMage.ProductDesigner.prototype = {
     canvasesHasLayers: function()
     {
         var count = 0;
+        var colorImages = this.config.product.images[this.currentColor];
         for (var imageId in this.containerCanvases) {
-            var canvasCount = this.canvasHasLayers(imageId);
-            if (canvasCount) {
-                count += canvasCount;
+            if (colorImages.hasOwnProperty(imageId)) {
+                var canvasCount = this.canvasHasLayers(imageId);
+                if (canvasCount) {
+                    count += canvasCount;
+                }
             }
         }
 
