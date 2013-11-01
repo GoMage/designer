@@ -9,7 +9,12 @@ class GoMage_ProductDesigner_Block_Adminhtml_Catalog_Product_Helper_Form_Gallery
     public function __construct()
     {
         parent::__construct();
-        $this->setTemplate('gomage/catalog/product/helper/gallery.phtml');
+        $product = $this->getProduct();
+        $_helper = Mage::helper('designer');
+        $allowedProductTypes = $_helper->getAllowedProductTypes();
+        if (in_array($product->getTypeId(), $allowedProductTypes) && $_helper->isEnabled()) {
+            $this->setTemplate('gomage/catalog/product/helper/gallery.phtml');
+        }
     }
 
     /**

@@ -40,6 +40,9 @@ class GoMage_ProductDesigner_Block_Adminhtml_Catalog_Product_Attribute_Edit_Tab_
     public function __construct()
     {
         parent::__construct();
+        if (!Mage::helper('designer')->isEnabled()) {
+            return;
+        }
         $colorAttributeCode = Mage::getStoreConfig('gmpd/navigation/color_attribute');
         if ($colorAttributeCode && ($this->getAttributeObject()->getAttributeCode() == $colorAttributeCode)) {
             $this->setTemplate('gomage/catalog/product/attribute/options.phtml');

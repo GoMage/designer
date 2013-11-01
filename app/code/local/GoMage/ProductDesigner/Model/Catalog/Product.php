@@ -10,6 +10,9 @@ class GoMage_ProductDesigner_Model_Catalog_Product extends Mage_Catalog_Model_Pr
      */
     public function getMediaGalleryImages()
     {
+        if (!Mage::helper('designer')->isEnabled()) {
+            return parent::getMediaGalleryImages();
+        }
         if(!$this->hasData('media_gallery_images') && is_array($this->getMediaGallery('images'))) {
             $images = new Varien_Data_Collection();
             $designId = (int) Mage::app()->getRequest()->getParam('design_id', false);
