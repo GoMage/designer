@@ -1826,7 +1826,7 @@ GoMage.ImageUploader.prototype = {
                     if (files.hasOwnProperty(prop)) {
                         var file = files[prop];
                         if (file.size && file.size > this.maxUploadFileSize)  {
-                            errors['size'] = 'You can not upload file more than ' + this.maxUploadFileSize/1024/1024 + ' MB';
+                            errors['size'] = 'You can not upload files larger than ' + this.maxUploadFileSize/1024/1024 + ' MB';
                         }
                         if (file.type && this.allowedImageExtension.indexOf(file.type) < 0) {
                             errors['type'] = 'Cannot upload the file. The format is not supported. Supported file formats are: ' + this.allowedImageExtensionsFormated;

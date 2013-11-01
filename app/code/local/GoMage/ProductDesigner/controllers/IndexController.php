@@ -191,7 +191,7 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
                 }
                 if ($file['error'] === UPLOAD_ERR_INI_SIZE || $file['error'] === UPLOAD_ERR_FORM_SIZE
                     || $file['size'] > $maxUploadFileSize * 1024 * 1024) {
-                    $errors['size'] = Mage::helper('designer')->__('You can not upload file more than %d MB', $maxUploadFileSize);
+                    $errors['size'] = Mage::helper('designer')->__('You can not upload files larger than %d MB', $maxUploadFileSize);
                     continue;
                 }
 

@@ -63,4 +63,13 @@ class GoMage_ProductDesigner_Block_Catalog_Product_View extends Mage_Catalog_Blo
         $params = array('_query' => array('id' => $product->getId()));
         return $this->getUrl('designer', $params);
     }
+
+    public function addToCartDisabled()
+    {
+        if ($this->hasDesign() || !$this->getProduct()->getEnableProductDesigner()) {
+            return false;
+        }
+
+        return $this->getProduct()->getEnableProductDesigner() && Mage::getStoreConfig('gmpd/general/add_to_cart_button');
+    }
 }

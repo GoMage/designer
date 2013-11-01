@@ -179,6 +179,11 @@
         <reference name="product.info.addtocart">
             <block type="designer/catalog_product_view" name="product.info.design" template="gomage/productdesigner/catalog/product/view/addtodesign.phtml" />
         </reference>
+        <reference name="product.info.addtocart">
+            <action method="setTemplate">
+                <template>gomage/productdesigner/catalog/product/view/addtocart.phtml</template>
+            </action>
+        </reference>
     </PRODUCT_TYPE_simple>
 
     <PRODUCT_TYPE_configurable translate="label" module="catalog">
@@ -190,6 +195,11 @@
         </reference>
         <reference name="product.info.addtocart">
             <block type="designer/catalog_product_view" name="product.info.design" template="gomage/productdesigner/catalog/product/view/addtodesign.phtml" />
+        </reference>
+        <reference name="product.info.addtocart">
+            <action method="setTemplate">
+                <template>gomage/productdesigner/catalog/product/view/addtocart.phtml</template>
+            </action>
         </reference>
     </PRODUCT_TYPE_configurable>
 
