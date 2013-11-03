@@ -26,6 +26,7 @@
                 <price_for_text>0</price_for_text>
                 <price_for_image>0</price_for_image>
                 <show_comment>1</show_comment>
+                <default_tab>design</default_tab>
             </general>
             <navigation>
                 <enabled>1</enabled>

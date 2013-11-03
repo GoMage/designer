@@ -83,7 +83,7 @@ $productImageMinSize = $this->getProductOriginalImageMinSizes();
               <!-- Product Designer Tabs -->
               <div id="pd_tabs" class="pd_tabs">
                     <?php if ($this->isNavigationEnabled()): ?>
-                    <div class="pd-tab-content" id="pd_choose_product-content" style="display: block;">
+                    <div class="pd-tab-content" id="pd_choose_product-content" <?php if ($this->isActiveTab('navigation')): ?>style="display: block;"<?php endif;?>>
                         <h4 class="pd-header"><?php echo $this->__('Choose Product'); ?></h4>
                         <?php if ($this->isHelpEnabled('navigation')):?>
                             <span class="tab-help-icon">?</span>
@@ -98,7 +98,7 @@ $productImageMinSize = $this->getProductOriginalImageMinSizes();
                     </div>
                     <?php endif;?>
                   <?php if ($this->isDesignEnabled()): ?>
-                      <div class="pd-tab-content" id="pd_add_design-content">
+                      <div class="pd-tab-content" id="pd_add_design-content" <?php if ($this->isActiveTab('design')): ?>style="display: block;"<?php endif;?>>
                           <h4 class="pd-header"><?php echo $this->__('Choose A Design'); ?></h4>
                           <?php if ($this->isHelpEnabled('design')):?>
                               <span class="tab-help-icon">?</span>
@@ -112,7 +112,7 @@ $productImageMinSize = $this->getProductOriginalImageMinSizes();
                       </div>
                   <?php endif;?>
                   <?php if ($this->isTextEnabled()): ?>
-                      <div class="pd-tab-content" id="pd_add_text-content">
+                      <div class="pd-tab-content" id="pd_add_text-content" <?php if ($this->isActiveTab('text')): ?>style="display: block;"<?php endif;?>>
                           <h4 class="pd-header"><?php echo $this->__('Add Text'); ?></h4>
                           <?php if ($this->isHelpEnabled('text')):?>
                               <span class="tab-help-icon">?</span>
@@ -126,7 +126,7 @@ $productImageMinSize = $this->getProductOriginalImageMinSizes();
                       </div>
                   <?php endif;?>
                   <?php if ($this->isUploadImageEnabled()): ?>
-                      <div class="pd-tab-content" id="pd_add_image-content">
+                      <div class="pd-tab-content" id="pd_add_image-content" <?php if ($this->isActiveTab('upload_image')): ?>style="display: block;"<?php endif;?>>
                           <h4 class="pd-header"><?php echo $this->__('Upload Images'); ?></h4>
                           <?php if ($this->isHelpEnabled('upload_image')):?>
                               <span class="tab-help-icon">?</span>
