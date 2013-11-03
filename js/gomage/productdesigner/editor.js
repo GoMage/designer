@@ -116,6 +116,7 @@ GoMage.ProductDesigner = function(config, continueUrl, loginUrl, registrationUrl
     this.reloadPrice();
     this.observePriceMoreInfo();
     this.observeHelpIcons();
+    this.observeGoOut();
 }
 
 GoMage.ProductDesigner.prototype = {
@@ -609,6 +610,7 @@ GoMage.ProductDesigner.prototype = {
     continueCallback: function(transport){
         var response = transport.responseText.evalJSON();
         if (response.status == 'redirect' && response.url != undefined) {
+            window.onbeforeunload = null;
             location.href = response.url;
         } else if (response.status == 'error') {
             console.log(response.message);
@@ -1177,6 +1179,12 @@ GoMage.ProductDesigner.prototype = {
                 obj.next().hide();
             });
         }.bind(this));
+    },
+
+    observeGoOut: function() {
+        window.onbeforeunload = function(elm) {
+            return 'The current design will be lost. Are you sure that you want to leave this page?';
+        }.bind(this);
     }
 };
 
