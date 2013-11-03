@@ -1259,11 +1259,14 @@ GoMage.ProductNavigation.prototype = {
     observeProductSelect: function() {
         Event.on($(this.opt.navigationProducts), 'click', '.product-image', function(e, elem){
             e.stop();
-            var productId = elem.getAttribute('data-product_id');
-            if (productId && productId != undefined) {
-                var data = { id: productId };
+            var result = window.confirm('The current design will be lost. Are you sure that you want change product?');
+            if (result) {
+                var productId = elem.getAttribute('data-product_id');
+                if (productId && productId != undefined) {
+                    var data = { id: productId };
+                }
+                this.prepareAndSubmitData(this.opt.productUrl, this.updateDataOnProductChoose.bind(this), data);
             }
-            this.prepareAndSubmitData(this.opt.productUrl, this.updateDataOnProductChoose.bind(this), data);
         }.bind(this));
     },
 
