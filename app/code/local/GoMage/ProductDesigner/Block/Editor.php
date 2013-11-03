@@ -16,6 +16,12 @@ class GoMage_ProductDesigner_Block_Editor extends Mage_Core_Block_Template
 {
     protected $_editorConfig;
 
+    protected $_tabs;
+
+    protected $_tabCodes = array('navigation', 'design', 'text', 'upload_image');
+
+    protected $_activeTab;
+
     /**
      * Return Customer Id
      *
@@ -74,22 +80,56 @@ class GoMage_ProductDesigner_Block_Editor extends Mage_Core_Block_Template
 
     public function isNavigationEnabled()
     {
-        return Mage::getStoreConfig('gmpd/navigation/enabled', Mage::app()->getStore());
+        return $this->_getEnableTab('navigation');
     }
 
     public function isDesignEnabled()
     {
-        return Mage::getStoreConfig('gmpd/design/enabled', Mage::app()->getStore());
+        return $this->_getEnableTab('design');
     }
 
     public function isTextEnabled()
     {
-        return Mage::getStoreConfig('gmpd/text/enabled', Mage::app()->getStore());
+        return $this->_getEnableTab('text');
     }
 
     public function isUploadImageEnabled()
     {
-        return Mage::getStoreConfig('gmpd/upload_image/enabled', Mage::app()->getStore());
+        return $this->_getEnableTab('upload_image');
+    }
+
+    protected function _getEnableTab($tab)
+    {
+        return Mage::getStoreConfig('gmpd/'. $tab .'/enabled', Mage::app()->getStore());
+    }
+
+    public function isActiveTab($tab)
+    {
+        return $tab === $this->_getActiveTab();
+    }
+
+    protected function _getActiveTab()
+    {
+        if (is_null($this->_tabs)) {
+            foreach ($this->_tabCodes as $_tab) {
+                $this->_tabs[$_tab] = $this->_getEnableTab($_tab);
+            }
+        }
+        if (is_null($this->_activeTab)) {
+            $defaultTab = Mage::getStoreConfig('gmpd/general/default_tab', Mage::app()->getStore());
+            if ($this->_tabs[$defaultTab]) {
+                $this->_activeTab  = $defaultTab;
+            } else {
+                foreach ($this->_tabs as $_tab => $_visibility) {
+                    if ($_visibility) {
+                        $this->_activeTab = $_tab;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return $this->_activeTab;
     }
 
     public function isProductSelected()

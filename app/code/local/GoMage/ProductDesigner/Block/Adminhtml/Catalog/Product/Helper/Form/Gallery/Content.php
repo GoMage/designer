@@ -9,7 +9,12 @@ class GoMage_ProductDesigner_Block_Adminhtml_Catalog_Product_Helper_Form_Gallery
     public function __construct()
     {
         parent::__construct();
-        $this->setTemplate('gomage/catalog/product/helper/gallery.phtml');
+        $product = $this->getProduct();
+        $_helper = Mage::helper('designer');
+        $allowedProductTypes = $_helper->getAllowedProductTypes();
+        if (in_array($product->getTypeId(), $allowedProductTypes) && $_helper->isEnabled()) {
+            $this->setTemplate('gomage/catalog/product/helper/gallery.phtml');
+        }
     }
 
     /**
@@ -39,7 +44,7 @@ class GoMage_ProductDesigner_Block_Adminhtml_Catalog_Product_Helper_Form_Gallery
 
         $product = $this->getProduct();
         $settings = array();
-        if ($product && $product->getId() && $product->getEnableProductDesigner()){
+        if ($product && $product->getId()){
             foreach ($product->getMediaGallery('images') as $image) {
                 $settings[$image['value_id']] = Mage::helper('core')->jsonDecode($image['design_area']);
             }
@@ -103,7 +108,7 @@ class GoMage_ProductDesigner_Block_Adminhtml_Catalog_Product_Helper_Form_Gallery
     public function  getProductColors()
     {
         $product = $this->getProduct();
-        if ($product && $this->hasColorAttribute() && $product->getEnableProductDesigner()) {
+        if ($product && $this->hasColorAttribute()) {
             return $product->getProductColors();
         }
 

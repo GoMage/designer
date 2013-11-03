@@ -25,6 +25,12 @@
       $product->setEnableProductDesigner($flag);
     }
 
+    public function addDesignEnabledToProducts(Varien_Event_Observer $observer)
+    {
+        $collection = $observer->getEvent()->getCollection();
+        $collection->addAttributeToSelect('enable_product_designer', true);
+    }
+
      /**
       * Add design option to quote item
       *

@@ -2,25 +2,9 @@
 class GoMage_ProductDesigner_Model_Mysql4_Clipart_Category_Collection
     extends Mage_Core_Model_Resource_Db_Collection_Abstract
 {
-    /**
-     * Event prefix
-     *
-     * @var string
-     */
-    protected $_eventPrefix              = 'designer_clipart_category_collection';
-
-    /**
-     * Event object name
-     *
-     * @var string
-     */
-    protected $_eventObject              = 'designer_clipart_category_collection';
-
     protected function _construct()
     {
         $this->_init('gmpd/clipart_category');
-        $this
-            ->addFilterToMap('entity_id', 'main_table.entity_id');
     }
 
     public function addIdFilter($categoryIds)
@@ -45,8 +29,27 @@ class GoMage_ProductDesigner_Model_Mysql4_Clipart_Category_Collection
         return $this;
     }
 
-    public function addVisibleFilter() {
+    public function addVisibleFilter()
+    {
         $this->addFieldToFilter('is_active', 1);
+        return $this;
+    }
+
+    public function addClipartCountFilter()
+    {
+        $concatExpr = $this->getConnection()->getConcatSql(array('main_table.path', $this->_conn->quote('/%')));
+        $countSelect = $this->getConnection()->select()
+            ->from(array('clipart_category' => $this->getMainTable()), null)
+            ->joinLeft(
+                array('cliparts' => $this->getTable('gmpd/clipart')),
+                'clipart_category.category_id=cliparts.category_id',
+                array('COUNT(DISTINCT cliparts.clipart_id)'))
+            ->where('clipart_category.category_id = main_table.category_id')
+            ->orWhere('clipart_category.path LIKE ?', $concatExpr);
+        $countExpr = $this->getConnection()
+            ->quoteInto(new Zend_Db_Expr('('. $countSelect .') > ?'), 0);
+        $this->getSelect()->where($countExpr);
+
         return $this;
     }
 }

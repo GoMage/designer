@@ -8,7 +8,7 @@ $defaultFonts = $this->getDefaultFonts();
 $fonts = $this->getFonts();
 $sizes = $this->getFontSizes();
 ?>
-<style type="text/css">
+<style type="text/css" scoped=scoped>
 <?php foreach($fonts as $font):?>
     @font-face {
         font-family: <?php echo $this->getFontName($font);?>;
@@ -31,7 +31,7 @@ $sizes = $this->getFontSizes();
         </select>
     </div>
     <div class="pd-element-wrapper">
-        <button id="add_text_button"class="panel-btn pd-btn-add-text"><?php echo $this->__('Add'); ?></button>
+        <button id="add_text_button" class="panel-btn pd-btn-add-text"><?php echo $this->__('Add'); ?></button>
         <select class="font-size-selector" id="font_size_selector">
             <?php foreach ($sizes as $size):?>
                 <option value="<?php echo $size; ?>" <?php echo $this->getDefaultFontSize() == $size ? 'selected="selected"' : ''?>><?php echo $size; ?></option>
@@ -53,7 +53,7 @@ $sizes = $this->getFontSizes();
                 <legend><?php echo $this->__('Curved Text'); ?></legend>
                 <div class="pd-element-wrapper">
                     <label for="rx_range"><?php echo $this->__('Radius'); ?>: </label>
-                    <input type="range" value="0" id="rx_range" min='-40' max='40' step="1">
+                    <input type="range" value="0" id="rx_range" min='-40' max='40' step="0.2" style="width: 250px;">
                 </div>
             </fieldset>
             <fieldset class="shadow-config" style="display: none;">

@@ -116,6 +116,7 @@ GoMage.ProductDesigner = function(config, continueUrl, loginUrl, registrationUrl
     this.reloadPrice();
     this.observePriceMoreInfo();
     this.observeHelpIcons();
+    this.observeGoOut();
 }
 
 GoMage.ProductDesigner.prototype = {
@@ -179,18 +180,15 @@ GoMage.ProductDesigner.prototype = {
         if(img && this.currentProd != img.id) {
             this.containerCanvases[this.currentProd] = this.canvas;
             this.containerLayers[this.currentProd] = this.container.childElements()[0].remove();
-
             this.history.clear();
             this.addDesignArea(img);
         }
     },
 
     changeProductColor: function(color){
-        this.layersManager.clear();
         this.history.clear();
-        this.containerLayers = {};
-        this.containerCanvases = {};
-        this.container.innerHTML = '';
+        this.containerCanvases[this.currentProd] = this.canvas;
+        this.containerLayers[this.currentProd] = this.container.childElements()[0].remove();
         var product = this.config.product;
         this.loadProduct(product, color);
         this.updateProductImages(product);
@@ -229,7 +227,7 @@ GoMage.ProductDesigner.prototype = {
                     }
                     var element = document.createElement('span');
                     element.addClassName('color-btn');
-                    element.setAttribute('color_id', color['option_id']);
+                    element.setAttribute('data-color_id', color['option_id']);
                     if (color['image']) {
                         element.setStyle({
                             'background-image': 'url('+ color['image'] +')',
@@ -359,7 +357,7 @@ GoMage.ProductDesigner.prototype = {
             this.navigation.saveDesign.observe('click', function(e) {
                 e.stop();
                 if (!this.canvasesHasLayers()) {
-                    alert('Please add to canvas thogh one layer');
+                    alert('Please add to canvas though one layer');
                     return;
                 }
                 if (!this.isCustomerLogin) {
@@ -536,9 +534,10 @@ GoMage.ProductDesigner.prototype = {
         if ((this.canvas == null) || this.canvas == 'undefined') {
             return data;
         }
+        var colorImages = this.config.product.images[this.currentColor];
         var images = {};
         for (var imageId in this.containerCanvases) {
-            if (this.containerCanvases.hasOwnProperty(imageId)) {
+            if (this.containerCanvases.hasOwnProperty(imageId) && colorImages.hasOwnProperty(imageId)) {
                 var canvas = this.containerCanvases[imageId];
                 if (canvas.getObjects().length > 0) {
                     canvas.deactivateAll();
@@ -573,10 +572,13 @@ GoMage.ProductDesigner.prototype = {
     canvasesHasLayers: function()
     {
         var count = 0;
+        var colorImages = this.config.product.images[this.currentColor];
         for (var imageId in this.containerCanvases) {
-            var canvasCount = this.canvasHasLayers(imageId);
-            if (canvasCount) {
-                count += canvasCount;
+            if (colorImages.hasOwnProperty(imageId)) {
+                var canvasCount = this.canvasHasLayers(imageId);
+                if (canvasCount) {
+                    count += canvasCount;
+                }
             }
         }
 
@@ -608,6 +610,7 @@ GoMage.ProductDesigner.prototype = {
     continueCallback: function(transport){
         var response = transport.responseText.evalJSON();
         if (response.status == 'redirect' && response.url != undefined) {
+            window.onbeforeunload = null;
             location.href = response.url;
         } else if (response.status == 'error') {
             console.log(response.message);
@@ -628,7 +631,7 @@ GoMage.ProductDesigner.prototype = {
             this.navigation.continue.observe('click', function(e) {
                 e.stop();
                 if (!this.canvasesHasLayers()) {
-                    alert('Please add to canvas thogh one layer');
+                    alert('Please add to canvas though one layer');
                     return;
                 }
                 this.saveDesign(this.urls.continue, this.continueCallback);
@@ -812,7 +815,7 @@ GoMage.ProductDesigner.prototype = {
     observeProductImageColorChange: function(){
         Event.on($('product-colors'), 'click', '.color-btn', function(e, elem){
             e.stop();
-            var color = elem.getAttribute('color_id');
+            var color = elem.getAttribute('data-color_id');
             if (this.currentColor != color) {
                 if(!elem.hasClassName('selected')) {
                     elem.siblings().invoke('removeClassName', 'selected');
@@ -1176,6 +1179,12 @@ GoMage.ProductDesigner.prototype = {
                 obj.next().hide();
             });
         }.bind(this));
+    },
+
+    observeGoOut: function() {
+        window.onbeforeunload = function(elm) {
+            return 'The current design will be lost. Are you sure that you want to leave this page?';
+        }.bind(this);
     }
 };
 
@@ -1250,11 +1259,14 @@ GoMage.ProductNavigation.prototype = {
     observeProductSelect: function() {
         Event.on($(this.opt.navigationProducts), 'click', '.product-image', function(e, elem){
             e.stop();
-            var productId = elem.getAttribute('product_id');
-            if (productId && productId != undefined) {
-                var data = { id: productId };
+            var result = window.confirm('The current design will be lost. Are you sure that you want change product?');
+            if (result) {
+                var productId = elem.getAttribute('data-product_id');
+                if (productId && productId != undefined) {
+                    var data = { id: productId };
+                }
+                this.prepareAndSubmitData(this.opt.productUrl, this.updateDataOnProductChoose.bind(this), data);
             }
-            this.prepareAndSubmitData(this.opt.productUrl, this.updateDataOnProductChoose.bind(this), data);
         }.bind(this));
     },
 
@@ -1330,16 +1342,20 @@ GoMage.Designer.prototype = {
         }.bind(this));
     },
 
-    filterImages: function() {
-        var data = {};
+    filterImages: function(data) {
+        var data = data || {};
         data['ajax'] = true;
-        if ($('mainCategoriesSearchField') && $('subCategoriesSearchField')) {
-            data['mainCategory'] = $('mainCategoriesSearchField').value;
-            data['subCategory'] = $('subCategoriesSearchField').value;
-        }
-        if ($('tagsSearchField')) {
+        if (data.hasOwnProperty('tags')) {
+            if ($('mainCategoriesSearchField') && $('mainCategoriesSearchField').value) {
+                data['mainCategory'] = $('mainCategoriesSearchField').value;
+            }
+            if ($('subCategoriesSearchField') && $('subCategoriesSearchField').value) {
+                data['subCategory'] = $('subCategoriesSearchField').value;
+            }
+        } else if ($('tagsSearchField') && $('tagsSearchField').value) {
             data['tags'] = $('tagsSearchField').value;
         }
+
 
         new Ajax.Request(this.opt.filterUrl, {
             method:'post',
@@ -1367,15 +1383,26 @@ GoMage.Designer.prototype = {
 
     observeFilterFields: function(){
         if ($('cliparts-search-btn')) {
-            Event.on($('cliparts-search-btn'), 'click', '#cliparts-search-btn', function(e, elm){
+            Event.on($('cliparts-filters'), 'click', '#cliparts-search-btn', function(e, elm){
                 e.stop();
-                this.filterImages();
+                this.filterImages({tags: $('tagsSearchField').value});
             }.bind(this));
         }
-        if ($('mainCategoriesSearchField') && $('subCategoriesSearchField')) {
+        if ($('tagsSearchField')) {
+            Event.on($('cliparts-filters'), 'search', '#tagsSearchField', function(e, elm){
+                e.stop();
+                this.filterImages({tags: $('tagsSearchField').value});
+            }.bind(this));
+        }
+        if ($('mainCategoriesSearchField') || $('subCategoriesSearchField')) {
             Event.on($('cliparts-filters'), 'change', '#mainCategoriesSearchField, #subCategoriesSearchField', function(e, elm){
                 e.stop();
-                this.filterImages();
+                var data = {};
+                data[elm.name] = elm.value;
+                if (elm.name == 'subCategory') {
+                    data['mainCategory'] = $('mainCategoriesSearchField').value;
+                }
+                this.filterImages(data);
             }.bind(this));
         }
     }
@@ -1661,7 +1688,7 @@ GoMage.TextEditor.prototype = {
             var elem = e.target || e.srcElement;
             var obj = this.productDesigner.canvas.getActiveObject();
             if (obj && obj.type == 'custom_text') {
-                var cmd = new TransformCommand(this.productDesigner.canvas, obj, {curved: elem.value});
+                var cmd = new TransformCommand(this.productDesigner.canvas, obj, {curved: parseFloat(elem.value)});
                 cmd.exec();
                 this.productDesigner.history.push(cmd);
             }
@@ -1761,13 +1788,16 @@ GoMage.TextEditor.prototype = {
     }
 };
 
-GoMage.ImageUploader = function(){
+GoMage.ImageUploader = function(maxUploadFileSize, allowedImageExtensions, allowedImageExtensionsFormated){
+    this.maxUploadFileSize = maxUploadFileSize;
+    this.allowedImageExtension = allowedImageExtensions;
+    this.allowedImageExtensionsFormated = allowedImageExtensionsFormated;
     this.observeLicenseAgreements();
     this.observeLicenseAgreementsMoreInfo();
-    this.observeImageConditions();
     window.onload = this.observeSubmitForm.bind(this);
     this.productDesigner = window.w;
     this.observeImageSelect();
+    this.observeFilesSelect();
 };
 
 GoMage.ImageUploader.prototype = {
@@ -1799,31 +1829,51 @@ GoMage.ImageUploader.prototype = {
         }.bind(this));
     },
 
-    observeImageConditions: function() {
-        if (!$('image-conditions')) {
-            return;
-        }
-
-        $('filesToUpload').observe('mouseover', function(){
-            $('image-conditions').show();
-        });
-
-        $('filesToUpload').observe('mouseout', function(){
-            $('image-conditions').hide();
-        });
-    },
-
     /**
      * TODO Add upload for IE
      */
     observeSubmitForm: function(){
         $('uploadImages').onsubmit = function(){
-            $('uploadImages').target = 'iframeSave';
-            $('iframeSave').onload = function() {
-                var response = window.frames['iframeSave'].document.body.innerHTML;
-                $('uploadedImages').update(response);
-                $('filesToUpload').value = '';
-            }.bind(this);
+            if ($('filesToUpload')) {
+                var errorContainer = $('upload-image-error');
+                var files = $('filesToUpload').files;
+                var errors = {};
+                var errorsCount = 0;
+                errorContainer.innerHTML = '';
+                errorContainer.hide();
+                for (var prop in files){
+                    if (files.hasOwnProperty(prop)) {
+                        var file = files[prop];
+                        if (file.size && file.size > this.maxUploadFileSize)  {
+                            errors['size'] = 'You can not upload files larger than ' + this.maxUploadFileSize/1024/1024 + ' MB';
+                        }
+                        if (file.type && this.allowedImageExtension.indexOf(file.type) < 0) {
+                            errors['type'] = 'Cannot upload the file. The format is not supported. Supported file formats are: ' + this.allowedImageExtensionsFormated;
+                        }
+                    }
+                }
+
+                for (var prop in errors) {
+                    if (errors.hasOwnProperty(prop)) {
+                        errorsCount++;
+                        // Sorry for hardcode
+                        errorContainer.insert('<p>' + errors[prop] + '</p>');
+                    }
+                }
+                if (errorsCount > 0) {
+                    errorContainer.show();
+                    return false;
+                } else {
+                    errorContainer.hide();
+                }
+
+                $('uploadImages').target = 'iframeSave';
+                $('iframeSave').onload = function() {
+                    var response = window.frames['iframeSave'].document.body.innerHTML;
+                    $('uploadedImages').update(response);
+                    $('filesToUpload').value = '';
+                }.bind(this);
+            }
         }.bind(this);
     },
 
@@ -1842,6 +1892,10 @@ GoMage.ImageUploader.prototype = {
                 this.productDesigner.history.push(cmd);
             }.bind(this));
         }.bind(this));
+    },
+
+    observeFilesSelect: function() {
+
     }
 };
 

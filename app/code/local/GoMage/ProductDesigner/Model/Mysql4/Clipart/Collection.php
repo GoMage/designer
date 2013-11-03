@@ -2,35 +2,14 @@
 class GoMage_ProductDesigner_Model_Mysql4_Clipart_Collection
     extends Mage_Core_Model_Resource_Db_Collection_Abstract
 {
-    /**
-     * Event prefix
-     *
-     * @var string
-     */
-    protected $_eventPrefix              = 'designer_clipart_collection';
-
-    /**
-     * Event object name
-     *
-     * @var string
-     */
-    protected $_eventObject              = 'designer_clipart_collection';
 
     protected function _construct()
     {
         $this->_init('gmpd/clipart');
-        $this
-            ->addFilterToMap('entity_id', 'main_table.entity_id');
     }
 
-    public function addVisibleCategoriesFilter() {
-        /**
-         * @var $categoryId int
-         * @var $joinTableAlias string
-         * @var $joinTable string
-         * @var $select Varien_Db_Select
-         */
-
+    public function addVisibleCategoriesFilter()
+    {
         $select = $this->getSelect();
         $joinTableAlias = 'categories';
         $joinTable = $this->getTable(GoMage_ProductDesigner_Model_Clipart_Category::ENTITY);
@@ -43,14 +22,8 @@ class GoMage_ProductDesigner_Model_Mysql4_Clipart_Collection
         return $this;
     }
 
-    public function addCategoryFilter($categoryId) {
-        /**
-         * @var $categoryId int
-         * @var $joinTableAlias string
-         * @var $joinTable string
-         * @var $select Varien_Db_Select
-         */
-
+    public function addCategoryFilter($categoryId)
+    {
         $categoryId = (int) $categoryId;
         if($categoryId <= 0) return;
 
@@ -68,29 +41,20 @@ class GoMage_ProductDesigner_Model_Mysql4_Clipart_Collection
         return $this;
     }
 
-    public function addTagsFilter($tags) {
-        /**
-         * @var $tags string
-         * @var $select Varien_Db_Select
-         */
-
+    public function addTagsFilter($tags)
+    {
         $tableAlias = 'main_table';
         $select = $this->getSelect();
         $tags = (string) $tags;
-        $tags = $this->prepareTags($tags);
-        $select->where($tableAlias.'.label REGEXP '.$tags.'');
+        $tags = $this->_prepareTags($tags);
+        $select->where($tableAlias.'.tags REGEXP '.$tags.'');
     }
 
-    private function prepareTags($tags) {
-        /**
-         * @var $tags string
-         * @var $tagsArray array
-         * @var $readConnection Varien_Db_Adapter_Pdo_Mysql | Varien_Db_Adapter_Interface
-         */
-
+    protected function _prepareTags($tags)
+    {
         $readConnection = $this->getResource()->getReadConnection();
 
-        $tagsArray = explode(',', $tags);
+        $tagsArray = explode(',', str_replace(' ', '', $tags));
         $tags = $readConnection->quote(implode('|', $tagsArray));
         return $tags;
     }

@@ -83,12 +83,12 @@ $productImageMinSize = $this->getProductOriginalImageMinSizes();
               <!-- Product Designer Tabs -->
               <div id="pd_tabs" class="pd_tabs">
                     <?php if ($this->isNavigationEnabled()): ?>
-                    <div class="pd-tab-content" id="pd_choose_product-content" style="display: block;">
+                    <div class="pd-tab-content" id="pd_choose_product-content" <?php if ($this->isActiveTab('navigation')): ?>style="display: block;"<?php endif;?>>
                         <h4 class="pd-header"><?php echo $this->__('Choose Product'); ?></h4>
                         <?php if ($this->isHelpEnabled('navigation')):?>
                             <span class="tab-help-icon">?</span>
                             <!-- Для всплывающего окна предлагаю задать в стилях min-width и min-height -->
-                            <div style="display: none; width: <?php echo $this->getHelpPopupWidth('navigation')?>px; height: <?php echo $this->getHelpPopupHeight('navigation')?>px">
+                            <div class="tab-help-content" style="display: none; width: <?php echo $this->getHelpPopupWidth('navigation')?>px; height: <?php echo $this->getHelpPopupHeight('navigation')?>px">
                                 <?php echo $this->getHelpText('navigation');?>
                             </div>
                         <?php endif;?>
@@ -98,11 +98,11 @@ $productImageMinSize = $this->getProductOriginalImageMinSizes();
                     </div>
                     <?php endif;?>
                   <?php if ($this->isDesignEnabled()): ?>
-                      <div class="pd-tab-content" id="pd_add_design-content">
+                      <div class="pd-tab-content" id="pd_add_design-content" <?php if ($this->isActiveTab('design')): ?>style="display: block;"<?php endif;?>>
                           <h4 class="pd-header"><?php echo $this->__('Choose A Design'); ?></h4>
                           <?php if ($this->isHelpEnabled('design')):?>
                               <span class="tab-help-icon">?</span>
-                              <div style="display: none; width: <?php echo $this->getHelpPopupWidth('design')?>px; height: <?php echo $this->getHelpPopupHeight('design')?>px">
+                              <div class="tab-help-content" style="display: none; width: <?php echo $this->getHelpPopupWidth('design')?>px; height: <?php echo $this->getHelpPopupHeight('design')?>px">
                                   <?php echo $this->getHelpText('design');?>
                               </div>
                           <?php endif;?>
@@ -112,11 +112,11 @@ $productImageMinSize = $this->getProductOriginalImageMinSizes();
                       </div>
                   <?php endif;?>
                   <?php if ($this->isTextEnabled()): ?>
-                      <div class="pd-tab-content" id="pd_add_text-content">
+                      <div class="pd-tab-content" id="pd_add_text-content" <?php if ($this->isActiveTab('text')): ?>style="display: block;"<?php endif;?>>
                           <h4 class="pd-header"><?php echo $this->__('Add Text'); ?></h4>
                           <?php if ($this->isHelpEnabled('text')):?>
                               <span class="tab-help-icon">?</span>
-                              <div style="display: none; width: <?php echo $this->getHelpPopupWidth('text')?>px; height: <?php echo $this->getHelpPopupHeight('text')?>px">
+                              <div class="tab-help-content" style="display: none; width: <?php echo $this->getHelpPopupWidth('text')?>px; height: <?php echo $this->getHelpPopupHeight('text')?>px">
                                   <?php echo $this->getHelpText('text');?>
                               </div>
                           <?php endif;?>
@@ -126,11 +126,11 @@ $productImageMinSize = $this->getProductOriginalImageMinSizes();
                       </div>
                   <?php endif;?>
                   <?php if ($this->isUploadImageEnabled()): ?>
-                      <div class="pd-tab-content" id="pd_add_image-content">
+                      <div class="pd-tab-content" id="pd_add_image-content" <?php if ($this->isActiveTab('upload_image')): ?>style="display: block;"<?php endif;?>>
                           <h4 class="pd-header"><?php echo $this->__('Upload Images'); ?></h4>
                           <?php if ($this->isHelpEnabled('upload_image')):?>
                               <span class="tab-help-icon">?</span>
-                              <div style="display: none; width: <?php echo $this->getHelpPopupWidth('upload_image')?>px; height: <?php echo $this->getHelpPopupHeight('upload_image')?>px">
+                              <div class="tab-help-content" style="display: none; width: <?php echo $this->getHelpPopupWidth('upload_image')?>px; height: <?php echo $this->getHelpPopupHeight('upload_image')?>px">
                                   <?php echo $this->getHelpText('upload_image');?>
                               </div>
                           <?php endif;?>
@@ -149,7 +149,7 @@ $productImageMinSize = $this->getProductOriginalImageMinSizes();
                   <?php $images = $this->getProductImages();?>
                   <?php foreach ($images as $k => $v): ?>
                       <li>
-                        <img width="48" height="48" class="product-image" src="<?php echo $v['u'] ?>" data-id="<?php echo $k; ?>" data-image-id="<?php echo $v['id'] ?>">
+                        <img width="48" height="48" class="product-image" src="<?php echo $v['u'] ?>" data-id="<?php echo $k; ?>" data-image-id="<?php echo $v['id'] ?>" alt="">
                       </li>
                   <?php endforeach ?>
                   </ul>
@@ -164,7 +164,7 @@ $productImageMinSize = $this->getProductOriginalImageMinSizes();
                   <?php if ($colors): ?>
                       <?php foreach($colors as $color): ?>
                           <?php if (isset($config['images'][$color['option_id']])):?>
-                              <span class="color-btn <?php if ($color['option_id'] == $config['default_color']) echo 'selected'?>" color_id="<?php echo $color['option_id']?>" <?php if ($color['image']):?>style="background-image: url(<?php echo $color['image']; ?>); background-position: 50% 50%; background-repeat: no-repeat no-repeat"<?php endif;?>><?php if (!$color['image']): echo $color['value']; endif;?></span>
+                              <span class="color-btn <?php if ($color['option_id'] == $config['default_color']) echo 'selected'?>" data-color_id="<?php echo $color['option_id']?>" <?php if ($color['image']):?>style="background-image: url(<?php echo $color['image']; ?>); background-position: 50% 50%; background-repeat: no-repeat no-repeat"<?php endif;?>><?php if (!$color['image']): echo $color['value']; endif;?></span>
                           <?php endif;?>
                       <?php endforeach;?>
                   <?php endif;?>

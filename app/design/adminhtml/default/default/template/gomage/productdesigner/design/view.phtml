@@ -15,22 +15,42 @@
 <?php if (!$_collectionSize): ?>
     <div class="message"><?php echo $this->__('You have no designed products') ?></div>
 <?php else: ?>
-    <?php $i=0; foreach ($_imagesCollection as $_image): ?>
-        <?php if ($i++%$_columnCount==0): ?>
+    <div style="overflow: hidden; padding-bottom: 25px;">
+        <?php $i=0; foreach ($_imagesCollection as $_image): ?>
+            <?php if ($i++%$_columnCount==0): ?>
             <ul class="products-grid">
-        <?php endif ?>
-        <li class="item<?php if(($i-1)%$_columnCount==0): ?> first<?php elseif($i%$_columnCount==0): ?> last<?php endif; ?>" style="float: left">
-            <img src="<?php echo $this->getImage($_image, 360); ?>" width="360" height="360"/>
-            <div class="actions" style="text-align: center">
-                <button title="<?php echo $this->__('Download Image');?>" type="button" onclick="downloadImage('<?php echo $this->getDownloadUrl($_image->getId())?>')">
-                    <span><span><span><?php echo $this->__('Download Image');?></span></span></span>
-                </button>
+            <?php endif ?>
+            <li class="item<?php if(($i-1)%$_columnCount==0): ?> first<?php elseif($i%$_columnCount==0): ?> last<?php endif; ?>" style="float: left; clear:left; margin:0 0 20px">
+                <img src="<?php echo $this->getImage($_image, 500); ?>" width="600" height="600" alt="" title=""/>
+                <div class="actions" style="text-align: center">
+                    <button title="<?php echo $this->__('Download Image');?>" type="button" onclick="downloadImage('<?php echo $this->getDownloadUrl($_image->getId())?>')">
+                        <span><span><span><?php echo $this->__('Download Image');?></span></span></span>
+                    </button>
+                </div>
+            </li>
+            <?php if ($i%$_columnCount==0 || $i==$_collectionSize): ?>
+                </ul>
+            <?php endif ?>
+        <?php endforeach ?>
+    </div>
+    <?php if ($this->getDesign() && ($comment = $this->getDesign()->getComment())): ?>
+        <div class="entry-edit">
+            <div class="entry-edit-head">
+                <h4 class="icon-head head-edit-form fieldset-legend"><?php echo $this->__('Additional Instructions');?></h4>
             </div>
-        </li>
-        <?php if ($i%$_columnCount==0 || $i==$_collectionSize): ?>
-            </ul>
-        <?php endif ?>
-    <?php endforeach ?>
+            <div class="fieldset fieldset-wide">
+                <table cellspacing="0" class="form-list">
+                    <tbody>
+                    <tr>
+                        <td class="value">
+                            <textarea style="height:7.5em" name="comment" class="textarea" rows="2" cols="15" disabled="disabled"><?php echo $comment; ?></textarea>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    <?php endif;?>
     <script type="text/javascript">
         function downloadImage(url) {
             location.href = url;

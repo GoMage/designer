@@ -49,6 +49,7 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
             $this->_redirectReferer();
         }
         $this->loadLayout();
+        $this->getLayout()->getBlock('head')->setTitle(Mage::getStoreConfig('design/head/default_title'));
         $this->renderLayout();
     }
 
@@ -168,20 +169,38 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
 
     public function uploadImagesAction()
     {
-        $files = @$_FILES['filesToUpload'];
-        if (is_array($files)) {
-            $files = $this->prepareFilesArray($files);
-            $sessionId = $this->getSessionId();
-            $customerId = (int) $this->_getCustomerSession()->getCustomerId();
+        $this->loadLayout();
+        $block = $this->getLayout()->getBlock('uploadedImages');
+        $baseMediaPath = Mage::getSingleton('gmpd/uploadedImage_config')->getBaseMediaPath();
+        $allowedFormatsString = Mage::getStoreConfig('gmpd/upload_image/format');
+        $maxUploadFileSize = Mage::getStoreConfig('gmpd/upload_image/size');
+        $allowedFormats = explode(',', $allowedFormatsString);
+        $sessionId = $this->getSessionId();
+        $customerId = (int) $this->_getCustomerSession()->getCustomerId();
+        $uploadedFilesCount = 0;
+        $errors = array();
 
-            $baseMediaPath = Mage::getSingleton('gmpd/uploadedImage_config')->getBaseMediaPath();
-            $allowedFormats = Mage::getStoreConfig('gmpd/upload_image/format');
-            $allowedFormats = explode(',', $allowedFormats);
+        try {
+            if (!isset($_FILES['filesToUpload'])) {
+                throw new Exception(Mage::helper('designer')->__('Please, select files for upload'));
+            }
+            $files = $this->prepareFilesArray($_FILES['filesToUpload']);
             foreach ($files as $file) {
-                $imageExtension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-                if (!in_array($imageExtension, $allowedFormats)) {
+                if (!$file['name']) {
                     continue;
                 }
+                if ($file['error'] === UPLOAD_ERR_INI_SIZE || $file['error'] === UPLOAD_ERR_FORM_SIZE
+                    || $file['size'] > $maxUploadFileSize * 1024 * 1024) {
+                    $errors['size'] = Mage::helper('designer')->__('You can not upload files larger than %d MB', $maxUploadFileSize);
+                    continue;
+                }
+
+                $imageExtension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+                if (!in_array($imageExtension, $allowedFormats)) {
+                    $errors['type'] = Mage::helper('designer')->__('Cannot upload the file. The format is not supported. Supported file formats are: %s', $allowedFormatsString);
+                    continue;
+                }
+
                 $fileName = substr(sha1(microtime()), 0, 20) . $this->getConvertHelper()->format($file['name']);
                 $fileDir = '/' . ($customerId ? $customerId : $sessionId) . '/';
                 $destinationDir = $baseMediaPath . $fileDir;
@@ -199,13 +218,23 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
                     $uploadImage = Mage::getModel('gmpd/uploadedImage');
                     $uploadImage->setData($imageData);
                     $uploadImage->save();
+                    $uploadedFilesCount++;
                 }
             }
 
-            $this->loadLayout();
-            $content = preg_replace('/\t+|\n+|\s{2,}/', '', $this->getLayout()->getBlock('uploadedImages')->toHtml());
-            $this->getResponse()->setBody($content);
+            if (!empty($errors)) {
+                throw new Exception(implode("\n", $errors));
+            }
+            if ($uploadedFilesCount == 0) {
+                throw new Exception(Mage::helper('designer')->__('Please, select files for upload'));
+            }
+
+        } catch (Exception $e) {
+            $block->setError($e->getMessage());
         }
+
+        $content = preg_replace('/\t+|\n+|\s{2,}/', '', $block->toHtml());
+        $this->getResponse()->setBody($content);
     }
 
     public function saveDesignAction()
@@ -254,6 +283,7 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
     {
         $filesArray = array();
         foreach ($files as $key => $values) {
+
             foreach ($values as $valueKey => $value) {
                 $filesArray[$valueKey][$key] = $value;
             }

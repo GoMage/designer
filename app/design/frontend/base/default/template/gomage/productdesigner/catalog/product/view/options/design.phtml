@@ -36,30 +36,29 @@
                         id="design_option"
                         value="<?php echo $_option->getValue(); ?>"
                         price="<?php echo $_option->getPrice(); ?>"
-                        <?php if ($_option->getValue()): ?>checked="true"<?php endif;?>
-                    >
+                        <?php if ($_option->getValue()): ?>checked="checked"<?php endif;?>/>
                     <span class="label">
                         <label for="design_option">Design <span class="price-notice">+<?php echo $this->helper('core')->currencyByStore($_option->getPrice(), null, true);?></span></label>
                     </span>
                 </li>
             </ul>
         </div>
+        <script type="text/javascript">
+            function reloadPrice()
+            {
+                var elm = $('design_option');
+                var priceConfig = <?php echo $_option->getPriceConfig();?>;
+                if (elm.checked) {
+                    var curConfig = priceConfig;
+                } else {
+                    var curConfig = {price: 0};
+                }
+                if (optionsPrice != 'undefined') {
+                    optionsPrice.addCustomPrices('design', curConfig);
+                    optionsPrice.reload();
+                }
+            }
+            document.observe("dom:loaded", reloadPrice);
+        </script>
     </dd>
-    <script type="text/javascript">
-    function reloadPrice()
-    {
-        var elm = $('design_option');
-        var priceConfig = <?php echo $_option->getPriceConfig();?>;
-        if (elm.checked) {
-            var curConfig = priceConfig;
-        } else {
-            var curConfig = {price: 0};
-        }
-        if (optionsPrice != 'undefined') {
-            optionsPrice.addCustomPrices('design', curConfig);
-            optionsPrice.reload();
-        }
-    }
-    document.observe("dom:loaded", reloadPrice);
-    </script>
 <?php endif;?>

@@ -38,21 +38,7 @@ class GoMage_ProductDesigner_Block_Customer_Designs extends Mage_Catalog_Block_P
 
     protected $_pagerBlock;
 
-    protected $_columnCount = 4;
-
-    /**
-     * Return column count
-     *
-     * @return int|mixed
-     */
-    public function getColumnCount()
-    {
-        if ($this->hasData('column_count')) {
-            return $this->getData('column_count');
-        }
-
-        return $this->getData($this->_columnCount);
-    }
+    protected $_defaultColumnCount = 4;
 
     /**
      * Return design collection
@@ -93,7 +79,9 @@ class GoMage_ProductDesigner_Block_Customer_Designs extends Mage_Catalog_Block_P
     public function getPager()
     {
         if (is_null($this->_pagerBlock)) {
-            $this->_pagerBlock = $this->getChild('pager');
+            $pager = $this->getChild('pager');
+            $pager->setAvailableLimit(array(12=>12, 24=>24, 48=>48));
+            $this->_pagerBlock = $pager;
         }
         return $this->_pagerBlock;
     }

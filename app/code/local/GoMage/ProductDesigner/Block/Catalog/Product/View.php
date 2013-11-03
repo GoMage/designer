@@ -42,14 +42,34 @@ class GoMage_ProductDesigner_Block_Catalog_Product_View extends Mage_Catalog_Blo
     public function hasOptions()
     {
         $hasOption = $this->getProduct()->getTypeInstance(true)->hasOptions($this->getProduct());
-        $design = Mage::helper('designer')->getProductDesign($this->getProduct());
-        $hasDesign = in_array($this->getProduct()->getTypeId(), Mage::helper('designer')->getAllowedProductTypes())
-            && $design && $design->getId();
 
-        if ($hasOption || $hasDesign) {
+        if ($hasOption || $this->hasDesign()) {
             return true;
         }
 
         return false;
+    }
+
+    public function hasDesign()
+    {
+        $design = Mage::helper('designer')->getProductDesign($this->getProduct());
+        return in_array($this->getProduct()->getTypeId(), Mage::helper('designer')->getAllowedProductTypes())
+            && $design && $design->getId();
+    }
+
+    public function getDesignUrl()
+    {
+        $product = $this->getProduct();
+        $params = array('_query' => array('id' => $product->getId()));
+        return $this->getUrl('designer', $params);
+    }
+
+    public function addToCartDisabled()
+    {
+        if ($this->hasDesign() || !$this->getProduct()->getEnableProductDesigner()) {
+            return false;
+        }
+
+        return $this->getProduct()->getEnableProductDesigner() && Mage::getStoreConfig('gmpd/general/add_to_cart_button');
     }
 }

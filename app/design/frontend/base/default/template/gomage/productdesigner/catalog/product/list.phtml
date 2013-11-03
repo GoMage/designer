@@ -8,6 +8,7 @@
 <?php
     $_productCollection=$this->getLoadedProductCollection();
     $_helper = $this->helper('catalog/output');
+    $_disabledAddToCart = Mage::getStoreConfig('gmpd/general/add_to_cart_button');
 ?>
 <?php if(!$_productCollection->count()): ?>
 <p class="note-msg"><?php echo $this->__('There are no products matching the selection.') ?></p>
@@ -33,27 +34,14 @@
                     <?php echo $this->getPriceHtml($_product, true) ?>
                     <?php if($_product->isSaleable()): ?>
                         <p>
-                            <button type="button" title="<?php echo $this->__('Add to Cart') ?>" class="button btn-cart" onclick="setLocation('<?php echo $this->getAddToCartUrl($_product) ?>')"><span><span><?php echo $this->__('Add to Cart') ?></span></span></button>
-                            <?php
-                            //@todo add this attribute in collection. No necessity to load it for each product in cycle
-                            /* GoMage Product Designer code */
-                            $isEnabled = Mage::getResourceModel('catalog/product')
-                                ->getAttributeRawValue(
-                                    $_product->getId(),
-                                    'enable_product_designer',
-                                    Mage::app()->getStore()->getId()
-                                );
-                            ?>
-                            <?php if ($isEnabled == 1): ?>
-                            <button type="button" title="<?php echo Mage::helper('designer')->__('CUSTOMIZE') ?>" class="button btn-cart" onclick="setLocation('/designer?id=<?php echo $_product->getId() ?>')">
-                                <span>
-                                    <span><?php echo $this->__('CUSTOMIZE') ?></span>
-                                </span>
+                            <?php if (!$_product->getEnableProductDesigner() || !$_disabledAddToCart):?>
+                                <button type="button" title="<?php echo $this->__('Add to Cart') ?>" class="button btn-cart" onclick="setLocation('<?php echo $this->getAddToCartUrl($_product) ?>')"><span><span><?php echo $this->__('Add to Cart') ?></span></span></button>
+                            <?php endif;?>
+                            <?php if ($_product->getEnableProductDesigner()): ?>
+                            <button type="button" title="<?php echo Mage::helper('designer')->__('Design It') ?>" class="button btn-cart" onclick="setLocation('/designer?id=<?php echo $_product->getId() ?>')">
+                                <span><span><?php echo $this->__('Design It') ?></span></span>
                             </button>
                             <?php endif ?>
-                            <?php
-                                /* END GoMage Product Designer code */
-                            ?>
                         </p>
                     <?php else: ?>
                         <p class="availability out-of-stock"><span><?php echo $this->__('Out of stock') ?></span></p>
@@ -97,28 +85,16 @@
                 <div style="clear:both"></div>
                 <div class="actions">
                     <?php if($_product->isSaleable()): ?>
-                        <button type="button" title="<?php echo $this->__('Add to Cart') ?>" class="button btn-cart" onclick="setLocation('<?php echo $this->getAddToCartUrl($_product) ?>')"><span><span><?php echo $this->__('Add to Cart') ?></span></span></button>
-                        <?php
-                        /* GoMage Product Designer code */
-                        $isEnabled = Mage::getResourceModel('catalog/product')
-                            ->getAttributeRawValue(
-                                $_product->getId(),
-                                'enable_product_designer',
-                                Mage::app()->getStore()->getId()
-                            );
-                        ?>
-                        <?php if ($isEnabled == 1): ?>
-                        <p>
-                            <button type="button" title="<?php echo Mage::helper('designer')->__('CUSTOMIZE') ?>" class="button btn-cart" onclick="setLocation('/designer?id=<?php echo $_product->getId() ?>')">
-                                <span>
-                                    <span><?php echo $this->__('CUSTOMIZE') ?></span>
-                                </span>
+                        <?php if (!$_product->getEnableProductDesigner() || !$_disabledAddToCart):?>
+                            <button type="button" title="<?php echo $this->__('Add to Cart') ?>" class="button btn-cart" onclick="setLocation('<?php echo $this->getAddToCartUrl($_product) ?>')"><span><span><?php echo $this->__('Add to Cart') ?></span></span></button>
+                        <?php endif;?>
+                        <?php if ($_product->getEnableProductDesigner()): ?>
+                        <div class="gpd-button">
+                            <button type="button" title="<?php echo Mage::helper('designer')->__('Design It') ?>" class="button btn-cart" onclick="setLocation('/designer?id=<?php echo $_product->getId() ?>')">
+                                <span><span><?php echo $this->__('Design It') ?></span></span>
                             </button>
-                        </p>
+                        </div>
                         <?php endif ?>
-                        <?php
-                          /* END GoMage Product Designer code */
-                        ?>
                     <?php else: ?>
                         <p class="availability out-of-stock"><span><?php echo $this->__('Out of stock') ?></span></p>
                     <?php endif; ?>

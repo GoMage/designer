@@ -26,6 +26,7 @@
                 <price_for_text>0</price_for_text>
                 <price_for_image>0</price_for_image>
                 <show_comment>1</show_comment>
+                <default_tab>design</default_tab>
             </general>
             <navigation>
                 <enabled>1</enabled>
@@ -50,17 +51,11 @@
             <upload_image>
                 <enabled>1</enabled>
                 <copyright>1</copyright>
-                <format>jpg,jpeg</format>
+                <format>png</format>
+                <size>1</size>
                 <max_size_width>500</max_size_width>
                 <max_size_height>700</max_size_height>
             </upload_image>
-            <share>
-                <email>1</email>
-                <email_sender>general</email_sender>
-                <facebook>1</facebook>
-                <twitter>1</twitter>
-                <print>1</print>
-            </share>
         </gmpd>
     </default>
     <frontend>
@@ -89,6 +84,14 @@
                     </add_design_to_quote_item>
                 </observers>
             </sales_quote_add_item>
+            <catalog_product_collection_load_before>
+                <observers>
+                    <add_product_design_enabled>
+                        <class>gmpd/observer</class>
+                        <method>addDesignEnabledToProducts</method>
+                    </add_product_design_enabled>
+                </observers>
+            </catalog_product_collection_load_before>
         </events>
     </frontend>
     <admin>
@@ -185,7 +188,6 @@
             <adminhtml>
                 <rewrite>
                     <catalog_product_helper_form_gallery_content>GoMage_ProductDesigner_Block_Adminhtml_Catalog_Product_Helper_Form_Gallery_Content</catalog_product_helper_form_gallery_content>
-                    <catalog_product_edit_tabs>GoMage_ProductDesigner_Block_Adminhtml_Catalog_Product_Edit_Tabs</catalog_product_edit_tabs>
                     <catalog_product_attribute_edit_tab_options>GoMage_ProductDesigner_Block_Adminhtml_Catalog_Product_Attribute_Edit_Tab_Options</catalog_product_attribute_edit_tab_options>
                 </rewrite>
             </adminhtml>
