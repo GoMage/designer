@@ -18,7 +18,7 @@ $sizes = $this->getFontSizes();
 </style>
 <div>
     <div class="pd-element-wrapper">
-        <textarea rows="2" cols="20" id="add_text_textarea" class="pd-textarea"></textarea>
+        <input type="text" id="add_text_textarea" class="pd-textarea"/>
     </div>
     <div class="pd-element-wrapper">
         <select class="font-picker" id="font-selector">
@@ -53,7 +53,7 @@ $sizes = $this->getFontSizes();
                 <legend><?php echo $this->__('Curved Text'); ?></legend>
                 <div class="pd-element-wrapper">
                     <label for="rx_range"><?php echo $this->__('Radius'); ?>: </label>
-                    <input type="range" value="0" id="rx_range" min='-40' max='40' step="0.2" style="width: 250px;">
+                    <input type="range" value="0" id="curve_spacing" min='-40' max='40' step="0.2" style="width: 250px;">
                 </div>
             </fieldset>
             <fieldset class="shadow-config" style="display: none;">

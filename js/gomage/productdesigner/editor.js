@@ -25,18 +25,6 @@ var $ucfirst = function(str) {
     var f = str.charAt(0).toUpperCase();
     return f + str.substr(1);
 };
-var $merge = function(object1, object2) {
-    if(typeof object1 !== 'array' && typeof object1 !== 'object') {
-        return;
-    }
-    if(typeof object2 !== 'array' && typeof object2 !== 'object') {
-        return;
-    }
-    for(var attribute in object2) {
-        object1[attribute] = object2[attribute];
-    }
-    return object1;
-}
 
 function getUrlParams() {
     var paramString = window.location.search.substr(1);
@@ -50,25 +38,6 @@ function getUrlParams() {
     return params;
 }
 
-$c = function(name, attrs, css) {
-        var attrs = attrs || {};
-        var css = css || {};
-        var el = document.createElement(name);
-
-        for (var k in attrs) {
-            if (attrs.hasOwnProperty(k)) {
-                el.setAttribute(k, attrs[k]);
-            }
-        }
-
-        for (var k in css) {
-            if (css.hasOwnProperty(k)) {
-                el.style[k] = css[k];
-            }
-        }
-
-        return el;
-    };
 /**
  * Create module namespace if not defined
  */
@@ -289,7 +258,7 @@ GoMage.ProductDesigner.prototype = {
             if(tabContentElement) {
                 if (buttonId == 'pd_add_text') {
                     var event = document.createEvent('Event');
-                    event.initEvent('addTextTabShow', true, true);
+                    event.initEvent('textTabShow', true, true);
                     document.dispatchEvent(event);
                 }
                 tabContentElement.siblings().invoke('setStyle', {display:'none'});
@@ -309,7 +278,7 @@ GoMage.ProductDesigner.prototype = {
         this.container.style.background = 'url(' + prod.u +') no-repeat center';
 
         if(typeof this.containerLayers[prod.id] === 'undefined') {
-            var designArea = $c('div');
+            var designArea = document.createElement('div');
             designArea.setAttribute('class', 'pd-design-area');
             designArea.setAttribute('id', 'designArea-'+prod.id);
             designArea.style.position   = 'absolute';
@@ -317,7 +286,7 @@ GoMage.ProductDesigner.prototype = {
             designArea.style.marginTop  = this.calculateOffsetByY(prod) + 'px';
             designArea.style.zIndex     = '1000';
 
-            var canvas = $c('canvas');
+            var canvas = document.createElement('canvas');
             canvas.setAttribute('class', 'pd-canvas-pane');
             canvas.setAttribute('width', prod.w);
             canvas.setAttribute('height', prod.h);
@@ -337,9 +306,6 @@ GoMage.ProductDesigner.prototype = {
             this.canvas.selection = false;
         }
         this.currentProd = prod.id;
-        var event = document.createEvent('Event');
-        event.initEvent('addTextTabShow', true, true);
-        document.dispatchEvent(event);
     },
 
     calculateOffsetByY : function(prod) {
@@ -1332,7 +1298,8 @@ GoMage.Designer.prototype = {
             fabric.Image.fromURL(img.src, function(obj) {
                 obj.set({
                     width: 64,  // move to config
-                    height: 64 // move to config
+                    height: 64, // move to config
+                    tab: 'design'
                 });
 
                 var cmd = new InsertCommand(this.productDesigner, obj, true);
@@ -1411,16 +1378,17 @@ GoMage.Designer.prototype = {
 GoMage.TextEditor = function(defaultFontFamily, defaultFontSize) {
     this.productDesigner = window.w;
     this.colorPicker = null;
-    this.curvedTextOpt = {
-        radiusX : 0,
-        radiusY : 100,
-        startAngle : 1,
-        endAngle : 2.1
-    };
     this.defaultTextOpt = {
+        text: '',
         fontFamily: defaultFontFamily,
-        fontsize: defaultFontSize
+        fontSize: defaultFontSize,
+        strokeWidth: 0.00001,
+        textShadowOffsetX: 0,
+        textShadowOffsetY: 0,
+        textShadowBlur: 0,
+        curved: 0
     };
+
     this.fontSelector = $('font-selector');
     this.addTextTextarea = $('add_text_textarea');
     this.addTextButton = $('add_text_button');
@@ -1434,6 +1402,21 @@ GoMage.TextEditor = function(defaultFontFamily, defaultFontSize) {
     this.btnOutlineText = $('outline-button');
     this.addTextColorsPanel = $('add_text_colors_panel');
     this.outlineStrokeWidthRange = $('outline_range');
+    this.shadowOffsetX = $('shadow_x_range'),
+    this.shadowOffsetY = $('shadow_y_range'),
+    this.shadowBlur = $('shadow_blur'),
+    this.curved = $('curve_spacing');
+
+    this.fieldsMap = {
+        text: this.addTextTextarea,
+        fontFamily: this.fontSelector,
+        fontSize: this.fontSizeSelector,
+        strokeWidth: this.outlineStrokeWidthRange,
+        textShadowOffsetX: this.shadowOffsetX,
+        textShadowOffsetY: this.shadowOffsetY,
+        textShadowBlur: this.shadowBlur,
+        curved: this.curved
+    }
 
     this.observeTextTabShow();
     this.initColorPickers();
@@ -1451,43 +1434,6 @@ GoMage.TextEditor = function(defaultFontFamily, defaultFontSize) {
 };
 
 GoMage.TextEditor.prototype = {
-    observeTextTabShow: function() {
-        return;
-        document.observe('addTextTabShow', function(e){
-            var textObj = e.obj
-            if (textObj) {
-                this.addTextTextarea.value = textObj.text;
-                if (textObj.fontFamily) {
-                    this.fontSelector.value = textObj.fontFamily;
-                }
-                if (textObj.fontSize) {
-                    this.fontSizeSelector.value = textObj.fontSize;
-                }
-                if (textObj.strokeWidth) {
-                    this.outlineStrokeWidthRange.value = textObj.strokeWidth;
-                }
-                if (textObj.textShadowParams.x) {
-                    $('shadow_x_range').value = textObj.textShadowParams.x;
-                }
-                if (textObj.textShadowParams.y) {
-                    $('shadow_y_range').value = textObj.textShadowParams.y;
-                }
-                if (textObj.textShadowParams.blur) {
-                    $('shadow_blur').value = textObj.textShadowParams.blur;
-                }
-            } else {
-                this.addTextTextarea.value = '';
-                this.fontSelector.value = this.defaultTextOpt.fontFamily;
-                this.fontSizeSelector.value = this.defaultTextOpt.fontsize;
-                this.outlineStrokeWidthRange.value = this.outlineStrokeWidthRange.getAttribute('min');
-                $('shadow_x_range').value = 0;
-                $('shadow_y_range').value = 0;
-                $('shadow_blur').value = 0;
-            }
-
-        }.bind(this));
-    },
-
     initColorPickers: function() {
         var colorPickers = $$('.color-picker');
         colorPickers.each(function(element) {
@@ -1512,7 +1458,9 @@ GoMage.TextEditor.prototype = {
                         break;
                     }
                     case 'strokeStyle': {
-                        this.setOutline({strokeStyle : e.hex});
+                        var cmd = new TransformCommand(this.productDesigner.canvas, obj, {strokeStyle : e.hex});
+                        cmd.exec();
+                        this.productDesigner.history.push(cmd);
                         break;
                     }
                 }
@@ -1568,7 +1516,7 @@ GoMage.TextEditor.prototype = {
                 fontSize : parseInt(this.fontSizeSelector.value),
                 fontFamily : this.fontSelector.value
             };
-            var textObject = new fabric.CustomText2(text, textObjectData);
+            var textObject = new fabric.CustomText(text, textObjectData);
             var cmd = new InsertCommand(this.productDesigner, textObject, true);
             cmd.exec();
             this.productDesigner.history.push(cmd);
@@ -1680,17 +1628,16 @@ GoMage.TextEditor.prototype = {
     },
 
     observeCurvedTextControls: function(){
-        var rxRangeInput = $('rx_range');
-        if (!rxRangeInput) {
+        if (!this.curved) {
             return;
         }
-        rxRangeInput.observe('change', function(e) {
+        this.curved.observe('change', function(e) {
             var elem = e.target || e.srcElement;
             var obj = this.productDesigner.canvas.getActiveObject();
             if (obj && obj.type == 'custom_text') {
                 var cmd = new TransformCommand(this.productDesigner.canvas, obj, {curved: parseFloat(elem.value)});
                 cmd.exec();
-                this.productDesigner.history.push(cmd);
+                this._addToHistory(cmd, 'curved', 8);
             }
         }.bind(this));
     },
@@ -1706,9 +1653,9 @@ GoMage.TextEditor.prototype = {
     },
 
     observeShadowControls: function(){
-        var shadowOffsetY =  $('shadow_y_range');
-        var shadowOffsetX =  $('shadow_x_range');
-        var shadowBlur =  $('shadow_blur');
+        var shadowOffsetY =  this.shadowOffsetY;
+        var shadowOffsetX =  this.shadowOffsetX;
+        var shadowBlur =  this.shadowBlur;
 
         if (!shadowOffsetY || !shadowOffsetX || !shadowBlur) {
             return;
@@ -1747,7 +1694,7 @@ GoMage.TextEditor.prototype = {
 
             var cmd = new TransformCommand(this.productDesigner.canvas, obj, {textShadow : shadowParams});
             cmd.exec();
-            this.productDesigner.history.push(cmd);
+            this._addToHistory(cmd, 'textShadow', {textShadowOffsetX: 5, textShadowOffsetY: 5, textShadowBlur: 5})
         }
     },
 
@@ -1766,25 +1713,60 @@ GoMage.TextEditor.prototype = {
             return;
         }
         this.outlineStrokeWidthRange.observe('change', function(e) {
-            if (this.timeout != 'undefined' || this.timeout != null) {
-                clearTimeout(this.timeout);
+            var elem = e.target || e.srcElement;
+            var obj = this.productDesigner.canvas.getActiveObject();
+            if (!obj || obj.type != 'custom_text') {
+                return;
             }
-            this.timeout = setTimeout(function(){
-                var elem = e.target || e.srcElement;
-                this.setOutline({strokeWidth: parseFloat(elem.value)});
-            }.bind(this), 500);
-
+            var cmd = new TransformCommand(this.productDesigner.canvas, obj, {strokeWidth: parseFloat(elem.value)});
+            cmd.exec();
+            this._addToHistory(cmd, 'strokeWidth', 0.4);
         }.bind(this));
     },
 
-    setOutline: function(strokeData){
-        var obj = this.productDesigner.canvas.getActiveObject();
-        if (!obj || obj.type != 'custom_text') {
+    observeTextTabShow: function() {
+        document.observe('textTabShow', function(e){
+            var textObj = e.obj || null;
+            this._setInputValues(textObj);
+        }.bind(this));
+    },
+
+    _setInputValues: function(textObj) {
+        for (var property in this.fieldsMap) {
+            if (this.fieldsMap.hasOwnProperty(property) && this.fieldsMap[property]) {
+                var field = this.fieldsMap[property];
+                field.value = textObj ? textObj[property] : this.defaultTextOpt[property];
+            }
+        }
+    },
+
+    _addToHistory: function(cmd, property, range) {
+        lastHistoryCmd = this.productDesigner.history.last()
+        if (!lastHistoryCmd.type || lastHistoryCmd.type != cmd.type) {
+            this.productDesigner.history.push(cmd);
             return;
         }
-        var cmd = new TransformCommand(this.productDesigner.canvas, obj, strokeData);
-        cmd.exec();
-        this.productDesigner.history.push(cmd);
+        var lastState = lastHistoryCmd.state;
+        if (!lastState.hasOwnProperty(property)) {
+            this.productDesigner.history.push(cmd);
+        } else {
+            if (typeof lastState[property] == 'object') {
+                var stateChanged = false;
+                for (var k in lastState[property]) {
+                    if (range.hasOwnProperty(k) && (Math.abs(cmd.state[property][k] - lastState[property][k]) > range[k])) {
+                        stateChanged = true;
+                    }
+                }
+
+                if (stateChanged) {
+                    this.productDesigner.history.push(cmd);
+                }
+            } else if (typeof lastState[property] == 'string') {
+                if (Math.abs(cmd.state[property] - lastState[property]) > range) {
+                    this.productDesigner.history.push(cmd);
+                }
+            }
+        }
     }
 };
 
@@ -1884,7 +1866,8 @@ GoMage.ImageUploader.prototype = {
             fabric.Image.fromURL(img.src, function(obj) {
                 obj.set({
                     width: 64,  // move to config
-                    height: 64 // move to config
+                    height: 64, // move to config
+                    tab: 'upload'
                 });
 
                 var cmd = new InsertCommand(this.productDesigner, obj, true);
@@ -1949,7 +1932,6 @@ var ColorPicker = function(canvasObj) {
     });
 };
 
-/** @see http://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb */
 ColorPicker.prototype = {
     rgbToHex : function(r, g, b) {
         return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
@@ -1962,8 +1944,7 @@ ColorPicker.prototype = {
 // ------------------------------------------------------
 // Extending Fabric.js classes
 // ------------------------------------------------------
-
-fabric.CustomText2 = fabric.util.createClass(fabric.Group, {
+fabric.CustomText = fabric.util.createClass(fabric.Group, {
     type: 'custom_text',
     text: '',
     fontFamily : 'Arial',
@@ -1980,6 +1961,7 @@ fabric.CustomText2 = fabric.util.createClass(fabric.Group, {
     strokeWidth : 0.00001,
     hasDecoration: false,
     verticalOutput: false,
+    curved: 0,
 
     delegatedProperties: {
         fontFamily: true,
@@ -2029,14 +2011,22 @@ fabric.CustomText2 = fabric.util.createClass(fabric.Group, {
         var objects = this.getObjects();
         var count = objects.length;
         var offset = 0;
-        var groupHeight = 0;
         if (!count) {
             return;
         }
-        for (i = 0; i < count; i++) {
+        var isZeroSpacing = (this.curved >=0 && this.curved < 5) || (this.curved <=0 && this.curved > -5) ? true : false;
+        var multiplier = this.curved < 0 ? 1 : -1;
+        var spacing = Math.abs(this.curved);
+        var align = (spacing / 2) * (count - 1);
+
+        if (!this.curvedRadius) {
+            this.curvedRadius = this.getWidth();
+        }
+
+        for (var i = 0; i < count; i++) {
             if (objects[i].type != 'text') continue;
 
-            for (k in this.delegatedProperties) {
+            for (var k in this.delegatedProperties) {
                 var value = this.get(k);
                 if (typeof objects[i]['set' + $ucfirst(k)] == 'function') {
                     objects[i]['set' + $ucfirst(k)](value);
@@ -2045,14 +2035,40 @@ fabric.CustomText2 = fabric.util.createClass(fabric.Group, {
                 }
             }
             var size = this.objects[i].fontSize;
-            this.objects[i].top  = gt;
-            this.objects[i].left = gl + size + offset;
+            if (isZeroSpacing) {
+                var curAngle = 0;
+                if (this.verticalOutput) {
+                    var top  = gt + size + offset;
+                    var left = gl;
+                } else {
+                    var top  = gt;
+                    var left = gl + size + offset;
+                }
+            } else {
+                var curAngle = (multiplier * -i * parseInt(spacing, 10)) + (multiplier * align);
+                if (this.verticalOutput) {
+                    curAngle+=90;
+                }
+                var angleRadians = curAngle * (Math.PI / 180);
+                var top = multiplier * Math.cos(angleRadians) * this.curvedRadius;
+                var left = multiplier * -Math.sin(angleRadians) * this.curvedRadius;
+            }
+            this.objects[i].top = top;
+            this.objects[i].left = left;
+            this.objects[i].setAngle(curAngle);
             this.objects[i].set('padding', 0);
             this.objects[i].setHeight(this.objects[i].fontSize);
             offset += size;
         }
 
-        this._setUnderlineDecoration();
+        if (!this.verticalOutput && isZeroSpacing) {
+            this._setUnderlineDecoration();
+        } else if (this.hasDecoration) {
+            var line = objects[count-1];
+            if (line.type == 'line') {
+                this.remove(line);
+            }
+        }
 
         this.set('padding', 0.05 * this.fontSize);
         this._calcBounds();
@@ -2069,12 +2085,15 @@ fabric.CustomText2 = fabric.util.createClass(fabric.Group, {
         var count = objects.length;
 
         if (this.textDecoration == 'underline') {
-            var lastLetterIndex = this.hasDecoration ? count - 2 : count - 1;
+            var lastLetterIndex = objects[count-1].type == 'line' ? count - 2 : count - 1;
             var x1 = objects[0].left - objects[0].fontSize / 2,
                 x2 = objects[lastLetterIndex].left + objects[lastLetterIndex].fontSize / 2,
                 y = objects[0].top + (objects[0].getHeight() / 2) + (this.fontSize / 4);
+            if (this.textShadowOffsetY > 0) {
+                y += this.textShadowOffsetY;
+            }
 
-            if (!this.hasDecoration) {
+            if ((!this.hasDecoration) || (this.hasDecoration && objects[count-1].type != 'line')) {
                 var line = new fabric.Line([x1, y, x2, y]);
                 this.add(line);
                 this.hasDecoration = true;
@@ -2089,7 +2108,9 @@ fabric.CustomText2 = fabric.util.createClass(fabric.Group, {
             line.setFill(this.color);
         } else if (this.hasDecoration) {
             var line = objects[count-1];
-            this.remove(line);
+            if (line.type == 'line'){
+                this.remove(line);
+            }
             this.hasDecoration = false;
         }
     },
@@ -2126,302 +2147,6 @@ fabric.CustomText2 = fabric.util.createClass(fabric.Group, {
     }
 });
 
-/**
- * fabric.CustomText
- * @parent fabric.Group
- *
- * Added support for:
- * - curved text
- * - vertical output
- */
-fabric.CustomText = fabric.util.createClass(fabric.Group, {
-    type : 'custom_text',
-
-    text : '',
-
-    fontFamily : 'Arial',
-
-    fontWeight : '400',
-
-    fontStyle : '',
-
-    color : 'rgd(255, 255, 255)',
-
-    textDecoration : '',
-
-    fontsize : 16,
-
-    verticalOutput : false,
-    curvedText: false,
-
-    textShadow : '#0000 0px 0px 0px',
-
-    textShadowParams : {color : '#000', x : 0, y : 0, blur : 0},
-
-    strokeStyle : '#000000',
-
-    strokeWidth : 0.05,
-    centerTransform: false,
-    spacing: 0,
-
-    initialize : function(text, options) {
-        this.text = text;
-        this.canvas = w.canvas;
-        if(typeof options === 'undefined') {
-            options = {
-                type : this.type,
-                fontFamily : this.fontFamily,
-                fontWeight : this.fontWeight,
-                fontStyle : this.fontStyle,
-                color : this.color,
-                textDecoration : this.textDecoration,
-                fontsize : this.fontsize,
-                verticalOutput : this.verticalOutput,
-                textShadow : this.textShadow,
-                textShadowParams : this.textShadowParams,
-                strokeStyle : this.strokeStyle,
-                strokeWidth : this.strokeWidth,
-                spacing: 0
-            };
-        }
-        this.callSuper('initialize', this._createGroupFromText(text), options);
-        this.setData(options);
-        options && this.set('name', options.name);
-        options && this.set('id', options.id);
-    },
-
-    setData : function(name, value) {
-        if(typeof name == 'string') {
-            this[name] = value;
-            if(this.getObjects()) {
-                this.forEachObject(function(obj) { obj[name] = value; });
-            }
-        } else if(typeof name == 'array' || typeof name == 'object') {
-            for(var key in name) {
-                this.setData(key, name[key]);
-            }
-        }
-    },
-
-    getData : function() {
-        var data = {};
-        for(key in this) {
-            if(typeof this[key] !== 'function') {
-                data[key] = this[key];
-            }
-        }
-        return data;
-    },
-
-    setFontFamily : function(value) {
-        this.fontFamily = value;
-        this.forEachObject(function(obj) { obj.fontFamily = value; });
-    },
-
-    setStrokeWidth : function(value) {
-        this.strokeWidth = value;
-        this.forEachObject(function(obj) { obj.strokeWidth = value; });
-    },
-
-    setStrokeStyle : function(value) {
-        this.strokeStyle = value;
-        this.forEachObject(function(obj) { obj.strokeStyle = value; });
-    },
-
-    setFontStyle : function(value) {
-        this.fontStyle = value;
-        this.forEachObject(function(obj) { obj.fontStyle = value; });
-    },
-
-    setFontWeight : function(value) {
-        this.fontWeight = value;
-        this.forEachObject(function(obj) { obj.fontWeight = value; });
-    },
-
-    setTextDecoration : function(value) {
-        // TODO: big big troubles with it...
-        this.textDecoration = value;
-        this.forEachObject(function(obj) { obj.textDecoration = value; });
-    },
-
-    setTextShadow : function(conf) {
-        var self = this;
-        this.textShadowParams.color = conf.color || this.textShadowParams.color;
-        this.textShadowParams.x     = conf.x || this.textShadowParams.x;
-        this.textShadowParams.y     = conf.y || this.textShadowParams.y;
-        this.textShadowParams.blur  = conf.blur || this.textShadowParams.blur;
-
-        var p = this.textShadowParams;
-
-        this.textShadow = p.color + ' ' + p.x + 'px ' + p.y + 'px ' + p.blur + 'px';
-        this.forEachObject(function(obj) { obj.textShadow = self.textShadow; });
-    },
-
-    getText : function() {
-        return this.text;
-    },
-
-    setText : function(text) {
-        this.initialize(text);
-        this.text = text;
-        this.setVerticalOutput(this.verticalOutput);
-        this.setCurved();
-    },
-
-    setFontsize : function(value) {
-        this.fontsize = parseInt(value);
-
-        var i  = 0;
-        var l  = this.objects.length;
-        var gl = this.get('left');
-        var gt = this.get('top');
-
-        for (i; i < l; i++) {
-            var obj = this.objects[i].setFontsize(this.fontsize);
-            this.objects[i].top  = gt;
-            this.objects[i].left = gl + (obj.getWidth() * i);
-        }
-
-        this._calcBounds();
-        this._updateObjectsCoords();
-        this.saveCoords();
-
-        this.top  = gt;
-        this.left = gl;
-
-        this.setVerticalOutput(this.verticalOutput);
-        this.setCurved();
-    },
-
-    setColor : function(value) {
-        this.color = value;
-        this.forEachObject(function(obj) { obj.setColor(value); });
-    },
-
-    setCharsInterval : function(value) {
-
-    },
-
-    // Custom methods
-    setVerticalOutput : function(flag) {
-        this.verticalOutput = flag ? true : false;
-
-        var i  = 0;
-        var l  = this.objects.length;
-        var gl = this.get('left');
-        var gt = this.get('top');
-        var p  = 0;
-        var fs = parseInt(this.fontsize);
-
-        if (this.verticalOutput) {
-            p = this.objects[i].getHeight();
-        } else {
-            p = this.objects[i].getWidth();
-        }
-
-        for (i; i < l; i++) {
-            if (this.verticalOutput) {
-                this.objects[i].left = gl;
-                this.objects[i].top  = gt + (p * i)
-            } else {
-                this.objects[i].left = gl + (fs/2) * i ;
-                this.objects[i].top  = gt;
-            }
-            this.objects[i].setAngle(0);
-        }
-
-        this._calcBounds();
-        this._updateObjectsCoords();
-
-        this.top  = gt;
-        this.left = gl;
-        if (this.verticalOutput) {
-            this.curvedRadius = this.getHeight();
-        } else {
-            this.curvedRadius = this.getWidth();
-        }
-        this.setCurved();
-    },
-
-    setCurved : function(spacing) {
-        if (spacing) {
-            this.spacing = spacing;
-        }
-        spacing = spacing ? spacing : this.spacing;
-        var isZeroSpacing = (spacing >=0 && spacing < 5) || (spacing <=0 && spacing > -5) ? true : false;
-        if (isZeroSpacing && !this.isCurvedText) {
-            return;
-        } else if (isZeroSpacing) {
-            this.isCurvedText = false;
-        }
-        if (!this.curvedRadius) {
-            this.curvedRadius = this.getWidth();
-        }
-
-        var gl = this.left;
-        var gt = this.top;
-        var objects = this.getObjects();
-        var multiplier = spacing < 0 ? 1 : -1;
-        var spacing = Math.abs(spacing);
-        var radius = this.curvedRadius;
-        var count = objects.length;
-        var align = (spacing / 2) * (count - 1);
-
-        var fs = parseInt(this.fontsize);
-        for (var i = 0; i < count; i++) {
-            if (isZeroSpacing) {
-                var curAngle = 0;
-                if (this.verticalOutput) {
-                    var left = gl;
-                    var top = gt + (objects[i].getHeight()*i);
-                } else {
-                    var top = gt;
-                    var left = gl+(fs/2) * i;
-                }
-            } else {
-                var curAngle = (multiplier * -i * parseInt(spacing, 10)) + (multiplier * align);
-                if (this.verticalOutput) {
-                    curAngle+=90;
-                }
-                var angleRadians = curAngle * (Math.PI / 180);
-                var top = multiplier * Math.cos(angleRadians) * radius;
-                var left = multiplier * -Math.sin(angleRadians) * radius;
-
-            }
-
-            objects[i].top  = top;
-            objects[i].left = left;
-            objects[i].setAngle(curAngle);
-        }
-
-        this._calcBounds();
-        this._updateObjectsCoords();
-        this.saveCoords();
-
-        this.left = gl;
-        this.top  = gt;
-        this.isCurvedText = true;
-    },
-
-
-
-    _createGroupFromText : function(text) {
-        var t = text.split('');
-        var g = [];
-        var fs = parseInt(this.fontsize);
-
-        for (var i = 0; i < t.length; i++) {
-            var ch = new fabric.Text(t[i], {top : 100, left : (fs / 2) * i, strokeWidth : this.strokeWidth});
-            g.push(ch);
-        }
-
-        return g;
-    }
-
-
-});
-
-
 // ------------------------------------------------------
 // Layers manager
 // ------------------------------------------------------
@@ -2444,13 +2169,17 @@ var LayersManager = function(w) {
         }
         self.active = obj.get('uid');
 
-        if (obj.type == 'image' && this.w.config.isDesignedEnabled) {
-            var tabContentElement = $('pd_add_design-content');
+        if (obj.type == 'image') {
+            if (obj.tab == 'design' && this.w.config.isDesignedEnabled) {
+                var tabContentElement = $('pd_add_design-content');
+            } else if (obj.tab == 'upload' && this.w.config.isUploadImageEnabled) {
+                var tabContentElement = $('pd_add_image-content');
+            }
         } else if (obj.type == 'custom_text' && this.w.config.isTextEnabled) {
             var tabContentElement = $('pd_add_text-content');
             var event = document.createEvent('Event');
             event.obj = obj;
-            event.initEvent('addTextTabShow', true, true);
+            event.initEvent('textTabShow', true, true);
             document.dispatchEvent(event);
         }
         if(tabContentElement) {
@@ -2576,6 +2305,11 @@ History.prototype = {
         this.redoStack = [];
     },
 
+    last : function() {
+        var stack = this.undoStack;
+        return stack[stack.length - 1];
+    },
+
     fireChangeEvent : function() {
         var event = document.createEvent('Event');
         event.history = this;
@@ -2647,7 +2381,7 @@ var RemoveCommand = function(w, obj) {
  */
 var TransformCommand = function(canvas, obj, params) {
     var state = {};
-
+    var self = this;
     for (var k in params) {
         if (params.hasOwnProperty(k)) {
             state[k] = obj[k];
@@ -2669,6 +2403,8 @@ var TransformCommand = function(canvas, obj, params) {
     };
 
     return {
+        type: 'transform',
+        state: params,
         exec : function() {
             update(obj, params);
             canvas.renderAll();
@@ -2758,23 +2494,6 @@ var FlipCommand = function(c, obj, original, current) {
         unexec : function() {
             obj.flipX = original.flipX;
             obj.flipY = original.flipY;
-            c.setActiveObject(obj);
-            c.renderAll();
-        }
-    }
-};
-
-var CurveTextCommand = function(c, obj, original, current){
-    return {
-        exec: function() {
-            obj.setArc(current);
-            obj.setCoords();
-            c.setActiveObject(obj);
-            c.renderAll();
-        },
-        unexec: function() {
-            obj.setArc(original);
-            obj.setCoords();
             c.setActiveObject(obj);
             c.renderAll();
         }
