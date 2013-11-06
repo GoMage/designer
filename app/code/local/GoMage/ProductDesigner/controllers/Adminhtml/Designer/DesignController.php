@@ -20,12 +20,14 @@ class GoMage_ProductDesigner_Adminhtml_Designer_DesignController
     public function downloadAction()
     {
         $imageId = (int) $this->getRequest()->getParam('image_id');
+        $type = $this->getRequest()->getParam('type');
 
         if ($imageId) {
             $image = Mage::getModel('gmpd/design_image')->load($imageId);
             if ($image) {
-                $imageName = ltrim($image->getImage(), '/');
-                $imageFile = file_get_contents(Mage::getModel('gmpd/design_config')->getMediaPath($image->getImage()));
+                $imageGetter = 'get' . $type;
+                $imageName = ltrim($image->$imageGetter(), '/');
+                $imageFile = file_get_contents(Mage::getModel('gmpd/design_config')->getMediaPath($image->$imageGetter()));
                 $this->_prepareDownloadResponse($imageName, $imageFile);
                 return;
             }

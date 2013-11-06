@@ -99,7 +99,7 @@ class GoMage_ProductDesigner_Block_Adminhtml_Design_View extends Mage_Core_Block
      */
     public function getImage($image, $size)
     {
-        return Mage::helper('designer/image')->init($image->getImage())->resize($size);
+        return Mage::helper('designer/image')->init($image)->resize($size);
     }
 
     /**
@@ -108,9 +108,12 @@ class GoMage_ProductDesigner_Block_Adminhtml_Design_View extends Mage_Core_Block
      * @param int $imageId Image Id
      * @return string
      */
-    public function getDownloadUrl($imageId)
+    public function getDownloadUrl($imageId, $type)
     {
-        return Mage::helper('adminhtml')->getUrl('*/designer_design/download', array('image_id' => $imageId));
+        return Mage::helper('adminhtml')->getUrl('*/designer_design/download', array(
+            'image_id' => $imageId,
+            'type' => $type
+        ));
     }
 
     public function getDesign()

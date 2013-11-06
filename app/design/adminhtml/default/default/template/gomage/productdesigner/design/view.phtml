@@ -21,9 +21,15 @@
             <ul class="products-grid">
             <?php endif ?>
             <li class="item<?php if(($i-1)%$_columnCount==0): ?> first<?php elseif($i%$_columnCount==0): ?> last<?php endif; ?>" style="float: left; clear:left; margin:0 0 20px">
-                <img src="<?php echo $this->getImage($_image, 500); ?>" width="600" height="600" alt="" title=""/>
+                <img src="<?php echo $this->getImage($_image->getImage(), 600); ?>" width="600" height="600" alt="" title=""/>
                 <div class="actions" style="text-align: center">
-                    <button title="<?php echo $this->__('Download Image');?>" type="button" onclick="downloadImage('<?php echo $this->getDownloadUrl($_image->getId())?>')">
+                    <button title="<?php echo $this->__('Download Image');?>" type="button" onclick="downloadImage('<?php echo $this->getDownloadUrl($_image->getId(), 'image')?>')">
+                        <span><span><span><?php echo $this->__('Download Image');?></span></span></span>
+                    </button>
+                </div>
+                <img src="<?php echo $this->getImage($_image->getLayer(), 300); ?>" width="300" height="300" alt="" title=""/>
+                <div class="actions" style="text-align: center">
+                    <button title="<?php echo $this->__('Download Image');?>" type="button" onclick="downloadImage('<?php echo $this->getDownloadUrl($_image->getId(), 'layer')?>')">
                         <span><span><span><?php echo $this->__('Download Image');?></span></span></span>
                     </button>
                 </div>

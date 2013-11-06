@@ -34,7 +34,7 @@
  */
 class GoMage_ProductDesigner_Model_Design_Image extends Mage_Core_Model_Abstract
 {
-    protected $_imageExtension = 'imagic';
+    protected $_imageExtension = 'imagick';
 
     /**
      * Initialize resource model
@@ -68,7 +68,7 @@ class GoMage_ProductDesigner_Model_Design_Image extends Mage_Core_Model_Abstract
                 $layer = $this->createLayer($image);
                 if ($layer) {
                     $canvas = $this->addLayerToCanvas($canvas, $layer, $imageSettings);
-                    $this->saveCanvas($canvas, $imageId, $designId);
+                    $this->saveCanvas($canvas, $layer, $imageId, $designId);
                 }
             }
         }
@@ -109,7 +109,7 @@ class GoMage_ProductDesigner_Model_Design_Image extends Mage_Core_Model_Abstract
                 1
             );
             $canvas->compositeImage($layer, $layer->getImageCompose(), $designAreaLeft, $designAreaTop);
-            $layer->destroy();
+//            $layer->destroy();
         } else {
             $layerWidth = floor(imagesx($layer) * $widthScale);
             $layerHeight = floor(imagesy($layer) * $heightScale);
@@ -125,7 +125,7 @@ class GoMage_ProductDesigner_Model_Design_Image extends Mage_Core_Model_Abstract
                 imagesx($layer),
                 imagesy($layer)
             );
-            imagedestroy($layer);
+//            imagedestroy($layer);
         }
 
         return $canvas;
@@ -193,7 +193,7 @@ class GoMage_ProductDesigner_Model_Design_Image extends Mage_Core_Model_Abstract
      * @param int     $designId Design Id
      * @return void
      */
-    public function saveCanvas($canvas, $imageId, $designId)
+    public function saveCanvas($canvas, $layer, $imageId, $designId)
     {
         $currentProduct = Mage::registry('product');
         $designConfig = Mage::getSingleton('gmpd/design_config');
@@ -201,27 +201,38 @@ class GoMage_ProductDesigner_Model_Design_Image extends Mage_Core_Model_Abstract
 
         if($currentProduct && $currentProduct->getId()) {
             $fileToSave = $this->_prepareFileForSave();
+            $layerFilename = $this->_prepareFileForSave();
             if (extension_loaded($this->_imageExtension)){
+                $layer->writeImage($layerFilename);
                 $canvas->writeImage($fileToSave);
                 if ($this->_getImageExtensionForSave() == 'pdf') {
                     $fileToSaveJpg = str_replace('.pdf', '.jpg', $fileToSave);
+                    $layerFilenameJpg = str_replace('.pdf', '.jpg', $layerFilename);
                     $canvas->setImageFormat('jpg');
                     $canvas->writeImage($fileToSaveJpg);
+                    $layer->setImageFormat('jpg');
+                    $layer->writeImage($layerFilenameJpg);
                 }
+                $layer->destroy();
                 $canvas->destroy();
             } else {
                 $imageExtension = strtolower(pathinfo($fileToSave, PATHINFO_EXTENSION));
                 if ($imageExtension == 'pdf') {
                     $fileToSave = str_replace($imageExtension, '', $fileToSave);
+                    $layerFilename = str_replace($imageExtension, '', $layerFilename);
                     imagejpeg($canvas, $fileToSave . 'jpg', 100);
+                    imagejpeg($layer, $layerFilename . 'jpg', 100);
                     imagedestroy($canvas);
-                    $pdf = new Zend_Pdf();
-                    $image = Zend_Pdf_Image::imageWithPath($fileToSave . 'jpg');
-                    $pdfPage = $pdf->newPage($image->getPixelWidth(). ':'. $image->getPixelHeight());
-                    $pdfPage->drawImage($image, 0, 0, $image->getPixelWidth(), $image->getPixelHeight());
-                    $pdf->pages[] = $pdfPage;
-                    $fileToSave = $fileToSave.$imageExtension;
-                    $pdf->save($fileToSave);
+                    imagedestroy($layer);
+                    $this->_createPdfImage($fileToSave);
+                    $this->_createPdfImage($layerFilename);
+//                    $pdf = new Zend_Pdf();
+//                    $image = Zend_Pdf_Image::imageWithPath($fileToSave . 'jpg');
+//                    $pdfPage = $pdf->newPage($image->getPixelWidth(). ':'. $image->getPixelHeight());
+//                    $pdfPage->drawImage($image, 0, 0, $image->getPixelWidth(), $image->getPixelHeight());
+//                    $pdf->pages[] = $pdfPage;
+//                    $fileToSave = $fileToSave.$imageExtension;
+//                    $pdf->save($fileToSave);
                 } else {
                     if ($imageExtension = 'jpg') {
                         $saveFunction = 'imagejpeg';
@@ -230,10 +241,14 @@ class GoMage_ProductDesigner_Model_Design_Image extends Mage_Core_Model_Abstract
                     }
                     if (function_exists($saveFunction)) {
                         $saveFunction($canvas, $fileToSave, 100);
-                        $image = file_get_contents($fileToSave);
-                        $image = substr_replace($image, pack("Cnn", 0x01, 300, 300), 13, 5);
-                        file_put_contents($fileToSave, $image);
+                        $saveFunction($layer, $layerFilename, 100);
+//                        $image = file_get_contents($fileToSave);
+//                        $image = substr_replace($image, pack("Cnn", 0x01, 300, 300), 13, 5);
+//                        file_put_contents($fileToSave, $image);
+                        $this->_setImageResolution($fileToSave);
+                        $this->_setImageResolution($layerFilename);
                         imagedestroy($canvas);
+                        imagedestroy($layer);
                     }
                 }
             }
@@ -242,10 +257,29 @@ class GoMage_ProductDesigner_Model_Design_Image extends Mage_Core_Model_Abstract
                 'product_id' => $currentProduct->getId(),
                 'design_id' => $designId,
                 'image' => str_replace($configPath, '', $fileToSave),
+                'layer' => str_replace($configPath, '', $layerFilename),
                 'image_id' => $imageId,
                 'created_date' => Mage::getModel('core/date')->gmtDate(),
             ))->save();
         }
+    }
+
+    protected function _createPdfImage($filename)
+    {
+        $pdf = new Zend_Pdf();
+        $image = Zend_Pdf_Image::imageWithPath($filename . 'jpg');
+        $pdfPage = $pdf->newPage($image->getPixelWidth(). ':'. $image->getPixelHeight());
+        $pdfPage->drawImage($image, 0, 0, $image->getPixelWidth(), $image->getPixelHeight());
+        $pdf->pages[] = $pdfPage;
+        $fileToSave = $filename.'pdf';
+        $pdf->save($fileToSave);
+    }
+
+    protected function _setImageResolution($file)
+    {
+        $image = file_get_contents($file);
+        $image = substr_replace($image, pack("Cnn", 0x01, 300, 300), 13, 5);
+        file_put_contents($file, $image);
     }
 
     /**
