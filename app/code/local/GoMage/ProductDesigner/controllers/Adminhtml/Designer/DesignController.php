@@ -35,4 +35,41 @@ class GoMage_ProductDesigner_Adminhtml_Designer_DesignController
 
         $this->_redirectReferer();
     }
+
+    public function downloadAllAction()
+    {
+        if (!extension_loaded('zip')) {
+            $this->_redirectReferer();
+        }
+
+        $designId = (int) Mage::app()->getRequest()->getParam('design_id');
+
+        if ($designId) {
+            $images = Mage::getModel('gmpd/design')->getImages($designId);
+            $archiveFileName = Mage::getBaseDir('tmp') . DS . 'design_images.zip';
+            if (file_exists($archiveFileName)) {
+                unlink($archiveFileName);
+            }
+            $archive = new ZipArchive();
+            $archive->open($archiveFileName, ZipArchive::CREATE);
+            foreach ($images as $_image) {
+                $archive->addFile(
+                    Mage::getModel('gmpd/design_config')->getMediaPath($_image->getImage()),
+                    ltrim($_image->getImage(), '/')
+                );
+                if ($_image->getLayer()) {
+                    $archive->addFile(
+                        Mage::getModel('gmpd/design_config')->getMediaPath($_image->getLayer()),
+                        ltrim($_image->getLayer(), '/')
+                    );
+                }
+            }
+            $archive->close();
+            $archiveFile = file_get_contents($archiveFileName);
+            $this->_prepareDownloadResponse('design_images.zip', $archiveFile);
+            return;
+        }
+
+        $this->_redirectReferer();
+    }
 }

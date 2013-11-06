@@ -3,6 +3,7 @@
         <tbody>
             <tr>
                 <td style="width:50%;"><h3 class="icon-head"><?php echo $this->__($this->getHeader());?></h3></td>
+                <td class="form-buttons"><?php echo $this->getButtonsHtml() ?></td>
             </tr>
         </tbody>
     </table>
@@ -27,12 +28,14 @@
                         <span><span><span><?php echo $this->__('Download Image');?></span></span></span>
                     </button>
                 </div>
-                <img src="<?php echo $this->getImage($_image->getLayer(), 300); ?>" width="300" height="300" alt="" title=""/>
-                <div class="actions" style="text-align: center">
-                    <button title="<?php echo $this->__('Download Image');?>" type="button" onclick="downloadImage('<?php echo $this->getDownloadUrl($_image->getId(), 'layer')?>')">
-                        <span><span><span><?php echo $this->__('Download Image');?></span></span></span>
-                    </button>
-                </div>
+                <?php if ($_image->getLayer()): ?>
+                    <img src="<?php echo $this->getImage($_image->getLayer(), 300); ?>" width="300" height="300" alt="" title=""/>
+                    <div class="actions" style="text-align: center">
+                        <button title="<?php echo $this->__('Download Image');?>" type="button" onclick="downloadImage('<?php echo $this->getDownloadUrl($_image->getId(), 'layer')?>')">
+                            <span><span><span><?php echo $this->__('Download Image');?></span></span></span>
+                        </button>
+                    </div>
+                <?php endif;?>
             </li>
             <?php if ($i%$_columnCount==0 || $i==$_collectionSize): ?>
                 </ul>

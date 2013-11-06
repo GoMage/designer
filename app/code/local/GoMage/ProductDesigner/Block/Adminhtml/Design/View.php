@@ -32,13 +32,23 @@
  * @subpackage Block
  * @author     Roman Bublik <rb@gomage.com>
  */
-class GoMage_ProductDesigner_Block_Adminhtml_Design_View extends Mage_Core_Block_Template
+class GoMage_ProductDesigner_Block_Adminhtml_Design_View extends Mage_Adminhtml_Block_Widget_Container
 {
     protected $_imageCollection;
 
     protected $_columnCount = 3;
 
     protected $_design;
+
+    public function __construct()
+    {
+        if (extension_loaded('zip') && ($url = $this->getDownloadAllUrl())) {
+            $this->_addButton('download', array(
+                'label'     => Mage::helper('designer')->__('Download All'),
+                'onclick'   => 'setLocation(\'' . $url .'\')'
+            ));
+        }
+    }
 
     /**
      * Return column count
@@ -128,5 +138,16 @@ class GoMage_ProductDesigner_Block_Adminhtml_Design_View extends Mage_Core_Block
         }
 
         return $this->_design;
+    }
+
+    public function getDownloadAllUrl()
+    {
+        if ($design = $this->getDesign()) {
+            return Mage::helper('adminhtml')->getUrl('*/designer_design/downloadAll',
+                array('design_id' => $design->getId())
+            );
+        }
+
+        return false;
     }
 }

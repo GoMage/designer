@@ -62,4 +62,12 @@ class GoMage_ProductDesigner_Model_Design extends Mage_Core_Model_Abstract
 
         return $this;
     }
+
+    public function getImages($designId)
+    {
+        $images = Mage::getModel('gmpd/design_image')->getCollection()
+            ->addFieldToFilter('design_id', $designId);
+
+        return $images;
+    }
 }
