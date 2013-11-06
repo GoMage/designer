@@ -2034,6 +2034,9 @@ fabric.CustomText = fabric.util.createClass(fabric.Group, {
                     objects[i].set(k, value);
                 }
             }
+            if (this.strokeWidth > 0.00001) {
+                objects[i].fontSize = this.fontSize + 2 * this.strokeWidth;
+            }
             var size = this.objects[i].fontSize;
             if (isZeroSpacing) {
                 var curAngle = 0;
