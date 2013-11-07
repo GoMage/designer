@@ -1363,6 +1363,7 @@ GoMage.Designer = function(filterUrl){
     this.productDesigner = window.w;
     this.observeFilterFields();
     this.observeImageSelect();
+    this.observeResetBtn();
 };
 
 GoMage.Designer.prototype = {
@@ -1385,6 +1386,7 @@ GoMage.Designer.prototype = {
     },
 
     filterImages: function(data) {
+        var hasData = data ? true : false;
         var data = data || {};
         data['ajax'] = true;
         if (data.hasOwnProperty('tags')) {
@@ -1398,7 +1400,6 @@ GoMage.Designer.prototype = {
             data['tags'] = $('tagsSearchField').value;
         }
 
-
         new Ajax.Request(this.opt.filterUrl, {
             method:'post',
             parameters: data,
@@ -1411,11 +1412,19 @@ GoMage.Designer.prototype = {
                     if (response.hasOwnProperty('cliparts')) {
                         $('cliparts-list').update(response.cliparts);
                     }
+                    var resetBtn = $('cliparts-filters').select('#cliparts-reset-btn')[0];
+                    if (resetBtn) {
+                        if (hasData) {
+                            resetBtn.show();
+                        } else {
+                            resetBtn.hide();
+                        }
+                    }
                 } else {
                     //TODO
                     alert('Something went wrong...');
                 }
-            },
+            }.bind(this),
             onFailure: function() {
                 // TODO
                 alert('Something went wrong...');
@@ -1447,6 +1456,15 @@ GoMage.Designer.prototype = {
                 this.filterImages(data);
             }.bind(this));
         }
+    },
+
+    observeResetBtn: function() {
+        Event.on($('cliparts-filters'), 'click', '#cliparts-reset-btn', function(e, elm) {
+            if ($('tagsSearchField')) {
+                $('tagsSearchField').value = '';
+            }
+            this.filterImages();
+        }.bind(this));
     }
 };
 
