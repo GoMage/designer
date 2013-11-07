@@ -71,7 +71,7 @@
         <layout>
             <updates>
                 <gomage_designer module="GoMage_ProductDesigner">
-                    <file>gmpd.xml</file>
+                    <file>gomage-designer.xml</file>
                 </gomage_designer>
             </updates>
         </layout>
@@ -109,7 +109,7 @@
         <layout>
             <updates>
                 <gomage_designer>
-                    <file>gmpd.xml</file>
+                    <file>gomage-designer.xml</file>
                 </gomage_designer>
             </updates>
         </layout>
