@@ -80,10 +80,6 @@ GoMage.ProductDesigner = function(config, continueUrl, loginUrl, registrationUrl
     this.observeContinueBtn();
     this.observeProductImageChange();
     this.observeProductImageColorChange();
-    this.observeCanvasObjectModified();
-    this.observeCanvasObjectMoving();
-    this.observeCanvasObjectSelected();
-    this.observeCanvasObjectRendered();
     this.initPrices();
     this.reloadPrice();
     this.observePriceMoreInfo();
@@ -133,8 +129,6 @@ GoMage.ProductDesigner.prototype = {
         this.showTabsSwitchers();
         this.showControls();
         this.showAdditionalPannel();
-        this.config.isProductSelected = true;
-
         if (price) {
             if (!$('design_price_container').visible()) {
                 $('design_price_container').show();
@@ -302,6 +296,7 @@ GoMage.ProductDesigner.prototype = {
             this.canvas = new fabric.Canvas(canvas);
             this.canvas.selection = false;
             this.containerCanvases[prod.id] = this.canvas;
+            this._observeCanvasObjects();
         } else {
             var designArea = this.containerLayers[prod.id];
             this.container.appendChild(designArea);
@@ -1215,6 +1210,13 @@ GoMage.ProductDesigner.prototype = {
                 }
             }
         }
+    },
+
+    _observeCanvasObjects: function() {
+        this.observeCanvasObjectModified();
+        this.observeCanvasObjectMoving();
+        this.observeCanvasObjectSelected();
+        this.observeCanvasObjectRendered();
     }
 };
 
