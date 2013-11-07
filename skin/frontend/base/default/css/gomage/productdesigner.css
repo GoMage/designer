@@ -78,7 +78,7 @@
     height: 14px;
     padding: 0 0 0 3px;
     font-size: 12px;
-    line-height: 16px;
+    line-height: 14px;
     cursor: help;
     border: 1px solid #ccc;
     border-radius: 100%;
@@ -500,11 +500,6 @@ button.pd-btn {
     /* cliparts panel buttons */
 }
 
-#pd_container .pd-textarea {
-    width: 95%;
-    height: 30px;
-}
-
 #pd_container .layers-panel-title,
 #pd_container .notes-panel-title {
     font-size: 12pt;
@@ -607,12 +602,14 @@ li.layer-type-text .layer-icon {
 }
 
 .font-picker {
-    width: 97%;
+  width: 100%;
 }
 
 .pd-textarea {
-    width: 95%;
-    height: 50px;
+  width: 100%;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing   : border-box;
+  box-sizing        : border-box;
 }
 
 .notes-panel-textarea {
