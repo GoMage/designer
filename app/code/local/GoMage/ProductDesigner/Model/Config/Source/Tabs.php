@@ -40,7 +40,7 @@ class GoMage_ProductDesigner_Model_Config_Source_Tabs
     {
         return array(
             array('value' => 'navigation', 'label' => Mage::helper('designer')->__('Choose Product')),
-            array('value' => 'design', 'label' => Mage::helper('designer')->__('Add Dessign')),
+            array('value' => 'design', 'label' => Mage::helper('designer')->__('Add Design')),
             array('value' => 'text', 'label' => Mage::helper('designer')->__('Add Text')),
             array('value' => 'upload_image', 'label' => Mage::helper('designer')->__('Upload Images'))
         );

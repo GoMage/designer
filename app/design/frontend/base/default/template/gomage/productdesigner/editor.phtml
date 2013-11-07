@@ -67,7 +67,7 @@ $productImageMinSize = $this->getProductOriginalImageMinSizes();
             <button class="button pd-btn" style="<?php echo !$navigationEnabled ? 'display:none' : ''; ?>" id="pd_choose_product"><span><span><?php echo Mage::helper('designer')->__('Choose Product') ?></span></span></button>
             <button class="button pd-btn" style="<?php echo !$designEnabled || !$this->isProductSelected() ? 'display:none' : '';?>" id="pd_add_design"><span><span><?php echo Mage::helper('designer')->__('Add Design') ?></span></span></button>
             <button class="button pd-btn" style="<?php echo !$textEnabled || !$this->isProductSelected()? 'display:none' : ''; ?>" id="pd_add_text"><span><span><?php echo Mage::helper('designer')->__('Add Text') ?></span></span></button>
-            <button class="button pd-btn" style="<?php echo !$imageEnabled || !$this->isProductSelected()? 'display:none' : ''; ?>" id="pd_add_image"><span><span><?php echo Mage::helper('designer')->__('Upload Image') ?></span></span></button>
+            <button class="button pd-btn" style="<?php echo !$imageEnabled || !$this->isProductSelected()? 'display:none' : ''; ?>" id="pd_add_image"><span><span><?php echo Mage::helper('designer')->__('Upload Images') ?></span></span></button>
         </div>
         <div id="pd_save_container" class="pd_save_container" style="display: <?php echo $this->isProductSelected() ? 'block': 'none'?>">
             <button class="button pd-btn" id="pd_zoom"><span><span><?php echo Mage::helper('designer')->__('Preview') ?></span></span></button>
