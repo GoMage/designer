@@ -139,6 +139,7 @@ GoMage.ProductDesigner.prototype = {
             this.initPrices();
             this.reloadPrice();
         }
+        window.onbeforeunload = null;
     },
 
     changeProductImage : function(id) {
