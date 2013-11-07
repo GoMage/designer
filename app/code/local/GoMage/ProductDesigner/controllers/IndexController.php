@@ -155,6 +155,7 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
             $product = Mage::registry('product');
             Mage::helper('designer/ajax')->sendRedirect(array(
                 'url' => $product->getDesignedProductUrl($design->getId()),
+                'design_id' => $design->getId()
             ));
         } catch (Exception $e) {
             Mage::helper('designer/ajax')->sendError($e->getMessage());
@@ -247,8 +248,8 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
         }
 
         try {
-            $this->_saveDesign();
-            Mage::helper('designer/ajax')->sendSuccess();
+            $design = $this->_saveDesign();
+            Mage::helper('designer/ajax')->sendSuccess(array('design_id' => $design->getId()));
         } catch (Exception $e) {
             Mage::helper('designer/ajax')->sendError($e->getMessage());
         }

@@ -42,15 +42,16 @@ class GoMage_ProductDesigner_CustomerController extends Mage_Customer_AccountCon
                     if ($customer->getIsJustConfirmed()) {
                         $customer->sendNewAccountEmail('confirmed', '', Mage::app()->getStore()->getId());
                     }
-                    Mage::helper('designer')->saveProductDesignedImages();
+                    $design = Mage::helper('designer')->saveProductDesignedImages();
+                    Mage::helper('designer/ajax')->sendSuccess(array(
+                        'welcome_text' => $this->_getWelcomeTextHtml(),
+                        'top_links' => $this->_getTopLinksHtml(),
+                        'design_id' => $design->getId()
+                    ));
                 } else {
                     throw new Exception($this->__('Login and password are required.'));
                 }
             }
-            Mage::helper('designer/ajax')->sendSuccess(array(
-                'welcome_text' => $this->_getWelcomeTextHtml(),
-                'top_links' => $this->_getTopLinksHtml()
-            ));
         } catch (Exception $e) {
             Mage::helper('designer/ajax')->sendError($e->getMessage());
         } catch (Mage_Core_Exception $e) {
@@ -121,7 +122,7 @@ class GoMage_ProductDesigner_CustomerController extends Mage_Customer_AccountCon
                         Mage::helper('designer/ajax')->sendError($this->__($this->__('Invalid customer data')));
                     }
                 } else {
-                    Mage::helper('designer')->saveProductDesignedImages();
+                    $design = Mage::helper('designer')->saveProductDesignedImages();
                 }
                 if ($customer->isConfirmationRequired()) {
                     Mage::helper('designer/ajax')->sendRedirect(array(
@@ -129,10 +130,14 @@ class GoMage_ProductDesigner_CustomerController extends Mage_Customer_AccountCon
                     ));
                     $session->addSuccess($this->__('Design successful save'));
                 } else {
-                    Mage::helper('designer/ajax')->sendSuccess(array(
+                    $responseData = array(
                         'welcome_text' => $this->_getWelcomeTextHtml(),
                         'top_links' => $this->_getTopLinksHtml()
-                    ));
+                    );
+                    if (isset($design)) {
+                        $responseData['design_id'] = $design->getId();
+                    }
+                    Mage::helper('designer/ajax')->sendSuccess($responseData);
                 }
 
             } catch (Mage_Core_Exception $e) {

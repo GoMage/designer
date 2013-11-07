@@ -68,6 +68,9 @@ GoMage.ProductDesigner = function(config, continueUrl, loginUrl, registrationUrl
     this.productAdditionalImageTemplate = new Template($('product-image-template').innerHTML);
     this.isCustomerLogin = this.config.isCustomerLoggedIn;
     this.currentColor = null;
+//    this.designChanged = false;
+    this.designChanged = {};
+    this.designId = {};
     
     this.loadProduct(config.product);
     this.observeLayerControls();
@@ -86,6 +89,7 @@ GoMage.ProductDesigner = function(config, continueUrl, loginUrl, registrationUrl
     this.observePriceMoreInfo();
     this.observeHelpIcons();
     this.observeGoOut();
+    this.observeHistoryChanges();
 }
 
 GoMage.ProductDesigner.prototype = {
@@ -326,6 +330,10 @@ GoMage.ProductDesigner.prototype = {
                     alert('Please add to canvas though one layer');
                     return;
                 }
+                if (this.navigation.saveDesign.hasClassName('disabled') || !this.designChanged.hasOwnProperty(this.currentColor)
+                    || (this.designChanged.hasOwnProperty(this.currentColor) && this.designChanged[this.currentColor] == false )) {
+                    return;
+                }
                 if (!this.isCustomerLogin) {
                     this.createCustomerLoginWindows();
                     if (this.loginWindow) {
@@ -460,6 +468,11 @@ GoMage.ProductDesigner.prototype = {
                             }
                         }
                         window.close();
+                        this.designChanged[this.currentColor] = false;
+                        this.designId[this.currentColor] = response.design_id;
+                        if (this.navigation.saveDesign && !this.navigation.saveDesign.hasClassName('disabled')) {
+                            this.navigation.saveDesign.addClassName('disabled');
+                        }
                         alert('Design was saved');
                     } else if (response.status == 'redirect' && response.url) {
                         location.href = response.url;
@@ -577,6 +590,8 @@ GoMage.ProductDesigner.prototype = {
         var response = transport.responseText.evalJSON();
         if (response.status == 'redirect' && response.url != undefined) {
             window.onbeforeunload = null;
+            this.designChanged[this.currentColor] = false;
+            this.designId[this.currentColor] = response.design_id;
             location.href = response.url;
         } else if (response.status == 'error') {
             console.log(response.message);
@@ -587,6 +602,11 @@ GoMage.ProductDesigner.prototype = {
         var response = transport.responseText.evalJSON();
         if (response.status == 'success') {
             alert('Design was saved');
+            this.designChanged[this.currentColor] = false;
+            this.designId[this.currentColor] = response.design_id;
+            if (this.navigation.saveDesign && !this.navigation.saveDesign.hasClassName('disabled')) {
+                this.navigation.saveDesign.addClassName('disabled');
+            }
         } else if (response.status == 'error') {
             console.log(response.message);
         }
@@ -599,6 +619,14 @@ GoMage.ProductDesigner.prototype = {
                 if (!this.canvasesHasLayers()) {
                     alert('Please add to canvas though one layer');
                     return;
+                }
+                if (this.navigation.continue.hasClassName('disabled')) {
+                    return;
+                }
+                if ((this.designChanged.hasOwnProperty(this.currentColor) && this.designChanged[this.currentColor] === false)
+                    && (this.designId.hasOwnProperty(this.currentColor) && this.designId[this.currentColor] !== null)) {
+                    window.onbeforeunload = null;
+                    location.href = this.config.product.url + '?design_id=' + this.designId[this.currentColor];
                 }
                 this.saveDesign(this.urls.continue, this.continueCallback);
             }.bind(this));
@@ -788,6 +816,7 @@ GoMage.ProductDesigner.prototype = {
                 }
                 elem.addClassName('selected');
                 this.changeProductColor(color);
+                this._toggleNavigationButtons('disabled');
             }
         }.bind(this));
     },
@@ -875,7 +904,7 @@ GoMage.ProductDesigner.prototype = {
     zoom: function()
     {
         this.createZoomWindow();
-        this.zoomWindow.showCenter(true);
+        this.zoomWindow.showCenter(true, true);
     },
 
     createZoomCanvas: function() {
@@ -1151,6 +1180,41 @@ GoMage.ProductDesigner.prototype = {
         window.onbeforeunload = function(elm) {
             return 'The current design will be lost. Are you sure that you want to leave this page?';
         }.bind(this);
+    },
+
+    observeHistoryChanges: function() {
+        Event.observe(document, 'PdChangeHistory', function(e){
+            this.designChanged[this.currentColor] = true;
+            this.designId[this.currentColor] = null;
+            this._toggleNavigationButtons('disabled');
+        }.bind(this));
+    },
+
+    _toggleNavigationButtons: function(className) {
+        if (this.designChanged.hasOwnProperty(this.currentColor)
+            && this.designChanged[this.currentColor] === true) {
+            if (this.navigation.saveDesign.hasClassName(className)) {
+                this.navigation.saveDesign.removeClassName(className);
+            }
+
+            if (this.navigation.continue.hasClassName(className)) {
+                this.navigation.continue.removeClassName(className)
+            }
+        } else if (!this.designChanged.hasOwnProperty(this.currentColor) ||
+            (this.designChanged.hasOwnProperty(this.currentColor) && this.designChanged[this.currentColor] === false)) {
+            if (!this.navigation.saveDesign.hasClassName(className)) {
+                this.navigation.saveDesign.addClassName(className);
+            }
+            if (!this.designId[this.currentColor]) {
+                if (!this.navigation.continue.hasClassName(className)) {
+                    this.navigation.continue.addClassName(className);
+                }
+            } else {
+                if (this.navigation.continue.hasClassName(className)) {
+                    this.navigation.continue.removeClassName(className);
+                }
+            }
+        }
     }
 };
 
