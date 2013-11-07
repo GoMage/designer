@@ -116,16 +116,20 @@ class GoMage_ProductDesigner_Block_Editor extends Mage_Core_Block_Template
             }
         }
         if (is_null($this->_activeTab)) {
-            $defaultTab = Mage::getStoreConfig('gmpd/general/default_tab', Mage::app()->getStore());
-            if ($this->_tabs[$defaultTab]) {
-                $this->_activeTab  = $defaultTab;
-            } else {
-                foreach ($this->_tabs as $_tab => $_visibility) {
-                    if ($_visibility) {
-                        $this->_activeTab = $_tab;
-                        break;
+            if ($this->isProductSelected()) {
+                $defaultTab = Mage::getStoreConfig('gmpd/general/default_tab', Mage::app()->getStore());
+                if ($this->_tabs[$defaultTab]) {
+                    $this->_activeTab  = $defaultTab;
+                } else {
+                    foreach ($this->_tabs as $_tab => $_visibility) {
+                        if ($_visibility) {
+                            $this->_activeTab = $_tab;
+                            break;
+                        }
                     }
                 }
+            } elseif($this->_tabs['navigation']) {
+                $this->_activeTab = 'navigation';
             }
         }
 
