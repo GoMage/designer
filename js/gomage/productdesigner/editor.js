@@ -119,6 +119,8 @@ GoMage.ProductDesigner.prototype = {
         this.history.clear();
         this.containerLayers = {};
         this.containerCanvases = {};
+        this.designChanged = {};
+        this.designId = {};
         this.container.innerHTML = '';
         this.config.product = product;
         this.loadProduct(product);
@@ -127,6 +129,7 @@ GoMage.ProductDesigner.prototype = {
         this.showTabsSwitchers();
         this.showControls();
         this.showAdditionalPannel();
+        this._toggleNavigationButtons('disabled');
         this.config.isProductSelected = true;
         if (price) {
             if (!$('design_price_container').visible()) {
