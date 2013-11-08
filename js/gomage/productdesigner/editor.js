@@ -130,6 +130,8 @@ GoMage.ProductDesigner.prototype = {
         this.showControls();
         this.showAdditionalPannel();
         this._toggleNavigationButtons('disabled');
+        this._toggleControlsButtons();
+        this._toggleHistoryButtons();
         this.config.isProductSelected = true;
         if (price) {
             if (!$('design_price_container').visible()) {
@@ -150,19 +152,21 @@ GoMage.ProductDesigner.prototype = {
         if(img && this.currentProd != img.id) {
             this.containerCanvases[this.currentProd] = this.canvas;
             this.containerLayers[this.currentProd] = this.container.childElements()[0].remove();
-            this.history.clear();
+//            this.history.clear();
             this.addDesignArea(img);
+            this._toggleControlsButtons();
         }
     },
 
     changeProductColor: function(color){
-        this.history.clear();
+//        this.history.clear();
         this.containerCanvases[this.currentProd] = this.canvas;
         this.containerLayers[this.currentProd] = this.container.childElements()[0].remove();
         var product = this.config.product;
         this.loadProduct(product, color);
         this.updateProductImages(product);
         this.reloadPrice();
+        this._toggleControlsButtons();
     },
 
     updateProductImages: function(product) {
@@ -470,6 +474,7 @@ GoMage.ProductDesigner.prototype = {
                         this.designId[this.currentColor] = response.design_id;
                         window.onbeforeunload = null;
                         this._toggleNavigationButtons('disabled');
+                        this._toggleControlsButtons();
                         alert('Design was saved');
                     } else if (response.status == 'redirect' && response.url) {
                         location.href = response.url;
@@ -602,6 +607,7 @@ GoMage.ProductDesigner.prototype = {
             this.designChanged[this.currentColor] = false;
             this.designId[this.currentColor] = response.design_id;
             this._toggleNavigationButtons('disabled');
+            this._toggleControlsButtons();
             window.onbeforeunload = null;
         } else if (response.status == 'error') {
             console.log(response.message);
@@ -796,6 +802,15 @@ GoMage.ProductDesigner.prototype = {
         }.bind(this));
     },
 
+    observeCanvasSelection: function() {
+        if ((this.canvas == null) || this.canvas == 'undefined') {
+            return;
+        }
+        this.canvas.observe('selection:cleared', function(e) {
+            this._toggleControlsButtons();
+        }.bind(this));
+    },
+
     observeProductImageChange: function(){
         Event.on($(this.opt.product_side_id), 'click', '.product-image', function(e, elem){
             this.changeProductImage(elem.readAttribute('data-id'));
@@ -901,6 +916,7 @@ GoMage.ProductDesigner.prototype = {
     {
         this.createZoomWindow();
         this.zoomWindow.showCenter(true, true);
+        this._toggleControlsButtons();
     },
 
     createZoomCanvas: function() {
@@ -1192,7 +1208,7 @@ GoMage.ProductDesigner.prototype = {
             }
             this.designId[this.currentColor] = null;
             this._toggleNavigationButtons('disabled');
-
+            this._toggleHistoryButtons();
         }.bind(this));
     },
 
@@ -1228,6 +1244,35 @@ GoMage.ProductDesigner.prototype = {
         this.observeCanvasObjectMoving();
         this.observeCanvasObjectSelected();
         this.observeCanvasObjectRendered();
+        this.observeCanvasSelection();
+    },
+
+    _toggleControlsButtons: function() {
+        var controls = this.config.controls;
+        var layerControls = [];
+        var method = this.canvas.getActiveObject() ? 'removeClassName' : 'addClassName';
+        for (var k in controls) {
+            if ((k != 'undo' && k != 'redo') && controls.hasOwnProperty(k)) {
+                var btn = $(controls[k]);
+                btn[method].apply(btn, ['disabled']);
+            }
+        }
+
+        layerControls.invoke(method, 'disabled');
+    },
+
+    _toggleHistoryButtons: function() {
+        if (this.history.undoStack.length == 0) {
+            $(this.config.controls.undo).addClassName('disabled');
+        } else {
+            $(this.config.controls.undo).removeClassName('disabled');
+        }
+
+        if (this.history.redoStack.length == 0) {
+            $(this.config.controls.redo).addClassName('disabled');
+        } else {
+            $(this.config.controls.redo).removeClassName('disabled');
+        }
     }
 };
 
@@ -2291,6 +2336,7 @@ var LayersManager = function(w) {
             tabContentElement.siblings().invoke('hide');
             tabContentElement.setStyle({display: 'block'});
         }
+        this.w._toggleControlsButtons();
     }.bind(this));
 
     document.observe('PdLayerBlur', function(e) {
