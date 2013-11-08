@@ -468,9 +468,8 @@ GoMage.ProductDesigner.prototype = {
                         window.close();
                         this.designChanged[this.currentColor] = false;
                         this.designId[this.currentColor] = response.design_id;
-                        if (this.navigation.saveDesign && !this.navigation.saveDesign.hasClassName('disabled')) {
-                            this.navigation.saveDesign.addClassName('disabled');
-                        }
+                        window.onbeforeunload = null;
+                        this._toggleNavigationButtons('disabled');
                         alert('Design was saved');
                     } else if (response.status == 'redirect' && response.url) {
                         location.href = response.url;
@@ -602,9 +601,8 @@ GoMage.ProductDesigner.prototype = {
             alert('Design was saved');
             this.designChanged[this.currentColor] = false;
             this.designId[this.currentColor] = response.design_id;
-            if (this.navigation.saveDesign && !this.navigation.saveDesign.hasClassName('disabled')) {
-                this.navigation.saveDesign.addClassName('disabled');
-            }
+            this._toggleNavigationButtons('disabled');
+            window.onbeforeunload = null;
         } else if (response.status == 'error') {
             console.log(response.message);
         }
@@ -1184,10 +1182,17 @@ GoMage.ProductDesigner.prototype = {
 
     observeHistoryChanges: function() {
         Event.observe(document, 'PdChangeHistory', function(e){
-            this.designChanged[this.currentColor] = true;
+            var history = e.history;
+            if (history.undoStack.length > 0) {
+                this.designChanged[this.currentColor] = true;
+                this.observeGoOut();
+            } else {
+                this.designChanged[this.currentColor] = false;
+                window.onbeforeunload = null
+            }
             this.designId[this.currentColor] = null;
             this._toggleNavigationButtons('disabled');
-            this.observeGoOut();
+
         }.bind(this));
     },
 
