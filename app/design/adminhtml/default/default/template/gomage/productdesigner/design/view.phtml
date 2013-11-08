@@ -29,7 +29,8 @@
                     </button>
                 </div>
                 <?php if ($_image->getLayer()): ?>
-                    <img src="<?php echo $this->getImage($_image->getLayer(), 300); ?>" width="300" height="300" alt="" title=""/>
+                    <br />
+                    <img src="<?php echo $this->getImage($_image->getLayer(), 600); ?>" width="600" height="600" alt="" title=""/>
                     <div class="actions" style="text-align: center">
                         <button title="<?php echo $this->__('Download Image');?>" type="button" onclick="downloadImage('<?php echo $this->getDownloadUrl($_image->getId(), 'layer')?>')">
                             <span><span><span><?php echo $this->__('Download Image');?></span></span></span>
