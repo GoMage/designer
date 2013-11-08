@@ -1475,28 +1475,38 @@ GoMage.Designer.prototype = {
                         }
                     }
                 } else {
-                    //TODO
                     alert('Something went wrong...');
                 }
             }.bind(this),
             onFailure: function() {
-                // TODO
                 alert('Something went wrong...');
             }
         });
     },
 
-    observeFilterFields: function(){
+    observeFilterFields: function() {
         if ($('cliparts-search-btn')) {
             Event.on($('cliparts-filters'), 'click', '#cliparts-search-btn', function(e, elm){
                 e.stop();
-                this.filterImages({tags: $('tagsSearchField').value});
+                if (!elm.hasClassName('disabled')) {
+                    this.filterImages({tags: $('tagsSearchField').value});
+                }
             }.bind(this));
         }
         if ($('tagsSearchField')) {
             Event.on($('cliparts-filters'), 'search', '#tagsSearchField', function(e, elm){
                 e.stop();
                 this.filterImages({tags: $('tagsSearchField').value});
+            }.bind(this));
+            Event.on($('cliparts-filters'), 'keyup', '#tagsSearchField', function(e, elm){
+                e.stop();
+                setTimeout(function(){
+                    if (elm.value.replace(/\s/g, "") != "") {
+                        $('cliparts-search-btn').removeClassName('disabled');
+                    } else {
+                        $('cliparts-search-btn').addClassName('disabled');
+                    }
+                }.bind(this), 500)
             }.bind(this));
         }
         if ($('mainCategoriesSearchField') || $('subCategoriesSearchField')) {
