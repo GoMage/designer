@@ -339,7 +339,7 @@ GoMage.ProductDesigner.prototype = {
                 if (!this.isCustomerLogin) {
                     this.createCustomerLoginWindows();
                     if (this.loginWindow) {
-                        this.loginWindow.showCenter(true);
+                        this.loginWindow.showCenter(true, true);
                     }
                 } else if(this.isCustomerLogin) {
                     this.saveDesign(this.urls.saveDesign, this.saveDesignCallback);
@@ -360,6 +360,7 @@ GoMage.ProductDesigner.prototype = {
                     minimizable:false,
                     resizable:false,
                     draggable:false,
+                    recenterAuto: false,
                     showEffect:Effect.BlindDown,
                     hideEffect:Effect.BlindUp,
                     showEffectOptions: {duration: 0.4},
@@ -1199,7 +1200,7 @@ GoMage.ProductDesigner.prototype = {
     observeHistoryChanges: function() {
         Event.observe(document, 'PdChangeHistory', function(e){
             var history = e.history;
-            if (history.undoStack.length > 0) {
+            if (history.undoStack.length > 0 && this.canvasHasLayers(this.currentProd)) {
                 this.designChanged[this.currentColor] = true;
                 this.observeGoOut();
             } else {
@@ -1215,26 +1216,15 @@ GoMage.ProductDesigner.prototype = {
     _toggleNavigationButtons: function(className) {
         if (this.designChanged.hasOwnProperty(this.currentColor)
             && this.designChanged[this.currentColor] === true) {
-            if (this.navigation.saveDesign.hasClassName(className)) {
-                this.navigation.saveDesign.removeClassName(className);
-            }
-
-            if (this.navigation.continue.hasClassName(className)) {
-                this.navigation.continue.removeClassName(className)
-            }
+            this.navigation.saveDesign.removeClassName(className);
+            this.navigation.continue.removeClassName(className)
         } else if (!this.designChanged.hasOwnProperty(this.currentColor) ||
             (this.designChanged.hasOwnProperty(this.currentColor) && this.designChanged[this.currentColor] === false)) {
-            if (!this.navigation.saveDesign.hasClassName(className)) {
-                this.navigation.saveDesign.addClassName(className);
-            }
+            this.navigation.saveDesign.addClassName(className);
             if (!this.designId[this.currentColor]) {
-                if (!this.navigation.continue.hasClassName(className)) {
-                    this.navigation.continue.addClassName(className);
-                }
+                this.navigation.continue.addClassName(className);
             } else {
-                if (this.navigation.continue.hasClassName(className)) {
-                    this.navigation.continue.removeClassName(className);
-                }
+                this.navigation.continue.removeClassName(className);
             }
         }
     },
