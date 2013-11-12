@@ -262,26 +262,28 @@ function openDesignAreaEditor(file, target)
                 } else {
                     $('design-area-popup').update(response.design_area);
                 }
-                window.designAreaPopup.show(true);
-                var $designAreaPopupWrap = $('design-area-popup');
-                var wH = window.innerHeight;
-                $designAreaPopupWrap.setStyle({
-                    width: 'auto'
-                });
-
-                if(0.9 * wH < window.designAreaPopup.height) {
+                window.designAreaPopup.showCenter(true);
+                setTimeout(function(){
+                    var $designAreaPopupWrap = $('design-area-popup');
+                    var wH = window.innerHeight;
                     $designAreaPopupWrap.setStyle({
-                        'height': 0.9 * wH + 'px',
-                        'overflow': 'auto'
+                        width: 'auto'
                     });
-                }
-                window.designAreaPopup.setSize(window.designAreaPopup.width, $designAreaPopupWrap.getHeight(), true);
-                var top = ($(document).viewport.getHeight() - window.designAreaPopup.height) / 2 < 0 ? 0
-                    : ($(document).viewport.getHeight() - window.designAreaPopup.height) / 2;
-                window.designAreaPopup.setLocation(
-                    top,
-                    ($(document).viewport.getWidth() - window.designAreaPopup.width) / 2
-                );
+
+                    if(0.9 * wH < window.designAreaPopup.height) {
+                        $designAreaPopupWrap.setStyle({
+                            'height': 0.9 * wH + 'px',
+                            'overflow': 'auto'
+                        });
+                    }
+                    window.designAreaPopup.setSize(window.designAreaPopup.width, $designAreaPopupWrap.getHeight(), true);
+                    var top = ($(document).viewport.getHeight() - window.designAreaPopup.height) / 2 < 0 ? 0
+                        : ($(document).viewport.getHeight() - window.designAreaPopup.height) / 2;
+                    window.designAreaPopup.setLocation(
+                        top,
+                        window.designAreaPopup.getLocation().left
+                    );
+                }.bind(this), 300);
                 if (target != undefined) {
                     window.designAreaPopup.target = target;
                 }
@@ -325,8 +327,8 @@ $(function() {
         resizable:false,
         draggable:false,
         recenterAuto: false,
-        showEffectOptions: {duration:0.4},
-        hideEffectOptions: {duration:0.4}
+        showEffectOptions: {duration:0.1},
+        hideEffectOptions: {duration:0.1}
     });
     window.designAreaPopup.setZIndex(2000);
     Event.observe(window, "resize", function () {

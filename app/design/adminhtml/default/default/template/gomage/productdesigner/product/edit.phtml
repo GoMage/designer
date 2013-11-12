@@ -1,7 +1,7 @@
 <?php $image = $this->getImage(); ?>
 <?php if($image && $image->getId()): ?>
     <?php $settings = $this->getSettings();?>
-    <div id="textsize" style="width:<?php echo $this->getImageWidth(); ?>px;">
+    <div id="textsize" style="width:<?php echo $this->getImageWidth(); ?>px; height: 20px">
         <?php echo $this->__('Width'); ?> <input type="text" name="areaWidth" id="areaWidth" value="0" /><?php echo $this->__('px'); ?>
         <?php echo $this->__('Height'); ?> <input type="text" name="areaHeight" id="areaHeight" value="0" /><?php echo $this->__('px'); ?>
     </div>
@@ -9,7 +9,7 @@
         <canvas id="image" width="<?php echo $this->getImageWidth(); ?>" height="<?php echo $this->getImageHeight(); ?>"></canvas>
     </div>
 
-    <div id="controls" class="form-buttons" style="width:<?php echo $this->getImageWidth(); ?>px;">
+    <div id="controls" style="width:<?php echo $this->getImageWidth(); ?>px; height: 20px;">
         <?php echo $this->__('Design Area used initial Cost'); ?>:
         <input type="text" id="initialPrice" name="initialPrice" value="<?php echo $settings['ip'] ? $settings['ip'] : 0; ?>" />
         <button class="pd-btn scalable" type="button" id="save_settings"><?php echo Mage::helper('designer')->__('Save settings') ?></button>
