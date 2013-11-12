@@ -17,47 +17,6 @@
             <version>0.0.26</version>
         </GoMage_ProductDesigner>
     </modules>
-    <default>
-        <gomage_designer>
-            <general>
-                <add_to_cart_button>0</add_to_cart_button>
-                <format>jpg</format>
-                <fixed_price>0</fixed_price>
-                <price_for_text>0</price_for_text>
-                <price_for_image>0</price_for_image>
-                <show_comment>1</show_comment>
-                <default_tab>design</default_tab>
-            </general>
-            <navigation>
-                <enabled>1</enabled>
-                <color_attribute>color</color_attribute>
-                <size_attribute>size</size_attribute>
-            </navigation>
-            <design>
-                <enabled>1</enabled>
-                <search>1</search>
-                <navigation>1</navigation>
-                <design_size_width>500</design_size_width>
-                <design_size_height>700</design_size_height>
-                <zoom_size_width>600</zoom_size_width>
-                <zoom_size_height>800</zoom_size_height>
-            </design>
-            <text>
-                <enabled>1</enabled>
-                <effects>1</effects>
-                <font>Arial</font>
-                <size>16</size>
-            </text>
-            <upload_image>
-                <enabled>1</enabled>
-                <copyright>1</copyright>
-                <format>png</format>
-                <size>1</size>
-                <max_size_width>500</max_size_width>
-                <max_size_height>700</max_size_height>
-            </upload_image>
-        </gomage_designer>
-    </default>
     <frontend>
         <routers>
             <gomage_designer>
@@ -235,5 +194,46 @@
             </catalog_product_type_prepare_lite_options>
         </events>
     </global>
+    <default>
+        <gomage_designer>
+            <general>
+                <add_to_cart_button>0</add_to_cart_button>
+                <format>jpg</format>
+                <fixed_price>0</fixed_price>
+                <price_for_text>0</price_for_text>
+                <price_for_image>0</price_for_image>
+                <show_comment>1</show_comment>
+                <default_tab>design</default_tab>
+            </general>
+            <navigation>
+                <enabled>1</enabled>
+                <color_attribute>color</color_attribute>
+                <size_attribute>size</size_attribute>
+            </navigation>
+            <design>
+                <enabled>1</enabled>
+                <search>1</search>
+                <navigation>1</navigation>
+                <design_size_width>500</design_size_width>
+                <design_size_height>700</design_size_height>
+                <zoom_size_width>600</zoom_size_width>
+                <zoom_size_height>800</zoom_size_height>
+            </design>
+            <text>
+                <enabled>1</enabled>
+                <effects>1</effects>
+                <font>Arial</font>
+                <size>16</size>
+            </text>
+            <upload_image>
+                <enabled>1</enabled>
+                <copyright>1</copyright>
+                <format>png</format>
+                <size>1</size>
+                <max_size_width>500</max_size_width>
+                <max_size_height>700</max_size_height>
+            </upload_image>
+        </gomage_designer>
+    </default>
 </config>
 
