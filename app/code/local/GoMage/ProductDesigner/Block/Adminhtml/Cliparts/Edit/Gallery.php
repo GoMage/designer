@@ -38,7 +38,7 @@ class GoMage_ProductDesigner_Block_Adminhtml_Cliparts_Edit_Gallery
     {
         $values = array();
         $category = $this->getCategory();
-        $galleryConfig = Mage::getSingleton('gmpd/clipart_gallery_config');
+        $galleryConfig = Mage::getSingleton('gomage_designer/clipart_gallery_config');
         $mediaUrl = $galleryConfig->getBaseMediaUrl();
 
         if($category) {

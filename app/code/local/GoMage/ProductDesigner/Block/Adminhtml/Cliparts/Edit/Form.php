@@ -69,7 +69,7 @@ class GoMage_ProductDesigner_Block_Adminhtml_Cliparts_Edit_Form extends Mage_Adm
 
     public function getDefaultCategoryId() {
         /* @var $clipartsCategorySingleton GoMage_ProductDesigner_Model_Clipart_Category */
-        $clipartsCategorySingleton = Mage::getSingleton('gmpd/clipart_category');
+        $clipartsCategorySingleton = Mage::getSingleton('gomage_designer/clipart_category');
         return $clipartsCategorySingleton->getDefaultCategoryId();
     }
 
@@ -94,7 +94,7 @@ class GoMage_ProductDesigner_Block_Adminhtml_Cliparts_Edit_Form extends Mage_Adm
         $parentCategoryId = $this->getParentCategoryId();
         if($parentCategoryId) {
             /* @var $clipartsCategorySingleton GoMage_ProductDesigner_Model_Clipart_Category */
-            $clipartsCategorySingleton = Mage::getSingleton('gmpd/clipart_category');
+            $clipartsCategorySingleton = Mage::getSingleton('gomage_designer/clipart_category');
             return $clipartsCategorySingleton->getCategoryById($parentCategoryId);
         }
     }

@@ -8,7 +8,7 @@ $installer = $this;
 
 $installer->startSetup();
 
-$category = Mage::getModel('gmpd/clipart_category');
+$category = Mage::getModel('gomage_designer/clipart_category');
 $defaultCategory = $category->getDefaultCategory();
 
 $categoryData = array(
@@ -24,7 +24,7 @@ $category->setData($categoryData)->save();
 $categoryId = $category->getId();
 
 if($categoryId) {
-    $clipartsDir = Mage::getSingleton('gmpd/clipart_gallery_config')->getBaseMediaPath() . '/';
+    $clipartsDir = Mage::getSingleton('gomage_designer/clipart_gallery_config')->getBaseMediaPath() . '/';
 
     $pngImages = glob($clipartsDir .'*.png');
     $jpgImages = glob($clipartsDir .'*.jpg');
@@ -36,7 +36,7 @@ if($categoryId) {
     $imageIndex = 0;
     foreach($defaultImages as $image) {
         $imageUrl = str_replace($clipartsDir, '/', $image);
-        $clipart = Mage::getModel('gmpd/clipart');
+        $clipart = Mage::getModel('gomage_designer/clipart');
         $clipart->setData(array(
             'category_id' => $categoryId,
             'label' => '',

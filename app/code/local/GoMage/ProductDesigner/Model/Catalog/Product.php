@@ -10,14 +10,14 @@ class GoMage_ProductDesigner_Model_Catalog_Product extends Mage_Catalog_Model_Pr
      */
     public function getMediaGalleryImages()
     {
-        if (!Mage::helper('designer')->isEnabled()) {
+        if (!Mage::helper('gomage_designer')->isEnabled()) {
             return parent::getMediaGalleryImages();
         }
         if(!$this->hasData('media_gallery_images') && is_array($this->getMediaGallery('images'))) {
             $images = new Varien_Data_Collection();
             $designId = (int) Mage::app()->getRequest()->getParam('design_id', false);
             if ($designId) {
-                $design = Mage::getModel('gmpd/design')->load($designId);
+                $design = Mage::getModel('gomage_designer/design')->load($designId);
                 $designColor = $design->getColor();
                 $designImagesCollection = $this->getDesignProductImages($designId);
                 $designImages = array();
@@ -85,7 +85,7 @@ class GoMage_ProductDesigner_Model_Catalog_Product extends Mage_Catalog_Model_Pr
 
     public function getDesignMediaConfig()
     {
-        return Mage::getSingleton('gmpd/design_config');
+        return Mage::getSingleton('gomage_designer/design_config');
     }
 
     /**
@@ -119,7 +119,7 @@ class GoMage_ProductDesigner_Model_Catalog_Product extends Mage_Catalog_Model_Pr
      */
     public function getDesignProductImages($designId)
     {
-        $collection = Mage::getModel('gmpd/design_image')->getCollection()
+        $collection = Mage::getModel('gomage_designer/design_image')->getCollection()
             ->addFieldToFilter('design_id', $designId)
             ->addFieldToFilter('product_id', $this->getId());
 
@@ -134,8 +134,8 @@ class GoMage_ProductDesigner_Model_Catalog_Product extends Mage_Catalog_Model_Pr
     public function getProductColors()
     {
         if ($this->getTypeId() == Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE
-            && Mage::helper('designer')->hasColorAttribute()) {
-            $colors = Mage::getResourceModel('gmpd/catalog_product_type_configurable')->getProductColors($this->getId());
+            && Mage::helper('gomage_designer')->hasColorAttribute()) {
+            $colors = Mage::getResourceModel('gomage_designer/catalog_product_type_configurable')->getProductColors($this->getId());
             foreach ($colors as &$color) {
                 if (isset($color['image']) && $color['image'] != null) {
                     $color['image'] = Mage::getBaseUrl('media') . 'option_image'. DS . $color['image'];
@@ -166,7 +166,7 @@ class GoMage_ProductDesigner_Model_Catalog_Product extends Mage_Catalog_Model_Pr
 
     public function hasImagesForDesign()
     {
-        $config = Mage::helper('designer')->getProductSettingForEditor($this);
+        $config = Mage::helper('gomage_designer')->getProductSettingForEditor($this);
         if (empty($config['images'])) {
             return false;
         }

@@ -44,7 +44,7 @@ class GoMage_ProductDesigner_Block_Adminhtml_Design_View extends Mage_Adminhtml_
     {
         if (extension_loaded('zip') && ($url = $this->getDownloadAllUrl())) {
             $this->_addButton('download', array(
-                'label'     => Mage::helper('designer')->__('Download All'),
+                'label'     => Mage::helper('gomage_designer')->__('Download All'),
                 'onclick'   => 'setLocation(\'' . $url .'\')'
             ));
         }
@@ -82,7 +82,7 @@ class GoMage_ProductDesigner_Block_Adminhtml_Design_View extends Mage_Adminhtml_
     {
         if (is_null($this->_imageCollection)) {
             $designId = $this->getDesignId();
-            $collection = Mage::getModel('gmpd/design_image')->getCollection()
+            $collection = Mage::getModel('gomage_designer/design_image')->getCollection()
                 ->getImageCollectionByDesign($designId);
             $this->_imageCollection = $collection;
         }
@@ -109,7 +109,7 @@ class GoMage_ProductDesigner_Block_Adminhtml_Design_View extends Mage_Adminhtml_
      */
     public function getImage($image, $size)
     {
-        return Mage::helper('designer/image')->init($image)->resize($size);
+        return Mage::helper('gomage_designer/image')->init($image)->resize($size);
     }
 
     /**
@@ -130,7 +130,7 @@ class GoMage_ProductDesigner_Block_Adminhtml_Design_View extends Mage_Adminhtml_
     {
         if (is_null($this->_design)) {
             if ($designId = $this->getDesignId()) {
-                $design = Mage::getModel('gmpd/design')->load($designId);
+                $design = Mage::getModel('gomage_designer/design')->load($designId);
                 if ($design && $design->getId()) {
                     $this->_design = $design;
                 }

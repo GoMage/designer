@@ -23,7 +23,7 @@ class GoMage_ProductDesigner_Block_Designer_Navigation_Product_List extends Mage
     protected function _getProductCollection()
     {
         if(is_null($this->_productCollection)) {
-            $this->_productCollection = Mage::getSingleton('gmpd/navigation')->getProductCollection();
+            $this->_productCollection = Mage::getSingleton('gomage_designer/navigation')->getProductCollection();
         }
         return $this->_productCollection;
     }

@@ -43,7 +43,7 @@ class GoMage_ProductDesigner_Model_Design_Image extends Mage_Core_Model_Abstract
      */
     protected function _construct()
     {
-        $this->_init('gmpd/design_image');
+        $this->_init('gomage_designer/design_image');
     }
 
     /**
@@ -57,7 +57,7 @@ class GoMage_ProductDesigner_Model_Design_Image extends Mage_Core_Model_Abstract
      */
     public function saveImage($image, $imageId, $product, $designId)
     {
-        $dataHelper = Mage::helper('designer');
+        $dataHelper = Mage::helper('gomage_designer');
         $imageSettings = $dataHelper->getImageSettings($product, $imageId);
         if ($imageSettings) {
             $dimensions = $imageSettings['original_image']['dimensions'];
@@ -196,7 +196,7 @@ class GoMage_ProductDesigner_Model_Design_Image extends Mage_Core_Model_Abstract
     public function saveCanvas($canvas, $layer, $imageId, $designId)
     {
         $currentProduct = Mage::registry('product');
-        $designConfig = Mage::getSingleton('gmpd/design_config');
+        $designConfig = Mage::getSingleton('gomage_designer/design_config');
         $configPath = $designConfig->getBaseMediaPath();
 
         if($currentProduct && $currentProduct->getId()) {
@@ -304,7 +304,7 @@ class GoMage_ProductDesigner_Model_Design_Image extends Mage_Core_Model_Abstract
      */
     protected function _preparePathToSave()
     {
-        $pathToSave = Mage::getSingleton('gmpd/design_config')->getBaseMediaPath();
+        $pathToSave = Mage::getSingleton('gomage_designer/design_config')->getBaseMediaPath();
         $this->mkDirIfNotExists($pathToSave);
 
         return $pathToSave;

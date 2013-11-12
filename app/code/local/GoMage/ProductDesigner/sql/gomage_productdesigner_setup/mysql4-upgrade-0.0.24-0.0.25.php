@@ -32,7 +32,7 @@ $installer = $this;
 $installer->startSetup();
 
 try {
-    $table = $installer->getConnection()->newTable($installer->getTable('gmpd/attribute_option'))
+    $table = $installer->getConnection()->newTable($installer->getTable('gomage_designer/attribute_option'))
         ->addColumn('option_id', Varien_Db_Ddl_Table::TYPE_INTEGER, null, array(
             'unsigned'  => true,
             'nullable'  => false,
@@ -52,8 +52,8 @@ try {
     $installer->getConnection()->createTable($table);
 
     $installer->getConnection()->addForeignKey(
-        $installer->getFkName('gmpd/attribute_option', 'option_id', 'eav/attribute_option', 'option_id'),
-        $installer->getTable('gmpd/attribute_option'), 'option_id',
+        $installer->getFkName('gomage_designer/attribute_option', 'option_id', 'eav/attribute_option', 'option_id'),
+        $installer->getTable('gomage_designer/attribute_option'), 'option_id',
         $installer->getTable('eav/attribute_option'), 'option_id',
         Varien_Db_Ddl_Table::ACTION_CASCADE, Varien_Db_Ddl_Table::ACTION_CASCADE
     );

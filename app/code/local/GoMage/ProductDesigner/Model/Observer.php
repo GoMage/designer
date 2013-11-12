@@ -64,7 +64,7 @@
              $buyRequest = unserialize($buyRequest->getValue());
              if (isset($buyRequest['design'])) {
                  $designId = $buyRequest['design'];
-                 $design = Mage::getModel('gmpd/design')->load($designId);
+                 $design = Mage::getModel('gomage_designer/design')->load($designId);
                  if ($design && $design->getId() && $design->getPrice() > 0) {
                      $finalPrice = $product->getData('final_price');
                      $finalPrice += $design->getPrice();
@@ -86,13 +86,13 @@
         $product = $observer->getEvent()->getProduct();
 
         if ($designId = $buyRequest->getDesign()) {
-            $design = Mage::getModel('gmpd/design')->load($designId);
+            $design = Mage::getModel('gomage_designer/design')->load($designId);
             if ($design && $design->getId()) {
                 if (!$this->_checkProductDesignColorMatch($product, $design, $buyRequest)) {
                     $product->setOptionsValidationFail(true);
                     $product->setDesignColorValidationFail(true);
                     Mage::throwException(
-                        Mage::helper('designer')->__('Сonfiguration of your design does not match the configuration of the product')
+                        Mage::helper('gomage_designer')->__('Сonfiguration of your design does not match the configuration of the product')
                     );
                 }
                 $product->addCustomOption('design', $designId);
@@ -107,7 +107,7 @@
          }
 
          if ($color = $design->getColor()) {
-             if ($colorAttribute = Mage::helper('designer')->hasColorAttribute()) {
+             if ($colorAttribute = Mage::helper('gomage_designer')->hasColorAttribute()) {
                 if ($superAttribute = $buyRequest->getSuperAttribute()) {
                     if (isset($superAttribute[$colorAttribute])) {
                         return $superAttribute[$colorAttribute] == $color;

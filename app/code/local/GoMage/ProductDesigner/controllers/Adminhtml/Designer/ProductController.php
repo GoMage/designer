@@ -4,7 +4,7 @@ class GoMage_ProductDesigner_Adminhtml_Designer_ProductController
 {
     public function dispatch($action)
     {
-        if(!Mage::helper('designer')->isEnabled()) {
+        if(!Mage::helper('gomage_designer')->isEnabled()) {
             $action = 'noRoute';
         }
         parent::dispatch($action);
@@ -39,11 +39,11 @@ class GoMage_ProductDesigner_Adminhtml_Designer_ProductController
             $image = $this->_initializeProductImage($product);
             if ($image && $image->getId()) {
                 $html = $this->_getProductEditHtml();
-                Mage::helper('designer/ajax')->sendSuccess(array(
+                Mage::helper('gomage_designer/ajax')->sendSuccess(array(
                     'design_area' => $html
                 ));
             } else {
-                Mage::helper('designer/ajax')->sendError(Mage::helper('designer')->__('You can not choose this image for design'));
+                Mage::helper('gomage_designer/ajax')->sendError(Mage::helper('gomage_designer')->__('You can not choose this image for design'));
             }
         }
     }
@@ -103,20 +103,20 @@ class GoMage_ProductDesigner_Adminhtml_Designer_ProductController
 
         try {
             if (!$product || !$product->getId()){
-                throw new Exception(Mage::helper('designer')->__('Product with id %d not found', $this->getRequest()->getParam('product_id')));
+                throw new Exception(Mage::helper('gomage_designer')->__('Product with id %d not found', $this->getRequest()->getParam('product_id')));
             }
             $image = $this->_initializeProductImage($product, 'image_id');
             if (!$image || !$image->getId()) {
-                throw new Exception(Mage::helper('designer')->__('Image with id %d not found', $this->getRequest()->getParam('image_id')));
+                throw new Exception(Mage::helper('gomage_designer')->__('Image with id %d not found', $this->getRequest()->getParam('image_id')));
             }
             if ($mediaGalleryAttribute = $product->getMediaGalleryAttribute()){
                 $mediaGalleryAttribute->updateImage($product, $image->getFile(), array('design_area' => $this->_prepareDesignAreaSettings()));
                 $product->save();
             }
-            Mage::helper('designer/ajax')->sendSuccess();
+            Mage::helper('gomage_designer/ajax')->sendSuccess();
         } catch (Exception $e) {
             Mage::logException($e);
-            Mage::helper('designer/ajax')->sendError($e->getMessage());
+            Mage::helper('gomage_designer/ajax')->sendError($e->getMessage());
         }
     }
 
@@ -157,7 +157,7 @@ class GoMage_ProductDesigner_Adminhtml_Designer_ProductController
                 if ($product && $product->getId()) {
                     $image = $this->_initializeProductImage($product, 'image_id');
                     if (!$image || !$image->getId()) {
-                        throw new Exception(Mage::helper('designer')->__('Image with id %d not found', $imageId));
+                        throw new Exception(Mage::helper('gomage_designer')->__('Image with id %d not found', $imageId));
                     }
                     if ($mediaGalleryAttribute = $product->getMediaGalleryAttribute()){
                         $mediaGalleryAttribute->updateImage(
@@ -167,13 +167,13 @@ class GoMage_ProductDesigner_Adminhtml_Designer_ProductController
                         );
                         $product->save();
                     }
-                    Mage::helper('designer/ajax')->sendSuccess();
+                    Mage::helper('gomage_designer/ajax')->sendSuccess();
                 } else {
-                    throw new Exception(Mage::helper('designer')->__('Product with id %d not found', $productId));
+                    throw new Exception(Mage::helper('gomage_designer')->__('Product with id %d not found', $productId));
                 }
             }
         } catch (Exception $e) {
-            Mage::helper('designer/ajax')->sendError($e->getMessage());
+            Mage::helper('gomage_designer/ajax')->sendError($e->getMessage());
         }
     }
 

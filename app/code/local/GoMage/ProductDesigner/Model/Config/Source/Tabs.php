@@ -39,10 +39,10 @@ class GoMage_ProductDesigner_Model_Config_Source_Tabs
     public function toOptionArray()
     {
         return array(
-            array('value' => 'navigation', 'label' => Mage::helper('designer')->__('Choose Product')),
-            array('value' => 'design', 'label' => Mage::helper('designer')->__('Add Design')),
-            array('value' => 'text', 'label' => Mage::helper('designer')->__('Add Text')),
-            array('value' => 'upload_image', 'label' => Mage::helper('designer')->__('Upload Images'))
+            array('value' => 'navigation', 'label' => Mage::helper('gomage_designer')->__('Choose Product')),
+            array('value' => 'design', 'label' => Mage::helper('gomage_designer')->__('Add Design')),
+            array('value' => 'text', 'label' => Mage::helper('gomage_designer')->__('Add Text')),
+            array('value' => 'upload_image', 'label' => Mage::helper('gomage_designer')->__('Upload Images'))
         );
     }
 }

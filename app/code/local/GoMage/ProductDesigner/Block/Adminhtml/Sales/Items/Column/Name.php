@@ -46,7 +46,7 @@ class GoMage_ProductDesigner_Block_Adminhtml_Sales_Items_Column_Name
         $options = $options['info_buyRequest'];
         if (isset($options['design'])) {
             $designId = (int) $options['design'];
-            $design = Mage::getModel('gmpd/design')->load($designId);
+            $design = Mage::getModel('gomage_designer/design')->load($designId);
             if ($design && $design->getId()) {
                 $option = array(
                     'price' => $design->getPrice(),

@@ -4,7 +4,7 @@ class GoMage_ProductDesigner_Model_Mysql4_UploadedImage extends Mage_Core_Model_
 {
     public function _construct()
     {
-        $this->_init('gmpd/uploadedImage', 'image_id');
+        $this->_init('gomage_designer/uploadedImage', 'image_id');
     }
 }
 

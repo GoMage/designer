@@ -33,9 +33,9 @@ $installer->startSetup();
 
 try {
     $this->getConnection()->addForeignKey(
-        $installer->getFkName('gmpd/design_image', 'design_id', 'gmpd/design', 'design_id'),
-        $installer->getTable('gmpd/design_image'), 'design_id',
-        $installer->getTable('gmpd/design'), 'design_id',
+        $installer->getFkName('gomage_designer/design_image', 'design_id', 'gomage_designer/design', 'design_id'),
+        $installer->getTable('gomage_designer/design_image'), 'design_id',
+        $installer->getTable('gomage_designer/design'), 'design_id',
         Varien_Db_Ddl_Table::ACTION_CASCADE, Varien_Db_Ddl_Table::ACTION_CASCADE
     );
 } catch (Exception $e) {

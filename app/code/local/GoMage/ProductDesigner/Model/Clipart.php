@@ -21,7 +21,7 @@ class GoMage_ProductDesigner_Model_Clipart extends Mage_Core_Model_Abstract {
 
     protected function _construct()
     {
-        $this->_init('gmpd/clipart');
+        $this->_init('gomage_designer/clipart');
     }
 
     public function getImagePath($imageUrl) {
@@ -54,7 +54,7 @@ class GoMage_ProductDesigner_Model_Clipart extends Mage_Core_Model_Abstract {
     }
 
     public function getConfig() {
-        return Mage::getSingleton('gmpd/clipart_gallery_config');
+        return Mage::getSingleton('gomage_designer/clipart_gallery_config');
     }
 
     /**

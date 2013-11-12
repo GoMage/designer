@@ -79,7 +79,7 @@ class GoMage_ProductDesigner_Model_Mysql4_Catalog_Product_Type_Configurable
                 "attr_option.option_id = attr_value_default.option_id and attr_value_default.store_id = 0",
                 array()
             )->joinLeft(
-                array('attr_value_image' => $this->getTable('gmpd/attribute_option')),
+                array('attr_value_image' => $this->getTable('gomage_designer/attribute_option')),
                 "attr_option.option_id = attr_value_image.option_id",
                 array('image' => 'attr_value_image.filename')
             )->columns(array('value' =>

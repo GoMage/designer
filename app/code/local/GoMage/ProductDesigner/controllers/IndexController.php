@@ -31,7 +31,7 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
      */
     protected function _initializeProduct()
     {
-        return Mage::helper('designer')->initializeProduct();
+        return Mage::helper('gomage_designer')->initializeProduct();
     }
 
     /**
@@ -43,9 +43,9 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
     {
         $product = $this->_initializeProduct();
         if ($product->getId() && (!$product->getEnableProductDesigner() || !$product->hasImagesForDesign())
-            && !Mage::helper('designer')->isNavigationEnabled()) {
+            && !Mage::helper('gomage_designer')->isNavigationEnabled()) {
             $this->_redirectReferer();
-        } elseif (!$product->getId() && !Mage::helper('designer')->isNavigationEnabled()) {
+        } elseif (!$product->getId() && !Mage::helper('gomage_designer')->isNavigationEnabled()) {
             $this->_redirectReferer();
         }
         $this->loadLayout();
@@ -70,21 +70,21 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
         try {
             $product = $this->_initializeProduct();
             if (!$product || !$product->getId()) {
-                throw new Exception(Mage::helper('designer')->__('Product with id %d not found',
+                throw new Exception(Mage::helper('gomage_designer')->__('Product with id %d not found',
                     $this->getRequest()->getParam('id')));
             }
-            $settings = Mage::helper('designer')->getProductSettingForEditor($product);
+            $settings = Mage::helper('gomage_designer')->getProductSettingForEditor($product);
             $responseData = array(
                 'product_settings' => $settings,
                 'design_price' => $this->_getDesignPriceHtml(),
-                'price_config' => Mage::helper('designer')->getProductPriceConfig(),
+                'price_config' => Mage::helper('gomage_designer')->getProductPriceConfig(),
             );
             if ($productColors = $product->getProductColors()) {
                 $responseData['product_colors'] = $productColors;
             }
-            Mage::helper('designer/ajax')->sendSuccess($responseData);
+            Mage::helper('gomage_designer/ajax')->sendSuccess($responseData);
         } catch(Exception $e) {
-            Mage::helper('designer/ajax')->sendError($e->getMessage());
+            Mage::helper('gomage_designer/ajax')->sendError($e->getMessage());
         }
     }
 
@@ -108,7 +108,7 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
             'navigation_prodcuts' => $navigationBlock->getProductListHtml()
         );
 
-        Mage::helper('designer/ajax')->sendSuccess($responseData);
+        Mage::helper('gomage_designer/ajax')->sendSuccess($responseData);
     }
 
     /**
@@ -130,7 +130,7 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
             'filters' => $designBlock->getChildHtml('design.filters'),
             'cliparts' => $designBlock->getChildHtml('design.cliparts')
         );
-        Mage::helper('designer/ajax')->sendSuccess($responseData);
+        Mage::helper('gomage_designer/ajax')->sendSuccess($responseData);
     }
 
     /**
@@ -153,26 +153,26 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
         try {
             $design = $this->_saveDesign();
             $product = Mage::registry('product');
-            Mage::helper('designer/ajax')->sendRedirect(array(
+            Mage::helper('gomage_designer/ajax')->sendRedirect(array(
                 'url' => $product->getDesignedProductUrl($design->getId()),
                 'design_id' => $design->getId()
             ));
         } catch (Exception $e) {
-            Mage::helper('designer/ajax')->sendError($e->getMessage());
+            Mage::helper('gomage_designer/ajax')->sendError($e->getMessage());
             Mage::logException($e);
         }
     }
 
     protected function _saveDesign()
     {
-        return Mage::helper('designer')->saveProductDesignedImages();
+        return Mage::helper('gomage_designer')->saveProductDesignedImages();
     }
 
     public function uploadImagesAction()
     {
         $this->loadLayout();
         $block = $this->getLayout()->getBlock('uploadedImages');
-        $baseMediaPath = Mage::getSingleton('gmpd/uploadedImage_config')->getBaseMediaPath();
+        $baseMediaPath = Mage::getSingleton('gomage_designer/uploadedImage_config')->getBaseMediaPath();
         $allowedFormatsString = Mage::getStoreConfig('gomage_designer/upload_image/format');
         $maxUploadFileSize = Mage::getStoreConfig('gomage_designer/upload_image/size');
         $allowedFormats = explode(',', $allowedFormatsString);
@@ -183,7 +183,7 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
 
         try {
             if (!isset($_FILES['filesToUpload'])) {
-                throw new Exception(Mage::helper('designer')->__('Please, select files for upload'));
+                throw new Exception(Mage::helper('gomage_designer')->__('Please, select files for upload'));
             }
             $files = $this->prepareFilesArray($_FILES['filesToUpload']);
             foreach ($files as $file) {
@@ -192,13 +192,13 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
                 }
                 if ($file['error'] === UPLOAD_ERR_INI_SIZE || $file['error'] === UPLOAD_ERR_FORM_SIZE
                     || $file['size'] > $maxUploadFileSize * 1024 * 1024) {
-                    $errors['size'] = Mage::helper('designer')->__('You can not upload files larger than %d MB', $maxUploadFileSize);
+                    $errors['size'] = Mage::helper('gomage_designer')->__('You can not upload files larger than %d MB', $maxUploadFileSize);
                     continue;
                 }
 
                 $imageExtension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
                 if (!in_array($imageExtension, $allowedFormats)) {
-                    $errors['type'] = Mage::helper('designer')->__('Cannot upload the file. The format is not supported. Supported file formats are: %s', $allowedFormatsString);
+                    $errors['type'] = Mage::helper('gomage_designer')->__('Cannot upload the file. The format is not supported. Supported file formats are: %s', $allowedFormatsString);
                     continue;
                 }
 
@@ -216,7 +216,7 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
                         'customer_id' => $customerId,
                         'session_id' => $customerId ? $customerId : $sessionId
                     );
-                    $uploadImage = Mage::getModel('gmpd/uploadedImage');
+                    $uploadImage = Mage::getModel('gomage_designer/uploadedImage');
                     $uploadImage->setData($imageData);
                     $uploadImage->save();
                     $uploadedFilesCount++;
@@ -227,7 +227,7 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
                 throw new Exception(implode("\n", $errors));
             }
             if ($uploadedFilesCount == 0) {
-                throw new Exception(Mage::helper('designer')->__('Please, select files for upload'));
+                throw new Exception(Mage::helper('gomage_designer')->__('Please, select files for upload'));
             }
 
         } catch (Exception $e) {
@@ -249,9 +249,9 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
 
         try {
             $design = $this->_saveDesign();
-            Mage::helper('designer/ajax')->sendSuccess(array('design_id' => $design->getId()));
+            Mage::helper('gomage_designer/ajax')->sendSuccess(array('design_id' => $design->getId()));
         } catch (Exception $e) {
-            Mage::helper('designer/ajax')->sendError($e->getMessage());
+            Mage::helper('gomage_designer/ajax')->sendError($e->getMessage());
         }
     }
 
@@ -272,7 +272,7 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
 
     protected function getConvertHelper()
     {
-        return Mage::helper('designer/convert');
+        return Mage::helper('gomage_designer/convert');
     }
 
     protected function getSessionId()

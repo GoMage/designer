@@ -21,17 +21,17 @@
         </reference>
     </adminhtml_catalog_product_new>
     <adminhtml_designer_product_edit>
-            <block type="designer/adminhtml_product_edit" name="product_designer_product" template="gomage/productdesigner/product/edit.phtml" output="toHtml" />
+            <block type="gomage_designer/adminhtml_product_edit" name="product_designer_product" template="gomage/productdesigner/product/edit.phtml" output="toHtml" />
     </adminhtml_designer_product_edit>
     <adminhtml_cliparts_edit>
         <update handle="editor" />
         <reference name="left">
-            <block name="cliparts_categories_tree" type="designer/adminhtml_cliparts_tree" template="gomage/productdesigner/cliparts/tree.phtml" />
+            <block name="cliparts_categories_tree" type="gomage_designer/adminhtml_cliparts_tree" template="gomage/productdesigner/cliparts/tree.phtml" />
         </reference>
         <reference name="content">
-            <block name="cliparts_edit"  type="designer/adminhtml_cliparts_edit" template="gomage/productdesigner/cliparts/edit.phtml">
-                <block name="form" type="designer/adminhtml_cliparts_edit_form" template="gomage/productdesigner/cliparts/edit/form.phtml">
-                    <block name="gallery" type="designer/adminhtml_cliparts_edit_gallery" />
+            <block name="cliparts_edit"  type="gomage_designer/adminhtml_cliparts_edit" template="gomage/productdesigner/cliparts/edit.phtml">
+                <block name="form" type="gomage_designer/adminhtml_cliparts_edit_form" template="gomage/productdesigner/cliparts/edit/form.phtml">
+                    <block name="gallery" type="gomage_designer/adminhtml_cliparts_edit_gallery" />
                 </block>
             </block>
         </reference>
@@ -43,9 +43,9 @@
     <adminhtml_fonts_edit>
         <update handle="editor" />
         <reference name="content">
-            <block name="cliparts_edit"  type="designer/adminhtml_fonts_edit" template="gomage/productdesigner/fonts/edit.phtml">
-                <block name="form" type="designer/adminhtml_fonts_edit_form" template="gomage/productdesigner/fonts/edit/form.phtml">
-                    <block name="gallery" type="designer/adminhtml_fonts_edit_gallery" />
+            <block name="cliparts_edit"  type="gomage_designer/adminhtml_fonts_edit" template="gomage/productdesigner/fonts/edit.phtml">
+                <block name="form" type="gomage_designer/adminhtml_fonts_edit_form" template="gomage/productdesigner/fonts/edit/form.phtml">
+                    <block name="gallery" type="gomage_designer/adminhtml_fonts_edit_gallery" />
                 </block>
             </block>
         </reference>
@@ -62,7 +62,7 @@
 
     <adminhtml_designer_design_view>
         <reference name="content">
-            <block type="designer/adminhtml_design_view" name="design.view" template="gomage/productdesigner/design/view.phtml">
+            <block type="gomage_designer/adminhtml_design_view" name="design.view" template="gomage/productdesigner/design/view.phtml">
                 <action method="setHeader"><header>View Design</header></action>
                 <action method="setColumnCount"><count>3</count></action>
             </block>

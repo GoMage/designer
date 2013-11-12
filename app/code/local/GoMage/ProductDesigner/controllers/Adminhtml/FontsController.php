@@ -26,7 +26,7 @@ class GoMage_ProductDesigner_Adminhtml_FontsController extends Mage_Adminhtml_Co
                 if(count($fonts) > 0) {
                     foreach($fonts as $font) {
                         if(!empty($font)) {
-                            $fontObj = Mage::getModel('gmpd/font');
+                            $fontObj = Mage::getModel('gomage_designer/font');
 
                             $fontPath = $fontObj->getFontPath($font['url']);
 
@@ -66,7 +66,7 @@ class GoMage_ProductDesigner_Adminhtml_FontsController extends Mage_Adminhtml_Co
                         }
                     }
                 }
-                $this->_getSession()->addSuccess(Mage::helper('designer')->__('Fonts have been saved'));
+                $this->_getSession()->addSuccess(Mage::helper('gomage_designer')->__('Fonts have been saved'));
 
             } catch(Exception $e) {
                 $this->_getSession()->addError($e->getMessage())
@@ -85,7 +85,7 @@ class GoMage_ProductDesigner_Adminhtml_FontsController extends Mage_Adminhtml_Co
             $uploader->setAllowRenameFiles(true);
             $uploader->setFilesDispersion(true);
             $result = $uploader->save(
-                Mage::getSingleton('gmpd/font_gallery_config')->getBaseTmpMediaPath()
+                Mage::getSingleton('gomage_designer/font_gallery_config')->getBaseTmpMediaPath()
             );
 
             Mage::dispatchEvent('catalog_product_gallery_upload_font_after', array(
@@ -99,7 +99,7 @@ class GoMage_ProductDesigner_Adminhtml_FontsController extends Mage_Adminhtml_Co
             $result['tmp_name'] = str_replace(DS, "/", $result['tmp_name']);
             $result['path'] = str_replace(DS, "/", $result['path']);
 
-            $result['url'] = Mage::getSingleton('gmpd/font_gallery_config')->getTmpMediaUrl($result['file']);
+            $result['url'] = Mage::getSingleton('gomage_designer/font_gallery_config')->getTmpMediaUrl($result['file']);
             $result['file'] = $result['file'] . '.tmp';
             $result['cookie'] = array(
                 'name'     => session_name(),

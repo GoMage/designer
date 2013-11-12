@@ -4,7 +4,7 @@ class GoMage_ProductDesigner_Adminhtml_Designer_DesignController
 {
     public function dispatch($action)
     {
-        if(!Mage::helper('designer')->isEnabled()) {
+        if(!Mage::helper('gomage_designer')->isEnabled()) {
             $action = 'noRoute';
         }
         parent::dispatch($action);
@@ -23,11 +23,11 @@ class GoMage_ProductDesigner_Adminhtml_Designer_DesignController
         $type = $this->getRequest()->getParam('type');
 
         if ($imageId) {
-            $image = Mage::getModel('gmpd/design_image')->load($imageId);
+            $image = Mage::getModel('gomage_designer/design_image')->load($imageId);
             if ($image) {
                 $imageGetter = 'get' . $type;
                 $imageName = ltrim($image->$imageGetter(), '/');
-                $imageFile = file_get_contents(Mage::getModel('gmpd/design_config')->getMediaPath($image->$imageGetter()));
+                $imageFile = file_get_contents(Mage::getModel('gomage_designer/design_config')->getMediaPath($image->$imageGetter()));
                 $this->_prepareDownloadResponse($imageName, $imageFile);
                 return;
             }
@@ -45,7 +45,7 @@ class GoMage_ProductDesigner_Adminhtml_Designer_DesignController
         $designId = (int) Mage::app()->getRequest()->getParam('design_id');
 
         if ($designId) {
-            $images = Mage::getModel('gmpd/design')->getImages($designId);
+            $images = Mage::getModel('gomage_designer/design')->getImages($designId);
             $archiveFileName = Mage::getBaseDir('tmp') . DS . 'design_images.zip';
             if (file_exists($archiveFileName)) {
                 unlink($archiveFileName);
@@ -54,12 +54,12 @@ class GoMage_ProductDesigner_Adminhtml_Designer_DesignController
             $archive->open($archiveFileName, ZipArchive::CREATE);
             foreach ($images as $_image) {
                 $archive->addFile(
-                    Mage::getModel('gmpd/design_config')->getMediaPath($_image->getImage()),
+                    Mage::getModel('gomage_designer/design_config')->getMediaPath($_image->getImage()),
                     ltrim($_image->getImage(), '/')
                 );
                 if ($_image->getLayer()) {
                     $archive->addFile(
-                        Mage::getModel('gmpd/design_config')->getMediaPath($_image->getLayer()),
+                        Mage::getModel('gomage_designer/design_config')->getMediaPath($_image->getLayer()),
                         ltrim($_image->getLayer(), '/')
                     );
                 }

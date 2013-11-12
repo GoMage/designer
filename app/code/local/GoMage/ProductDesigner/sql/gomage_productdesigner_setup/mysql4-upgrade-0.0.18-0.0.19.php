@@ -32,7 +32,7 @@ $installer = $this;
 $installer->startSetup();
 
 try {
-    $table = $installer->getConnection()->newTable($installer->getTable('gmpd/design_image'))
+    $table = $installer->getConnection()->newTable($installer->getTable('gomage_designer/design_image'))
         ->addColumn('id', Varien_Db_Ddl_Table::TYPE_INTEGER, null, array(
             'identity'  => true,
             'unsigned'  => true,

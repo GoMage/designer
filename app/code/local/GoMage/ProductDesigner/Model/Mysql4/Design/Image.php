@@ -41,6 +41,6 @@ class GoMage_ProductDesigner_Model_Mysql4_Design_Image extends Mage_Core_Model_R
      */
     protected function _construct()
     {
-        $this->_init('gmpd/design_image', 'id');
+        $this->_init('gomage_designer/design_image', 'id');
     }
 }

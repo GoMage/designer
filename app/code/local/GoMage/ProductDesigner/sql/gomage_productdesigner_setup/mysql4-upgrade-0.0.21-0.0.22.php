@@ -35,7 +35,7 @@ try {
     $this->updateAttribute(Mage_Catalog_Model_Product::ENTITY,
         'media_gallery',
         'backend_model',
-        'gmpd/catalog_product_attribute_backend_media'
+        'gomage_designer/catalog_product_attribute_backend_media'
     );
 } catch (Exception $e) {
     Mage::logException($e);

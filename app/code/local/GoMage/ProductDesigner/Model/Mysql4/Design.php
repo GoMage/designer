@@ -4,7 +4,7 @@ class GoMage_ProductDesigner_Model_Mysql4_Design extends Mage_Core_Model_Resourc
 {
     public function _construct()
     {
-        $this->_init('gmpd/design', 'design_id');
+        $this->_init('gomage_designer/design', 'design_id');
     }
 }
 

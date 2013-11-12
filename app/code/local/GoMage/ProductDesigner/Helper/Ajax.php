@@ -10,21 +10,21 @@ class GoMage_ProductDesigner_Helper_Ajax extends Mage_Core_Helper_Data
     public function sendError($message)
     {
         return $this->sendResponse(
-            Mage::getModel('gmpd/ajax_response')->error()->setMessage($message)
+            Mage::getModel('gomage_designer/ajax_response')->error()->setMessage($message)
         );
     }
 
     public function sendSuccess($data = array())
     {
         return $this->sendResponse(
-            Mage::getModel('gmpd/ajax_response')->success()->addData($data)
+            Mage::getModel('gomage_designer/ajax_response')->success()->addData($data)
         );
     }
 
     public function sendRedirect($data = array())
     {
         return $this->sendResponse(
-            Mage::getModel('gmpd/ajax_response')->redirect()->addData($data)
+            Mage::getModel('gomage_designer/ajax_response')->redirect()->addData($data)
         );
     }
 }

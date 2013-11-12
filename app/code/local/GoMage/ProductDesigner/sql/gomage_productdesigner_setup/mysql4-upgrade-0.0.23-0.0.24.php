@@ -33,7 +33,7 @@ $installer->startSetup();
 
 try {
     $installer->getConnection()->addColumn(
-        $installer->getTable('gmpd/design'),
+        $installer->getTable('gomage_designer/design'),
         'color',
         array(
             'type' => Varien_Db_Ddl_Table::TYPE_INTEGER,

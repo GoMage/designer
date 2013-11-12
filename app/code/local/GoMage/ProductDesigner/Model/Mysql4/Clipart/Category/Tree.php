@@ -10,7 +10,7 @@ class GoMage_ProductDesigner_Model_Mysql4_Clipart_Category_Tree extends Mage_Cat
         $resource = Mage::getSingleton('core/resource');
 
         $connection = $resource->getConnection('gomage_productdesigner_write');
-        $table = $resource->getTableName('gmpd/clipart_category');
+        $table = $resource->getTableName('gomage_designer/clipart_category');
         $fields = array(
             Varien_Data_Tree_Dbp::ID_FIELD       => 'category_id',
             Varien_Data_Tree_Dbp::PATH_FIELD     => 'path',
@@ -66,7 +66,7 @@ class GoMage_ProductDesigner_Model_Mysql4_Clipart_Category_Tree extends Mage_Cat
     protected function _getDefaultCollection($sorted = false)
     {
         $this->_joinUrlRewriteIntoCollection = true;
-        $collection = Mage::getModel('gmpd/clipart_category')->getCollection();
+        $collection = Mage::getModel('gomage_designer/clipart_category')->getCollection();
         /** @var $collection GoMage_ProductDesigner_Model_Mysql4_Clipart_Category_Collection */
 
         if ($sorted) {
@@ -93,8 +93,8 @@ class GoMage_ProductDesigner_Model_Mysql4_Clipart_Category_Tree extends Mage_Cat
 
     public function addJoin($select) {
         // count children products qty plus self products qty
-        $categoriesTable         = Mage::getSingleton('core/resource')->getTableName('gmpd/clipart_category');
-        $categoriesProductsTable = Mage::getSingleton('core/resource')->getTableName('gmpd/clipart');
+        $categoriesTable         = Mage::getSingleton('core/resource')->getTableName('gomage_designer/clipart_category');
+        $categoriesProductsTable = Mage::getSingleton('core/resource')->getTableName('gomage_designer/clipart');
 
         $subConcat = $this->_conn->getConcatSql(array('main_table.path', $this->_conn->quote('/%')));
         $subSelect = $this->_conn->select()

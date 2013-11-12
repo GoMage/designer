@@ -42,8 +42,8 @@ class GoMage_ProductDesigner_CustomerController extends Mage_Customer_AccountCon
                     if ($customer->getIsJustConfirmed()) {
                         $customer->sendNewAccountEmail('confirmed', '', Mage::app()->getStore()->getId());
                     }
-                    $design = Mage::helper('designer')->saveProductDesignedImages();
-                    Mage::helper('designer/ajax')->sendSuccess(array(
+                    $design = Mage::helper('gomage_designer')->saveProductDesignedImages();
+                    Mage::helper('gomage_designer/ajax')->sendSuccess(array(
                         'welcome_text' => $this->_getWelcomeTextHtml(),
                         'top_links' => $this->_getTopLinksHtml(),
                         'design_id' => $design->getId()
@@ -53,7 +53,7 @@ class GoMage_ProductDesigner_CustomerController extends Mage_Customer_AccountCon
                 }
             }
         } catch (Exception $e) {
-            Mage::helper('designer/ajax')->sendError($e->getMessage());
+            Mage::helper('gomage_designer/ajax')->sendError($e->getMessage());
         } catch (Mage_Core_Exception $e) {
             switch ($e->getCode()) {
                 case Mage_Customer_Model_Customer::EXCEPTION_EMAIL_NOT_CONFIRMED:
@@ -65,7 +65,7 @@ class GoMage_ProductDesigner_CustomerController extends Mage_Customer_AccountCon
                     break;
                 default:
                     $message = $e->getMessage();
-                    Mage::helper('designer/ajax')->sendError($message);
+                    Mage::helper('gomage_designer/ajax')->sendError($message);
             }
         }
     }
@@ -86,7 +86,7 @@ class GoMage_ProductDesigner_CustomerController extends Mage_Customer_AccountCon
         }
 
         if ($session->isLoggedIn()) {
-            Mage::helper('designer/ajax')->sendSuccess();
+            Mage::helper('gomage_designer/ajax')->sendSuccess();
             return;
         }
         $session->setEscapeMessages(true); // prevent XSS injection in user input
@@ -117,15 +117,15 @@ class GoMage_ProductDesigner_CustomerController extends Mage_Customer_AccountCon
 
                 if ($errors !== true) {
                     if (is_array($errors)) {
-                        Mage::helper('designer/ajax')->sendError($errors);
+                        Mage::helper('gomage_designer/ajax')->sendError($errors);
                     } else {
-                        Mage::helper('designer/ajax')->sendError($this->__($this->__('Invalid customer data')));
+                        Mage::helper('gomage_designer/ajax')->sendError($this->__($this->__('Invalid customer data')));
                     }
                 } else {
-                    $design = Mage::helper('designer')->saveProductDesignedImages();
+                    $design = Mage::helper('gomage_designer')->saveProductDesignedImages();
                 }
                 if ($customer->isConfirmationRequired()) {
-                    Mage::helper('designer/ajax')->sendRedirect(array(
+                    Mage::helper('gomage_designer/ajax')->sendRedirect(array(
                         'url' => Mage::getUrl('customer/account/index')
                     ));
                     $session->addSuccess($this->__('Design successful save'));
@@ -137,7 +137,7 @@ class GoMage_ProductDesigner_CustomerController extends Mage_Customer_AccountCon
                     if (isset($design)) {
                         $responseData['design_id'] = $design->getId();
                     }
-                    Mage::helper('designer/ajax')->sendSuccess($responseData);
+                    Mage::helper('gomage_designer/ajax')->sendSuccess($responseData);
                 }
 
             } catch (Mage_Core_Exception $e) {
@@ -148,9 +148,9 @@ class GoMage_ProductDesigner_CustomerController extends Mage_Customer_AccountCon
                 } else {
                     $message = $e->getMessage();
                 }
-                Mage::helper('designer/ajax')->sendError($message);
+                Mage::helper('gomage_designer/ajax')->sendError($message);
             } catch (Exception $e) {
-                Mage::helper('designer/ajax')->sendError($e->getMessage());
+                Mage::helper('gomage_designer/ajax')->sendError($e->getMessage());
             }
         }
     }
@@ -310,7 +310,7 @@ class GoMage_ProductDesigner_CustomerController extends Mage_Customer_AccountCon
 
         try {
             if ($designId) {
-                $design = Mage::getModel('gmpd/design')->load($designId);
+                $design = Mage::getModel('gomage_designer/design')->load($designId);
                 if ($design && $design->getId()) {
                     if ($session->getCustomerId() == $design->getCustomerId()) {
                         $design->delete();

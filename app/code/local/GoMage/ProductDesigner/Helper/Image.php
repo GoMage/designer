@@ -57,7 +57,7 @@ class GoMage_ProductDesigner_Helper_Image extends Mage_Core_Helper_Data
         $this->_width = null;
         $this->_height = null;
         $this->_filename = $filename;
-        $this->_baseDir = Mage::getSingleton('gmpd/design_config')->getBaseMediaPath();
+        $this->_baseDir = Mage::getSingleton('gomage_designer/design_config')->getBaseMediaPath();
         $imageExtension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
         if ($imageExtension == 'pdf') {
             $filename = str_replace('.pdf', '.jpg', $filename);
@@ -173,7 +173,7 @@ class GoMage_ProductDesigner_Helper_Image extends Mage_Core_Helper_Data
      */
     protected function _getCachedUrl()
     {
-        $path = Mage::getSingleton('gmpd/design_config')->getBaseMediaUrl() . DS . 'cache';
+        $path = Mage::getSingleton('gomage_designer/design_config')->getBaseMediaUrl() . DS . 'cache';
         if ($this->_width || $this->_height) {
             $path .= "/{$this->_width}_{$this->_height}";
         }
@@ -197,7 +197,7 @@ class GoMage_ProductDesigner_Helper_Image extends Mage_Core_Helper_Data
      */
     protected function _getCacheDir()
     {
-        $dir = Mage::getSingleton('gmpd/design_config')->getBaseMediaPath() . DS . 'cache';
+        $dir = Mage::getSingleton('gomage_designer/design_config')->getBaseMediaPath() . DS . 'cache';
         if ($this->_width || $this->_height) {
             $dir .= DS . $this->_width . '_' . $this->_height;
         }

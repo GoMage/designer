@@ -44,7 +44,7 @@ class GoMage_ProductDesigner_Block_Designer_Design_Cliparts extends Mage_Core_Bl
     public function getCliparts()
     {
         if (is_null($this->_cliparts)) {
-            $collection = Mage::getModel('gmpd/clipart')->getCliparts();
+            $collection = Mage::getModel('gomage_designer/clipart')->getCliparts();
             if ($subCategoryId = $this->getRequest()->getParam('subCategory')) {
                 $collection->addFieldToFilter('main_table.category_id', $subCategoryId);
             }
@@ -70,6 +70,6 @@ class GoMage_ProductDesigner_Block_Designer_Design_Cliparts extends Mage_Core_Bl
      */
     public function getClipartUrl($image)
     {
-        return Mage::getSingleton('gmpd/clipart_gallery_config')->getMediaUrl(rawurlencode($image));
+        return Mage::getSingleton('gomage_designer/clipart_gallery_config')->getMediaUrl(rawurlencode($image));
     }
 }

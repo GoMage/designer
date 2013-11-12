@@ -4,7 +4,7 @@ class GoMage_ProductDesigner_Model_Mysql4_Clipart_Category_Collection
 {
     protected function _construct()
     {
-        $this->_init('gmpd/clipart_category');
+        $this->_init('gomage_designer/clipart_category');
     }
 
     public function addIdFilter($categoryIds)
@@ -41,7 +41,7 @@ class GoMage_ProductDesigner_Model_Mysql4_Clipart_Category_Collection
         $countSelect = $this->getConnection()->select()
             ->from(array('clipart_category' => $this->getMainTable()), null)
             ->joinLeft(
-                array('cliparts' => $this->getTable('gmpd/clipart')),
+                array('cliparts' => $this->getTable('gomage_designer/clipart')),
                 'clipart_category.category_id=cliparts.category_id',
                 array('COUNT(DISTINCT cliparts.clipart_id)'))
             ->where('clipart_category.category_id = main_table.category_id')

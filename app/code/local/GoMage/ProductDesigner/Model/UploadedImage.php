@@ -5,7 +5,7 @@ class GoMage_ProductDesigner_Model_UploadedImage extends Mage_Core_Model_Abstrac
 
     protected function _construct()
     {
-        $this->_init('gmpd/uploadedImage');
+        $this->_init('gomage_designer/uploadedImage');
     }
 
     public function getImagePath($imageUrl) {
@@ -38,7 +38,7 @@ class GoMage_ProductDesigner_Model_UploadedImage extends Mage_Core_Model_Abstrac
     }
 
     public function getConfig() {
-        return Mage::getSingleton('gmpd/uploadedImage_config');
+        return Mage::getSingleton('gomage_designer/uploadedImage_config');
     }
 
     public function getCustomerUploadedImages() {
@@ -81,6 +81,6 @@ class GoMage_ProductDesigner_Model_UploadedImage extends Mage_Core_Model_Abstrac
 
     protected function _getDesignerSessionId()
     {
-        return Mage::helper('designer')->getDesignerSessionId();
+        return Mage::helper('gomage_designer')->getDesignerSessionId();
     }
 }

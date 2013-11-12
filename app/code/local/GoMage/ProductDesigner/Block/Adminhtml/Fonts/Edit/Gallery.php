@@ -37,7 +37,7 @@ class GoMage_ProductDesigner_Block_Adminhtml_Fonts_Edit_Gallery
     public function getImagesJson()
     {
         $values = array();
-        $galleryConfig = Mage::getSingleton('gmpd/font_gallery_config');
+        $galleryConfig = Mage::getSingleton('gomage_designer/font_gallery_config');
         $mediaUrl = $galleryConfig->getBaseMediaUrl();
 
         foreach($this->getFontsCollection() as $font) {
@@ -85,6 +85,6 @@ class GoMage_ProductDesigner_Block_Adminhtml_Fonts_Edit_Gallery
     }
 
     public function getFontsCollection() {
-        return Mage::getResourceModel('gmpd/font_collection');
+        return Mage::getResourceModel('gomage_designer/font_collection');
     }
 }

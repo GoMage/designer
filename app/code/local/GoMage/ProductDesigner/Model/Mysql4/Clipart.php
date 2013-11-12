@@ -4,7 +4,7 @@ class GoMage_ProductDesigner_Model_Mysql4_Clipart extends Mage_Core_Model_Resour
 {
     public function _construct()
     {
-        $this->_init('gmpd/clipart', 'clipart_id');
+        $this->_init('gomage_designer/clipart', 'clipart_id');
     }
 }
 

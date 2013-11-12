@@ -103,8 +103,8 @@ class GoMage_ProductDesigner_Block_Checkout_Cart_Item_Renderer
     public function getProductThumbnail()
     {
         if ($designId = $this->getDesignOption()) {
-            if ($image = Mage::getModel('gmpd/design')->getDesignThumbnailImage($designId)) {
-                return $this->helper('designer/image')->init($image);
+            if ($image = Mage::getModel('gomage_designer/design')->getDesignThumbnailImage($designId)) {
+                return $this->helper('gomage_designer/image')->init($image);
             }
         }
 

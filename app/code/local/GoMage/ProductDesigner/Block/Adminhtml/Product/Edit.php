@@ -69,9 +69,9 @@ class GoMage_ProductDesigner_Block_Adminhtml_Product_Edit extends Mage_Core_Bloc
             if ($product->getId()) {
                 $image = Mage::registry('current_image');
                 if ($image && $image->getId()) {
-                    $imageUrl = Mage::helper('designer')->getDesignImageUrl($product, $image);
+                    $imageUrl = Mage::helper('gomage_designer')->getDesignImageUrl($product, $image);
                     $image->setUrl($imageUrl);
-                    list($imageWidth, $imageHeight) = Mage::helper('designer')->getImageDimensions($image->getUrl());
+                    list($imageWidth, $imageHeight) = Mage::helper('gomage_designer')->getImageDimensions($image->getUrl());
                     $image->setWidth($imageWidth);
                     $image->setHeight($imageHeight);
                     $this->_image = $image;

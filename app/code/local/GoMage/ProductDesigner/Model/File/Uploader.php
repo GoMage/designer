@@ -11,6 +11,6 @@ class GoMage_ProductDesigner_Model_File_Uploader extends Mage_Core_Model_File_Up
     }
 
     protected function getConvertHelper() {
-        return Mage::helper('designer/convert');
+        return Mage::helper('gomage_designer/convert');
     }
 }

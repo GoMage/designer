@@ -52,8 +52,8 @@ class GoMage_ProductDesigner_Block_Catalog_Product_View extends Mage_Catalog_Blo
 
     public function hasDesign()
     {
-        $design = Mage::helper('designer')->getProductDesign($this->getProduct());
-        return in_array($this->getProduct()->getTypeId(), Mage::helper('designer')->getAllowedProductTypes())
+        $design = Mage::helper('gomage_designer')->getProductDesign($this->getProduct());
+        return in_array($this->getProduct()->getTypeId(), Mage::helper('gomage_designer')->getAllowedProductTypes())
             && $design && $design->getId();
     }
 

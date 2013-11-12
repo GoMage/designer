@@ -33,7 +33,7 @@ $installer->startSetup();
 
 try {
     $installer->getConnection()->addColumn(
-        $installer->getTable('gmpd/design_image'),
+        $installer->getTable('gomage_designer/design_image'),
         'layer',
         array(
             'type' => Varien_Db_Ddl_Table::TYPE_TEXT,

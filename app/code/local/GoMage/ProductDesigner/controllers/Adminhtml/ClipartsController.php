@@ -19,7 +19,7 @@ class GoMage_ProductDesigner_Adminhtml_ClipartsController extends Mage_Adminhtml
          */
         $request = $this->getRequest();
         $categoryId = (int) $request->getParam('id', false);
-        $category = Mage::getModel('gmpd/clipart_category');
+        $category = Mage::getModel('gomage_designer/clipart_category');
         $this->loadLayout();
 
         //If edit exist category
@@ -70,7 +70,7 @@ class GoMage_ProductDesigner_Adminhtml_ClipartsController extends Mage_Adminhtml
     {
         if ($id = (int) $this->getRequest()->getParam('id')) {
             try {
-                $category = Mage::getModel('gmpd/clipart_category')->load($id);
+                $category = Mage::getModel('gomage_designer/clipart_category')->load($id);
                 Mage::dispatchEvent('designer_controller_clipart_category_delete', array('category'=>$category));
 
                 Mage::getSingleton('admin/session')->setDeletedPath($category->getPath());
@@ -104,7 +104,7 @@ class GoMage_ProductDesigner_Adminhtml_ClipartsController extends Mage_Adminhtml
                 //Unset Default state
                 $data['is_default'] = 0;
                 $data['is_active'] = 1;
-                $category = Mage::getModel('gmpd/clipart_category');
+                $category = Mage::getModel('gomage_designer/clipart_category');
                 $category->setData($data);
                 $category->save();
 
@@ -114,7 +114,7 @@ class GoMage_ProductDesigner_Adminhtml_ClipartsController extends Mage_Adminhtml
                 if(count($images) > 0) {
                     foreach($images as $image) {
                         if(!empty($image)) {
-                            $clipartObj = Mage::getModel('gmpd/clipart');
+                            $clipartObj = Mage::getModel('gomage_designer/clipart');
 
                             $imagePath = $clipartObj->getImagePath($image['url']);
 
@@ -158,7 +158,7 @@ class GoMage_ProductDesigner_Adminhtml_ClipartsController extends Mage_Adminhtml
                 }
 
                 $refreshTree = true;
-                $this->_getSession()->addSuccess(Mage::helper('designer')->__('Clipart category changes saved'));
+                $this->_getSession()->addSuccess(Mage::helper('gomage_designer')->__('Clipart category changes saved'));
 
             } catch(Exception $e) {
                 $this->_getSession()->addError($e->getMessage())
@@ -182,7 +182,7 @@ class GoMage_ProductDesigner_Adminhtml_ClipartsController extends Mage_Adminhtml
             $uploader->setAllowRenameFiles(true);
             $uploader->setFilesDispersion(true);
             $result = $uploader->save(
-                Mage::getSingleton('gmpd/clipart_gallery_config')->getBaseTmpMediaPath()
+                Mage::getSingleton('gomage_designer/clipart_gallery_config')->getBaseTmpMediaPath()
             );
 
             Mage::dispatchEvent('catalog_product_gallery_upload_image_after', array(
@@ -196,7 +196,7 @@ class GoMage_ProductDesigner_Adminhtml_ClipartsController extends Mage_Adminhtml
             $result['tmp_name'] = str_replace(DS, "/", $result['tmp_name']);
             $result['path'] = str_replace(DS, "/", $result['path']);
 
-            $result['url'] = Mage::getSingleton('gmpd/clipart_gallery_config')->getTmpMediaUrl($result['file']);
+            $result['url'] = Mage::getSingleton('gomage_designer/clipart_gallery_config')->getTmpMediaUrl($result['file']);
             $result['file'] = $result['file'] . '.tmp';
             $result['cookie'] = array(
                 'name'     => session_name(),
@@ -229,7 +229,7 @@ class GoMage_ProductDesigner_Adminhtml_ClipartsController extends Mage_Adminhtml
                 return;
             }
             $this->getResponse()->setBody(
-                $this->getLayout()->createBlock('designer/adminhtml_cliparts_tree')
+                $this->getLayout()->createBlock('gomage_designer/adminhtml_cliparts_tree')
                     ->getTreeJson($category)
             );
         }
@@ -275,7 +275,7 @@ class GoMage_ProductDesigner_Adminhtml_ClipartsController extends Mage_Adminhtml
             ->_title($this->__('Manage Categories'));
 
         $categoryId = (int) $this->getRequest()->getParam('id',false);
-        $category = Mage::getModel('gmpd/clipart_category');
+        $category = Mage::getModel('gomage_designer/clipart_category');
 
         if ($categoryId) {
             $category->load($categoryId);

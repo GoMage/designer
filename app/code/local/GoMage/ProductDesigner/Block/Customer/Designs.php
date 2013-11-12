@@ -59,7 +59,7 @@ class GoMage_ProductDesigner_Block_Customer_Designs extends Mage_Catalog_Block_P
     {
         if (is_null($this->_designCollection)) {
             $customerId = $this->getCustomerId();
-            $collection = Mage::getModel('gmpd/design')->getCollection()
+            $collection = Mage::getModel('gomage_designer/design')->getCollection()
                 ->getCustomerDesignCollection($customerId)
                 ->setOrder('created_date');
             $pager = $this->getPager();
@@ -115,7 +115,7 @@ class GoMage_ProductDesigner_Block_Customer_Designs extends Mage_Catalog_Block_P
      */
     public function getImage($design)
     {
-        return Mage::helper('designer/image')->init($design->getImage())->resize(135);
+        return Mage::helper('gomage_designer/image')->init($design->getImage())->resize(135);
     }
 
     /**

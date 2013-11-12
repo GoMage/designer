@@ -38,7 +38,7 @@
             <sales_quote_add_item>
                 <observers>
                     <add_design_to_quote_item>
-                        <class>gmpd/observer</class>
+                        <class>gomage_designer/observer</class>
                         <method>addDesignToQuoteItem</method>
                     </add_design_to_quote_item>
                 </observers>
@@ -46,7 +46,7 @@
             <catalog_product_collection_load_before>
                 <observers>
                     <add_product_design_enabled>
-                        <class>gmpd/observer</class>
+                        <class>gomage_designer/observer</class>
                         <method>addDesignEnabledToProducts</method>
                     </add_product_design_enabled>
                 </observers>
@@ -76,7 +76,7 @@
             <catalog_entity_attribute_load_after>
                 <observers>
                     <gomage_navigation_load_attribute>
-                        <class>gmpd/observer</class>
+                        <class>gomage_designer/observer</class>
                         <method>loadAttribute</method>
                     </gomage_navigation_load_attribute>
                 </observers>
@@ -91,11 +91,11 @@
                     <product_image>GoMage_ProductDesigner_Model_Catalog_Product_Image</product_image>
                 </rewrite>
             </catalog>
-            <gmpd>
+            <gomage_designer>
                 <class>GoMage_ProductDesigner_Model</class>
-                <resourceModel>gmpd_mysql4</resourceModel>
-            </gmpd>
-            <gmpd_mysql4>
+                <resourceModel>gomage_designer_mysql4</resourceModel>
+            </gomage_designer>
+            <gomage_designer_mysql4>
                 <class>GoMage_ProductDesigner_Model_Mysql4</class>
                 <entities>
                     <clipart_category>
@@ -123,7 +123,7 @@
                         <table>gomage_productdesigner_attribute_option</table>
                     </attribute_option>
                 </entities>
-            </gmpd_mysql4>
+            </gomage_designer_mysql4>
             <checkout>
                 <rewrite>
                     <cart>GoMage_ProductDesigner_Model_Checkout_Cart</cart>
@@ -136,14 +136,14 @@
             </catalog_resource_eav_mysql4>
         </models>
         <helpers>
-            <designer>
+            <gomage_designer>
                 <class>GoMage_ProductDesigner_Helper</class>
-            </designer>
+            </gomage_designer>
         </helpers>
         <blocks>
-            <designer>
+            <gomage_designer>
                 <class>GoMage_ProductDesigner_Block</class>
-            </designer>
+            </gomage_designer>
             <adminhtml>
                 <rewrite>
                     <catalog_product_helper_form_gallery_content>GoMage_ProductDesigner_Block_Adminhtml_Catalog_Product_Helper_Form_Gallery_Content</catalog_product_helper_form_gallery_content>
@@ -171,7 +171,7 @@
             <catalog_product_get_final_price>
                 <observers>
                     <add_design_to_final_price>
-                        <class>gmpd/observer</class>
+                        <class>gomage_designer/observer</class>
                         <method>addDesignPriceToFinalPrice</method>
                     </add_design_to_final_price>
                 </observers>
@@ -179,7 +179,7 @@
             <catalog_product_type_prepare_full_options>
                 <observers>
                     <add_design_to_final_price>
-                        <class>gmpd/observer</class>
+                        <class>gomage_designer/observer</class>
                         <method>addDesignCustomOptionToProduct</method>
                     </add_design_to_final_price>
                 </observers>
@@ -187,7 +187,7 @@
             <catalog_product_type_prepare_lite_options>
                 <observers>
                     <add_design_to_final_price>
-                        <class>gmpd/observer</class>
+                        <class>gomage_designer/observer</class>
                         <method>addDesignCustomOptionToProduct</method>
                     </add_design_to_final_price>
                 </observers>

@@ -4,7 +4,7 @@ class GoMage_ProductDesigner_Model_Mysql4_Font extends Mage_Core_Model_Resource_
 {
     protected function _construct()
     {
-        $this->_init('gmpd/font', 'font_id');
+        $this->_init('gomage_designer/font', 'font_id');
     }
 
     public function getFontByName($fontName)

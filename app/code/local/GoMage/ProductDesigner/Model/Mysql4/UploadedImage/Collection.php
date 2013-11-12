@@ -18,7 +18,7 @@ class GoMage_ProductDesigner_Model_Mysql4_UploadedImage_Collection
 
     protected function _construct()
     {
-        $this->_init('gmpd/uploadedImage');
+        $this->_init('gomage_designer/uploadedImage');
         $this
             ->addFilterToMap('image_id', 'main_table.image_id');
     }

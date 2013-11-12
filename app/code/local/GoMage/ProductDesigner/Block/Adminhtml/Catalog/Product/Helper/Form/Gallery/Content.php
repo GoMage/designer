@@ -10,7 +10,7 @@ class GoMage_ProductDesigner_Block_Adminhtml_Catalog_Product_Helper_Form_Gallery
     {
         parent::__construct();
         $product = $this->getProduct();
-        $_helper = Mage::helper('designer');
+        $_helper = Mage::helper('gomage_designer');
         $allowedProductTypes = $_helper->getAllowedProductTypes();
         if (in_array($product->getTypeId(), $allowedProductTypes) && $_helper->isEnabled()) {
             $this->setTemplate('gomage/catalog/product/helper/gallery.phtml');
@@ -117,7 +117,7 @@ class GoMage_ProductDesigner_Block_Adminhtml_Catalog_Product_Helper_Form_Gallery
 
     public function hasColorAttribute()
     {
-        return Mage::helper('designer')->hasColorAttribute();
+        return Mage::helper('gomage_designer')->hasColorAttribute();
     }
 
     public function getDesignAreaPopupWidth()

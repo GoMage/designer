@@ -32,7 +32,7 @@ $installer = $this;
 $installer->startSetup();
 
 $installer->getConnection()->changeColumn(
-    $installer->getTable('gmpd/design'),
+    $installer->getTable('gomage_designer/design'),
     'created_date',
     'created_date',
     array(

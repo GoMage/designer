@@ -30,21 +30,6 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
         return Mage::getStoreConfig('gomage_designer/general/enabled', Mage::app()->getStore());
     }
 
-    public function isCustomizable($product)
-    {
-
-    }
-
-    public function isRemoveAddToCart($product)
-    {
-
-    }
-
-    public function getProductDesingAreas()
-    {
-
-    }
-
     public function isNavigationEnabled()
     {
         return Mage::getStoreConfig('gomage_designer/navigation/enabled', Mage::app()->getStore());
@@ -290,12 +275,12 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
         $product = $this->initializeProduct();
         $images = Mage::app()->getRequest()->getParam('images');
         if ($product->getId() && $images && !empty($images)) {
-            $design = Mage::getModel('gmpd/design')->saveDesign($product, $this->_getRequest()->getParams());
+            $design = Mage::getModel('gomage_designer/design')->saveDesign($product, $this->_getRequest()->getParams());
             return $design;
         } elseif(!$product->getId()) {
-            throw new Exception(Mage::helper('designer')->__('Product is not defined'));
+            throw new Exception(Mage::helper('gomage_designer')->__('Product is not defined'));
         } elseif(!$images || empty($images)) {
-            throw new Exception(Mage::helper('designer')->__('Designed images are empty'));
+            throw new Exception(Mage::helper('gomage_designer')->__('Designed images are empty'));
         }
     }
 
@@ -411,7 +396,7 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
         if (is_null($this->_productDesign)) {
             $designId = (int) Mage::app()->getRequest()->getParam('design_id', false);
             if ($designId) {
-                $design = Mage::getModel('gmpd/design')->load($designId);
+                $design = Mage::getModel('gomage_designer/design')->load($designId);
                 if ($design->getId() && $design->getProductId() == $product->getId()) {
                     $this->_productDesign = $design;
                 } else {

@@ -28,7 +28,7 @@ class GoMage_ProductDesigner_Model_Clipart_Category extends Mage_Core_Model_Abst
 
     protected function _construct()
     {
-        $this->_init('gmpd/clipart_category');
+        $this->_init('gomage_designer/clipart_category');
     }
 
     public function getDefaultCategory()
@@ -111,14 +111,14 @@ class GoMage_ProductDesigner_Model_Clipart_Category extends Mage_Core_Model_Abst
     }
 
     public function getClipartsCollection() {
-        $collection = Mage::getResourceModel('gmpd/clipart_collection');
+        $collection = Mage::getResourceModel('gomage_designer/clipart_collection');
         $collection->addFieldToFilter('category_id', $this->getId());
 
         return $collection;
     }
 
     public function getCollection() {
-        $collection = Mage::getResourceModel('gmpd/clipart_category_collection');
+        $collection = Mage::getResourceModel('gomage_designer/clipart_category_collection');
 
         return $collection;
     }
@@ -153,7 +153,7 @@ class GoMage_ProductDesigner_Model_Clipart_Category extends Mage_Core_Model_Abst
          * Validate new parent category id. (category model is used for backward
          * compatibility in event params)
          */
-        $parent = Mage::getModel('gmpd/clipart_category')
+        $parent = Mage::getModel('gomage_designer/clipart_category')
             ->setStoreId($this->getStoreId())
             ->load($parentId);
 

@@ -18,7 +18,7 @@ class GoMage_ProductDesigner_Model_Mysql4_Font_Collection
 
     protected function _construct()
     {
-        $this->_init('gmpd/font');
+        $this->_init('gomage_designer/font');
         $this
             ->addFilterToMap('font_id', 'main_table.font_id');
     }

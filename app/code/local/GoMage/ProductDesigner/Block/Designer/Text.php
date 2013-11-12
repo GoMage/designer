@@ -37,7 +37,7 @@ class GoMage_ProductDesigner_Block_Designer_Text extends Mage_Core_Block_Templat
      */
     public function getFontUrl($font)
     {
-        return Mage::getSingleton('gmpd/font_gallery_config')->getMediaUrl($font);
+        return Mage::getSingleton('gomage_designer/font_gallery_config')->getMediaUrl($font);
     }
 
     /**
@@ -48,7 +48,7 @@ class GoMage_ProductDesigner_Block_Designer_Text extends Mage_Core_Block_Templat
     public function getFonts()
     {
         if(is_null($this->_fonts)) {
-            $fonts = Mage::getResourceModel('gmpd/font_collection');
+            $fonts = Mage::getResourceModel('gomage_designer/font_collection');
             $fonts->addFieldToFilter('disabled', '0');
             $this->_fonts = $fonts;
         }
@@ -62,7 +62,7 @@ class GoMage_ProductDesigner_Block_Designer_Text extends Mage_Core_Block_Templat
      */
     public function getDefaultFonts()
     {
-        return Mage::getModel('gmpd/config_source_font')->toOptionArray();
+        return Mage::getModel('gomage_designer/config_source_font')->toOptionArray();
     }
 
     /**

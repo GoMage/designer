@@ -41,7 +41,7 @@ class GoMage_ProductDesigner_Block_Designer_Design_Filters extends Mage_Core_Blo
      */
     public function getCategoriesCollection()
     {
-        $category = Mage::getSingleton('gmpd/clipart_category');
+        $category = Mage::getSingleton('gomage_designer/clipart_category');
         $defaultCategoryId = $category->getDefaultCategoryId();
 
         $categoriesCollection = $category->getCollection()
@@ -61,7 +61,7 @@ class GoMage_ProductDesigner_Block_Designer_Design_Filters extends Mage_Core_Blo
         $categoryId = $this->_getSelectedCategoryId();
         $subCategoriesCollection = new Varien_Data_Collection();
         if($categoryId) {
-            $category = Mage::getSingleton('gmpd/clipart_category')->load($categoryId);
+            $category = Mage::getSingleton('gomage_designer/clipart_category')->load($categoryId);
             if ($category->getId()) {
                 $subCategoriesCollection = $category->getCollection()
                     ->addVisibleFilter()

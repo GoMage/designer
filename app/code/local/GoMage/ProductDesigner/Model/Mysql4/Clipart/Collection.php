@@ -5,7 +5,7 @@ class GoMage_ProductDesigner_Model_Mysql4_Clipart_Collection
 
     protected function _construct()
     {
-        $this->_init('gmpd/clipart');
+        $this->_init('gomage_designer/clipart');
     }
 
     public function addVisibleCategoriesFilter()

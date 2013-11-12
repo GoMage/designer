@@ -48,7 +48,7 @@ class GoMage_ProductDesigner_Model_Navigation extends Mage_Core_Model_Abstract
     {
         $category = $this->_getRootCategory();
         $collection = Mage::getModel('catalog/product')->getCollection()
-            ->addAttributeToFilter('type_id', array('in' => Mage::helper('designer')->getAllowedProductTypes()))
+            ->addAttributeToFilter('type_id', array('in' => Mage::helper('gomage_designer')->getAllowedProductTypes()))
             ->addAttributeToFilter('enable_product_designer', 1)
             ->addStoreFilter(Mage::app()->getStore())
             ->addCategoryFilter($category)

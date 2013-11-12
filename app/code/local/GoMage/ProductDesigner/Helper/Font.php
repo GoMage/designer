@@ -50,7 +50,7 @@ class GoMage_ProductDesigner_Helper_Font extends Mage_Core_Helper_Abstract {
          */
 
         $fontFile = $fontFamily . '.ttf';
-        $fontSingleton = Mage::getSingleton('gmpd/font');
+        $fontSingleton = Mage::getSingleton('gomage_designer/font');
         $font = $fontSingleton->loadFontByFile($fontFile);
         return $font;
     }

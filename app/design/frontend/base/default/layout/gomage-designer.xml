@@ -31,10 +31,10 @@
             <action method="addItem"><type>skin_css</type><name>css/gomage/productdesigner.css</name><params/></action>
         </reference>
         <reference name="content">
-            <block type="designer/editor" name="product_designer_editor" template="gomage/productdesigner/editor.phtml">
-                <block type="designer/designer_navigation" name="productNavigator" template="gomage/productdesigner/designer/navigation.phtml">
-                    <block type="designer/designer_navigation_filters" name="navigation.filters" template="gomage/productdesigner/designer/navigation/filters.phtml"/>
-                    <block type="designer/designer_navigation_product_list" name="productNavigatorList" template="gomage/productdesigner/designer/navigation/list.phtml">
+            <block type="gomage_designer/editor" name="product_designer_editor" template="gomage/productdesigner/editor.phtml">
+                <block type="gomage_designer/designer_navigation" name="productNavigator" template="gomage/productdesigner/designer/navigation.phtml">
+                    <block type="gomage_designer/designer_navigation_filters" name="navigation.filters" template="gomage/productdesigner/designer/navigation/filters.phtml"/>
+                    <block type="gomage_designer/designer_navigation_product_list" name="productNavigatorList" template="gomage/productdesigner/designer/navigation/list.phtml">
                         <block type="catalog/product_list_toolbar" name="product_navigator_toolbar" template="gomage/productdesigner/designer/navigation/toolbar.phtml">
                             <block type="page/html_pager" name="product_list_toolbar_pager"/>
                         </block>
@@ -42,18 +42,18 @@
                     </block>
                 </block>
                 <block type="core/template" name="addDesign" template="gomage/productdesigner/designer/design.phtml">
-                    <block type="designer/designer_design_filters" name="design.filters" template="gomage/productdesigner/designer/design/filters.phtml"/>
-                    <block type="designer/designer_design_cliparts" name="design.cliparts" template="gomage/productdesigner/designer/design/cliparts.phtml"/>
+                    <block type="gomage_designer/designer_design_filters" name="design.filters" template="gomage/productdesigner/designer/design/filters.phtml"/>
+                    <block type="gomage_designer/designer_design_cliparts" name="design.cliparts" template="gomage/productdesigner/designer/design/cliparts.phtml"/>
                 </block>
-                <block type="designer/designer_text" name="addText" template="gomage/productdesigner/designer/text.phtml" />
-                <block type="designer/designer_uploadImage" name="uploadImage" template="gomage/productdesigner/designer/upload_image.phtml">
-                    <block type="designer/designer_uploadImage_images" name="uploadedImages" template="gomage/productdesigner/designer/upload_image/images.phtml" />
+                <block type="gomage_designer/designer_text" name="addText" template="gomage/productdesigner/designer/text.phtml" />
+                <block type="gomage_designer/designer_uploadImage" name="uploadImage" template="gomage/productdesigner/designer/upload_image.phtml">
+                    <block type="gomage_designer/designer_uploadImage_images" name="uploadedImages" template="gomage/productdesigner/designer/upload_image/images.phtml" />
                 </block>
                 <block type="core/template" name="additionalInstructions" template="gomage/productdesigner/designer/additional_instructions.phtml" />
                 <block type="core/template" name="customer_form_login" as="customer.login" template="gomage/productdesigner/customer/login.phtml"/>
                 <block type="customer/form_register" name="customer_form_register" as="customer.register" template="gomage/productdesigner/customer/register.phtml"/>
                 <block type="core/template" name="design.price" as="design_price" template="gomage/productdesigner/designer/price.phtml">
-                    <action method="setProduct"><product helper="designer/initializeProduct"/></action>
+                    <action method="setProduct"><product helper="gomage_designer/initializeProduct"/></action>
                     <block type="catalog/product_price" name="product.price" template="catalog/product/price.phtml">
                         <action method="setIdSuffix"><id_suffix>-design</id_suffix></action>
                     </block>
@@ -64,7 +64,7 @@
 
     <gomage_designer_design_price>
         <block type="core/template" name="design.price" as="design_price" template="gomage/productdesigner/designer/price.phtml" output="toHtml">
-            <action method="setProduct"><product helper="designer/initializeProduct"/></action>
+            <action method="setProduct"><product helper="gomage_designer/initializeProduct"/></action>
             <block type="catalog/product_price" name="product.price" template="catalog/product/price.phtml">
                 <action method="setIdSuffix"><id_suffix>-design</id_suffix></action>
             </block>
@@ -73,9 +73,9 @@
 
     <gomage_designer_index_filterproducts>
         <reference name="content">
-            <block type="designer/designer_navigation" name="productNavigator" template="gomage/productdesigner/designer/navigation.phtml">
-                <block type="designer/designer_navigation_filters" name="navigation.filters" template="gomage/productdesigner/designer/navigation/filters.phtml"/>
-                <block type="designer/designer_navigation_product_list" name="productNavigatorList" template="gomage/productdesigner/designer/navigation/list.phtml">
+            <block type="gomage_designer/designer_navigation" name="productNavigator" template="gomage/productdesigner/designer/navigation.phtml">
+                <block type="gomage_designer/designer_navigation_filters" name="navigation.filters" template="gomage/productdesigner/designer/navigation/filters.phtml"/>
+                <block type="gomage_designer/designer_navigation_product_list" name="productNavigatorList" template="gomage/productdesigner/designer/navigation/list.phtml">
                     <block type="catalog/product_list_toolbar" name="product_navigator_toolbar" template="gomage/productdesigner/designer/navigation/toolbar.phtml">
                         <block type="page/html_pager" name="product_list_toolbar_pager"/>
                     </block>
@@ -88,15 +88,15 @@
     <gomage_designer_index_filtercliparts>
         <reference name="content">
             <block type="core/template" name="design" template="gomage/productdesigner/designer/design.phtml">
-                <block type="designer/designer_design_filters" name="design.filters" template="gomage/productdesigner/designer/design/filters.phtml"/>
-                <block type="designer/designer_design_cliparts" name="design.cliparts" template="gomage/productdesigner/designer/design/cliparts.phtml"/>
+                <block type="gomage_designer/designer_design_filters" name="design.filters" template="gomage/productdesigner/designer/design/filters.phtml"/>
+                <block type="gomage_designer/designer_design_cliparts" name="design.cliparts" template="gomage/productdesigner/designer/design/cliparts.phtml"/>
             </block>
         </reference>
     </gomage_designer_index_filtercliparts>
 
     <gomage_designer_index_uploadimages translate="label">
         <reference name="content">
-            <block type="designer/designer_uploadImage_images" name="uploadedImages" template="gomage/productdesigner/designer/upload_image/images.phtml" />
+            <block type="gomage_designer/designer_uploadImage_images" name="uploadedImages" template="gomage/productdesigner/designer/upload_image/images.phtml" />
         </reference>
     </gomage_designer_index_uploadimages>
     <!-- Override templates to add "Customize it" button near "Add to cart button" -->
@@ -138,7 +138,7 @@
     <customer_account>
     <!-- Mage_Sales -->
         <reference name="customer_account_navigation">
-            <action method="addLink" translate="label" module="designer"><name>designs</name><path>gomage_designer/customer/designs/</path><label>My Saved Designs</label></action>
+            <action method="addLink" translate="label" module="gomage_designer"><name>designs</name><path>gomage_designer/customer/designs/</path><label>My Saved Designs</label></action>
         </reference>
     </customer_account>
 
@@ -149,7 +149,7 @@
                 <action method="setTitle" translate="title">
                     <title>My Saved Designs</title>
                 </action>
-                <block type="designer/customer_designs" name="customer.design.list" as="design.list" template="gomage/productdesigner/customer/designs/list.phtml">
+                <block type="gomage_designer/customer_designs" name="customer.design.list" as="design.list" template="gomage/productdesigner/customer/designs/list.phtml">
                     <block type="page/html_pager" name="pager"/>
                     <action method="setColumnCount"><count>4</count></action>
                 </block>
@@ -177,7 +177,7 @@
             <block type="core/template" name="product.info.option.design" as="product_option_design" template="gomage/productdesigner/catalog/product/view/options/design.phtml"/>
         </reference>
         <reference name="product.info.addtocart">
-            <block type="designer/catalog_product_view" name="product.info.design" template="gomage/productdesigner/catalog/product/view/addtodesign.phtml" />
+            <block type="gomage_designer/catalog_product_view" name="product.info.design" template="gomage/productdesigner/catalog/product/view/addtodesign.phtml" />
         </reference>
         <reference name="product.info.addtocart">
             <action method="setTemplate">
@@ -194,7 +194,7 @@
             <block type="core/template" name="product.info.option.design" as="product_option_design" template="gomage/productdesigner/catalog/product/view/options/design.phtml"/>
         </reference>
         <reference name="product.info.addtocart">
-            <block type="designer/catalog_product_view" name="product.info.design" template="gomage/productdesigner/catalog/product/view/addtodesign.phtml" />
+            <block type="gomage_designer/catalog_product_view" name="product.info.design" template="gomage/productdesigner/catalog/product/view/addtodesign.phtml" />
         </reference>
         <reference name="product.info.addtocart">
             <action method="setTemplate">

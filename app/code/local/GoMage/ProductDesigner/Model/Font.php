@@ -3,7 +3,7 @@ class GoMage_ProductDesigner_Model_Font extends Mage_Core_Model_Abstract
 {
     protected function _construct()
     {
-        $this->_init('gmpd/font');
+        $this->_init('gomage_designer/font');
     }
 
     public function getFontPath($fontPath)
@@ -53,6 +53,6 @@ class GoMage_ProductDesigner_Model_Font extends Mage_Core_Model_Abstract
 
     public function getConfig()
     {
-        return Mage::getSingleton('gmpd/font_gallery_config');
+        return Mage::getSingleton('gomage_designer/font_gallery_config');
     }
 }

@@ -42,7 +42,7 @@ class GoMage_ProductDesigner_Model_Mysql4_Design_Image_Collection
      */
     protected function _construct()
     {
-        $this->_init('gmpd/design_image');
+        $this->_init('gomage_designer/design_image');
     }
 
     /**

@@ -44,7 +44,7 @@ class GoMage_ProductDesigner_Model_Catalog_Product_Attribute_Backend_Media
      */
     protected function _getResource()
     {
-        return Mage::getResourceSingleton('gmpd/catalog_product_attribute_backend_media');
+        return Mage::getResourceSingleton('gomage_designer/catalog_product_attribute_backend_media');
     }
 
     /**

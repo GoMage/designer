@@ -32,7 +32,7 @@ $installer = $this;
 $installer->startSetup();
 
 $installer->getConnection()->addColumn(
-    $installer->getTable('gmpd/design'),
+    $installer->getTable('gomage_designer/design'),
     'design_group_id',
     array(
         'type'      => Varien_Db_Ddl_Table::TYPE_TEXT,

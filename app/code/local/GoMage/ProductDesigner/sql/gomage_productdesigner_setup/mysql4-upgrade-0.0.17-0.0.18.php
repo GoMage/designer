@@ -34,10 +34,10 @@ $installer->startSetup();
 try {
     $columns = array('image_id', 'design', 'settings', 'design_group_id');
     foreach ($columns as $column) {
-        $installer->getConnection()->dropColumn($installer->getTable('gmpd/design'), $column);
+        $installer->getConnection()->dropColumn($installer->getTable('gomage_designer/design'), $column);
     }
 
-    $installer->getConnection()->addColumn($installer->getTable('gmpd/design'),'price',array(
+    $installer->getConnection()->addColumn($installer->getTable('gomage_designer/design'),'price',array(
         'type' => Varien_Db_Ddl_Table::TYPE_DECIMAL,
         'scale'     => 4,
         'precision' => 12,

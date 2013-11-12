@@ -16,7 +16,7 @@ class GoMage_ProductDesigner_Model_Catalog_Product_Image extends Mage_Catalog_Mo
         }
         if ($file) {
             if ((!$this->_fileExists($baseDir . $file)) || !$this->_checkMemory($baseDir . $file)) {
-                $designDir = Mage::getSingleton('gmpd/design')->getConfig()->getBaseMediaPath();
+                $designDir = Mage::getSingleton('gomage_designer/design')->getConfig()->getBaseMediaPath();
                 if ((!$this->_fileExists($designDir . $file)) || !$this->_checkMemory($designDir . $file)) {
                     $file = null;
                 } else {

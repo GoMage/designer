@@ -20,21 +20,21 @@
                 <module>Mage_Catalog</module>
             </depends>
             <children>
-                <gomage_designer translate="title" module="designer">
+                <gomage_designer translate="title" module="gomage_designer">
                     <title>Product Designer</title>
                     <sort_order>6</sort_order>
                     <children>
-                        <cliparts module="designer">
+                        <cliparts module="gomage_designer">
                             <title>Cliparts</title>
                             <action>adminhtml/cliparts</action>
                             <sort_order>6</sort_order>
                         </cliparts>
-                        <fonts module="designer">
+                        <fonts module="gomage_designer">
                             <title>Fonts</title>
                             <action>adminhtml/fonts</action>
                             <sort_order>7</sort_order>
                         </fonts>
-                        <config module="designer">
+                        <config module="gomage_designer">
                             <title>Configuration</title>
                             <action>adminhtml/system_config/edit/section/gomage_designer</action>
                             <sort_order>9</sort_order>
@@ -86,7 +86,7 @@
         <resources>
             <admin>
                 <children>
-                    <gomage_designer translate="title" module="designer">
+                    <gomage_designer translate="title" module="gomage_designer">
                         <title>GoMage ProductDesigner</title>
                         <sort_order>100</sort_order>
                         <children>

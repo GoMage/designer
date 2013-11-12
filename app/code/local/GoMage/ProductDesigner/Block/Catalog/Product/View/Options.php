@@ -45,7 +45,7 @@ class GoMage_ProductDesigner_Block_Catalog_Product_View_Options
     public function getDesignOption()
     {
         if (is_null($this->_designOption)) {
-            $design = Mage::helper('designer')->getProductDesign($this->getProduct());
+            $design = Mage::helper('gomage_designer')->getProductDesign($this->getProduct());
             if ($design && $design->getId()) {
                 $option = new Mage_Catalog_Model_Product_Option(array(
                     'id' => $design->getId(),

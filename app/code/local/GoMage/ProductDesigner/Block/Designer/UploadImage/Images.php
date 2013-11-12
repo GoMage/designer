@@ -8,7 +8,7 @@ class GoMage_ProductDesigner_Block_Designer_UploadImage_Images extends Mage_Core
      */
     public function getUploadedImages()
     {
-        $uploadedImage = Mage::getModel('gmpd/uploadedImage');
+        $uploadedImage = Mage::getModel('gomage_designer/uploadedImage');
         return $uploadedImage->getCustomerUploadedImages();
     }
 
@@ -20,6 +20,6 @@ class GoMage_ProductDesigner_Block_Designer_UploadImage_Images extends Mage_Core
      */
     public function getImageUrl($image)
     {
-        return Mage::getSingleton('gmpd/uploadedImage_config')->getMediaUrl(rawurlencode($image));
+        return Mage::getSingleton('gomage_designer/uploadedImage_config')->getMediaUrl(rawurlencode($image));
     }
 }

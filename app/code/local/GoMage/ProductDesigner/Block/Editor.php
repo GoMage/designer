@@ -52,7 +52,7 @@ class GoMage_ProductDesigner_Block_Editor extends Mage_Core_Block_Template
     {
         if (is_null($this->_editorConfig)) {
             if ($this->isProductSelected()) {
-                $this->_editorConfig = Mage::helper('designer')->getProductSettingForEditor();
+                $this->_editorConfig = Mage::helper('gomage_designer')->getProductSettingForEditor();
             } else {
                 $this->_editorConfig = false;
             }

@@ -62,8 +62,8 @@ class GoMage_ProductDesigner_Block_Adminhtml_Cliparts_Tree extends Mage_Adminhtm
         $storeId = $this->getRequest()->getParam('store', $this->_getDefaultStoreId());
         $collection = $this->getData('category_collection');
         if (is_null($collection)) {
-            $collection = Mage::getModel('gmpd/clipart_category')->getCollection();
-            Mage::getResourceSingleton('gmpd/clipart_category_tree')->addJoin($collection->getSelect());
+            $collection = Mage::getModel('gomage_designer/clipart_category')->getCollection();
+            Mage::getResourceSingleton('gomage_designer/clipart_category_tree')->addJoin($collection->getSelect());
             $this->setData('category_collection', $collection);
         }
         return $collection;
@@ -305,7 +305,7 @@ class GoMage_ProductDesigner_Block_Adminhtml_Cliparts_Tree extends Mage_Adminhtm
                 $rootId = Mage_Catalog_Model_Category::TREE_ROOT_ID;
             }
 
-            $tree = Mage::getResourceSingleton('gmpd/clipart_category_tree')
+            $tree = Mage::getResourceSingleton('gomage_designer/clipart_category_tree')
                 ->load(null, $recursionLevel);
 
 
@@ -329,7 +329,7 @@ class GoMage_ProductDesigner_Block_Adminhtml_Cliparts_Tree extends Mage_Adminhtm
 
     public function getNode($parentNodeCategory, $recursionLevel=2)
     {
-        $tree = Mage::getResourceModel('gmpd/clipart_category_tree');
+        $tree = Mage::getResourceModel('gomage_designer/clipart_category_tree');
 
         $nodeId     = $parentNodeCategory->getId();
         $parentId   = $parentNodeCategory->getParentId();

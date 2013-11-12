@@ -10,7 +10,7 @@ class GoMage_ProductDesigner_Model_Mysql4_Design_Collection
      */
     protected function _construct()
     {
-        $this->_init('gmpd/design');
+        $this->_init('gomage_designer/design');
         $this->addFilterToMap('design_id', 'main_table.design_id');
     }
 
@@ -24,7 +24,7 @@ class GoMage_ProductDesigner_Model_Mysql4_Design_Collection
     {
         $this->addFieldToFilter('customer_id', $customerId);
         $this->getSelect()->joinInner(
-            array('image' => $this->getTable('gmpd/design_image')),
+            array('image' => $this->getTable('gomage_designer/design_image')),
             "main_table.design_id = image.design_id",
             array('image' => 'image.image')
         )->group("main_table.design_id");

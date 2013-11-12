@@ -44,11 +44,11 @@ $colors = $this->getProductColors();
             <th <?php if (!$productDesignerEnabled): ?>class="last"<?php endif ?>><?php echo Mage::helper('catalog')->__('Remove') ?></th>
             <?php if ($colors):?>
                 <th id="color-heading" <?php if (!$productDesignerEnabled): ?>style="display: none"<?php endif;?>>
-                    <?php echo Mage::helper('designer')->__('Color'); ?>
+                    <?php echo Mage::helper('gomage_designer')->__('Color'); ?>
                 </th>
             <?php endif;?>
             <th id="design-area-heading" class="last" <?php if (!$productDesignerEnabled): ?>style="display: none"<?php endif;?>>
-                <?php echo Mage::helper('designer')->__('Choose design area') ?>
+                <?php echo Mage::helper('gomage_designer')->__('Choose design area') ?>
             </th>
         </tr>
     </thead>
@@ -73,7 +73,7 @@ $colors = $this->getProductColors();
             <?php endif;?>
             <td class="cell-choose-design-area a-center last" <?php if (!$productDesignerEnabled): ?>style="display: none"<?php endif;?>>
                 <input type="checkbox" class="validate-one-design-area-required" name="design_area_for[]" value="" onclick="switchDesignArea('__file__', this)" />
-                [ <a href="javascript:void(0)" onclick="openDesignAreaEditor('__file__', this)"><?php echo Mage::helper('designer')->__('Edit') ?></a> ]
+                [ <a href="javascript:void(0)" onclick="openDesignAreaEditor('__file__', this)"><?php echo Mage::helper('gomage_designer')->__('Edit') ?></a> ]
             </td>
         </tr>
         <?php if($_block->hasUseDefault()): ?>
@@ -321,7 +321,7 @@ $(function() {
 
     window.designAreaPopup = new Window({
         className: 'magento',
-        title: '<?php echo Mage::helper('designer')->__('Choose design area') ?>',
+        title: '<?php echo Mage::helper('gomage_designer')->__('Choose design area') ?>',
         maximizable:false,
         minimizable:false,
         resizable:false,
