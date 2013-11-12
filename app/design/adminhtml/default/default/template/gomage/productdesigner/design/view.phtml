@@ -16,30 +16,38 @@
 <?php if (!$_collectionSize): ?>
     <div class="message"><?php echo $this->__('You have no designed products') ?></div>
 <?php else: ?>
-    <div style="overflow: hidden; padding-bottom: 25px;">
+    <div class="design-grid-wrap">
         <?php $i=0; foreach ($_imagesCollection as $_image): ?>
             <?php if ($i++%$_columnCount==0): ?>
-            <ul class="products-grid">
+              <ul class="design-products-grid">
             <?php endif ?>
-            <li class="item<?php if(($i-1)%$_columnCount==0): ?> first<?php elseif($i%$_columnCount==0): ?> last<?php endif; ?>" style="float: left; clear:left; margin:0 0 20px">
-                <img src="<?php echo $this->getImage($_image->getImage(), 600); ?>" width="600" height="600" alt="" title=""/>
-                <div class="actions" style="text-align: center">
-                    <button title="<?php echo $this->__('Download Image');?>" type="button" onclick="downloadImage('<?php echo $this->getDownloadUrl($_image->getId(), 'image')?>')">
-                        <span><span><span><?php echo $this->__('Download Image');?></span></span></span>
-                    </button>
+              <li class="item<?php if(($i-1)%$_columnCount==0): ?> first<?php elseif($i%$_columnCount==0): ?> last<?php endif; ?>">
+                <div class="design-product">
+                  <img src="<?php echo $this->getImage($_image->getImage(), 600); ?>" width="600" height="600" alt="" title=""/>
+                  <div class="actions">
+                      <button title="<?php echo $this->__('Download Image');?>" type="button" onclick="downloadImage('<?php echo $this->getDownloadUrl($_image->getId(), 'image')?>')">
+                          <span><span><span><?php echo $this->__('Download Image');?></span></span></span>
+                      </button>
+                  </div>                
                 </div>
+                
                 <?php if ($_image->getLayer()): ?>
-                    <br />
-                    <img src="<?php echo $this->getImage($_image->getLayer(), 600); ?>" width="600" height="600" alt="" title=""/>
-                    <div class="actions" style="text-align: center">
-                        <button title="<?php echo $this->__('Download Image');?>" type="button" onclick="downloadImage('<?php echo $this->getDownloadUrl($_image->getId(), 'layer')?>')">
-                            <span><span><span><?php echo $this->__('Download Image');?></span></span></span>
-                        </button>
-                    </div>
+                <div class="design-product">
+                  <img src="<?php echo $this->getImage($_image->getLayer(), 600); ?>" width="600" height="600" alt="" title=""/>
+                  <div class="actions">
+                      <button title="<?php echo $this->__('Download Image');?>" type="button" onclick="downloadImage('<?php echo $this->getDownloadUrl($_image->getId(), 'layer')?>')">
+                          <span><span><span><?php echo $this->__('Download Image');?></span></span></span>
+                      </button>
+                  </div>
+                </div>
                 <?php endif;?>
-            </li>
+
+                  
+
+                  
+              </li>
             <?php if ($i%$_columnCount==0 || $i==$_collectionSize): ?>
-                </ul>
+              </ul>
             <?php endif ?>
         <?php endforeach ?>
     </div>
@@ -53,7 +61,7 @@
                     <tbody>
                     <tr>
                         <td class="value">
-                            <textarea style="height:7.5em" name="comment" class="textarea" rows="2" cols="15" disabled="disabled"><?php echo $comment; ?></textarea>
+                            <textarea name="comment" class="textarea design-comment" rows="2" cols="15" disabled="disabled"><?php echo $comment; ?></textarea>
                         </td>
                     </tr>
                     </tbody>
@@ -61,6 +69,30 @@
             </div>
         </div>
     <?php endif;?>
+    <style type="text/css">
+      .design-grid-wrap{
+        overflow: hidden;
+        padding-bottom: 25px;
+        }
+      .design-products-grid .item{
+        overflow: hidden;
+        text-align: center;
+        }
+        .design-products-grid .item img{
+          max-width: 100%;
+          height: auto;
+          }
+        .design-product{
+          margin: 0 0 20px;
+          float: left;
+          width: 48%;
+          margin-right: 2%;
+          max-width: 600px;
+          }
+      .design-comment{
+        height:7.5em
+        }
+    </style>
     <script type="text/javascript">
         function downloadImage(url) {
             location.href = url;
