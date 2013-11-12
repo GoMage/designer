@@ -70,4 +70,17 @@ class GoMage_ProductDesigner_Model_Design extends Mage_Core_Model_Abstract
 
         return $images;
     }
+
+    public function getDesignThumbnailImage($designId)
+    {
+        $images = Mage::getModel('gmpd/design_image')->getCollection()
+            ->addFieldToFilter('design_id', $designId)
+            ->setPageSize(1);
+        $image = $images->getFirstItem();
+        if ($image && $image->getId()) {
+            return $image->getImage();
+        }
+
+        return false;
+    }
 }

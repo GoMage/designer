@@ -94,4 +94,20 @@ class GoMage_ProductDesigner_Block_Checkout_Cart_Item_Renderer
             $params
         );
     }
+
+    /**
+     * Get product thumbnail image
+     *
+     * @return GoMage_ProductDesigner_Helper_Image
+     */
+    public function getProductThumbnail()
+    {
+        if ($designId = $this->getDesignOption()) {
+            if ($image = Mage::getModel('gmpd/design')->getDesignThumbnailImage($designId)) {
+                return $this->helper('designer/image')->init($image);
+            }
+        }
+
+        return parent::getProductThumbnail();
+    }
 }

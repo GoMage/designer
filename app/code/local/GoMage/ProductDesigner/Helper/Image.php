@@ -44,6 +44,8 @@ class GoMage_ProductDesigner_Helper_Image extends Mage_Core_Helper_Data
      */
     protected $_keepAspectRatioFlag = true;
 
+    protected $_watermarkSize;
+
     /**
      * Init base image
      *
@@ -200,6 +202,12 @@ class GoMage_ProductDesigner_Helper_Image extends Mage_Core_Helper_Data
             $dir .= DS . $this->_width . '_' . $this->_height;
         }
         return $dir;
+    }
+
+    public function setWatermarkSize($size)
+    {
+        $this->_watermarkSize = $size;
+        return $this;
     }
 
     /**
