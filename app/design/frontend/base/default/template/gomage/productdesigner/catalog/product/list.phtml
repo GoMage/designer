@@ -8,7 +8,7 @@
 <?php
     $_productCollection=$this->getLoadedProductCollection();
     $_helper = $this->helper('catalog/output');
-    $_disabledAddToCart = Mage::getStoreConfig('gmpd/general/add_to_cart_button');
+    $_disabledAddToCart = Mage::getStoreConfig('gomage_designer/general/add_to_cart_button');
 ?>
 <?php if(!$_productCollection->count()): ?>
 <p class="note-msg"><?php echo $this->__('There are no products matching the selection.') ?></p>

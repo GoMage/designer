@@ -43,7 +43,7 @@ class GoMage_ProductDesigner_Model_Mysql4_Catalog_Product_Type_Configurable
      */
     public function getProductColors($productId)
     {
-        $colorAttributeCode = $attributeCode = Mage::getStoreConfig('gmpd/navigation/color_attribute');
+        $colorAttributeCode = $attributeCode = Mage::getStoreConfig('gomage_designer/navigation/color_attribute');
         $attribute = Mage::getSingleton('eav/config')
             ->getAttribute(Mage_Catalog_Model_Product::ENTITY, $colorAttributeCode);
         $statusAttribute = Mage::getSingleton('catalog/product_status')->getProductAttribute('status');

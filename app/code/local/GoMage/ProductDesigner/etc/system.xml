@@ -60,7 +60,7 @@
             </feed>
          </groups>
       </gomage_activation>
-      <gmpd>
+      <gomage_designer>
         <label>Product Designer</label>
         <tab>gomage</tab>
         <frontend_type>text</frontend_type>
@@ -575,6 +575,6 @@
             </fields>
           </upload_image>
         </groups>
-      </gmpd>
+      </gomage_designer>
    </sections>
 </config>

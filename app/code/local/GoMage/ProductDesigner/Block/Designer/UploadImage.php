@@ -9,7 +9,7 @@ class GoMage_ProductDesigner_Block_Designer_UploadImage extends Mage_Core_Block_
      */
     public function licenseAgreementsEnabled()
     {
-        return Mage::getStoreConfig('gmpd/upload_image/copyright');
+        return Mage::getStoreConfig('gomage_designer/upload_image/copyright');
     }
 
     /**
@@ -19,7 +19,7 @@ class GoMage_ProductDesigner_Block_Designer_UploadImage extends Mage_Core_Block_
      */
     public function getLicenceAgreementsText()
     {
-        return Mage::getStoreConfig('gmpd/upload_image/copyright_text');
+        return Mage::getStoreConfig('gomage_designer/upload_image/copyright_text');
     }
 
     /**
@@ -29,7 +29,7 @@ class GoMage_ProductDesigner_Block_Designer_UploadImage extends Mage_Core_Block_
      */
     public function imageConditionsEnabled()
     {
-        return Mage::getStoreConfig('gmpd/upload_image/conditions');
+        return Mage::getStoreConfig('gomage_designer/upload_image/conditions');
     }
 
     /**
@@ -39,17 +39,17 @@ class GoMage_ProductDesigner_Block_Designer_UploadImage extends Mage_Core_Block_
      */
     public function getImageConditionsText()
     {
-        return Mage::getStoreConfig('gmpd/upload_image/conditions_text');
+        return Mage::getStoreConfig('gomage_designer/upload_image/conditions_text');
     }
 
     public function getAllowedImageExtensions()
     {
-        return Mage::getStoreConfig('gmpd/upload_image/format');
+        return Mage::getStoreConfig('gomage_designer/upload_image/format');
     }
 
     protected function _getAllowedImageMimeTypes()
     {
-        $allowedFormats = Mage::getStoreConfig('gmpd/upload_image/format');
+        $allowedFormats = Mage::getStoreConfig('gomage_designer/upload_image/format');
         $allowedFormats = explode(',', $allowedFormats);
         foreach ($allowedFormats as &$format) {
             $format = 'image/'.$format;
@@ -70,6 +70,6 @@ class GoMage_ProductDesigner_Block_Designer_UploadImage extends Mage_Core_Block_
 
     public function getMaxUploadFileSize()
     {
-        return (int) Mage::getStoreConfig('gmpd/upload_image/size') * 1024 * 1024;
+        return (int) Mage::getStoreConfig('gomage_designer/upload_image/size') * 1024 * 1024;
     }
 }

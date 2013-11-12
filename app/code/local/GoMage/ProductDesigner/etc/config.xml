@@ -18,7 +18,7 @@
         </GoMage_ProductDesigner>
     </modules>
     <default>
-        <gmpd>
+        <gomage_designer>
             <general>
                 <add_to_cart_button>0</add_to_cart_button>
                 <format>jpg</format>
@@ -56,7 +56,7 @@
                 <max_size_width>500</max_size_width>
                 <max_size_height>700</max_size_height>
             </upload_image>
-        </gmpd>
+        </gomage_designer>
     </default>
     <frontend>
         <routers>

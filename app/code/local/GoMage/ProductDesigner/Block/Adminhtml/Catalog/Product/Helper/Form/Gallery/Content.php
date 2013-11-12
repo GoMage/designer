@@ -27,7 +27,7 @@ class GoMage_ProductDesigner_Block_Adminhtml_Catalog_Product_Helper_Form_Gallery
         $product = $this->getProduct();
 
         if ($product && $product->getId()) {
-            return Mage::getStoreConfig('gmpd/general/enabled', Mage::app()->getStore())
+            return Mage::getStoreConfig('gomage_designer/general/enabled', Mage::app()->getStore())
                 && $product->getEnableProductDesigner();
         }
 
@@ -122,6 +122,6 @@ class GoMage_ProductDesigner_Block_Adminhtml_Catalog_Product_Helper_Form_Gallery
 
     public function getDesignAreaPopupWidth()
     {
-        return Mage::getStoreConfig('gmpd/design/design_size_width');
+        return Mage::getStoreConfig('gomage_designer/design/design_size_width');
     }
 }

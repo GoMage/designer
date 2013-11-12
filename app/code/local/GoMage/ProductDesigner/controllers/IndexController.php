@@ -17,7 +17,7 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
 {
     public function dispatch($action)
     {
-        $moduleEnabled = Mage::getStoreConfig('gmpd/general/enabled', Mage::app()->getStore());
+        $moduleEnabled = Mage::getStoreConfig('gomage_designer/general/enabled', Mage::app()->getStore());
         if (!$moduleEnabled) {
             $action = 'noRoute';
         }
@@ -173,8 +173,8 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
         $this->loadLayout();
         $block = $this->getLayout()->getBlock('uploadedImages');
         $baseMediaPath = Mage::getSingleton('gmpd/uploadedImage_config')->getBaseMediaPath();
-        $allowedFormatsString = Mage::getStoreConfig('gmpd/upload_image/format');
-        $maxUploadFileSize = Mage::getStoreConfig('gmpd/upload_image/size');
+        $allowedFormatsString = Mage::getStoreConfig('gomage_designer/upload_image/format');
+        $maxUploadFileSize = Mage::getStoreConfig('gomage_designer/upload_image/size');
         $allowedFormats = explode(',', $allowedFormatsString);
         $sessionId = $this->getSessionId();
         $customerId = (int) $this->_getCustomerSession()->getCustomerId();

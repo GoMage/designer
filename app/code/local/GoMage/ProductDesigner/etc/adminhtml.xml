@@ -20,7 +20,7 @@
                 <module>Mage_Catalog</module>
             </depends>
             <children>
-                <designer translate="title" module="designer">
+                <gomage_designer translate="title" module="designer">
                     <title>Product Designer</title>
                     <sort_order>6</sort_order>
                     <children>
@@ -34,18 +34,13 @@
                             <action>adminhtml/fonts</action>
                             <sort_order>7</sort_order>
                         </fonts>
-                        <!--<ideas module="designer">
-                            <title>Design Ideas</title>
-                            <action>gomage_designer/adminhtml_ideas/index</action>
-                            <sort_order>8</sort_order>
-                        </ideas>-->
                         <config module="designer">
                             <title>Configuration</title>
-                            <action>adminhtml/system_config/edit/section/gmpd</action>
+                            <action>adminhtml/system_config/edit/section/gomage_designer</action>
                             <sort_order>9</sort_order>
                         </config>
                     </children>
-                </designer>
+                </gomage_designer>
             </children>
         </catalog>
     </menu>
@@ -76,9 +71,9 @@
                         <children>
                             <config>
                                 <children>
-                                    <gmpd>
+                                    <gomage_designer>
                                         <title>GoMage - Product Designer</title>
-                                    </gmpd>
+                                    </gomage_designer>
                                 </children>
                             </config>
                         </children>
@@ -91,7 +86,7 @@
         <resources>
             <admin>
                 <children>
-                    <gmpd translate="title" module="designer">
+                    <gomage_designer translate="title" module="designer">
                         <title>GoMage ProductDesigner</title>
                         <sort_order>100</sort_order>
                         <children>
@@ -101,14 +96,11 @@
                             <fonts>
                                 <title>Fonts</title>
                             </fonts>
-                            <ideas>
-                                <title>Design Ideas</title>
-                            </ideas>
                             <config>
                                 <title>Configuration</title>
                             </config>
                         </children>
-                    </gmpd>
+                    </gomage_designer>
                 </children>
             </admin>
         </resources>

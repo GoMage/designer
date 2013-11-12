@@ -123,7 +123,7 @@
      {
          $attribute = $event->getAttribute();
          $attribute_id = (int) $attribute->getAttributeId();
-         $colorAttributeCode = Mage::getStoreConfig('gmpd/navigation/color_attribute');
+         $colorAttributeCode = Mage::getStoreConfig('gomage_designer/navigation/color_attribute');
          if (!$colorAttributeCode || $colorAttributeCode != $attribute->getAttributeCode()) {
              return;
          }

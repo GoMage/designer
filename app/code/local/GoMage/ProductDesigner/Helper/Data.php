@@ -27,7 +27,7 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function isEnabled()
     {
-        return Mage::getStoreConfig('gmpd/general/enabled', Mage::app()->getStore());
+        return Mage::getStoreConfig('gomage_designer/general/enabled', Mage::app()->getStore());
     }
 
     public function isCustomizable($product)
@@ -47,7 +47,7 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function isNavigationEnabled()
     {
-        return Mage::getStoreConfig('gmpd/navigation/enabled', Mage::app()->getStore());
+        return Mage::getStoreConfig('gomage_designer/navigation/enabled', Mage::app()->getStore());
     }
 
     /**
@@ -62,7 +62,7 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function hasColorAttribute()
     {
-        $attributeCode = Mage::getStoreConfig('gmpd/navigation/color_attribute');
+        $attributeCode = Mage::getStoreConfig('gomage_designer/navigation/color_attribute');
         $attribute = Mage::getSingleton('eav/config')
             ->getAttribute(Mage_Catalog_Model_Product::ENTITY, $attributeCode);
         return $attribute->getId();
@@ -181,8 +181,8 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
     public function getDesignImageUrl(Mage_Catalog_Model_Product $product, $image, $size = array())
     {
         if (empty($size)) {
-            $imageWidth = Mage::getStoreConfig('gmpd/design/design_size_width');
-            $imageHeight = Mage::getStoreConfig('gmpd/design/design_size_height');
+            $imageWidth = Mage::getStoreConfig('gomage_designer/design/design_size_width');
+            $imageHeight = Mage::getStoreConfig('gomage_designer/design/design_size_height');
         } else {
             list($imageWidth, $imageHeight) = $size;
         }
@@ -198,8 +198,8 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
     {
         $imageFile = is_object($image) ? $image->getFile() : $image['file'];
         $imagePath = $product->getMediaConfig()->getMediaPath($imageFile);
-        $minWidth = Mage::getStoreConfig('gmpd/design/zoom_size_width');
-        $minHeight = Mage::getStoreConfig('gmpd/design/zoom_size_height');
+        $minWidth = Mage::getStoreConfig('gomage_designer/design/zoom_size_width');
+        $minHeight = Mage::getStoreConfig('gomage_designer/design/zoom_size_height');
         if (file_exists($imagePath)) {
             $imageObj = new Varien_Image($imagePath);
             $width = $imageObj->getOriginalWidth();
@@ -237,7 +237,7 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
             }
 
             $images = $product->getMediaGallery('images');
-            $colorAttributeCode = Mage::getStoreConfig('gmpd/navigation/color_attribute');
+            $colorAttributeCode = Mage::getStoreConfig('gomage_designer/navigation/color_attribute');
             $defaultColor = null;
             foreach ($images as $image) {
                 $id = $image['value_id'];

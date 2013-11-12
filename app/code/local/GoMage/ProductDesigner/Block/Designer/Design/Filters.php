@@ -106,12 +106,12 @@ class GoMage_ProductDesigner_Block_Designer_Design_Filters extends Mage_Core_Blo
 
     public function navigationEnabled()
     {
-        return (bool) Mage::getStoreConfig('gmpd/design/navigation');
+        return (bool) Mage::getStoreConfig('gomage_designer/design/navigation');
     }
 
     public function searchEnabled()
     {
-        return (bool) Mage::getStoreConfig('gmpd/design/search');
+        return (bool) Mage::getStoreConfig('gomage_designer/design/search');
     }
 
     protected function _toHtml()

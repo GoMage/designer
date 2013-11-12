@@ -72,7 +72,7 @@ class GoMage_ProductDesigner_Block_Designer_Text extends Mage_Core_Block_Templat
      */
     public function getDefaultFontFamily()
     {
-        return Mage::getStoreConfig('gmpd/text/font');
+        return Mage::getStoreConfig('gomage_designer/text/font');
     }
 
     /**
@@ -82,7 +82,7 @@ class GoMage_ProductDesigner_Block_Designer_Text extends Mage_Core_Block_Templat
      */
     public function getDefaultFontSize()
     {
-        return Mage::getStoreConfig('gmpd/text/size');
+        return Mage::getStoreConfig('gomage_designer/text/size');
     }
 
     /**
@@ -119,6 +119,6 @@ class GoMage_ProductDesigner_Block_Designer_Text extends Mage_Core_Block_Templat
 
     public function effectsEnabled()
     {
-        return (bool) Mage::getStoreConfig('gmpd/text/effects');
+        return (bool) Mage::getStoreConfig('gomage_designer/text/effects');
     }
 }

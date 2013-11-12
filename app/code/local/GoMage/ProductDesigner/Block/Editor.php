@@ -100,7 +100,7 @@ class GoMage_ProductDesigner_Block_Editor extends Mage_Core_Block_Template
 
     protected function _getEnableTab($tab)
     {
-        return Mage::getStoreConfig('gmpd/'. $tab .'/enabled', Mage::app()->getStore());
+        return Mage::getStoreConfig('gomage_designer/'. $tab .'/enabled', Mage::app()->getStore());
     }
 
     public function isActiveTab($tab)
@@ -117,7 +117,7 @@ class GoMage_ProductDesigner_Block_Editor extends Mage_Core_Block_Template
         }
         if (is_null($this->_activeTab)) {
             if ($this->isProductSelected()) {
-                $defaultTab = Mage::getStoreConfig('gmpd/general/default_tab', Mage::app()->getStore());
+                $defaultTab = Mage::getStoreConfig('gomage_designer/general/default_tab', Mage::app()->getStore());
                 if ($this->_tabs[$defaultTab]) {
                     $this->_activeTab  = $defaultTab;
                 } else {
@@ -145,14 +145,14 @@ class GoMage_ProductDesigner_Block_Editor extends Mage_Core_Block_Template
 
     public function getProductImageWidth()
     {
-        return $imageWidth = Mage::getStoreConfig('gmpd/design/design_size_width');
+        return $imageWidth = Mage::getStoreConfig('gomage_designer/design/design_size_width');
     }
 
     public function getProductOriginalImageMinSizes()
     {
         return array(
-            'width' => Mage::getStoreConfig('gmpd/design/zoom_size_width'),
-            'height' => Mage::getStoreConfig('gmpd/design/zoom_size_height')
+            'width' => Mage::getStoreConfig('gomage_designer/design/zoom_size_width'),
+            'height' => Mage::getStoreConfig('gomage_designer/design/zoom_size_height')
         );
     }
 
@@ -174,9 +174,9 @@ class GoMage_ProductDesigner_Block_Editor extends Mage_Core_Block_Template
     public function getDesignPriceConfig()
     {
         $config = array(
-            'fixed_price' => Mage::getStoreConfig('gmpd/general/fixed_price') ?:0,
-            'text_price'  => Mage::getStoreConfig('gmpd/general/price_for_text')?:0,
-            'image_text'  => Mage::getStoreConfig('gmpd/general/price_for_image')?:0
+            'fixed_price' => Mage::getStoreConfig('gomage_designer/general/fixed_price') ?:0,
+            'text_price'  => Mage::getStoreConfig('gomage_designer/general/price_for_text')?:0,
+            'image_text'  => Mage::getStoreConfig('gomage_designer/general/price_for_image')?:0
         );
 
         return $config;
@@ -203,27 +203,27 @@ class GoMage_ProductDesigner_Block_Editor extends Mage_Core_Block_Template
 
     public function isHelpEnabled($area)
     {
-        return (bool) Mage::getStoreConfig('gmpd/'. $area .'/show_help') &&
+        return (bool) Mage::getStoreConfig('gomage_designer/'. $area .'/show_help') &&
             $this->getHelpText($area);
     }
 
     public function getHelpPopupWidth($area)
     {
-        return Mage::getStoreConfig('gmpd/'. $area .'/popup_width');
+        return Mage::getStoreConfig('gomage_designer/'. $area .'/popup_width');
     }
 
     public function getHelpPopupHeight($area)
     {
-        return Mage::getStoreConfig('gmpd/'. $area .'/popup_height');
+        return Mage::getStoreConfig('gomage_designer/'. $area .'/popup_height');
     }
 
     public function getHelpText($area)
     {
-        return Mage::getStoreConfig('gmpd/'. $area .'/popup_text');
+        return Mage::getStoreConfig('gomage_designer/'. $area .'/popup_text');
     }
 
     public function additionalInstructionsEnabled()
     {
-        return (bool) Mage::getStoreConfig('gmpd/general/show_comment');
+        return (bool) Mage::getStoreConfig('gomage_designer/general/show_comment');
     }
 }

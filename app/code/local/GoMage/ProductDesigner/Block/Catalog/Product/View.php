@@ -70,6 +70,6 @@ class GoMage_ProductDesigner_Block_Catalog_Product_View extends Mage_Catalog_Blo
             return false;
         }
 
-        return $this->getProduct()->getEnableProductDesigner() && Mage::getStoreConfig('gmpd/general/add_to_cart_button');
+        return $this->getProduct()->getEnableProductDesigner() && Mage::getStoreConfig('gomage_designer/general/add_to_cart_button');
     }
 }

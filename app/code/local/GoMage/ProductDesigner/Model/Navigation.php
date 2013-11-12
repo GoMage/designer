@@ -71,7 +71,7 @@ class GoMage_ProductDesigner_Model_Navigation extends Mage_Core_Model_Abstract
     protected function _getRootCategory()
     {
         if (is_null($this->_category)) {
-            $categoryId = Mage::getStoreConfig('gmpd/navigation/category')
+            $categoryId = Mage::getStoreConfig('gomage_designer/navigation/category')
                 ?: Mage::app()->getStore()->getRootCategoryId();
             $this->_category = Mage::getModel('catalog/category')->load($categoryId);
         }
@@ -254,8 +254,8 @@ class GoMage_ProductDesigner_Model_Navigation extends Mage_Core_Model_Abstract
     {
         if (is_null($this->_availableFilters)) {
             $filters = array();
-            foreach (array(Mage::getStoreConfig('gmpd/navigation/color_attribute'),
-                 Mage::getStoreConfig('gmpd/navigation/size_attribute')) as $filter) {
+            foreach (array(Mage::getStoreConfig('gomage_designer/navigation/color_attribute'),
+                 Mage::getStoreConfig('gomage_designer/navigation/size_attribute')) as $filter) {
                 if ($attribute = $this->_getFilterAttribute($filter)) {
                     $filters[$attribute->getAttributeCode()] = $attribute;
                 }

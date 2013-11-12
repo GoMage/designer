@@ -340,6 +340,6 @@ class GoMage_ProductDesigner_Model_Design_Image extends Mage_Core_Model_Abstract
 
     protected function _getImageExtensionForSave()
     {
-        return Mage::getStoreConfig('gmpd/general/format');
+        return Mage::getStoreConfig('gomage_designer/general/format');
     }
 }

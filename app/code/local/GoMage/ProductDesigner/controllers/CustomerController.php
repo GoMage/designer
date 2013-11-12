@@ -11,7 +11,7 @@ class GoMage_ProductDesigner_CustomerController extends Mage_Customer_AccountCon
      */
     public function dispatch($action)
     {
-        $moduleEnabled = Mage::getStoreConfig('gmpd/general/enabled', Mage::app()->getStore());
+        $moduleEnabled = Mage::getStoreConfig('gomage_designer/general/enabled', Mage::app()->getStore());
         if (!$moduleEnabled) {
             $action = 'noRoute';
         }
