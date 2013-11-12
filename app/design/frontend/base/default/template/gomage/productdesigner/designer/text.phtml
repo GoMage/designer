@@ -49,27 +49,17 @@ $sizes = $this->getFontSizes();
             <button id="outline-button" class="panel-btn"><?php echo $this->__('Outline'); ?></button>
         </div>
         <div>
-            <fieldset class="curved-text-config" style="display: none; position: relative">
+            <fieldset class="curved-text-config text-effect">
                 <legend><?php echo $this->__('Curved Text'); ?></legend>
-                <legend id="curved-text-cancel" data-effect="curved" class="panel-cancel-btn" style="position: absolute;
-                background: #fff;
-                bottom: 4.6em;
-                right: 10px;">
-                    <?php echo $this->__('X'); ?>
-                </legend>
+                <div id="curved-text-cancel" title="<?php echo $this->__('Cancel Curved') ?>" data-effect="curved" class="panel-cancel-btn">&times;</div>
                 <div class="pd-element-wrapper">
                     <label for="curve_spacing"><?php echo $this->__('Radius'); ?>: </label>
                     <input type="range" id="curve_spacing" min='-40' max='40' step="1" value='0' style="width: 250px;">
                 </div>
             </fieldset>
-            <fieldset class="shadow-config" style="display: none; position: relative">
+            <fieldset class="shadow-config text-effect">
                 <legend><?php echo $this->__('Shadow'); ?></legend>
-                <legend id="shadow-cancel" data-effect="shadow" class="panel-cancel-btn" style="position: absolute;
-                background: #fff;
-                bottom: 9.6em;
-                right: 10px;">
-                    <?php echo $this->__('X'); ?>
-                </legend>
+                <div id="shadow-cancel" title="<?php echo $this->__('Cancel Shadow') ?>" data-effect="shadow" class="panel-cancel-btn">&times;</div>
                 <div class="pd-element-wrapper">
                     <label><?php echo $this->__('Offset Y'); ?>: </label>
                     <input type="range" value="0" id="shadow_y_range" min="-25" max="25" step="1">
@@ -86,14 +76,9 @@ $sizes = $this->getFontSizes();
                     <canvas height="20" width="230" id="textShadow" class="color-picker"></canvas>
                 </div>
             </fieldset>
-            <fieldset class="outline-config" style="display: none; position: relative">
+            <fieldset class="outline-config text-effect">
                 <legend>Outline</legend>
-                <legend id="outline-cancel" data-effect="outline" class="panel-cancel-btn" style="position: absolute;
-                background: #fff;
-                bottom: 5.75em;
-                right: 10px;">
-                    <?php echo $this->__('X'); ?>
-                </legend>
+                <div id="outline-cancel" title="<?php echo $this->__('Cancel Outline') ?>" data-effect="outline" class="panel-cancel-btn">&times;</div>
                 <div class="pd-element-wrapper">
                     <label>Size: </label>
                     <input type="range" value="0.00001" id="outline_range" min="0.00001" max="1.50001" step="0.05">
