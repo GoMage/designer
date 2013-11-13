@@ -44,16 +44,7 @@ try {
         'increment_per_store'   => false
     ));
 
-    Mage::getModel('gomage_designer/clipart_category')->setData(array(
-        'category_id' => 1,
-        'parent_category' => 0,
-        'name' => 'Root Category',
-        'sort_order' => 0,
-        'is_active' => 0,
-        'path' => 1,
-        'level' => 0,
-        'position' => 0
-    ))->save();
+    $installer->run("INSERT INTO `{$installer->getTable('gomage_designer/clipart_category')}` VALUES ('1', '0', 'Root Category', '1', '0', '0', '0', '0')");
 
     /* Clipart category end */
 
@@ -93,16 +84,9 @@ try {
         'increment_per_store'   => false
     ));
 
-    $category = Mage::getModel('gomage_designer/clipart_category');
-    $category->setData(array(
-        'parent_category' => GoMage_ProductDesigner_Model_Clipart_Category::TREE_ROOT_ID,
-        'name' => 'Cliparts',
-        'sort_order' => 0,
-        'is_active' => 1,
-        'position' => 0
-    ))->save();
-
-    addClipartsToCategory($category);
+    $categoryId = 2;
+    $installer->run("INSERT INTO `{$installer->getTable('gomage_designer/clipart_category')}` VALUES ('2', '1', 'Cliparts', '1/2', '1', '0', '0', '1')");
+    addClipartsToCategory($categoryId);
 
     /* Cliparts end*/
 
@@ -300,11 +284,13 @@ try {
     $installer->endSetup();
 } catch (Exception $e) {
     Mage::logException($e);
+} catch (Mage_Core_Exception $e) {
+    Mage::logException($e);
 }
 
 function addClipartsToCategory($category)
 {
-    if($category && $category->getId()) {
+    if($category && $category > 1) {
         $clipartsDir = Mage::getSingleton('gomage_designer/clipart_gallery_config')->getBaseMediaPath() . '/';
 
         $pngImages = glob($clipartsDir .'*.png');
@@ -319,7 +305,7 @@ function addClipartsToCategory($category)
             $imagePath = str_replace($clipartsDir, '/', $image);
             $clipart = Mage::getModel('gomage_designer/clipart');
             $clipart->setData(array(
-                'category_id' => $category->getId(),
+                'category_id' => $category,
                 'label' => '',
                 'image' => $imagePath,
                 'tags' => '',

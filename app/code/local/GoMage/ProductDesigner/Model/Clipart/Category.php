@@ -50,8 +50,10 @@ class GoMage_ProductDesigner_Model_Clipart_Category extends Mage_Core_Model_Abst
 
     public function getParentCategory()
     {
-        if(!$this->parentCategory) {
-            if($this->getParentId() == $this->getDefaultCategoryId()) {
+        if(is_null($this->parentCategory)) {
+            if ($this->getId() == $this->getDefaultCategoryId()) {
+                return false;
+            } elseif ($this->getParentId() == $this->getDefaultCategoryId()) {
                 $parentCategory = $this->getDefaultCategory();
             } else {
                 if($this->getParentId()) {
@@ -71,20 +73,16 @@ class GoMage_ProductDesigner_Model_Clipart_Category extends Mage_Core_Model_Abst
         return $category;
     }
 
-    public function _beforeSave() {
-        if((int)$this->getData('category_id') === 0) {
-            $this->unsetData('category_id');
-        }
-        $this->validate();
-    }
-
-    public function _afterSave() {
+    public function _afterSave()
+    {
         $parentCategory = $this->getParentCategory();
         if($parentCategory && $parentCategory->getPath()) {
             $this->setPath($parentCategory->getPath() . '/'. $this->getId());
             $this->setLevel(count(explode('/', $parentCategory->getPath())));
+            $this->getResource()->save($this);
         }
-        $this->getResource()->save($this);
+
+        return parent::_afterSave();
     }
 
     public function validate()

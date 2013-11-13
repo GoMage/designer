@@ -102,7 +102,6 @@ class GoMage_ProductDesigner_Adminhtml_ClipartsController extends Mage_Adminhtml
         if ($data = $this->getRequest()->getPost('general')) {
             try {
                 //Unset Default state
-                $data['is_default'] = 0;
                 $data['is_active'] = 1;
                 $category = Mage::getModel('gomage_designer/clipart_category');
                 $category->setData($data);

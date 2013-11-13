@@ -14,7 +14,7 @@
 <config>
     <modules>
         <GoMage_ProductDesigner>
-            <version>0.0.26</version>
+            <version>1.0.0</version>
         </GoMage_ProductDesigner>
     </modules>
     <frontend>
