@@ -64,7 +64,8 @@ class GoMage_ProductDesigner_Model_Clipart_Category extends Mage_Core_Model_Abst
         return $this->parentCategory;
     }
 
-    public function getCategoryById($id) {
+    public function getCategoryById($id)
+    {
         $category = new self;
         $category = $category->load($id);
         return $category;
@@ -86,7 +87,8 @@ class GoMage_ProductDesigner_Model_Clipart_Category extends Mage_Core_Model_Abst
         $this->getResource()->save($this);
     }
 
-    public function validate() {
+    public function validate()
+    {
         $data = $this->getData();
         $errorMessage = 'Not valid category data';
         $error = false;
@@ -110,30 +112,35 @@ class GoMage_ProductDesigner_Model_Clipart_Category extends Mage_Core_Model_Abst
         return true;
     }
 
-    public function getClipartsCollection() {
+    public function getClipartsCollection()
+    {
         $collection = Mage::getResourceModel('gomage_designer/clipart_collection');
         $collection->addFieldToFilter('category_id', $this->getId());
 
         return $collection;
     }
 
-    public function getCollection() {
+    public function getCollection()
+    {
         $collection = Mage::getResourceModel('gomage_designer/clipart_category_collection');
 
         return $collection;
     }
 
-    public function getChildrenCollection() {
+    public function getChildrenCollection()
+    {
         if($this->getId()) {
             $this->getChildrenCollectionById($this->getId());
         }
     }
 
-    public function getChildrenCollectionById($parentId) {
+    public function getChildrenCollectionById($parentId)
+    {
         return $this->getCollection()->addFieldToFilter('parent_id',$parentId);
     }
 
-    public function getChildrenCount() {
+    public function getChildrenCount()
+    {
         $categoryCollection = $this->getChildrenCollection();
         if($categoryCollection) {
             return $categoryCollection->count();

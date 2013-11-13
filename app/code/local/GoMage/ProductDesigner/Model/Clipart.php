@@ -24,25 +24,39 @@ class GoMage_ProductDesigner_Model_Clipart extends Mage_Core_Model_Abstract {
         $this->_init('gomage_designer/clipart');
     }
 
-    public function getImagePath($imageUrl) {
+    protected function _beforeSave()
+    {
+        $clipartEntity = Mage::getModel('eav/entity_type')->loadByCode('clipart_image');
+        if ($clipartEntity && $clipartEntity->getEntityTypeId()) {
+            $this->setData('entity_type_id', $clipartEntity->getEntityTypeId());
+        }
+        return parent::_beforeSave();
+    }
+
+    public function getImagePath($imageUrl)
+    {
         $imageUrl = str_replace($this->getConfig()->getBaseTmpMediaUrl(), '', $imageUrl);
         $imageUrl = str_replace($this->getConfig()->getBaseMediaUrl(), '', $imageUrl);
         return $imageUrl;
     }
 
-    public function getUrl($imagePath) {
+    public function getUrl($imagePath)
+    {
         return $this->getConfig()->getBaseTmpMediaUrl() . $imagePath;
     }
 
-    public function getDestinationPath($imagePath) {
+    public function getDestinationPath($imagePath)
+    {
         return $this->getConfig()->getBaseMediaPath() . $imagePath;
     }
 
-    public function getTempPath($imagePath) {
+    public function getTempPath($imagePath)
+    {
         return $this->getConfig()->getBaseTmpMediaPath() . $imagePath;
     }
 
-    public function getDestinationDir($imagePath) {
+    public function getDestinationDir($imagePath)
+    {
         $expImagePath = explode('/', $imagePath);
         array_pop($expImagePath);
         $imagePath = implode('/', $expImagePath);
@@ -53,7 +67,8 @@ class GoMage_ProductDesigner_Model_Clipart extends Mage_Core_Model_Abstract {
         return $imagePath;
     }
 
-    public function getConfig() {
+    public function getConfig()
+    {
         return Mage::getSingleton('gomage_designer/clipart_gallery_config');
     }
 

@@ -116,9 +116,6 @@
                     <design_image>
                         <table>gomage_productdesigner_design_image</table>
                     </design_image>
-                    <publishedDesign>
-                        <table>gomage_productdesigner_published_design</table>
-                    </publishedDesign>
                     <attribute_option>
                         <table>gomage_productdesigner_attribute_option</table>
                     </attribute_option>
