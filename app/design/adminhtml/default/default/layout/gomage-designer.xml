@@ -2,7 +2,6 @@
 <layout>
     <adminhtml_catalog_product_edit>
         <reference name="head">
-            <action method="addJs"><script>gomage/productdesigner/adminhtml/product_edit.js</script></action>
             <action method="addJs"><script>prototype/window.js</script></action>
             <action method="addItem"><type>js_css</type><name>prototype/windows/themes/default.css</name></action>
             <action method="addItem"><type>skin_css</type><name>lib/prototype/windows/themes/magento.css</name></action>
@@ -12,7 +11,6 @@
     </adminhtml_catalog_product_edit>
     <adminhtml_catalog_product_new>
         <reference name="head">
-            <action method="addJs"><script>gomage/productdesigner/adminhtml/product_edit.js</script></action>
             <action method="addJs"><script>prototype/window.js</script></action>
             <action method="addItem"><type>js_css</type><name>prototype/windows/themes/default.css</name></action>
             <action method="addItem"><type>skin_css</type><name>lib/prototype/windows/themes/magento.css</name></action>

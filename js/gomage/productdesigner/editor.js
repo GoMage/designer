@@ -339,7 +339,7 @@ GoMage.ProductDesigner.prototype = {
                 if (!this.isCustomerLogin) {
                     this.createCustomerLoginWindows();
                     if (this.loginWindow) {
-                        this.loginWindow.showCenter(true, true);
+                        this.loginWindow.showCenter(true);
                         setTimeout(function(){
                             this.loginWindow.setSize(this.loginWindow.width, $('customer-login-container').getHeight(), true);
                         }.bind(this), 320);
@@ -391,10 +391,13 @@ GoMage.ProductDesigner.prototype = {
                 });
                 this.observeRegisterSubmitBtn();
             }
+            Event.on(document.body, 'click', '#overlay_modal', function(e, elm){
+                Windows.closeAll();
+            });
         }
     },
 
-    createPopupWindow: function(contentId, errorContainerId, params){
+    createPopupWindow: function(contentId, errorContainerId, params) {
         var win = new Window(params);
         win.errorContainerId = errorContainerId
         win.setContent(contentId, true, true);
@@ -409,7 +412,7 @@ GoMage.ProductDesigner.prototype = {
                 e.stop();
                 this.loginWindow.close();
                 setTimeout(function(){
-                    this.registrationWindow.showCenter(true, true);
+                    this.registrationWindow.showCenter(true);
                 }.bind(this), 1000);
             }.bind(this));
         }
