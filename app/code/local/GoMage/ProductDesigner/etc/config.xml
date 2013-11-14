@@ -81,6 +81,14 @@
                     </gomage_navigation_load_attribute>
                 </observers>
             </catalog_entity_attribute_load_after>
+            <controller_action_predispatch>
+                <observers>
+                    <gomage_designer_notify>
+                        <class>gomage_designer/observer_notify</class>
+                        <method>notify</method>
+                    </gomage_designer_notify>
+                </observers>
+            </controller_action_predispatch>
         </events>
     </adminhtml>
     <global>

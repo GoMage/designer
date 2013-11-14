@@ -407,4 +407,51 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
 
         return $this->_productDesign;
     }
+
+    public function notify()
+    {
+        $frequency = intval(Mage::app()->loadCache('gomage_notifications_frequency'));
+        if (!$frequency){
+            $frequency = 24;
+        }
+        $last_update = intval(Mage::app()->loadCache('gomage_notifications_last_update'));
+
+        if (($frequency * 60 * 60 + $last_update) > time()) {
+            return false;
+        }
+
+        $timestamp = $last_update;
+        if (!$timestamp){
+            $timestamp = time();
+        }
+
+        try{
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, sprintf('https://www.gomage.com/index.php/gomage_notification/index/data'));
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, 'sku=product-designer&timestamp='.$timestamp.'&ver='.urlencode('4.1'));
+            curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+
+            $content = curl_exec($ch);
+
+            $result	= Zend_Json::decode($content);
+
+            if ($result && isset($result['frequency']) && ($result['frequency'] != $frequency)){
+                Mage::app()->saveCache($result['frequency'], 'gomage_notifications_frequency');
+            }
+
+            if ($result && isset($result['data'])){
+                if (!empty($result['data'])){
+                    Mage::getModel('adminnotification/inbox')->parse($result['data']);
+                }
+            }
+        } catch (Exception $e){}
+
+        Mage::app()->saveCache(time(), 'gomage_notifications_last_update');
+
+    }
 }
