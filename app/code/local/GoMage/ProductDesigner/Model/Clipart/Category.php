@@ -73,7 +73,16 @@ class GoMage_ProductDesigner_Model_Clipart_Category extends Mage_Core_Model_Abst
         return $category;
     }
 
-    public function _afterSave()
+    protected function _beforeSave()
+    {
+        if ($this->hasData('category_id') && $this->getData('category_id') == null) {
+            $this->unsetData('category_id');
+        }
+
+        return parent::_beforeSave();
+    }
+
+    protected function _afterSave()
     {
         $parentCategory = $this->getParentCategory();
         if($parentCategory && $parentCategory->getPath()) {
