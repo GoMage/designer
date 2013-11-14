@@ -206,7 +206,7 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
                 $fileDir = '/' . ($customerId ? $customerId : $sessionId) . '/';
                 $destinationDir = $baseMediaPath . $fileDir;
                 if (!file_exists($destinationDir)) {
-                    mkdir($destinationDir);
+                    mkdir($destinationDir, 0775, true);
                 }
                 $destinationFile = $destinationDir . $fileName;
 
