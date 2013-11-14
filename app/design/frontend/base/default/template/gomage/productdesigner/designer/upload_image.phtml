@@ -1,13 +1,9 @@
-<?php
-/**
- * @var $this GoMage_ProductDesigner_Block_Designer_UploadImage
- */
-?>
+<?php $licenseEnabled =  $this->licenseAgreementsEnabled() && $this->getLicenceAgreementsText(); ?>
 <div>
     <div id="uploadedImages">
         <?php echo $this->getChildHtml('uploadedImages'); ?>
     </div>
-    <?php if ($this->licenseAgreementsEnabled()):?>
+    <?php if ($licenseEnabled):?>
     <ul class="form-list">
       <li class="control control-rights">
         <input type="checkbox" class="checkbox" name="licence_agreements" id="licence_agreements" />
@@ -19,10 +15,10 @@
         <div id="license-agreemants" class="pd-license-agreements-popup" style="display: none">
             <?php echo $this->getLicenceAgreementsText(); ?>
         </div>
-    </div>    
+    </div>
     <?php endif;?>
 </div>
-<div id="file-input-box" <?php echo $this->licenseAgreementsEnabled() ? 'style="display:none;"' : ''?>>
+<div id="file-input-box" <?php echo $licenseEnabled ? 'style="display:none;"' : ''?>>
     <form target="iframeSave" id="uploadImages" enctype="multipart/form-data" action="<?php echo Mage::getUrl('designer/index/uploadImages'); ?>" method="post">
         <input name="filesToUpload[]" id="filesToUpload" type="file" multiple="multiple" accept="<?php echo $this->getAllowedImageMimeTypesString(); ?>"/>
         <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo $this->getMaxUploadFileSize();?>" />
