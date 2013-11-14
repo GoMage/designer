@@ -77,10 +77,10 @@ $sizes = $this->getFontSizes();
                 </div>
             </fieldset>
             <fieldset class="outline-config text-effect">
-                <legend>Outline</legend>
+                <legend><?php echo $this->__('Outline'); ?></legend>
                 <div id="outline-cancel" title="<?php echo $this->__('Cancel Outline') ?>" data-effect="outline" class="panel-cancel-btn">&times;</div>
                 <div class="pd-element-wrapper">
-                    <label>Size: </label>
+                    <label><?php echo $this->__('Size')?>:</label>
                     <input type="range" value="0.00001" id="outline_range" min="0.00001" max="1.50001" step="0.05">
                 </div>
                 <div class="pd-element-wrapper">
