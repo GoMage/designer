@@ -248,6 +248,11 @@
                 <max_size_height>700</max_size_height>
             </upload_image>
         </gomage_designer>
+        <gomage_notification>
+            <notification>
+                <enable>1</enable>
+            </notification>
+        </gomage_notification>
     </default>
 </config>
 
