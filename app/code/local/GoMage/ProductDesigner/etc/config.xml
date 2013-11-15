@@ -176,7 +176,7 @@
             <gomage_productdesigner_setup>
                 <setup>
                     <module>GoMage_ProductDesigner</module>
-                    <class>Mage_Eav_Model_Entity_Setup</class>
+                    <class>GoMage_ProductDesigner_Model_Resource_Setup</class>
                     <connection>core_setup</connection>
                 </setup>
             </gomage_productdesigner_setup>

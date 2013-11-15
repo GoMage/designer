@@ -148,9 +148,9 @@ try {
             'unsigned' => true,
             'nullable' => false,
         ), "Customer Id")
-        ->addColumn('comment', Varien_Db_Ddl_Table::TYPE_TEXT, null, array(), 'Comment')
+        ->addColumn('comment', Varien_Db_Ddl_Table::TYPE_LONGVARCHAR, 2048, array(), 'Comment')
         ->addColumn('session_id', Varien_Db_Ddl_Table::TYPE_VARCHAR, 255, array(), 'Session Id')
-        ->addColumn('created_date', Varien_Db_Ddl_Table::TYPE_DATETIME, null, array(), 'Created Date')
+        ->addColumn('created_date', Varien_Db_Ddl_Table::TYPE_TIMESTAMP, null, array(), 'Created Date')
         ->addColumn('price', Varien_Db_Ddl_Table::TYPE_DECIMAL, null, array(
             'scale'     => 4,
             'precision' => 12,
@@ -183,16 +183,16 @@ try {
             'unsigned'  => true,
             'nullable'  => false,
         ), "Original Image Id")
-        ->addColumn('image', Varien_Db_Ddl_Table::TYPE_TEXT, 255, array(), "Image")
-        ->addColumn('layer', Varien_Db_Ddl_Table::TYPE_TEXT, 255, array(), "Layer Image")
+        ->addColumn('image', Varien_Db_Ddl_Table::TYPE_VARCHAR, 255, array(), "Image")
+        ->addColumn('layer', Varien_Db_Ddl_Table::TYPE_VARCHAR, 255, array(), "Layer Image")
         ->addColumn('price', Varien_Db_Ddl_Table::TYPE_DECIMAL, null, array(
             'scale'     => 4,
             'precision' => 12,
         ), "Price")
-        ->addColumn('created_date', Varien_Db_Ddl_Table::TYPE_DATETIME, null, array(), "Price");
+        ->addColumn('created_date', Varien_Db_Ddl_Table::TYPE_TIMESTAMP, null, array(), "Price");
     $installer->getConnection()->createTable($table);
 
-    $this->getConnection()->addForeignKey(
+    $installer->addForeignKey(
         $installer->getFkName('gomage_designer/design_image', 'design_id', 'gomage_designer/design', 'design_id'),
         $installer->getTable('gomage_designer/design_image'), 'design_id',
         $installer->getTable('gomage_designer/design'), 'design_id',
@@ -226,24 +226,14 @@ try {
     $installer->getConnection()->addColumn(
         $installer->getTable('catalog/product_attribute_media_gallery_value'),
         'color',
-        array(
-            'type' => Varien_Db_Ddl_Table::TYPE_INTEGER,
-            'unsigned' => true,
-            'nullable' => true,
-            'comment' => 'Image Color'
-        )
+        "INTEGER(12) UNSIGNED NOT NULL"
     );
 
     /* Add Design Area to image */
     $installer->getConnection()->addColumn(
         $installer->getTable('catalog/product_attribute_media_gallery_value'),
         'design_area',
-        array(
-            'type' => Varien_Db_Ddl_Table::TYPE_TEXT,
-            'length' => 255,
-            'nullable' => true,
-            'comment' => 'Image Design Area'
-        )
+        "VARCHAR (1024) NOT NULL"
     );
 
     /* Update backend model for med */
@@ -265,8 +255,8 @@ try {
             'unsigned'  => true,
             'nullable'  => false,
         ), "Attribute Id")
-        ->addColumn('filename', Varien_Db_Ddl_Table::TYPE_TEXT, 255, array(), 'File Name')
-        ->addColumn('name', Varien_Db_Ddl_Table::TYPE_TEXT, 255, array(), 'Name')
+        ->addColumn('filename', Varien_Db_Ddl_Table::TYPE_VARCHAR, 255, array(), 'File Name')
+        ->addColumn('name', Varien_Db_Ddl_Table::TYPE_VARCHAR, 255, array(), 'Name')
         ->addColumn('size', Varien_Db_Ddl_Table::TYPE_DECIMAL, 255, array(
             'nullable' => false,
             'scale'     => 4,
@@ -274,7 +264,7 @@ try {
         ), 'Size');
     $installer->getConnection()->createTable($table);
 
-    $installer->getConnection()->addForeignKey(
+    $installer->addForeignKey(
         $installer->getFkName('gomage_designer/attribute_option', 'option_id', 'eav/attribute_option', 'option_id'),
         $installer->getTable('gomage_designer/attribute_option'), 'option_id',
         $installer->getTable('eav/attribute_option'), 'option_id',
