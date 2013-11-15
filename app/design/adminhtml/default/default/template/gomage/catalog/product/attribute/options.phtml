@@ -91,7 +91,7 @@ $show_options = 10;
                         <?php foreach ($this->getStores() as $_store): ?>
                         <td><input name="option[value][{{id}}][<?php echo $_store->getId() ?>]" value="{{store<?php echo $_store->getId() ?>}}" class="input-text<?php if($_store->getId()==0): ?> required-option<?php endif; ?>" type="text" <?php if ($this->getReadOnly()):?> disabled="disabled"<?php endif;?>/></td>
                         <?php endforeach; ?>
-                        <td class="a-center"> uploader here <!--<input class="input-text" type="text" name="option[url_key][{{id}}]" value="{{url_key}}" <?php if ($this->getReadOnly()):?> disabled="disabled"<?php endif;?>/>--></td>
+                        <td class="a-center"><?php echo $this->__('uploader here')?><!--<input class="input-text" type="text" name="option[url_key][{{id}}]" value="{{url_key}}" <?php if ($this->getReadOnly()):?> disabled="disabled"<?php endif;?>/>--></td>
                         <td class="a-center"><input class="input-text" type="text" name="option[order][{{id}}]" value="{{sort_order}}" <?php if ($this->getReadOnly()):?> disabled="disabled"<?php endif;?>/></td>
                         <td><input class="input-radio" type="radio" name="default[]" value="{{id}}" <?php if ($this->getReadOnly()):?> disabled="disabled"<?php endif;?>/></td>
                         <td class="a-left">

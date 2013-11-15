@@ -38,7 +38,7 @@
                         price="<?php echo $_option->getPrice(); ?>"
                         <?php if ($_option->getValue()): ?>checked="checked"<?php endif;?>/>
                     <span class="label">
-                        <label for="design_option">Design <span class="price-notice">+<?php echo $this->helper('core')->currencyByStore($_option->getPrice(), null, true);?></span></label>
+                        <label for="design_option"><?php echo $this->__('Design');?> <span class="price-notice">+<?php echo $this->helper('core')->currencyByStore($_option->getPrice(), null, true);?></span></label>
                     </span>
                 </li>
             </ul>
