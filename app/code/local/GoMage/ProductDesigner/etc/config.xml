@@ -89,6 +89,15 @@
                     </gomage_designer_notify>
                 </observers>
             </controller_action_predispatch>
+            <admin_system_config_changed_section_gomage_activation>
+                <observers>
+                    <designer_collect_totals_after>
+                        <type>model</type>
+                        <class>gomage_designer/observer</class>
+                        <method>checkK</method>
+                    </designer_collect_totals_after>
+                </observers>
+            </admin_system_config_changed_section_gomage_activation>
         </events>
     </adminhtml>
     <global>

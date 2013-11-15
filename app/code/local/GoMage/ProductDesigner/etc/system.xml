@@ -19,47 +19,103 @@
       </gomage>
    </tabs>
    <sections>
-      <gomage_activation>
-         <label>Activation</label>
-         <tab>gomage</tab>
-         <frontend_type>text</frontend_type>
-         <sort_order>1000</sort_order>
-         <show_in_default>1</show_in_default>
-         <show_in_website>1</show_in_website>
-         <show_in_store>1</show_in_store>
-         <groups>
-            <feed translate="label">
-               <label>GoMage Product Designer v.1.0</label>
-               <frontend_type>text</frontend_type>
-               <sort_order>30</sort_order>
-               <show_in_default>1</show_in_default>
-               <show_in_website>1</show_in_website>
-               <show_in_store>1</show_in_store>
-               <fields>
-                  <key>
-                     <label>Activation Key</label>
-                     <frontend_type>text</frontend_type>
-                     <sort_order>5</sort_order>
-                     <show_in_default>1</show_in_default>
-                     <show_in_website>0</show_in_website>
-                     <show_in_store>0</show_in_store>
-                  </key>
-                  <!--
-                  <websites translate="label">
-                     <label>Select Websites</label>
-                     <frontend_type>checkbox</frontend_type>
-                     <source_model>adminhtml/system_config_source_website</source_model>
-                     <frontend_model>gomage_productDesigner/adminhtml_config_form_renderer_website</frontend_model>
-                     <sort_order>20</sort_order>
-                     <show_in_default>1</show_in_default>
-                     <show_in_website>0</show_in_website>
-                     <show_in_store>0</show_in_store>
-                  </websites>
-                  -->
-               </fields>
-            </feed>
-         </groups>
-      </gomage_activation>
+       <gomage_activation>
+           <label>Activation</label>
+           <tab>gomage</tab>
+           <frontend_type>text</frontend_type>
+           <sort_order>1000</sort_order>
+           <show_in_default>1</show_in_default>
+           <show_in_website>1</show_in_website>
+           <show_in_store>1</show_in_store>
+           <groups>
+               <designer translate="label">
+                   <label>GoMage Product Designer v.1.0</label>
+                   <frontend_type>text</frontend_type>
+                   <sort_order>20</sort_order>
+                   <show_in_default>1</show_in_default>
+                   <show_in_website>1</show_in_website>
+                   <show_in_store>1</show_in_store>
+                   <fields>
+                       <key>
+                           <label>Activation Key</label>
+                           <frontend_type>text</frontend_type>
+                           <sort_order>5</sort_order>
+                           <show_in_default>1</show_in_default>
+                           <show_in_website>0</show_in_website>
+                           <show_in_store>0</show_in_store>
+                       </key>
+                       <websites translate="label">
+                           <label>Select Websites</label>
+                           <frontend_type>checkbox</frontend_type>
+                           <source_model>adminhtml/system_config_source_website</source_model>
+                           <frontend_model>gomage_designer/adminhtml_config_form_renderer_website</frontend_model>
+                           <sort_order>20</sort_order>
+                           <show_in_default>1</show_in_default>
+                           <show_in_website>0</show_in_website>
+                           <show_in_store>0</show_in_store>
+                       </websites>
+                       <ar>
+                           <frontend_type>hidden</frontend_type>
+                           <sort_order>25</sort_order>
+                           <show_in_default>0</show_in_default>
+                           <show_in_website>0</show_in_website>
+                           <show_in_store>0</show_in_store>
+                       </ar>
+                       <time>
+                           <frontend_type>hidden</frontend_type>
+                           <sort_order>25</sort_order>
+                           <show_in_default>0</show_in_default>
+                           <show_in_website>0</show_in_website>
+                           <show_in_store>0</show_in_store>
+                       </time>
+                       <installed>
+                           <frontend_type>hidden</frontend_type>
+                           <sort_order>25</sort_order>
+                           <show_in_default>0</show_in_default>
+                           <show_in_website>0</show_in_website>
+                           <show_in_store>0</show_in_store>
+                       </installed>
+                       <count>
+                           <frontend_type>hidden</frontend_type>
+                           <sort_order>25</sort_order>
+                           <show_in_default>0</show_in_default>
+                           <show_in_website>0</show_in_website>
+                           <show_in_store>0</show_in_store>
+                       </count>
+                   </fields>
+               </designer>
+           </groups>
+       </gomage_activation>
+       <gomage_notification>
+           <label>Notifications</label>
+           <tab>gomage</tab>
+           <frontend_type>text</frontend_type>
+           <sort_order>1100</sort_order>
+           <show_in_default>1</show_in_default>
+           <show_in_website>0</show_in_website>
+           <show_in_store>0</show_in_store>
+           <groups>
+               <notification>
+                   <label>Notifications</label>
+                   <frontend_type>text</frontend_type>
+                   <sort_order>10</sort_order>
+                   <show_in_default>1</show_in_default>
+                   <show_in_website>0</show_in_website>
+                   <show_in_store>0</show_in_store>
+                   <fields>
+                       <enable>
+                           <label>I'd like to get advertising by GoMage</label>
+                           <frontend_type>select</frontend_type>
+                           <source_model>adminhtml/system_config_source_yesno</source_model>
+                           <sort_order>10</sort_order>
+                           <show_in_default>1</show_in_default>
+                           <show_in_website>0</show_in_website>
+                           <show_in_store>0</show_in_store>
+                       </enable>
+                   </fields>
+               </notification>
+           </groups>
+       </gomage_notification>
       <gomage_designer>
         <label>Product Designer</label>
         <tab>gomage</tab>

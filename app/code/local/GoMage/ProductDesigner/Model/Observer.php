@@ -119,7 +119,7 @@
          return true;
      }
 
-     public function loadAttribute($event)
+     public function loadAttribute(Varien_Event_Observer $event)
      {
          $attribute = $event->getAttribute();
          $attribute_id = (int) $attribute->getAttributeId();
@@ -143,5 +143,11 @@
          if ($data && is_array($data) && ! empty($data)) {
              $attribute->addData($data);
          }
+     }
+
+     static public function checkK(Varien_Event_Observer $event)
+     {
+         $key = Mage::getStoreConfig('gomage_activation/designer/key');
+         Mage::helper('gomage_designer')->a($key);
      }
  }
