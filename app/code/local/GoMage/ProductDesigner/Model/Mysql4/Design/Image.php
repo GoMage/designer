@@ -32,7 +32,7 @@
  * @subpackage Model
  * @author     Roman Bublik <rb@gomage.com>
  */
-class GoMage_ProductDesigner_Model_Mysql4_Design_Image extends Mage_Core_Model_Resource_Db_Abstract
+class GoMage_ProductDesigner_Model_Mysql4_Design_Image extends Mage_Core_Model_Mysql4_Abstract
 {
     /**
      * Initialize table

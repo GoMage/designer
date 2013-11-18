@@ -1,6 +1,6 @@
 <?php
 //@todo fix move positioning functionality
-class GoMage_ProductDesigner_Model_Mysql4_Clipart_Category extends Mage_Core_Model_Resource_Db_Abstract
+class GoMage_ProductDesigner_Model_Mysql4_Clipart_Category extends Mage_Core_Model_Mysql4_Abstract
 {
     public function _construct()
     {

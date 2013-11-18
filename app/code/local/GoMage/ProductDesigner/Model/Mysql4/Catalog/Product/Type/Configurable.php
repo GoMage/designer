@@ -33,7 +33,7 @@
  * @author     Roman Bublik <rb@gomage.com>
  */
 class GoMage_ProductDesigner_Model_Mysql4_Catalog_Product_Type_Configurable
-    extends Mage_Catalog_Model_Resource_Product_Type_Configurable
+    extends Mage_Catalog_Model_Resource_Eav_Mysql4_Product_Type_Configurable
 {
     /**
      * Return product colors options
@@ -82,13 +82,9 @@ class GoMage_ProductDesigner_Model_Mysql4_Catalog_Product_Type_Configurable
                 array('attr_value_image' => $this->getTable('gomage_designer/attribute_option')),
                 "attr_option.option_id = attr_value_image.option_id",
                 array('image' => 'attr_value_image.filename')
-            )->columns(array('value' =>
-                $this->_getReadAdapter()->getCheckSql(
-                    "attr_value_store.value IS NOT NULL",
-                    'attr_value_store.value',
-                    'attr_value_default.value'
-                ))
-            )
+            )->columns(array(
+                'value' => "IF (attr_value_store.value IS NOT NULL, attr_value_default.value, attr_value_store.value)"
+            ))
             ->where("relations.parent_id = ?", $productId)
             ->where('stock.stock_status = ?', 1)
             ->where("status.value IN (?)", Mage::getSingleton('catalog/product_status')->getSaleableStatusIds())

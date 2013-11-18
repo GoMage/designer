@@ -88,8 +88,6 @@ class GoMage_ProductDesigner_Model_Catalog_Product_Attribute_Backend_Media
             $value['images'] = array();
         }
 
-
-
         $clearImages = array();
         $newImages   = array();
         $existImages = array();
@@ -169,7 +167,7 @@ class GoMage_ProductDesigner_Model_Catalog_Product_Attribute_Backend_Media
         unset($storeIds[$storeId]);
         $storeIds = array_keys($storeIds);
 
-        $images = Mage::getResourceModel('catalog/product')
+        $images = Mage::getResourceModel('gomage_designer/catalog_product')
             ->getAssignedImages($object, $storeIds);
 
         $picturesInOtherStores = array();

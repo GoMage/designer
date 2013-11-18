@@ -35,7 +35,7 @@
  * @author     Roman Bublik <rb@gomage.com>
  */
 class GoMage_ProductDesigner_Model_Mysql4_Catalog_Product_Attribute_Backend_Media
-    extends Mage_Catalog_Model_Resource_Product_Attribute_Backend_Media
+    extends Mage_Catalog_Model_Resource_Eav_Mysql4_Product_Attribute_Backend_Media
 {
     /**
      * Load gallery images for product
@@ -47,8 +47,6 @@ class GoMage_ProductDesigner_Model_Mysql4_Catalog_Product_Attribute_Backend_Medi
     public function loadGallery($product, $object)
     {
         $adapter = $this->_getReadAdapter();
-
-        $positionCheckSql = $adapter->getCheckSql('value.position IS NULL', 'default_value.position', 'value.position');
 
         // Select gallery images for product
         $select = $adapter->select()
@@ -74,7 +72,7 @@ class GoMage_ProductDesigner_Model_Mysql4_Catalog_Product_Attribute_Backend_Medi
             )
             ->where('main.attribute_id = ?', $object->getAttribute()->getId())
             ->where('main.entity_id = ?', $product->getId())
-            ->order($positionCheckSql . ' ' . Varien_Db_Select::SQL_ASC);
+            ->order('IF(value.position IS NULL, default_value.position, value.position) ASC');
 
         $result = $adapter->fetchAll($select);
         $this->_removeDuplicates($result);

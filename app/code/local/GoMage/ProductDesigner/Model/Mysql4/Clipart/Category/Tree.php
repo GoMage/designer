@@ -1,8 +1,7 @@
 <?php
-class GoMage_ProductDesigner_Model_Mysql4_Clipart_Category_Tree extends Mage_Catalog_Model_Resource_Category_Tree {
-
-
-
+class GoMage_ProductDesigner_Model_Mysql4_Clipart_Category_Tree
+    extends Mage_Catalog_Model_Resource_Eav_Mysql4_Category_Tree
+{
     public function __construct()
     {
         parent::__construct();
@@ -96,7 +95,7 @@ class GoMage_ProductDesigner_Model_Mysql4_Clipart_Category_Tree extends Mage_Cat
         $categoriesTable         = Mage::getSingleton('core/resource')->getTableName('gomage_designer/clipart_category');
         $categoriesProductsTable = Mage::getSingleton('core/resource')->getTableName('gomage_designer/clipart');
 
-        $subConcat = $this->_conn->getConcatSql(array('main_table.path', $this->_conn->quote('/%')));
+        $subConcat = $this->_getConcatSql(array('main_table.path', $this->_conn->quote('/%')));
         $subSelect = $this->_conn->select()
             ->from(array('see' => $categoriesTable), null)
             ->joinLeft(
@@ -105,12 +104,28 @@ class GoMage_ProductDesigner_Model_Mysql4_Clipart_Category_Tree extends Mage_Cat
                 array('COUNT(DISTINCT scp.clipart_id)'))
             ->where('see.category_id = main_table.category_id')
             ->orWhere('see.path LIKE ?', $subConcat);
-        $select->columns(array('product_count' => $subSelect));
 
-        $subSelect = $this->_conn->select()
+        $subSelect2 = $this->_conn->select()
             ->from(array('cp' => $categoriesProductsTable), 'COUNT(cp.clipart_id)')
             ->where('cp.category_id = main_table.category_id');
 
-        $select->columns(array('self_product_count' => $subSelect));
+        $select->columns(array(
+            'product_count' => new Zend_Db_Expr('('.$subSelect.')'),
+            'self_product_count' => new Zend_Db_Expr('('.$subSelect2.')')
+        ));
+    }
+
+    /**
+     * Generate fragment of SQL, that combine together (concatenate) the results from data array
+     * All arguments in data must be quoted
+     *
+     * @param array $data
+     * @param string $separator concatenate with separator
+     * @return Zend_Db_Expr
+     */
+    protected function _getConcatSql(array $data, $separator = null)
+    {
+        $format = empty($separator) ? 'CONCAT(%s)' : "CONCAT_WS('{$separator}', %s)";
+        return new Zend_Db_Expr(sprintf($format, implode(', ', $data)));
     }
 }
