@@ -151,7 +151,6 @@ class GoMage_ProductDesigner_Model_Resource_Setup extends Mage_Eav_Model_Entity_
         }
     }
 
-
     /**
      * Convert name using dictionary
      *
@@ -161,5 +160,43 @@ class GoMage_ProductDesigner_Model_Resource_Setup extends Mage_Eav_Model_Entity_
     public static function shortName($name)
     {
         return strtr($name, self::$_translateMap);
+    }
+
+    public function addAutoIncrement($table, $field)
+    {
+        $version = Mage::getVersionInfo();
+        if (($version['major'] === '1') && ($version['minor'] <= 5)) {
+            $this->run("ALTER TABLE {$table} MODIFY {$field} INT(12) UNSIGNED NOT NULL AUTO_INCREMENT");
+        }
+    }
+
+    public function addClipartsToCategory($category)
+    {
+        if($category && $category > 1) {
+            $clipartsDir = Mage::getSingleton('gomage_designer/clipart_gallery_config')->getBaseMediaPath() . '/';
+
+            $pngImages = glob($clipartsDir .'*.png');
+            $jpgImages = glob($clipartsDir .'*.jpg');
+            $jpegImages = glob($clipartsDir .'*.jpeg');
+            $gifImages = glob($clipartsDir .'*.gif');
+
+            $defaultImages = array_merge($pngImages, $jpegImages, $jpgImages, $gifImages);
+
+            $imageIndex = 0;
+            foreach($defaultImages as $image) {
+                $imagePath = str_replace($clipartsDir, '/', $image);
+                $clipart = Mage::getModel('gomage_designer/clipart');
+                $clipart->setData(array(
+                    'category_id' => $category,
+                    'label' => '',
+                    'image' => $imagePath,
+                    'tags' => '',
+                    'position' => $imageIndex,
+                    'disabled' => 0,
+                ));
+                $clipart->save();
+                $imageIndex++;
+            }
+        }
     }
 }

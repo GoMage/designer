@@ -38,6 +38,8 @@ try {
         ), 'Is Active');
     $installer->getConnection()->createTable($table);
 
+    $installer->addAutoIncrement($installer->getTable('gomage_designer/clipart_category'), 'category_id');
+
     $installer->addEntityType('clipart_category', array(
         'entity_model'          => 'gomage_designer/clipart_category',
         'table'                 => 'gomage_designer/category',
@@ -78,6 +80,8 @@ try {
         ), 'Disabled');
     $installer->getConnection()->createTable($table);
 
+    $installer->addAutoIncrement($installer->getTable('gomage_designer/clipart'), 'clipart_id');
+
     $installer->addEntityType('clipart_image', array(
         'entity_model'          => 'gomage_designer/clipart',
         'table'                 => 'gomage_designer/clipart',
@@ -86,7 +90,7 @@ try {
 
     $categoryId = 2;
     $installer->run("INSERT INTO `{$installer->getTable('gomage_designer/clipart_category')}` VALUES ('2', '1', 'Cliparts', '1/2', '1', '0', '0', '1')");
-    addClipartsToCategory($categoryId);
+    $installer->addClipartsToCategory($categoryId);
 
     /* Cliparts end*/
 
@@ -106,6 +110,8 @@ try {
         ->addColumn('image', Varien_Db_Ddl_Table::TYPE_VARCHAR, 255, array(), 'Image')
         ->addColumn('session_id', Varien_Db_Ddl_Table::TYPE_VARCHAR, 255, array(), 'Session Id');
     $installer->getConnection()->createTable($table);
+
+    $installer->addAutoIncrement($installer->getTable('gomage_designer/uploadedImage'), 'image_id');
 
     /* Uploaded Images end */
 
@@ -129,6 +135,8 @@ try {
             'unsigned' => true,
         ), "Disabled");
     $installer->getConnection()->createTable($table);
+
+    $installer->addAutoIncrement($installer->getTable('gomage_designer/font'), 'font_id');
 
     /* Fonts end */
 
@@ -159,6 +167,8 @@ try {
             'unsigned' => true,
         ), "Design color");
     $installer->getConnection()->createTable($table);
+
+    $installer->addAutoIncrement($installer->getTable('gomage_designer/design'), 'design_id');
 
     /* Design end */
 
@@ -191,6 +201,7 @@ try {
         ), "Price")
         ->addColumn('created_date', Varien_Db_Ddl_Table::TYPE_TIMESTAMP, null, array(), "Price");
     $installer->getConnection()->createTable($table);
+    $installer->addAutoIncrement($installer->getTable('gomage_designer/design_image'), 'id');
 
     $installer->addForeignKey(
         $installer->getFkName('gomage_designer/design_image', 'design_id', 'gomage_designer/design', 'design_id'),
@@ -276,36 +287,6 @@ try {
     Mage::logException($e);
 } catch (Mage_Core_Exception $e) {
     Mage::logException($e);
-}
-
-function addClipartsToCategory($category)
-{
-    if($category && $category > 1) {
-        $clipartsDir = Mage::getSingleton('gomage_designer/clipart_gallery_config')->getBaseMediaPath() . '/';
-
-        $pngImages = glob($clipartsDir .'*.png');
-        $jpgImages = glob($clipartsDir .'*.jpg');
-        $jpegImages = glob($clipartsDir .'*.jpeg');
-        $gifImages = glob($clipartsDir .'*.gif');
-
-        $defaultImages = array_merge($pngImages, $jpegImages, $jpgImages, $gifImages);
-
-        $imageIndex = 0;
-        foreach($defaultImages as $image) {
-            $imagePath = str_replace($clipartsDir, '/', $image);
-            $clipart = Mage::getModel('gomage_designer/clipart');
-            $clipart->setData(array(
-                'category_id' => $category,
-                'label' => '',
-                'image' => $imagePath,
-                'tags' => '',
-                'position' => $imageIndex,
-                'disabled' => 0,
-            ));
-            $clipart->save();
-            $imageIndex++;
-        }
-    }
 }
 
 

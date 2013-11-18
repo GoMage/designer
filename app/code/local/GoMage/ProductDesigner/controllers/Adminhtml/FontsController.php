@@ -30,22 +30,23 @@ class GoMage_ProductDesigner_Adminhtml_FontsController extends Mage_Adminhtml_Co
 
                             $fontPath = $fontObj->getFontPath($font['url']);
 
+                            if (isset($font['value_id'])) {
+                                $fontObj->load($font['value_id']);
+                            }
+
                             $fontObj->setData(array(
-                                'font_id' => $font['value_id'],
                                 'label' => $font['label'],
                                 'font' => $fontPath,
-                                'tags' => '',
                                 'disabled' => $font['disabled'],
                             ));
 
                             $tmpFile = $fontObj->getTempPath($fontPath);
                             $destinationFile = $fontObj->getDestinationPath($fontPath);
                             $destinationDir = $fontObj->getDestinationDir($fontPath);
-
                             if($font['removed'] == 0) {
                                 $fontObj->save();
                             } else {
-                                if($fontObj->getClipartId()) {
+                                if($fontObj->getFontId()) {
                                     $fontObj->delete();
                                     @unlink($destinationFile);
                                 }

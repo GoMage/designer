@@ -115,15 +115,15 @@ class GoMage_ProductDesigner_Model_Navigation extends Mage_Core_Model_Abstract
             ->getAttribute(Mage_Catalog_Model_Product::ENTITY, 'media_gallery');
         if ($mediaGalleryAttribute->getId()) {
             $collection->getSelect()->joinInner(
-                array('media_gallery' => $collection->getTable(Mage_Catalog_Model_Resource_Product_Attribute_Backend_Media::GALLERY_TABLE)),
+                array('media_gallery' => $collection->getTable('catalog/product_attribute_media_gallery')),
                 "{$tableAlias}.{$joinField} = media_gallery.entity_id AND media_gallery.attribute_id = {$mediaGalleryAttribute->getId()}",
                 array()
             )->joinLeft(
-                array('media_gallery_value' => $collection->getTable(Mage_Catalog_Model_Resource_Product_Attribute_Backend_Media::GALLERY_VALUE_TABLE)),
+                array('media_gallery_value' => $collection->getTable('catalog/product_attribute_media_gallery_value')),
                 "media_gallery.value_id = media_gallery_value.value_id AND media_gallery_value.store_id = {$storeId}",
                 array()
             )->joinLeft(
-                array('media_gallery_value_default' => $collection->getTable(Mage_Catalog_Model_Resource_Product_Attribute_Backend_Media::GALLERY_VALUE_TABLE)),
+                array('media_gallery_value_default' => $collection->getTable('catalog/product_attribute_media_gallery_value')),
                 "media_gallery.value_id = media_gallery_value_default.value_id AND media_gallery_value_default.store_id = 0",
                 array('media_gallery_value_default.design_area')
             )
