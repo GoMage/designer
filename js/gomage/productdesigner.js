@@ -544,7 +544,6 @@ GoMage.ProductDesigner.prototype = {
             var params = getUrlParams();
             data['id'] = params['id'];
             data['images'] = Object.toJSON(images);
-            console.log(this.designPrices);
             data['prices'] = Object.toJSON(this.designPrices);
             if (this.currentColor) {
                 data['color'] = this.currentColor;
