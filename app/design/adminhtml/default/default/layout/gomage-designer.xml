@@ -7,6 +7,7 @@
             <action method="addItem"><type>skin_css</type><name>lib/prototype/windows/themes/magento.css</name></action>
             <action method="addJs"><script>gomage/productdesigner/vendor/fabric.min.js</script></action>
             <action method="addJs"><script>gomage/productdesigner/vendor/excanvas.compiled.js</script></action>
+            <action method="addJs"><script>gomage/productdesigner/prototype/prototype.js</script></action>
         </reference>
     </adminhtml_catalog_product_edit>
     <adminhtml_catalog_product_new>
@@ -16,6 +17,7 @@
             <action method="addItem"><type>skin_css</type><name>lib/prototype/windows/themes/magento.css</name></action>
             <action method="addJs"><script>gomage/productdesigner/vendor/fabric.min.js</script></action>
             <action method="addJs"><script>gomage/productdesigner/vendor/excanvas.compiled.js</script></action>
+            <action method="addJs"><script>gomage/productdesigner/prototype/prototype.js</script></action>
         </reference>
     </adminhtml_catalog_product_new>
     <adminhtml_designer_product_edit>

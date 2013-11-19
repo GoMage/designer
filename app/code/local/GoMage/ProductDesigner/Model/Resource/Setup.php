@@ -170,6 +170,15 @@ class GoMage_ProductDesigner_Model_Resource_Setup extends Mage_Eav_Model_Entity_
         }
     }
 
+    public function updateDecimalField($table, $field, $allowedNull = true)
+    {
+        $version = Mage::getVersionInfo();
+        if (($version['major'] === '1') && ((int)$version['minor'] <= 5)) {
+            $nullValue = $allowedNull === false ? 'NOT NULL' : '';
+            $this->run("ALTER TABLE {$table} MODIFY {$field} DECIMAL(12,4) {$nullValue}");
+        }
+    }
+
     public function addClipartsToCategory($category)
     {
         if($category && $category > 1) {

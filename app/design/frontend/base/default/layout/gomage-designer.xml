@@ -27,7 +27,9 @@
             <action method="addItem"><type>skin_css</type><name>lib/prototype/windows/themes/magento.css</name></action>
             <action method="addJs"><script>gomage/productdesigner/vendor/fabric.min.js</script></action>
             <action method="addJs"><script>gomage/productdesigner/vendor/excanvas.compiled.js</script></action>
-            <action method="addJs"><script>gomage/productdesigner/editor.js</script></action>
+            <action method="addJs"><script>gomage/productdesigner.js</script></action>
+            <action method="addJs"><script>gomage/productdesigner/prototype/prototype.js</script></action>
+            <action method="addJs"><script>gomage/productdesigner/varien/product.js</script></action>
             <action method="addItem"><type>skin_css</type><name>css/gomage/productdesigner.css</name><params/></action>
         </reference>
         <reference name="content">
@@ -160,7 +162,8 @@
 
     <catalog_product_view>
         <reference name="head">
-          <action method="addItem"><type>skin_css</type><name>css/gomage/productdesigner.css</name><params/></action>
+            <action method="addItem"><type>skin_css</type><name>css/gomage/productdesigner.css</name><params/></action>
+            <action method="addJs"><script>gomage/productdesigner/varien/product.js</script></action>
         </reference>
         <reference name="product.info.media">
             <action method="setTemplate">

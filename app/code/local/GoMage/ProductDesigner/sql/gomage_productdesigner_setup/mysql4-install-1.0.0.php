@@ -169,6 +169,7 @@ try {
     $installer->getConnection()->createTable($table);
 
     $installer->addAutoIncrement($installer->getTable('gomage_designer/design'), 'design_id');
+    $installer->updateDecimalField($installer->getTable('gomage_designer/design'), 'price');
 
     /* Design end */
 
@@ -202,6 +203,7 @@ try {
         ->addColumn('created_date', Varien_Db_Ddl_Table::TYPE_TIMESTAMP, null, array(), "Price");
     $installer->getConnection()->createTable($table);
     $installer->addAutoIncrement($installer->getTable('gomage_designer/design_image'), 'id');
+    $installer->updateDecimalField($installer->getTable('gomage_designer/design_image'), 'price');
 
     $installer->addForeignKey(
         $installer->getFkName('gomage_designer/design_image', 'design_id', 'gomage_designer/design', 'design_id'),
@@ -274,6 +276,7 @@ try {
             'precision' => 12,
         ), 'Size');
     $installer->getConnection()->createTable($table);
+    $installer->updateDecimalField($installer->getTable('gomage_designer/attribute_option'), 'size', false);
 
     $installer->addForeignKey(
         $installer->getFkName('gomage_designer/attribute_option', 'option_id', 'eav/attribute_option', 'option_id'),
