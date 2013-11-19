@@ -378,7 +378,7 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
     public function canApplyMsrp($product, $visibility = null, $checkAssociatedItems = true)
     {
         $version = Mage::getVersionInfo();
-        if (($version['major'] === '1') && ((int) $version['minor'] <= '5')) {
+        if (($version['major'] === '1') && ((int) $version['minor'] <= 5)) {
             return false;
         } elseif (method_exists(Mage::helper('catalog'), 'canApplyMsrp')) {
             return Mage::helper('catalog')->canApplyMsrp($product, $visibility, $checkAssociatedItems);
@@ -397,7 +397,7 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
     public function getMoveFromCartUrl($itemId)
     {
         $version = Mage::getVersionInfo();
-        if (($version['major'] === '1') && ((int) $version['minor'] <= '5')) {
+        if (($version['major'] === '1') && ((int) $version['minor'] <= 5)) {
             return false;
         } else if (method_exists(Mage::helper('wishlist'), 'getMoveFromCartUrl')) {
             return Mage::helper('wishlist')->getMoveFromCartUrl($itemId);
