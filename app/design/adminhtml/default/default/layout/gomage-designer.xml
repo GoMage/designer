@@ -54,7 +54,8 @@
 
     <adminhtml_sales_order_view>
         <reference name="order_items">
-            <action method="addColumnRender"><column>name</column><block>designer/adminhtml_sales_items_column_name</block><template>gomage/sales/items/column/name.phtml</template></action>
+            <action method="addColumnRender"><column>name</column><block>gomage_designer/adminhtml_sales_items_column_name</block><template>gomage/sales/items/column/name.phtml</template><type>simple</type></action>
+            <action method="addColumnRender"><column>name</column><block>gomage_designer/adminhtml_sales_items_column_name</block><template>gomage/sales/items/column/name.phtml</template><type>configurable</type></action>
         </reference>
     </adminhtml_sales_order_view>
 

@@ -98,4 +98,22 @@ class GoMage_ProductDesigner_Block_Catalog_Product_View_Options
         $option = $this->getDesignOption();
         return $option ? true : false;
     }
+
+    /**
+     * Get price configuration
+     *
+     * @param Mage_Catalog_Model_Product_Option_Value|Mage_Catalog_Model_Product_Option $option
+     * @return array
+     */
+    protected function _getPriceConfiguration($option)
+    {
+        $data = array();
+        $data['price']      = Mage::helper('core')->currency($option->getPrice(true), false, false);
+        $data['oldPrice']   = Mage::helper('core')->currency($option->getPrice(false), false, false);
+        $data['priceValue'] = $option->getPrice(false);
+        $data['type']       = $option->getPriceType();
+        $data['excludeTax'] = $price = Mage::helper('tax')->getPrice($option->getProduct(), $data['price'], false);
+        $data['includeTax'] = $price = Mage::helper('tax')->getPrice($option->getProduct(), $data['price'], true);
+        return $data;
+    }
 }

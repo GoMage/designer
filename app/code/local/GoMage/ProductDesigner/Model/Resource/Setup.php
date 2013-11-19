@@ -165,7 +165,7 @@ class GoMage_ProductDesigner_Model_Resource_Setup extends Mage_Eav_Model_Entity_
     public function addAutoIncrement($table, $field)
     {
         $version = Mage::getVersionInfo();
-        if (($version['major'] === '1') && ($version['minor'] <= 5)) {
+        if (($version['major'] === '1') && ((int)$version['minor'] <= 5)) {
             $this->run("ALTER TABLE {$table} MODIFY {$field} INT(12) UNSIGNED NOT NULL AUTO_INCREMENT");
         }
     }

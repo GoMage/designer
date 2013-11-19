@@ -61,4 +61,22 @@ class GoMage_ProductDesigner_Block_Adminhtml_Sales_Items_Column_Name
 
         return false;
     }
+
+    /**
+     * Add line breaks and truncate value
+     *
+     * @param string $value
+     * @return array
+     */
+    public function getFormattedOption($value)
+    {
+        $_remainder = '';
+        $value = Mage::helper('core/string')->truncate($value, 55, '', $_remainder);
+        $result = array(
+            'value' => nl2br($value),
+            'remainder' => nl2br($_remainder)
+        );
+
+        return $result;
+    }
 }

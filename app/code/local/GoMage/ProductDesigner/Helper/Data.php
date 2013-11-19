@@ -375,6 +375,37 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
         return $config;
     }
 
+    public function canApplyMsrp($product, $visibility = null, $checkAssociatedItems = true)
+    {
+        $version = Mage::getVersionInfo();
+        if (($version['major'] === '1') && ((int) $version['minor'] <= '5')) {
+            return false;
+        } elseif (method_exists(Mage::helper('catalog'), 'canApplyMsrp')) {
+            return Mage::helper('catalog')->canApplyMsrp($product, $visibility, $checkAssociatedItems);
+        }
+
+        return false;
+    }
+
+    /**
+     * Retrieve url for adding product to wishlist
+     *
+     * @param int $itemId
+     *
+     * @return  string
+     */
+    public function getMoveFromCartUrl($itemId)
+    {
+        $version = Mage::getVersionInfo();
+        if (($version['major'] === '1') && ((int) $version['minor'] <= '5')) {
+            return false;
+        } else if (method_exists(Mage::helper('wishlist'), 'getMoveFromCartUrl')) {
+            return Mage::helper('wishlist')->getMoveFromCartUrl($itemId);
+        }
+
+        return false;
+    }
+
     /**
      * Get JSON encoded configuration array which can be used for JS dynamic
      *
