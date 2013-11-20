@@ -150,19 +150,6 @@ function categorySubmit(url, useAjax) {
         // Maybe change category enabled/disabled style
         if (tree && tree.storeId==0) {
             var currentNode = tree.getNodeById(categoryId);
-
-            if (currentNode) {
-                if (parseInt(params['general[is_active]'])) {
-                    var oldClass = 'no-active-category';
-                    var newClass = 'active-category';
-                } else {
-                    var oldClass = 'active-category';
-                    var newClass = 'no-active-category';
-                }
-
-                Element.removeClassName(currentNode.ui.wrap.firstChild, oldClass);
-                Element.addClassName(currentNode.ui.wrap.firstChild, newClass);
-            }
         }
     }
 

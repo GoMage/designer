@@ -234,4 +234,20 @@ class GoMage_ProductDesigner_Model_Clipart_Category extends Mage_Core_Model_Abst
 
         return $this;
     }
+
+    /**
+     * Get array categories ids which are part of category path
+     * Result array contain id of current category because it is part of the path
+     *
+     * @return array
+     */
+    public function getPathIds()
+    {
+        $ids = $this->getData('path_ids');
+        if (is_null($ids)) {
+            $ids = explode('/', $this->getPath());
+            $this->setData('path_ids', $ids);
+        }
+        return $ids;
+    }
 }

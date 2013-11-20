@@ -332,7 +332,6 @@ class GoMage_ProductDesigner_CustomerController extends Mage_Customer_AccountCon
     protected function _getRefererUrl()
     {
         $refererUrl = $this->getRequest()->getServer('HTTP_REFERER');
-        Mage::log($refererUrl);
         if ($url = $this->getRequest()->getParam(self::PARAM_NAME_REFERER_URL)) {
             $refererUrl = $url;
         }

@@ -11,7 +11,8 @@ class GoMage_ProductDesigner_Adminhtml_ClipartsController extends Mage_Adminhtml
         $this->_forward('edit');
     }
 
-    public function editAction() {
+    public function editAction()
+    {
 
         /**
          * @var $request Mage_Core_Controller_Request_Http
@@ -50,7 +51,9 @@ class GoMage_ProductDesigner_Adminhtml_ClipartsController extends Mage_Adminhtml
             }
 
             $eventResponse = new Varien_Object(array(
-                'content' => $this->getLayout()->getBlock('cliparts_edit')->getFormHtml(),
+                'content' => $this->getLayout()->getBlock('cliparts_edit')->getFormHtml()
+                    . $this->getLayout()->getBlock('cliparts_categories_tree')
+                        ->getBreadcrumbsJavascript($breadcrumbsPath, 'editingCategoryBreadcrumbs'),
                 'messages' => $this->getLayout()->getMessagesBlock()->getGroupedHtml(),
             ));
 

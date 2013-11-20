@@ -164,7 +164,7 @@ class GoMage_ProductDesigner_Block_Adminhtml_Cliparts_Tree extends Mage_Adminhtm
         //$rootForStores = Mage::getModel('core/store')->getCollection()->loadByCategoryIds(array($node->getEntityId()));
         $rootForStores = in_array($node->getEntityId(), $this->getRootIds());
 
-        $item['id']  = $node->getId();
+        $item['id']  = $node->getCategoryId();
         $item['store']  = (int) $this->getStore()->getId();
         $item['path'] = $node->getData('path');
 
@@ -230,7 +230,7 @@ class GoMage_ProductDesigner_Block_Adminhtml_Cliparts_Tree extends Mage_Adminhtm
     {
         if ($node && $this->getCategory()) {
             $pathIds = $this->getCategory()->getPathIds();
-            if (in_array($node->getId(), $pathIds)) {
+            if (in_array($node->getCategoryId(), $pathIds)) {
                 return true;
             }
         }
@@ -290,7 +290,7 @@ class GoMage_ProductDesigner_Block_Adminhtml_Cliparts_Tree extends Mage_Adminhtm
 
     public function getRoot($parentNodeCategory=null, $recursionLevel=3)
     {
-        if (!is_null($parentNodeCategory) && $parentNodeCategory->getId()) {
+        if (!is_null($parentNodeCategory) && $parentNodeCategory->getCategoryId()) {
             return $this->getNode($parentNodeCategory, $recursionLevel);
         }
         $root = Mage::registry('root');
@@ -316,7 +316,7 @@ class GoMage_ProductDesigner_Block_Adminhtml_Cliparts_Tree extends Mage_Adminhtm
             if ($root && $rootId != Mage_Catalog_Model_Category::TREE_ROOT_ID) {
                 $root->setIsVisible(true);
             }
-            elseif($root && $root->getId() == Mage_Catalog_Model_Category::TREE_ROOT_ID) {
+            elseif($root && $root->getCategoryId() == Mage_Catalog_Model_Category::TREE_ROOT_ID) {
                 $root->setName(Mage::helper('catalog')->__('Root'));
             }
 
@@ -331,7 +331,7 @@ class GoMage_ProductDesigner_Block_Adminhtml_Cliparts_Tree extends Mage_Adminhtm
     {
         $tree = Mage::getResourceModel('gomage_designer/clipart_category_tree');
 
-        $nodeId     = $parentNodeCategory->getId();
+        $nodeId     = $parentNodeCategory->getCategoryId();
         $parentId   = $parentNodeCategory->getParentId();
 
         $node = $tree->loadNode($nodeId);
@@ -339,12 +339,39 @@ class GoMage_ProductDesigner_Block_Adminhtml_Cliparts_Tree extends Mage_Adminhtm
 
         if ($node && $nodeId != Mage_Catalog_Model_Category::TREE_ROOT_ID) {
             $node->setIsVisible(true);
-        } elseif($node && $node->getId() == Mage_Catalog_Model_Category::TREE_ROOT_ID) {
+        } elseif($node && $node->getCategoryId() == Mage_Catalog_Model_Category::TREE_ROOT_ID) {
             $node->setName(Mage::helper('catalog')->__('Root'));
         }
 
         $tree->addCollectionData($this->getCategoryCollection());
 
         return $node;
+    }
+
+    /**
+     * Get JSON of array of categories, that are breadcrumbs for specified category path
+     *
+     * @param string $path
+     * @param string $javascriptVarName
+     * @return string
+     */
+    public function getBreadcrumbsJavascript($path, $javascriptVarName)
+    {
+        if (empty($path)) {
+            return '';
+        }
+
+        $categories = Mage::getResourceSingleton('gomage_designer/clipart_category_tree')
+            ->setStoreId($this->getStore()->getId())->loadBreadcrumbsArray($path);
+        if (empty($categories)) {
+            return '';
+        }
+        foreach ($categories as $key => $category) {
+            $categories[$key] = $this->_getNodeJson($category);
+        }
+        return
+            '<script type="text/javascript">'
+            . $javascriptVarName . ' = ' . Mage::helper('core')->jsonEncode($categories) . ';'
+            . '</script>';
     }
 }
