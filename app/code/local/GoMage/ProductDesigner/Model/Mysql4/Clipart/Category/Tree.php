@@ -56,7 +56,7 @@ class GoMage_ProductDesigner_Model_Mysql4_Clipart_Category_Tree
             }
             $select
                 ->where('main_table.category_id IN(?)', $pathIds)
-                ->order($this->_conn->getLengthSql('main_table.path') . ' ' . Varien_Db_Select::SQL_ASC);
+                ->order($this->_getLengthSql('main_table.path') . ' ' . Varien_Db_Select::SQL_ASC);
             $result = $this->_conn->fetchAll($select);
         }
         return $result;
@@ -127,5 +127,17 @@ class GoMage_ProductDesigner_Model_Mysql4_Clipart_Category_Tree
     {
         $format = empty($separator) ? 'CONCAT(%s)' : "CONCAT_WS('{$separator}', %s)";
         return new Zend_Db_Expr(sprintf($format, implode(', ', $data)));
+    }
+
+    /**
+     * Generate fragment of SQL that returns length of character string
+     * The string argument must be quoted
+     *
+     * @param string $string
+     * @return Zend_Db_Expr
+     */
+    protected function _getLengthSql($string)
+    {
+        return new Zend_Db_Expr(sprintf('LENGTH(%s)', $string));
     }
 }
