@@ -20,15 +20,18 @@
     {
       $product = $observer->getProduct();
       $params  = $observer->getRequest()->getParam('product');
-      $flag    = (int)$params["enable_product_designer"];
-
-      $product->setEnableProductDesigner($flag);
+      if (isset($params['enable_product_designer'])) {
+          $product->setEnableProductDesigner((int) $params["enable_product_designer"]);
+      }
     }
 
     public function addDesignEnabledToProducts(Varien_Event_Observer $observer)
     {
+        if (!Mage::helper('gomage_designer')->isEnabled()) {
+            return;
+        }
         $collection = $observer->getEvent()->getCollection();
-        $collection->addAttributeToSelect('enable_product_designer', true);
+        $collection->addAttributeToSelect('enable_product_designer');
     }
 
      /**
@@ -39,6 +42,9 @@
       */
      public function addDesignToQuoteItem(Varien_Event_Observer $observer)
      {
+         if (!Mage::helper('gomage_designer')->isEnabled()) {
+             return;
+         }
          $item = $observer->getEvent()->getQuoteItem();
          if ($design = Mage::app()->getRequest()->getParam('design')) {
              $item->addOption(array(
@@ -58,6 +64,9 @@
       */
      public function addDesignPriceToFinalPrice(Varien_Event_Observer $observer)
      {
+         if (!Mage::helper('gomage_designer')->isEnabled()) {
+             return;
+         }
          $product = $observer->getEvent()->getProduct();
          $buyRequest = $product->getCustomOption('info_buyRequest');
          if ($buyRequest) {
@@ -82,6 +91,9 @@
       */
      public function addDesignCustomOptionToProduct(Varien_Event_Observer $observer)
      {
+         if (!Mage::helper('gomage_designer')->isEnabled()) {
+             return;
+         }
         $buyRequest = $observer->getEvent()->getBuyRequest();
         $product = $observer->getEvent()->getProduct();
 
