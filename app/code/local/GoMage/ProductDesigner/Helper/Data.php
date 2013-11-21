@@ -173,8 +173,8 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
     public function getDesignImageUrl(Mage_Catalog_Model_Product $product, $image, $size = array())
     {
         if (empty($size)) {
-            $imageWidth = Mage::getStoreConfig('gomage_designer/design/design_size_width');
-            $imageHeight = Mage::getStoreConfig('gomage_designer/design/design_size_height');
+            $imageWidth = Mage::getStoreConfig('gomage_designer/general/design_size_width');
+            $imageHeight = Mage::getStoreConfig('gomage_designer/general/design_size_height');
         } else {
             list($imageWidth, $imageHeight) = $size;
         }
@@ -190,8 +190,8 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
     {
         $imageFile = is_object($image) ? $image->getFile() : $image['file'];
         $imagePath = $product->getMediaConfig()->getMediaPath($imageFile);
-        $minWidth = Mage::getStoreConfig('gomage_designer/design/zoom_size_width');
-        $minHeight = Mage::getStoreConfig('gomage_designer/design/zoom_size_height');
+        $minWidth = Mage::getStoreConfig('gomage_designer/general/zoom_size_width');
+        $minHeight = Mage::getStoreConfig('gomage_designer/general/zoom_size_height');
         if (file_exists($imagePath)) {
             $imageObj = new Varien_Image($imagePath);
             $width = $imageObj->getOriginalWidth();

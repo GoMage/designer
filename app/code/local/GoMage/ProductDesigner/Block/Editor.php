@@ -145,14 +145,14 @@ class GoMage_ProductDesigner_Block_Editor extends Mage_Core_Block_Template
 
     public function getProductImageWidth()
     {
-        return $imageWidth = Mage::getStoreConfig('gomage_designer/design/design_size_width');
+        return $imageWidth = Mage::getStoreConfig('gomage_designer/general/design_size_width');
     }
 
     public function getProductOriginalImageMinSizes()
     {
         return array(
-            'width' => Mage::getStoreConfig('gomage_designer/design/zoom_size_width'),
-            'height' => Mage::getStoreConfig('gomage_designer/design/zoom_size_height')
+            'width' => Mage::getStoreConfig('gomage_designer/general/zoom_size_width'),
+            'height' => Mage::getStoreConfig('gomage_designer/general/zoom_size_height')
         );
     }
 

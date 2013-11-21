@@ -6,7 +6,6 @@
             <?php echo $this->getAddSubButtonHtml() ?>
         <?php endif; ?>
     </div>
-    <?php echo $this->getStoreSwitcherHtml();?>
     <div class="tree-actions">
         <?php if($this->getRoot()): ?>
             <a href="#" onclick="tree.collapseTree(); return false;"><?php echo Mage::helper('catalog')->__('Collapse All'); ?></a> <span class="separator">|</span> <a href="#" onclick="tree.expandTree(); return false;"><?php echo Mage::helper('catalog')->__('Expand All'); ?></a>

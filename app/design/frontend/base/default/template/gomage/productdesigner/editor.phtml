@@ -65,7 +65,7 @@ $productImageMinSize = $this->getProductOriginalImageMinSizes();
     <div class="product-designer-header">
         <div id="pd_nav_container" class="pd_nav_container">
             <button class="button pd-btn" style="<?php echo !$navigationEnabled ? 'display:none' : ''; ?>" id="pd_choose_product"><span><span><?php echo Mage::helper('gomage_designer')->__('Choose Product') ?></span></span></button>
-            <button class="button pd-btn" style="<?php echo !$designEnabled || !$this->isProductSelected() ? 'display:none' : '';?>" id="pd_add_design"><span><span><?php echo Mage::helper('gomage_designer')->__('Add Design') ?></span></span></button>
+            <button class="button pd-btn" style="<?php echo !$designEnabled || !$this->isProductSelected() ? 'display:none' : '';?>" id="pd_add_design"><span><span><?php echo Mage::helper('gomage_designer')->__('Add Cliparts') ?></span></span></button>
             <button class="button pd-btn" style="<?php echo !$textEnabled || !$this->isProductSelected()? 'display:none' : ''; ?>" id="pd_add_text"><span><span><?php echo Mage::helper('gomage_designer')->__('Add Text') ?></span></span></button>
             <button class="button pd-btn" style="<?php echo !$imageEnabled || !$this->isProductSelected()? 'display:none' : ''; ?>" id="pd_add_image"><span><span><?php echo Mage::helper('gomage_designer')->__('Upload Images') ?></span></span></button>
         </div>
@@ -99,7 +99,7 @@ $productImageMinSize = $this->getProductOriginalImageMinSizes();
                     <?php endif;?>
                   <?php if ($this->isDesignEnabled()): ?>
                       <div class="pd-tab-content" id="pd_add_design-content" <?php if ($this->isActiveTab('design')): ?>style="display: block;"<?php endif;?>>
-                          <h4 class="pd-header"><?php echo $this->__('Choose A Design'); ?></h4>
+                          <h4 class="pd-header"><?php echo $this->__('Choose Cliparts'); ?></h4>
                           <?php if ($this->isHelpEnabled('design')):?>
                               <span class="tab-help-icon">?</span>
                               <div class="tab-help-content" style="display: none; width: <?php echo $this->getHelpPopupWidth('design')?>px; height: <?php echo $this->getHelpPopupHeight('design')?>px">
