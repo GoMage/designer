@@ -49,7 +49,7 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
             $this->_redirectReferer();
         }
         $this->loadLayout();
-        $this->getLayout()->getBlock('head')->setTitle(Mage::getStoreConfig('design/head/default_title'));
+        $this->getLayout()->getBlock('head')->setTitle(Mage::getStoreConfig('gomage_designer/general/page_title'));
         $this->renderLayout();
     }
 

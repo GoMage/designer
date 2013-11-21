@@ -222,6 +222,7 @@
                 <design_size_height>700</design_size_height>
                 <zoom_size_width>600</zoom_size_width>
                 <zoom_size_height>800</zoom_size_height>
+                <page_title>GoMage Product Designer</page_title>
             </general>
             <navigation>
                 <enabled>1</enabled>
