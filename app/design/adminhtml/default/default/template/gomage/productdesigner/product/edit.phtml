@@ -2,7 +2,7 @@
 <?php if($image && $image->getId()): ?>
     <?php $settings = $this->getSettings();?>
     <div id="textsize" style="width:<?php echo $this->getImageWidth(); ?>px; height: 20px">
-        <?php echo $this->__('Width'); ?> <input type="text" name="areaWidth" id="areaWidth" value="0" /><?php echo $this->__('px'); ?>
+        <?php echo $this->__('Width'); ?> <input type="text" name="areaWidth" id="areaWidth" value="0"/><?php echo $this->__('px'); ?>
         <?php echo $this->__('Height'); ?> <input type="text" name="areaHeight" id="areaHeight" value="0" /><?php echo $this->__('px'); ?>
     </div>
     <div id="image_wrapper" style="width:<?php echo $this->getImageWidth(); ?>px;height:<?php echo $this->getImageHeight(); ?>px;background: url(<?php echo $this->getImage()->getUrl(); ?>) no-repeat center;border:1px solid #ccc">
@@ -82,13 +82,16 @@
             element.observe('keyup', function() {
                 setTimeout(function(){
                     var widthOrHeight = false;
+                    var validateValue = false;
                     switch(element.id) {
                         case 'areaWidth' : {
                             widthOrHeight = 'width';
+                            validateValue = parseInt(imgW);
                             break;
                         }
                         case 'areaHeight' : {
                             widthOrHeight = 'height';
+                            validateValue = parseInt(imgH);
                             break;
                         }
                         default: {
@@ -97,7 +100,12 @@
                         }
                     }
                     if(typeof widthOrHeight === 'string') {
-                        area.set(widthOrHeight,parseInt(element.value));
+                        var value = parseInt(element.value);
+                        if (value > validateValue) {
+                            element.value = validateValue;
+                            value = validateValue;
+                        }
+                        area.set(widthOrHeight, value);
                         canvas.renderAll();
                     }
                 }, 1000);
