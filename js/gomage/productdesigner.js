@@ -652,7 +652,7 @@ GoMage.ProductDesigner.prototype = {
                 this.history.redo();
             }
 
-            if (e.ctrlKey == true && (e.which == 46 || e.which == 8)) {
+            if ((e.ctrlKey == true && e.which == 8) || (e.which == 46)) {
                 if ((this.canvas == null) || this.canvas == 'undefined') {
                     return;
                 }
