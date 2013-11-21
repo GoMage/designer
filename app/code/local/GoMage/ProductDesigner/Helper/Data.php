@@ -14,6 +14,7 @@
  */
 class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
 {
+    const ADVANCED_NAVIGATION_MODULE_NAME = 'GoMage_Navigation';
     protected $_allowedProductTypes = array(
         Mage_Catalog_Model_Product_Type::TYPE_SIMPLE,
         Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE
@@ -33,6 +34,12 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
     public function isNavigationEnabled()
     {
         return Mage::getStoreConfig('gomage_designer/navigation/enabled', Mage::app()->getStore());
+    }
+
+    public function advancedNavigationEnabled()
+    {
+        $module = self::ADVANCED_NAVIGATION_MODULE_NAME;
+        return Mage::getConfig()->getNode('modules')->children()->$module->is('active');
     }
 
     /**

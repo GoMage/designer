@@ -258,34 +258,32 @@ try {
 
     /* Add option table for attribute */
 
-    if ($installer->showTableStatus($installer->getTable('gomage_designer/attribute_option')) === false) {
-        $table = $installer->getConnection()->newTable($installer->getTable('gomage_designer/attribute_option'))
-            ->addColumn('option_id', Varien_Db_Ddl_Table::TYPE_INTEGER, null, array(
-                'unsigned'  => true,
-                'nullable'  => false,
-                'primary'   => true,
-            ), "Option Id")
-            ->addColumn('attribute_id', Varien_Db_Ddl_Table::TYPE_INTEGER, null, array(
-                'unsigned'  => true,
-                'nullable'  => false,
-            ), "Attribute Id")
-            ->addColumn('filename', Varien_Db_Ddl_Table::TYPE_VARCHAR, 255, array(), 'File Name')
-            ->addColumn('name', Varien_Db_Ddl_Table::TYPE_VARCHAR, 255, array(), 'Name')
-            ->addColumn('size', Varien_Db_Ddl_Table::TYPE_DECIMAL, 255, array(
-                'nullable' => false,
-                'scale'     => 4,
-                'precision' => 12,
-            ), 'Size');
-        $installer->getConnection()->createTable($table);
-        $installer->updateDecimalField($installer->getTable('gomage_designer/attribute_option'), 'size', false);
+    $table = $installer->getConnection()->newTable($installer->getTable('gomage_designer/attribute_option'))
+        ->addColumn('option_id', Varien_Db_Ddl_Table::TYPE_INTEGER, null, array(
+            'unsigned'  => true,
+            'nullable'  => false,
+            'primary'   => true,
+        ), "Option Id")
+        ->addColumn('attribute_id', Varien_Db_Ddl_Table::TYPE_INTEGER, null, array(
+            'unsigned'  => true,
+            'nullable'  => false,
+        ), "Attribute Id")
+        ->addColumn('filename', Varien_Db_Ddl_Table::TYPE_VARCHAR, 255, array(), 'File Name')
+        ->addColumn('name', Varien_Db_Ddl_Table::TYPE_VARCHAR, 255, array(), 'Name')
+        ->addColumn('size', Varien_Db_Ddl_Table::TYPE_DECIMAL, 255, array(
+            'nullable' => false,
+            'scale'     => 4,
+            'precision' => 12,
+        ), 'Size');
+    $installer->getConnection()->createTable($table);
+    $installer->updateDecimalField($installer->getTable('gomage_designer/attribute_option'), 'size', false);
 
-        $installer->addForeignKey(
-            $installer->getFkName('gomage_designer/attribute_option', 'option_id', 'eav/attribute_option', 'option_id'),
-            $installer->getTable('gomage_designer/attribute_option'), 'option_id',
-            $installer->getTable('eav/attribute_option'), 'option_id',
-            Varien_Db_Ddl_Table::ACTION_CASCADE, Varien_Db_Ddl_Table::ACTION_CASCADE
-        );
-    }
+    $installer->addForeignKey(
+        $installer->getFkName('gomage_designer/attribute_option', 'option_id', 'eav/attribute_option', 'option_id'),
+        $installer->getTable('gomage_designer/attribute_option'), 'option_id',
+        $installer->getTable('eav/attribute_option'), 'option_id',
+        Varien_Db_Ddl_Table::ACTION_CASCADE, Varien_Db_Ddl_Table::ACTION_CASCADE
+    );
 
     $installer->endSetup();
 } catch (Exception $e) {
