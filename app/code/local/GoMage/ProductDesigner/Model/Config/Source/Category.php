@@ -49,7 +49,7 @@ class GoMage_ProductDesigner_Model_Config_Source_Category
             'value' => ''
         ));
         foreach ($collection as $category) {
-            if ($category->getIsActive()) {
+            if ($category->getIsActive() && $category->getId() != Mage_Catalog_Model_Category::TREE_ROOT_ID) {
                 $options[] = array(
                     'label' => $category->getName(),
                     'value' => $category->getId()
