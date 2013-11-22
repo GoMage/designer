@@ -13,7 +13,6 @@ class GoMage_ProductDesigner_Adminhtml_ClipartsController extends Mage_Adminhtml
 
     public function editAction()
     {
-
         /**
          * @var $request Mage_Core_Controller_Request_Http
          * @var $category GoMage_ProductDesigner_Model_Clipart_Category
@@ -21,17 +20,17 @@ class GoMage_ProductDesigner_Adminhtml_ClipartsController extends Mage_Adminhtml
         $request = $this->getRequest();
         $categoryId = (int) $request->getParam('id', false);
         $category = Mage::getModel('gomage_designer/clipart_category');
-        $this->loadLayout();
 
         //If edit exist category
         if ($categoryId) {
             $category->load($categoryId);
             if($category->getId())
             {
+                Mage::log($category->getData());
                 Mage::register('category', $category);
             }
         }
-
+        $this->loadLayout();
         // If Request is AJAX
         if ($this->getRequest()->getQuery('isAjax')) {
             $breadcrumbsPath = '';
@@ -50,8 +49,9 @@ class GoMage_ProductDesigner_Adminhtml_ClipartsController extends Mage_Adminhtml
                 }
             }
 
+            $clipartBlock = $this->getLayout()->getBlock('cliparts_edit');
             $eventResponse = new Varien_Object(array(
-                'content' => $this->getLayout()->getBlock('cliparts_edit')->getFormHtml()
+                'content' => $clipartBlock->getFormHtml()
                     . $this->getLayout()->getBlock('cliparts_categories_tree')
                         ->getBreadcrumbsJavascript($breadcrumbsPath, 'editingCategoryBreadcrumbs'),
                 'messages' => $this->getLayout()->getMessagesBlock()->getGroupedHtml(),
@@ -74,10 +74,7 @@ class GoMage_ProductDesigner_Adminhtml_ClipartsController extends Mage_Adminhtml
         if ($id = (int) $this->getRequest()->getParam('id')) {
             try {
                 $category = Mage::getModel('gomage_designer/clipart_category')->load($id);
-                Mage::dispatchEvent('designer_controller_clipart_category_delete', array('category'=>$category));
-
                 Mage::getSingleton('admin/session')->setDeletedPath($category->getPath());
-
                 $category->delete();
                 Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('catalog')->__('The category has been deleted.'));
             }
@@ -272,10 +269,6 @@ class GoMage_ProductDesigner_Adminhtml_ClipartsController extends Mage_Adminhtml
 
     protected function _initCategory()
     {
-        $this->_title($this->__('Catalog'))
-            ->_title($this->__('Categories'))
-            ->_title($this->__('Manage Categories'));
-
         $categoryId = (int) $this->getRequest()->getParam('id',false);
         $category = Mage::getModel('gomage_designer/clipart_category');
 
@@ -283,9 +276,6 @@ class GoMage_ProductDesigner_Adminhtml_ClipartsController extends Mage_Adminhtml
             $category->load($categoryId);
         }
 
-        if ($activeTabId = (string) $this->getRequest()->getParam('active_tab_id')) {
-            Mage::getSingleton('admin/session')->setActiveTabId($activeTabId);
-        }
         return $category;
     }
 }

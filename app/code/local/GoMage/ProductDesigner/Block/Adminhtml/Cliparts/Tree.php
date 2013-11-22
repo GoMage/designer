@@ -171,7 +171,7 @@ class GoMage_ProductDesigner_Block_Adminhtml_Cliparts_Tree extends Mage_Adminhtm
         $item['cls'] = 'folder ' . ($node->getIsActive() ? 'active-category' : 'no-active-category');
         //$item['allowDrop'] = ($level<3) ? true : false;
         $allowMove = $this->_isCategoryMoveable($node);
-        $item['allowDrop'] = $allowMove;
+        $item['allowDrop'] = $node->getLevel() < 2 ? $allowMove : false;
         // disallow drag if it's first level and category is root of a store
         $item['allowDrag'] = $allowMove && (($node->getLevel()==1 && $rootForStores) ? false : true);
 

@@ -81,6 +81,12 @@ try {
     $installer->getConnection()->createTable($table);
 
     $installer->addAutoIncrement($installer->getTable('gomage_designer/clipart'), 'clipart_id');
+    $installer->addForeignKey(
+        $installer->getFkName('gomage_designer/clipart', 'category_id', 'gomage_designer/clipart_category', 'category_id'),
+        $installer->getTable('gomage_designer/clipart'), 'category_id',
+        $installer->getTable('gomage_designer/clipart_category'), 'category_id',
+        Varien_Db_Ddl_Table::ACTION_CASCADE, Varien_Db_Ddl_Table::ACTION_CASCADE
+    );
 
     $installer->addEntityType('clipart_image', array(
         'entity_model'          => 'gomage_designer/clipart',

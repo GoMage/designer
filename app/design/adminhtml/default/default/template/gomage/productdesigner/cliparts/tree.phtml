@@ -123,7 +123,7 @@ Ext.extend(Ext.tree.TreePanel.Enhanced, Ext.tree.TreePanel, {
 
     expandTree : function()
     {
-        this.expand();
+        this.expandAll();
         if (this.collapsed) {
             this.collapsed = false;
             this.loader.dataUrl = '<?php echo $this->getLoadTreeUrl(true) ?>';
