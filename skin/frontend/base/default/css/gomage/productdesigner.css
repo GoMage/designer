@@ -58,6 +58,9 @@
 .pd_bottom_panel{
   text-align: center;
   }
+  .pd_bottom_panel .button{
+    margin-bottom: 5px;
+    }
   
   
 /* Sidebar
