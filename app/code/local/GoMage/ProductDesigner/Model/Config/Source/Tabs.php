@@ -40,7 +40,7 @@ class GoMage_ProductDesigner_Model_Config_Source_Tabs
     {
         return array(
             array('value' => 'navigation', 'label' => Mage::helper('gomage_designer')->__('Choose Product')),
-            array('value' => 'design', 'label' => Mage::helper('gomage_designer')->__('Add Design')),
+            array('value' => 'design', 'label' => Mage::helper('gomage_designer')->__('Add Cliparts')),
             array('value' => 'text', 'label' => Mage::helper('gomage_designer')->__('Add Text')),
             array('value' => 'upload_image', 'label' => Mage::helper('gomage_designer')->__('Upload Images'))
         );
