@@ -57,7 +57,7 @@ class GoMage_ProductDesigner_Block_Designer_Navigation_Filters extends Mage_Core
         $items = Mage::getSingleton('gomage_designer/navigation')->getAvailableFilters();
         foreach ($items as $_code => $item) {
             if (is_object($item)) {
-                $filters[$item->getAttributeCode()] = $item->getStoreLabel($storeId);
+                $filters[$item->getAttributeCode()] = $item->getStoreLabel($storeId)?:$item->getFrontendLabel();
             } elseif(is_string($item)) {
                 $filters[$_code] = $item;
             }
