@@ -1,10 +1,10 @@
 <?php
-//@todo Take needed options from admin settings
 class GoMage_ProductDesigner_Block_Designer_Text extends Mage_Core_Block_Template
 {
     protected $_fonts;
 
-    public function getAvailableColors() {
+    public function getAvailableColors()
+    {
         $colors = array(
             'AC58FA', '00FFFF', '0A2A0A', 'BFFF00', '61210B', '0B610B', '0B615E ',
             'B40486', '9FF781', '610B21', 'BDBDBD', '2ECCFA', '00FF40', 'FFBF00'
@@ -26,7 +26,7 @@ class GoMage_ProductDesigner_Block_Designer_Text extends Mage_Core_Block_Templat
         }
         $fontName = $font->getFont();
         $fontName = substr(strrchr($fontName, '/'), 1);
-        return substr($fontName, 0, strrpos($fontName, '.'));
+        return pathinfo($fontName, PATHINFO_FILENAME);
     }
 
     /**
@@ -49,7 +49,8 @@ class GoMage_ProductDesigner_Block_Designer_Text extends Mage_Core_Block_Templat
     {
         if(is_null($this->_fonts)) {
             $fonts = Mage::getResourceModel('gomage_designer/font_collection');
-            $fonts->addFieldToFilter('disabled', '0');
+            $fonts->addFieldToFilter('disabled', '0')
+                ->setOrder('position', 'ASC');
             $this->_fonts = $fonts;
         }
         return $this->_fonts;

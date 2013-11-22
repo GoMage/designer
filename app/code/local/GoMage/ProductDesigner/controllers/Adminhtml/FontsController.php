@@ -15,9 +15,6 @@ class GoMage_ProductDesigner_Adminhtml_FontsController extends Mage_Adminhtml_Co
 
     public function saveAction()
     {
-        /**
-         * @var $clipartObj GoMage_ProductDesigner_Model_Clipart
-         */
         if ($data = $this->getRequest()->getPost('general')) {
             try {
                 $media = $data['media_gallery'];
@@ -27,15 +24,14 @@ class GoMage_ProductDesigner_Adminhtml_FontsController extends Mage_Adminhtml_Co
                     foreach($fonts as $font) {
                         if(!empty($font)) {
                             $fontObj = Mage::getModel('gomage_designer/font');
-
                             $fontPath = $fontObj->getFontPath($font['url']);
-
                             if (isset($font['value_id'])) {
-                                $fontObj->load($font['value_id']);
+                                $fontObj->load((int) $font['value_id']);
                             }
 
-                            $fontObj->setData(array(
+                            $fontObj->addData(array(
                                 'label' => $font['label'],
+                                'position' => $font['position'],
                                 'font' => $fontPath,
                                 'disabled' => $font['disabled'],
                             ));
@@ -79,7 +75,8 @@ class GoMage_ProductDesigner_Adminhtml_FontsController extends Mage_Adminhtml_Co
         $this->getResponse()->setRedirect($url);
     }
 
-    public function uploadImageAction() {
+    public function uploadImageAction()
+    {
         try {
             $uploader = new GoMage_ProductDesigner_Model_File_Uploader('image');
             $uploader->setAllowedExtensions(array('ttf', 'otf'));
@@ -99,7 +96,7 @@ class GoMage_ProductDesigner_Adminhtml_FontsController extends Mage_Adminhtml_Co
              */
             $result['tmp_name'] = str_replace(DS, "/", $result['tmp_name']);
             $result['path'] = str_replace(DS, "/", $result['path']);
-
+            $result['label'] = pathinfo($result['name'], PATHINFO_FILENAME);
             $result['url'] = Mage::getSingleton('gomage_designer/font_gallery_config')->getTmpMediaUrl($result['file']);
             $result['file'] = $result['file'] . '.tmp';
             $result['cookie'] = array(

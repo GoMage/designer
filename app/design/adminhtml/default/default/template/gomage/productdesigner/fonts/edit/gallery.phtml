@@ -12,15 +12,13 @@
                         <div id="<?php echo $this->getHtmlId() ?>">
                             <div class="grid">
                                 <table width="100%" cellspacing="0" id="<?php echo $this->getHtmlId() ?>_grid" class="data border">
-                                    <colgroup><col width="1">
-                                        <col>
-                                        <col width="70">
+                                    <colgroup>
                                         <col>
                                         <col>
-                                        <col>
+                                        <col width="1">
+                                        <col width="1">
                                     </colgroup><thead>
                                     <tr class="headings">
-                                        <th><?php echo $this->__('Font'); ?></th>
                                         <th><?php echo $this->__('Label'); ?></th>
                                         <th><?php echo $this->__('Sort Order'); ?></th>
                                         <th><?php echo $this->__('Exclude'); ?></th>
@@ -29,7 +27,6 @@
                                     </thead>
                                     <tbody id="<?php echo $this->getHtmlId() ?>_list">
                                         <tr class="template no-display" id="<?php echo $this->getHtmlId() ?>_template">
-                                            <td class="cell-image"><div onmouseover="<?php echo $this->getJsObjectName(); ?>.loadImage('__file__')" class="place-holder"><span><?php echo $this->__('Roll Over for preview'); ?></span></div><img width="100" alt="" style="display:none;" src="<?php echo Mage::getDesign()->getSkinUrl('images/spacer.gif'); ?>"></td>
                                             <td class="cell-label"><input type="text" onchange="<?php echo $this->getJsObjectName(); ?>.updateImage('__file__')" onkeyup="<?php echo $this->getJsObjectName(); ?>.updateImage('__file__')" class="input-text"></td>
                                             <td class="cell-position"><input type="text" onchange="<?php echo $this->getJsObjectName(); ?>.updateImage('__file__')" onkeyup="<?php echo $this->getJsObjectName(); ?>.updateImage('__file__')" class="input-text validate-number"></td>
                                             <td class="cell-disable a-center"><input type="checkbox" onclick="<?php echo $this->getJsObjectName(); ?>.updateImage('__file__')"></td>
@@ -52,6 +49,34 @@
 
                         <script type="text/javascript">
                             //<![CDATA[
+                            Product.Gallery.prototype.handleUploadComplete = function(files) {
+                                files.each( function(item) {
+                                    if (!item.response.isJSON()) {
+                                        try {
+                                            console.log(item.response);
+                                        } catch (e2) {
+                                            alert(item.response);
+                                        }
+                                        return;
+                                    }
+                                    var response = item.response.evalJSON();
+                                    if (response.error) {
+                                        return;
+                                    }
+                                    var newImage = {};
+                                    newImage.url = response.url;
+                                    newImage.file = response.file;
+                                    newImage.label = response.label;
+                                    newImage.tags = '';
+                                    newImage.position = this.getNextPosition();
+                                    newImage.disabled = 0;
+                                    newImage.removed = 0;
+                                    this.images.push(newImage);
+                                    this.uploader.removeFile(item.id);
+                                }.bind(this));
+                                this.container.setHasChanges();
+                                this.updateImages();
+                            }
                             Product.Gallery.prototype.file2id = {
                                 'no_selection' : 0
                             };

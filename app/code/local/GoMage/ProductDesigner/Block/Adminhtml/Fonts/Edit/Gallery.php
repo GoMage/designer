@@ -21,7 +21,7 @@ class GoMage_ProductDesigner_Block_Adminhtml_Fonts_Edit_Gallery
             ->setFileField('image')
             ->setFilters(array(
                 'images' => array(
-                    'label' => Mage::helper('adminhtml')->__('Images (.ttf, .otf)'),
+                    'label' => Mage::helper('adminhtml')->__('Fonts (.ttf, .otf)'),
                     'files' => array('*.ttf', '*.otf')
                 )
             ));
@@ -30,7 +30,8 @@ class GoMage_ProductDesigner_Block_Adminhtml_Fonts_Edit_Gallery
         return $preparedLayout;
     }
 
-    public function getHtmlId() {
+    public function getHtmlId()
+    {
         return 'media_gallery_content';
     }
 
@@ -84,7 +85,8 @@ class GoMage_ProductDesigner_Block_Adminhtml_Fonts_Edit_Gallery
         return json_encode($this->getImageTypes(), JSON_FORCE_OBJECT);
     }
 
-    public function getFontsCollection() {
+    public function getFontsCollection()
+    {
         return Mage::getResourceModel('gomage_designer/font_collection');
     }
 }
