@@ -24,7 +24,7 @@
             <action method="addJs"><script>prototype/window.js</script></action>
             <action method="addJs"><script>varien/product.js</script></action>
             <action method="addItem"><type>js_css</type><name>prototype/windows/themes/default.css</name></action>
-            <action method="addItem"><type>skin_css</type><name>lib/prototype/windows/themes/magento.css</name></action>
+            <action method="addItem"><type helper="gomage_designer/getCssType"/><name helper="gomage_designer/getWindowCssPath"/></action>
             <action method="addJs"><script>gomage/productdesigner/vendor/fabric.min.js</script></action>
             <action method="addJs"><script>gomage/productdesigner/vendor/excanvas.compiled.js</script></action>
             <action method="addJs"><script>gomage/productdesigner.js</script></action>

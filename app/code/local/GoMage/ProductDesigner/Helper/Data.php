@@ -15,6 +15,7 @@
 class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
 {
     const ADVANCED_NAVIGATION_MODULE_NAME = 'GoMage_Navigation';
+
     protected $_allowedProductTypes = array(
         Mage_Catalog_Model_Product_Type::TYPE_SIMPLE,
         Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE
@@ -40,6 +41,25 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
     {
         $module = self::ADVANCED_NAVIGATION_MODULE_NAME;
         return Mage::getConfig()->getNode('modules')->children()->$module->is('active');
+    }
+
+    public function getIsAnymoreVersion($major, $minor, $revision = 0)
+    {
+        $version_info = Mage::getVersionInfo();
+
+        if ($version_info['major'] > $major) {
+            return true;
+        } elseif ($version_info['major'] == $major) {
+            if ($version_info['minor'] > $minor) {
+                return true;
+            } elseif ($version_info['minor'] == $minor) {
+                if ($version_info['revision'] >= $revision) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -461,6 +481,24 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
         }
 
         return array_unique($domains);
+    }
+
+    public function getWindowCssPath()
+    {
+        if(!$this->getIsAnymoreVersion(1, 7)) {
+            return 'prototype/windows/themes/magento.css';
+        } else {
+            return 'lib/prototype/windows/themes/magento.css';
+        }
+    }
+
+    public function getCssType()
+    {
+        if(!$this->getIsAnymoreVersion(1, 7)) {
+            return 'js_css';
+        } else {
+            return 'skin_css';
+        }
     }
 
     public function getAvailableWebsites()
