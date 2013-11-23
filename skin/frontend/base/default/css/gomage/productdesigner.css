@@ -49,6 +49,13 @@
   .dialog #product-zoom-container{
     display: block;
     }
+.product-designer .category-products,
+.my-designs  .category-products{
+  padding: 0;
+  }
+.product-designer-sidebar h4{
+  margin-bottom: 5px;
+  }
     
 /* Main col
 -------------------------------------------------- */
@@ -192,6 +199,32 @@
 .pd_more_info_link{
   margin: 0 0 10px;
   }
+#uploadedImages{
+  margin-bottom: 5px;
+  }
+#upload-image-error{
+  margin: 5px 0;
+  color: #f00;
+  font-weight: 700;
+  }
+  #upload-image-error p{
+    margin: 0;
+    }
+#license-agreements-link{
+  cursor: help;
+  }
+.pd-license-agreements-popup {
+  position: absolute;
+  z-index: 1001;
+  background: #fff;
+  border: 1px solid #ccc;
+  padding: 5px;
+  border-radius: 3px;
+  width: 250px;
+  }
+#image-conditions{
+  margin-top: 5px;
+  }
  
 /* Fields
 -------------------------------------------------- */
@@ -217,6 +250,11 @@
     }
 .product-designer .control label{
   vertical-align: middle;
+  }
+.product-designer .control-rights label{
+  text-align: left;
+  width: auto;
+  float: none;
   }
   
   
@@ -551,14 +589,6 @@ li.layer-type-text .layer-icon {
     padding: 10px;
 }
 
-.pd-license-agreements-popup {
-  position: absolute;
-  z-index: 1001;
-  background: #fff;
-  border: 1px solid #ccc;
-  padding: 5px;
-  border-radius: 3px;
-}
 
 .product-designer-price .regular-price .price {
     font-size: 26px;
