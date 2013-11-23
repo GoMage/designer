@@ -146,6 +146,9 @@
 
     <gomage_designer_customer_designs>
         <update handle="customer_account" />
+        <reference name="head">
+            <action method="addItem"><type>skin_css</type><name>css/gomage/productdesigner.css</name><params/></action>
+        </reference>        
         <reference name="my.account.wrapper">
             <block type="core/template" name="customer.designs" template="gomage/productdesigner/customer/designs.phtml">
                 <action method="setTitle" translate="title">
