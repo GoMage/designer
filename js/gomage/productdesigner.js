@@ -392,6 +392,7 @@ GoMage.ProductDesigner.prototype = {
                 this.observeRegisterSubmitBtn();
             }
             Event.on(document.body, 'click', '#overlay_modal', function(e, elm){
+                e.stop();
                 Windows.closeAll();
             });
         }
@@ -922,7 +923,7 @@ GoMage.ProductDesigner.prototype = {
     zoom: function()
     {
         this.createZoomWindow();
-        this.zoomWindow.showCenter(true, true);
+        this.zoomWindow.showCenter(true);
         this._toggleControlsButtons();
     },
 
@@ -1056,6 +1057,9 @@ GoMage.ProductDesigner.prototype = {
             });
             this.zoomWindow.setContent('product-zoom-container', true, true);
             this.zoomWindow.setZIndex(2000);
+            Event.on(document.body, 'click', '#overlay_modal', function(e, elm){
+                Windows.closeAll();
+            });
         }
     },
 
@@ -1072,14 +1076,14 @@ GoMage.ProductDesigner.prototype = {
             return;
         }
 
-        var imagesPrice = 0;
-        var textsPrice = 0;
-        var designAreasPrice = 0;
-        var subTotal = 0;
+        var imagesPrice = 0.0;
+        var textsPrice = 0.0;
+        var designAreasPrice = 0.0;
+        var subTotal = 0.0;
         this.designPrices = {};
 
         if (this.prices.fixed_price > 0) {
-            var fixedPrice = parseInt(this.prices.fixed_price);
+            var fixedPrice = parseFloat(this.prices.fixed_price);
             var fixedPriceConfig = {
                 price: fixedPrice,
                 type: "fixed"
@@ -1099,15 +1103,15 @@ GoMage.ProductDesigner.prototype = {
                 if (canvasCount > 0) {
                     if (this.config.product.images[this.currentColor].hasOwnProperty(id)) {
                         var designArea = this.config.product.images[this.currentColor][id];
-                        designAreaPrice = parseInt(designArea.ip);
+                        designAreaPrice = parseFloat(designArea.ip);
                         if (designAreaPrice > 0) {
                             designAreasPrice += designAreaPrice;
                             subTotal += designAreaPrice;
                         }
                         var imagesCount = 0;
                         var textsCount = 0;
-                        var imagePrice = parseInt(this.prices.image_text);
-                        var textPrice = parseInt(this.prices.text_price);
+                        var imagePrice = parseFloat(this.prices.image_text);
+                        var textPrice = parseFloat(this.prices.text_price);
                         canvas.getObjects().each(function(object){
                             if (object.type == 'custom_text') {
                                 textsCount++;
