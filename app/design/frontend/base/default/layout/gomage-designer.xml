@@ -101,25 +101,21 @@
             <block type="gomage_designer/designer_uploadImage_images" name="uploadedImages" template="gomage/productdesigner/designer/upload_image/images.phtml" />
         </reference>
     </gomage_designer_index_uploadimages>
-    <!-- Override templates to add "Customize it" button near "Add to cart button" -->
+
     <catalog_category_default>
         <reference name="head">
           <action method="addItem"><type>skin_css</type><name>css/gomage/productdesigner.css</name><params/></action>
         </reference>
-        <reference name="product_list">
-            <action method="setTemplate">
-                <template>gomage/productdesigner/catalog/product/list.phtml</template>
-            </action>
+        <reference name="content">
+            <block type="gomage_designer/catalog_product_list" name="gomage.designer.product.list" template="gomage/productdesigner/catalog/product/list.phtml"/>
         </reference>
     </catalog_category_default>
     <catalog_category_layered>
         <reference name="head">
           <action method="addItem"><type>skin_css</type><name>css/gomage/productdesigner.css</name><params/></action>
         </reference>
-        <reference name="product_list">
-            <action method="setTemplate">
-                <template>gomage/productdesigner/catalog/product/list.phtml</template>
-            </action>
+        <reference name="content">
+            <block type="gomage_designer/catalog_product_list" name="gomage.designer.product.list" template="gomage/productdesigner/catalog/product/list.phtml"/>
         </reference>
     </catalog_category_layered>
     <!-- Top links for logged in customer -->
@@ -138,7 +134,6 @@
     </customer_logged_in_top_links>
 
     <customer_account>
-    <!-- Mage_Sales -->
         <reference name="customer_account_navigation">
             <action method="addLink" translate="label" module="gomage_designer"><name>designs</name><path>gomage_designer/customer/designs/</path><label>My Saved Designs</label></action>
         </reference>
