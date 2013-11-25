@@ -109,7 +109,6 @@ class GoMage_ProductDesigner_Model_Design_Image extends Mage_Core_Model_Abstract
                 1
             );
             $canvas->compositeImage($layer, $layer->getImageCompose(), $designAreaLeft, $designAreaTop);
-//            $layer->destroy();
         } else {
             $layerWidth = floor(imagesx($layer) * $widthScale);
             $layerHeight = floor(imagesy($layer) * $heightScale);
@@ -125,7 +124,6 @@ class GoMage_ProductDesigner_Model_Design_Image extends Mage_Core_Model_Abstract
                 imagesx($layer),
                 imagesy($layer)
             );
-//            imagedestroy($layer);
         }
 
         return $canvas;
@@ -226,13 +224,6 @@ class GoMage_ProductDesigner_Model_Design_Image extends Mage_Core_Model_Abstract
                     imagedestroy($layer);
                     $this->_createPdfImage($fileToSave);
                     $this->_createPdfImage($layerFilename);
-//                    $pdf = new Zend_Pdf();
-//                    $image = Zend_Pdf_Image::imageWithPath($fileToSave . 'jpg');
-//                    $pdfPage = $pdf->newPage($image->getPixelWidth(). ':'. $image->getPixelHeight());
-//                    $pdfPage->drawImage($image, 0, 0, $image->getPixelWidth(), $image->getPixelHeight());
-//                    $pdf->pages[] = $pdfPage;
-//                    $fileToSave = $fileToSave.$imageExtension;
-//                    $pdf->save($fileToSave);
                 } else {
                     if ($imageExtension = 'jpg') {
                         $saveFunction = 'imagejpeg';
@@ -242,9 +233,6 @@ class GoMage_ProductDesigner_Model_Design_Image extends Mage_Core_Model_Abstract
                     if (function_exists($saveFunction)) {
                         $saveFunction($canvas, $fileToSave, 100);
                         $saveFunction($layer, $layerFilename, 100);
-//                        $image = file_get_contents($fileToSave);
-//                        $image = substr_replace($image, pack("Cnn", 0x01, 300, 300), 13, 5);
-//                        file_put_contents($fileToSave, $image);
                         $this->_setImageResolution($fileToSave);
                         $this->_setImageResolution($layerFilename);
                         imagedestroy($canvas);
