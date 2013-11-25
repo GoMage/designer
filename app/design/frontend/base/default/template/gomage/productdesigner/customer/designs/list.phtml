@@ -6,7 +6,6 @@
 <?php if(!$_collectionSize): ?>
     <p class="note-msg"><?php echo $this->__('You have no designed products') ?></p>
 <?php else: ?>
-    <div class="category-products">
         <?php $_columnCount = $this->getColumnCount(); ?>
         <?php $i=0; foreach ($_designCollection as $_design): ?>
             <?php $_product = $_design->getProduct(); ?>
@@ -34,7 +33,6 @@
             <?php endif ?>
         <?php endforeach ?>
         <script type="text/javascript">decorateGeneric($$('ul.products-grid'), ['odd','even','first','last'])</script>
-    </div>
     <?php echo $this->getPagerHtml(); ?>
 <?php endif; ?>
 <script type="text/javascript">
