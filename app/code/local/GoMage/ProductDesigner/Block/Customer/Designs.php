@@ -156,4 +156,15 @@ class GoMage_ProductDesigner_Block_Customer_Designs extends Mage_Catalog_Block_P
     {
         return $this->getUrl('*/customer/deleteDesign', array('design_id' => $designId));
     }
+
+    public function setColumnCount($count)
+    {
+        if (Mage::getEdition() == Mage::EDITION_ENTERPRISE) {
+            $count = 3;
+        }
+
+        $this->setData('column_count', $count);
+
+        return $this;
+    }
 }
