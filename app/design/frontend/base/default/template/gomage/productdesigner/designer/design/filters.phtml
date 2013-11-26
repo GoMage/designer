@@ -41,7 +41,9 @@ $subCategories = $this->getSubCategoriesCollection();
         </li>
     <?php endif; ?>
 </ul>
-<div class="actions">
-    <button class="button pd-btn cliparts-panel-search-btn disabled" id="cliparts-search-btn"><span><span><?php echo $this->__('Search'); ?></span></span></button>
-    <button class="button pd-btn cliparts-panel-search-btn" id="cliparts-reset-btn" style="display: none"><span><span><?php echo $this->__('Reset'); ?></span></span></button>
-</div>
+<?php if ($this->searchEnabled()): ?>
+    <div class="actions">
+        <button class="button pd-btn cliparts-panel-search-btn disabled" id="cliparts-search-btn"><span><span><?php echo $this->__('Search'); ?></span></span></button>
+        <button class="button pd-btn cliparts-panel-search-btn" id="cliparts-reset-btn" style="display: none"><span><span><?php echo $this->__('Reset'); ?></span></span></button>
+    </div>
+<?php endif; ?>
