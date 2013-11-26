@@ -222,6 +222,8 @@ GoMage.ProductDesigner.prototype = {
             if (!$('product-colors').visible() && colorsHtml != '') {
                 $('product-colors').show();
             }
+        } else {
+            $('product-colors').hide();
         }
     },
 
