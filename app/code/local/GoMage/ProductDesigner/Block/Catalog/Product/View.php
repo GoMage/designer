@@ -66,10 +66,23 @@ class GoMage_ProductDesigner_Block_Catalog_Product_View extends Mage_Catalog_Blo
 
     public function addToCartDisabled()
     {
+        if (!Mage::helper('gomage_designer')->isEnabled()) {
+            return false;
+        }
+
         if ($this->hasDesign() || !$this->getProduct()->getEnableProductDesigner()) {
             return false;
         }
 
         return $this->getProduct()->getEnableProductDesigner() && Mage::getStoreConfig('gomage_designer/general/add_to_cart_button');
+    }
+
+    public function designButtonEnabled()
+    {
+        if (!Mage::helper('gomage_designer')->isEnabled()) {
+            return false;
+        }
+
+        return (!$this->hasDesign() && $this->getProduct()->getEnableProductDesigner());
     }
 }

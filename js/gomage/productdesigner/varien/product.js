@@ -22,7 +22,7 @@
  * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
-if (typeof Product.OptionsPrice != undefined) {
+if (typeof Product != "undefined" && typeof Product.OptionsPrice != undefined) {
     Product.OptionsPrice.prototype.initialize = function(config) {
         this.productId          = config.productId;
         this.priceFormat        = config.priceFormat;

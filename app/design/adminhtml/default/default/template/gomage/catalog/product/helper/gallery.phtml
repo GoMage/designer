@@ -66,7 +66,7 @@ $colors = $this->getProductColors();
             <td class="cell-remove a-center<?php if (!$productDesignerEnabled): ?> last<?php endif; ?>"><input type="checkbox" <?php if($_block->getElement()->getReadonly()):?> disabled="disabled"<?php endif;?> onclick="<?php echo $_block->getJsObjectName(); ?>.updateImage('__file__')" /></td>
             <?php if ($colors): ?>
             <td class="cell-color" <?php if (!$productDesignerEnabled): ?>style="display: none"<?php endif;?>>
-                <select <?php if($_block->getElement()->getReadonly()):?> disabled="disabled"<?php endif;?> onchange="<?php echo $_block->getJsObjectName(); ?>.updateImage('__file__')" style="width: 100px;">
+                <select <?php if($_block->getElement()->getReadonly()):?> disabled="disabled"<?php endif;?> onchange="<?php echo $_block->getJsObjectName(); ?>.updateImage('__file__')" style="width: 100px;" class="validate-color-select">
                     <?php foreach($colors as $color):?>
                         <option value="<?php echo $color['option_id']?>"><?php echo $color['value']?></option>
                     <?php endforeach;?>
@@ -354,6 +354,14 @@ Validation.add('validate-one-design-area-required','<?php echo $this->__("Please
         return false;
     }
 });
+
+Validation.add('validate-color-select','<?php echo $this->__("Please select color option") ?>', function (v,elm) {
+    if (!$('enable_product_designer') || parseInt($('enable_product_designer').value) === 0) {
+        return true;
+    }
+    return ((v != "none") && (v != null) && (v.length != 0));
+});
+
 $(function(){
    if ($('enable_product_designer')) {
        $('enable_product_designer').observe('change', function(e){
