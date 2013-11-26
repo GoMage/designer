@@ -147,6 +147,22 @@ class GoMage_ProductDesigner_Model_Design_Image extends Mage_Core_Model_Abstract
 
         return $layer;
     }
+
+    /**
+     * @param resource|Imagick $layer    Layer
+     * @param string           $filename Filename
+     */
+    public function saveLayer($layer, $filename)
+    {
+        $size = $layer->getImageGeometry();
+        $canvas = new Imagick();
+        $canvas->newImage($size['width'], $size['height'], new ImagickPixel('white'));
+        $canvas->setImageFormat($layer->getImageFormat());
+        $canvas->compositeImage($layer, imagick::COMPOSITE_OVER, 0, 0);
+        $resolution = $this->_getImageExtensionForSave() == 'pdf' ? 300 : 600;
+        $canvas->setImageResolution($resolution, $resolution);
+        $canvas->writeImage($filename);
+    }
     /**
      * Create canvas
      *
@@ -201,7 +217,7 @@ class GoMage_ProductDesigner_Model_Design_Image extends Mage_Core_Model_Abstract
             $fileToSave = $this->_prepareFileForSave();
             $layerFilename = $this->_prepareFileForSave();
             if (extension_loaded($this->_imageExtension)){
-                $layer->writeImage($layerFilename);
+                $this->saveLayer($layer, $layerFilename);
                 $canvas->writeImage($fileToSave);
                 if ($this->_getImageExtensionForSave() == 'pdf') {
                     $fileToSaveJpg = str_replace('.pdf', '.jpg', $fileToSave);
@@ -209,7 +225,7 @@ class GoMage_ProductDesigner_Model_Design_Image extends Mage_Core_Model_Abstract
                     $canvas->setImageFormat('jpg');
                     $canvas->writeImage($fileToSaveJpg);
                     $layer->setImageFormat('jpg');
-                    $layer->writeImage($layerFilenameJpg);
+                    $this->saveLayer($layer, $layerFilenameJpg);
                 }
                 $layer->destroy();
                 $canvas->destroy();
