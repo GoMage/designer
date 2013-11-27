@@ -35,7 +35,7 @@
         <reference name="content">
             <block type="gomage_designer/editor" name="product_designer_editor" template="gomage/productdesigner/editor.phtml">
                 <block type="gomage_designer/designer_navigation" name="productNavigator" template="gomage/productdesigner/designer/navigation.phtml">
-                    <block type="gomage_designer/designer_navigation_filters" name="navigation.filters" template="gomage/productdesigner/designer/navigation/filters.phtml"/>
+                    <block type="gomage_designer/designer_navigation_filters" name="filters" template="gomage/productdesigner/designer/navigation/filters.phtml"/>
                     <block type="gomage_designer/designer_navigation_product_list" name="productNavigatorList" template="gomage/productdesigner/designer/navigation/list.phtml">
                         <block type="catalog/product_list_toolbar" name="product_navigator_toolbar" template="gomage/productdesigner/designer/navigation/toolbar.phtml">
                             <block type="page/html_pager" name="product_list_toolbar_pager"/>
@@ -76,7 +76,7 @@
     <gomage_designer_index_filterproducts>
         <reference name="content">
             <block type="gomage_designer/designer_navigation" name="productNavigator" template="gomage/productdesigner/designer/navigation.phtml">
-                <block type="gomage_designer/designer_navigation_filters" name="navigation.filters" template="gomage/productdesigner/designer/navigation/filters.phtml"/>
+                <block type="gomage_designer/designer_navigation_filters" name="filters" template="gomage/productdesigner/designer/navigation/filters.phtml"/>
                 <block type="gomage_designer/designer_navigation_product_list" name="productNavigatorList" template="gomage/productdesigner/designer/navigation/list.phtml">
                     <block type="catalog/product_list_toolbar" name="product_navigator_toolbar" template="gomage/productdesigner/designer/navigation/toolbar.phtml">
                         <block type="page/html_pager" name="product_list_toolbar_pager"/>

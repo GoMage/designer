@@ -21,7 +21,7 @@ class GoMage_ProductDesigner_Block_Designer_Navigation extends Mage_Core_Block_T
      */
     public function getFiltersHtml()
     {
-        $filters = $this->getChild('navigation.filters');
+        $filters = $this->getChild('filters');
         return $filters->toHtml();
     }
 

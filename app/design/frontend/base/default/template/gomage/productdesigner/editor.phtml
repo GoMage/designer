@@ -161,9 +161,11 @@ $productImageMinSize = $this->getProductOriginalImageMinSizes();
               </div>
               <?php $colors = $this->getProductColors();?>
                   <div id="product-colors" class="product-colors pd-box" style="<?php if (!$colors || empty($colors)) echo "display: none";?>">
-                      <?php foreach($colors as $color): ?>
-                          <span class="color-btn <?php if ($color['option_id'] == $config['default_color']) echo 'selected'?>" data-color_id="<?php echo $color['option_id']?>" <?php if ($color['image']):?>style="background-image: url(<?php echo $color['image']; ?>); background-position: 50% 50%; background-repeat: no-repeat no-repeat"<?php endif;?>><?php if (!$color['image']): echo $color['value']; endif;?></span>
-                      <?php endforeach;?>
+                      <?php if ($colors): ?>
+                          <?php foreach($colors as $color): ?>
+                              <span class="color-btn <?php if ($color['option_id'] == $config['default_color']) echo 'selected'?>" data-color_id="<?php echo $color['option_id']?>" <?php if ($color['image']):?>style="background-image: url(<?php echo $color['image']; ?>); background-position: 50% 50%; background-repeat: no-repeat no-repeat"<?php endif;?>><?php if (!$color['image']): echo $color['value']; endif;?></span>
+                          <?php endforeach;?>
+                      <?php endif;?>
                   </div>
               <?php if ($this->additionalInstructionsEnabled()): ?>
                   <div id="additional_instructions" class="additional_instructions pd-box">

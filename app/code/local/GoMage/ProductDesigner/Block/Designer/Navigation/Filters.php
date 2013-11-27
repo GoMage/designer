@@ -41,7 +41,7 @@ class GoMage_ProductDesigner_Block_Designer_Navigation_Filters extends Mage_Core
      */
     public function getAvailableFilterOptions($filter)
     {
-        $filters = Mage::getSingleton('gomage_designer/navigation')->getFilterOptions($filter, $this->getRequest());
+        $filters = Mage::getSingleton('gomage_designer/navigation')->getFilterOptions($filter);
         return $filters;
     }
 
@@ -57,7 +57,7 @@ class GoMage_ProductDesigner_Block_Designer_Navigation_Filters extends Mage_Core
         $items = Mage::getSingleton('gomage_designer/navigation')->getAvailableFilters();
         foreach ($items as $_code => $item) {
             if (is_object($item)) {
-                $filters[$item->getAttributeCode()] = $item->getStoreLabel($storeId)?:$item->getFrontendLabel();
+                $filters[$item->getAttributeCode()] = $item->getStoreLabel($storeId);
             } elseif(is_string($item)) {
                 $filters[$_code] = $item;
             }
