@@ -1,5 +1,4 @@
 <?php
-//@todo Take needed options from admin settings
 class GoMage_ProductDesigner_Block_Designer_UploadImage extends Mage_Core_Block_Template
 {
     /**
@@ -71,5 +70,15 @@ class GoMage_ProductDesigner_Block_Designer_UploadImage extends Mage_Core_Block_
     public function getMaxUploadFileSize()
     {
         return (int) Mage::getStoreConfig('gomage_designer/upload_image/size') * 1024 * 1024;
+    }
+
+    public function hasImages()
+    {
+        return count(Mage::getModel('gomage_designer/uploadedImage')->getCustomerUploadedImages()) > 0;
+    }
+
+    public function getRemoveImgUrl()
+    {
+        return $this->getUrl('designer/index/removeUploadedImages');
     }
 }

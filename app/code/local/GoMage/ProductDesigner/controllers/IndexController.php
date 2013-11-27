@@ -238,6 +238,24 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
         $this->getResponse()->setBody($content);
     }
 
+    public function removeUploadedImagesAction()
+    {
+        $isAjax = (bool) $this->getRequest()->getPost('ajax');
+        if (!$isAjax) {
+            $this->norouteAction();
+            return;
+        }
+
+        try {
+            Mage::getModel('gomage_designer/uploadedImage')->removeCustomerUploadedImages();
+        } catch (Exception $e) {
+            Mage::helper('gomage_designer/ajax')->sendError($e->getMessage());
+            return;
+        }
+
+        Mage::helper('gomage_designer/ajax')->sendSuccess();
+    }
+
     public function saveDesignAction()
     {
         $request = $this->getRequest();

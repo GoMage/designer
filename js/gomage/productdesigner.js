@@ -2012,16 +2012,17 @@ GoMage.TextEditor.prototype = {
     }
 };
 
-GoMage.ImageUploader = function(maxUploadFileSize, allowedImageExtensions, allowedImageExtensionsFormated){
+GoMage.ImageUploader = function(maxUploadFileSize, allowedImageExtensions, allowedImageExtensionsFormated, removeImgUrl){
     this.maxUploadFileSize = maxUploadFileSize;
     this.allowedImageExtension = allowedImageExtensions;
     this.allowedImageExtensionsFormated = allowedImageExtensionsFormated;
+    this.removeImgUrl = removeImgUrl;
     this.observeLicenseAgreements();
     this.observeLicenseAgreementsMoreInfo();
     window.onload = this.observeSubmitForm.bind(this);
     this.productDesigner = window.w;
     this.observeImageSelect();
-    this.observeFilesSelect();
+    this.observeRemoveImages();
 };
 
 GoMage.ImageUploader.prototype = {
@@ -2096,9 +2097,38 @@ GoMage.ImageUploader.prototype = {
                     var response = window.frames['iframeSave'].document.body.innerHTML;
                     $('uploadedImages').update(response);
                     $('filesToUpload').value = '';
+                    $('remove-img-btn').show();
                 }.bind(this);
             }
         }.bind(this);
+    },
+
+    observeRemoveImages: function(){
+        Event.on($('file-input-box'), 'click', '#remove-img-btn', function(e, elm){
+            this.removeImages();
+        }.bind(this));
+    },
+
+    removeImages: function() {
+        new Ajax.Request(this.removeImgUrl, {
+            method: 'post',
+            parameters: {ajax: true},
+            onSuccess: function(transport) {
+                var response = transport.responseText.evalJSON();
+                var errorContainer = $('upload-image-error');
+                errorContainer.innerHTML = '';
+                errorContainer.hide();
+                if (response.status == 'success') {
+                    $('uploadedImages').update('');
+                    $('remove-img-btn').hide();
+                    $('filesToUpload').value = '';
+                } else if(response.status == 'error') {
+                    // Sorry for hardcode
+                    errorContainer.insert('<p>' + response.message + '</p>');
+                    errorContainer.show();
+                }
+            }.bind(this)
+        })
     },
 
     observeImageSelect: function(){
@@ -2117,10 +2147,6 @@ GoMage.ImageUploader.prototype = {
                 this.productDesigner.history.push(cmd);
             }.bind(this));
         }.bind(this));
-    },
-
-    observeFilesSelect: function() {
-
     }
 };
 

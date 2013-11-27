@@ -8,25 +8,30 @@ class GoMage_ProductDesigner_Model_UploadedImage extends Mage_Core_Model_Abstrac
         $this->_init('gomage_designer/uploadedImage');
     }
 
-    public function getImagePath($imageUrl) {
+    public function getImagePath($imageUrl)
+    {
         $imageUrl = str_replace($this->getConfig()->getBaseTmpMediaUrl(), '', $imageUrl);
         $imageUrl = str_replace($this->getConfig()->getBaseMediaUrl(), '', $imageUrl);
         return $imageUrl;
     }
 
-    public function getUrl($imagePath) {
+    public function getUrl($imagePath)
+    {
         return $this->getConfig()->getBaseTmpMediaUrl() . $imagePath;
     }
 
-    public function getDestinationPath($imagePath) {
+    public function getDestinationPath($imagePath)
+    {
         return $this->getConfig()->getBaseMediaPath() . $imagePath;
     }
 
-    public function getTempPath($imagePath) {
+    public function getTempPath($imagePath)
+    {
         return $this->getConfig()->getBaseTmpMediaPath() . $imagePath;
     }
 
-    public function getDestinationDir($imagePath) {
+    public function getDestinationDir($imagePath)
+    {
         $expImagePath = explode('/', $imagePath);
         array_pop($expImagePath);
         $imagePath = implode('/', $expImagePath);
@@ -37,50 +42,76 @@ class GoMage_ProductDesigner_Model_UploadedImage extends Mage_Core_Model_Abstrac
         return $imagePath;
     }
 
-    public function getConfig() {
+    public function getConfig()
+    {
         return Mage::getSingleton('gomage_designer/uploadedImage_config');
     }
 
-    public function getCustomerUploadedImages() {
+    public function getCustomerUploadedImages()
+    {
         $customerSession = $this->_getCustomerSession();
         $uploadedImages = array();
         if($customerId = $customerSession->getCustomerId()) {
-            $uploadedImages = $this->getCustomerImages($customerId);
+            $uploadedImages = $this->getCustomerImages($customerId)->getItems();
         }
         if($this->_getDesignerSessionId()) {
-            $uploadedSessionImages = $this->_getUploadedImagesFromSession();
+            $uploadedSessionImages = $this->_getUploadedImagesFromSession()->getItems();
             $uploadedImages = array_merge($uploadedSessionImages, $uploadedImages);
         }
         return $uploadedImages;
     }
 
-    private function _getCustomerSession() {
+    private function _getCustomerSession()
+    {
         return Mage::getSingleton('customer/session');
     }
 
-    public function getCustomerImages($customerId) {
+    public function getCustomerImages($customerId)
+    {
         /**
          * @var $collection GoMage_ProductDesigner_Model_Mysql4_UploadedImage_Collection
          */
         $collection = $this->getResourceCollection();
         $collection->addFieldToFilter('customer_id', $customerId);
-        $collectionArray = $collection->toArray();
-        return $collectionArray['items'];
+
+        return $collection;
     }
 
-    protected function _getUploadedImagesFromSession() {
+    protected function _getUploadedImagesFromSession()
+    {
         /**
          * @var $collection GoMage_ProductDesigner_Model_Mysql4_UploadedImage_Collection
          */
         $designerSessionId = $this->_getDesignerSessionId();
         $collection = $this->getResourceCollection();
         $collection->addFieldToFilter('session_id', $designerSessionId);
-        $collectionArray = $collection->toArray();
-        return $collectionArray['items'];
+
+        return $collection;
     }
 
     protected function _getDesignerSessionId()
     {
         return Mage::helper('gomage_designer')->getDesignerSessionId();
+    }
+
+    public function removeCustomerUploadedImages()
+    {
+        $customerSession = $this->_getCustomerSession();
+        $ids = array();
+
+        if($customerId = $customerSession->getCustomerId()) {
+            $ids = $this->getCustomerImages($customerId)->getAllIds();
+        }
+
+        if($this->_getDesignerSessionId()) {
+            $uploadedSessionImagesIds = $this->_getUploadedImagesFromSession()->getAllIds();
+            $ids = array_merge($ids, $uploadedSessionImagesIds);
+        }
+
+        if (!empty($ids)) {
+            $this->getResource()->removeImagesByIds($ids);
+        }
+
+        return $this;
     }
 }
