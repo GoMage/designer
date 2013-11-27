@@ -708,22 +708,20 @@ GoMage.ProductDesigner.prototype = {
         this.canvas.observe('object:modified', function(e) {
             var orig = e.target.originalState;
             // CASE 1: object has been moved
-            setTimeout(function(){
-                if (orig.left != e.target.left || orig.top != e.target.top) {
-                    if ((e.target.left + e.target.width/2 <= 0) || (e.target.left - e.target.width/2 >= this.canvas.getWidth())) {
-                        return;
-                    } else if ((e.target.top + e.target.height/2 <= 0) || (e.target.top - e.target.height/2 >= this.canvas.getHeight())) {
-                        return;
-                    }
-                    var cmd = new MovingCommand(
-                        this.canvas,
-                        this.canvas.getActiveObject(),
-                        {left : orig.left, top: orig.top},
-                        {left : e.target.left, top: e.target.top}
-                    );
-                    this.history.push(cmd);
+            if (orig.left != e.target.left || orig.top != e.target.top) {
+                if ((e.target.left + e.target.width/2 <= 0) || (e.target.left - e.target.width/2 >= this.canvas.getWidth())) {
+                    return;
+                } else if ((e.target.top + e.target.height/2 <= 0) || (e.target.top - e.target.height/2 >= this.canvas.getHeight())) {
+                    return;
                 }
-            }.bind(this), 1000);
+                var cmd = new MovingCommand(
+                    this.canvas,
+                    this.canvas.getActiveObject(),
+                    {left : orig.left, top: orig.top},
+                    {left : e.target.left, top: e.target.top}
+                );
+                this.history.push(cmd);
+            }
 
             // CASE 2: object has been rotated
             if (orig.angle != e.target.angle) {
@@ -738,7 +736,7 @@ GoMage.ProductDesigner.prototype = {
                     this.canvas,
                     this.canvas.getActiveObject(),
                     {scaleX : orig.scaleX, scaleY: orig.scaleY},
-                    {scaleX : e.target.scaleX, top: e.target.scaleY}
+                    {scaleX : e.target.scaleX, scaleY: e.target.scaleY}
                 );
                 this.history.push(cmd);
             }
