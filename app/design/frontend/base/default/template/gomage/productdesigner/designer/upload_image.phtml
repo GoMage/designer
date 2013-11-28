@@ -20,10 +20,14 @@
 </div>
 <div id="file-input-box" <?php echo $licenseEnabled ? 'style="display:none;"' : ''?>>
     <form target="iframeSave" id="uploadImages" enctype="multipart/form-data" action="<?php echo Mage::getUrl('designer/index/uploadImages'); ?>" method="post">
-        <input name="filesToUpload[]" id="filesToUpload" type="file" multiple="multiple" accept="<?php echo $this->getAllowedImageMimeTypesString(); ?>"/>
+        <div class="pd-upload-input">
+          <input name="filesToUpload[]" id="filesToUpload" type="file" multiple="multiple" accept="<?php echo $this->getAllowedImageMimeTypesString(); ?>"/>
+        </div>
         <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo $this->getMaxUploadFileSize();?>" />
-        <button class="button" type="submit"><span><span><?php echo $this->__('Upload'); ?></span></span></button>
-        <button class="button" id="remove-img-btn" type="button" <?php if (!$this->hasImages()):?>style="display: none"<?php endif;?>><span><span><?php echo $this->__('Remove Images'); ?></span></span></button>
+        <div class="pd-upload-buttons">
+          <button class="button" type="submit"><span><span><?php echo $this->__('Upload'); ?></span></span></button>
+          <button class="button" id="remove-img-btn" type="button" <?php if (!$this->hasImages()):?>style="display: none"<?php endif;?>><span><span><?php echo $this->__('Remove Images'); ?></span></span></button>        
+        </div>
         <iframe id="iframeSave" name="iframeSave" style="display:none;"></iframe>
     </form>
     <?php if ($this->imageConditionsEnabled() && $text = $this->getImageConditionsText()): ?>
