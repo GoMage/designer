@@ -211,8 +211,9 @@
     <default>
         <gomage_designer>
             <general>
+                <enabled>0</enabled>
                 <add_to_cart_button>0</add_to_cart_button>
-                <format>jpg</format>
+                <format>png</format>
                 <fixed_price>0</fixed_price>
                 <price_for_text>0</price_for_text>
                 <price_for_image>0</price_for_image>
@@ -243,7 +244,7 @@
             <upload_image>
                 <enabled>1</enabled>
                 <copyright>1</copyright>
-                <format>png</format>
+                <format>png,jpg/jpeg,gif</format>
                 <size>1</size>
                 <max_size_width>500</max_size_width>
                 <max_size_height>700</max_size_height>

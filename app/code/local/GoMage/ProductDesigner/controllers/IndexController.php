@@ -253,7 +253,11 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
             return;
         }
 
-        Mage::helper('gomage_designer/ajax')->sendSuccess();
+        $this->loadLayout();
+        $block = $this->getLayout()->getBlock('uploadedImages');
+        Mage::helper('gomage_designer/ajax')->sendSuccess(array(
+            'content' => $block->toHtml()
+        ));
     }
 
     public function saveDesignAction()

@@ -102,6 +102,12 @@
         </reference>
     </gomage_designer_index_uploadimages>
 
+    <gomage_designer_index_removeuploadedimages translate="label">
+        <reference name="content">
+            <block type="gomage_designer/designer_uploadImage_images" name="uploadedImages" template="gomage/productdesigner/designer/upload_image/images.phtml" />
+        </reference>
+    </gomage_designer_index_removeuploadedimages>
+
     <catalog_category_default>
         <reference name="head">
             <block type="gomage_designer/page_html_head" name="gomage.designer.head">

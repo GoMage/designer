@@ -2064,16 +2064,21 @@ GoMage.ImageUploader.prototype = {
                 var errorsCount = 0;
                 errorContainer.innerHTML = '';
                 errorContainer.hide();
-                for (var prop in files){
-                    if (files.hasOwnProperty(prop)) {
-                        var file = files[prop];
-                        if (file.size && file.size > this.maxUploadFileSize)  {
-                            errors['size'] = 'You can not upload files larger than ' + this.maxUploadFileSize/1024/1024 + ' MB';
-                        }
-                        if (file.type && this.allowedImageExtension.indexOf(file.type) < 0) {
-                            errors['type'] = 'Cannot upload the file. The format is not supported. Supported file formats are: ' + this.allowedImageExtensionsFormated;
+
+                if (files.length > 0) {
+                    for (var prop in files){
+                        if (files.hasOwnProperty(prop)) {
+                            var file = files[prop];
+                            if (file.size && file.size > this.maxUploadFileSize)  {
+                                errors['size'] = 'You can not upload files larger than ' + this.maxUploadFileSize/1024/1024 + ' MB';
+                            }
+                            if (file.type && this.allowedImageExtension.indexOf(file.type) < 0) {
+                                errors['type'] = 'Cannot upload the file. The format is not supported. Supported file formats are: ' + this.allowedImageExtensionsFormated;
+                            }
                         }
                     }
+                } else {
+                    errors['count'] = 'Please, select files for upload';
                 }
 
                 for (var prop in errors) {
@@ -2083,6 +2088,7 @@ GoMage.ImageUploader.prototype = {
                         errorContainer.insert('<p>' + errors[prop] + '</p>');
                     }
                 }
+
                 if (errorsCount > 0) {
                     errorContainer.show();
                     return false;
@@ -2117,7 +2123,7 @@ GoMage.ImageUploader.prototype = {
                 errorContainer.innerHTML = '';
                 errorContainer.hide();
                 if (response.status == 'success') {
-                    $('uploadedImages').update('');
+                    $('uploadedImages').update(response.content);
                     $('remove-img-btn').hide();
                     $('filesToUpload').value = '';
                 } else if(response.status == 'error') {

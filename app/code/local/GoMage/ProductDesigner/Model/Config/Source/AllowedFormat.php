@@ -6,7 +6,7 @@ class GoMage_ProductDesigner_Model_Config_Source_AllowedFormat
     {
       return array(
         array('value' => 'png', 'label' => 'PNG'),
-        array('value' => 'jpg,jpeg', 'label' => 'JPEG, JPG'),
+        array('value' => 'jpg/jpeg', 'label' => 'JPEG, JPG'),
         array('value' => 'gif', 'label' => 'GIF')
       );
     }
