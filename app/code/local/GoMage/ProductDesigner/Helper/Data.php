@@ -39,8 +39,19 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function advancedNavigationEnabled()
     {
-        $module = self::ADVANCED_NAVIGATION_MODULE_NAME;
-        return Mage::getConfig()->getNode('modules')->children()->$module->is('active');
+        $modules = (array) Mage::getConfig()->getNode('modules')->children();
+        if (isset($modules[self::ADVANCED_NAVIGATION_MODULE_NAME])) {
+            $module = $modules[self::ADVANCED_NAVIGATION_MODULE_NAME];
+            return $module->is('active');
+        }
+
+        return false;
+    }
+
+    public function isEnterpriseEdition()
+    {
+        $modules = (array) Mage::getConfig()->getNode('modules')->children();
+        return isset($modules['Enterprise_TargetRule']);
     }
 
     public function getIsAnymoreVersion($major, $minor, $revision = 0)

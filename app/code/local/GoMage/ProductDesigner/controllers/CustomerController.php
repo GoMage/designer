@@ -43,10 +43,9 @@ class GoMage_ProductDesigner_CustomerController extends Mage_Customer_AccountCon
                         $customer->sendNewAccountEmail('confirmed', '', Mage::app()->getStore()->getId());
                     }
                     $design = Mage::helper('gomage_designer')->saveProductDesignedImages();
-                    Mage::helper('gomage_designer/ajax')->sendSuccess(array(
-                        'welcome_text' => $this->_getWelcomeTextHtml(),
-                        'top_links' => $this->_getTopLinksHtml(),
-                        'design_id' => $design->getId()
+                    Mage::helper('gomage_designer/ajax')->sendSuccess(array_merge(
+                        $this->_getLoggedInBlocks(),
+                        array('design_id' => $design->getId())
                     ));
                 } else {
                     throw new Exception($this->__('Login and password are required.'));
@@ -130,10 +129,7 @@ class GoMage_ProductDesigner_CustomerController extends Mage_Customer_AccountCon
                     ));
                     $session->addSuccess($this->__('Design successful save'));
                 } else {
-                    $responseData = array(
-                        'welcome_text' => $this->_getWelcomeTextHtml(),
-                        'top_links' => $this->_getTopLinksHtml()
-                    );
+                    $responseData = $this->_getLoggedInBlocks();
                     if (isset($design)) {
                         $responseData['design_id'] = $design->getId();
                     }
@@ -269,9 +265,37 @@ class GoMage_ProductDesigner_CustomerController extends Mage_Customer_AccountCon
      */
     protected function _getTopLinksHtml()
     {
+        return $this->_getLayoutUpdateHtml('customer_logged_in_top_links');
+    }
+
+    /**
+     * Return account links for logged in customer
+     *
+     * @version Only for Enterprise edition
+     * @return string
+     */
+    protected function _getAccountLinks()
+    {
+        return $this->_getLayoutUpdateHtml('customer_logged_in_account_links');
+    }
+
+    public function _getLoggedInBlocks()
+    {
+        $data = array('welcome_text' => $this->_getWelcomeTextHtml());
+        if (Mage::helper('gomage_designer')->isEnterpriseEdition()) {
+            $data['account_links'] = $this->_getAccountLinks();
+        } else {
+            $data['top_links'] = $this->_getTopLinksHtml();
+        }
+
+        return $data;
+    }
+
+    protected function _getLayoutUpdateHtml($handle)
+    {
         $layout = $this->getLayout();
         $update = $layout->getUpdate();
-        $update->load('customer_logged_in_top_links');
+        $update->load($handle);
         $layout->generateXml();
         $layout->generateBlocks();
         return $layout->getOutput();

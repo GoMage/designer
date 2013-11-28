@@ -143,6 +143,15 @@
         </reference>
     </customer_logged_in_top_links>
 
+    <customer_logged_in_account_links>
+        <block type="page/template_links" name="account.links" as="accountLinks" output="toHtml">
+            <action method="addLink" translate="label title" module="customer"><label>Log Out</label><url helper="customer/getLogoutUrl"/><title>Log Out</title><prepare/><urlParams/><position>2</position></action>
+        </block>
+        <block type="enterprise_invitation/link" name="invitation_link_top" output="toHtml">
+            <action method="addAccountLink" translate="label title" module="enterprise_invitation"><block>account.links</block><label>Send Invitations</label><url helper="enterprise_invitation/data/getCustomerInvitationFormUrl" /><title>Send Invitations</title><prepare /><urlParams /><position>1</position><li>id="invitation-send-link"</li></action>
+        </block>
+    </customer_logged_in_account_links>
+
     <customer_account>
         <reference name="customer_account_navigation">
             <block type="gomage_designer/customer_account_navigation_design" name="customer_account_navigation_design"/>

@@ -468,15 +468,27 @@ GoMage.ProductDesigner.prototype = {
                     if (response.status == 'success') {
                         this.isCustomerLogin = true;
                         this.clearLoginErrors(popupWindow.errorContainerId);
-                        var quickAccessContainer = $$('.quick-access')[0];
+                        if (response.top_links) {
+                            var quickAccessContainer = $$('.quick-access')
+                            var linksHtml = response.top_links;
+                        } else if (response.account_links) {
+                            var quickAccessContainer = $$('.header-panel');
+                            var linksHtml = response.account_links;
+                        }
+
                         if (quickAccessContainer && quickAccessContainer != undefined) {
+                            var quickAccessContainer = quickAccessContainer[0];
                             if (response.welcome_text) {
                                 var welcomeText = quickAccessContainer.down('.welcome-msg');
-                                welcomeText.update(response.welcome_text);
+                                if (welcomeText) {
+                                    welcomeText.update(response.welcome_text);
+                                }
                             }
-                            if (response.top_links) {
+                            if (linksHtml) {
                                 var topLinks = quickAccessContainer.down('.links');
-                                topLinks.replace(response.top_links);
+                                if (topLinks) {
+                                    topLinks.replace(linksHtml);
+                                }
                             }
                         }
                         popupWindow.close();
