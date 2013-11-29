@@ -157,8 +157,8 @@ class GoMage_ProductDesigner_Model_Navigation extends Mage_Core_Model_Abstract
     public function getFilterOptions($filter)
     {
         $collection = $this->_prepareProductCollection();
-        $ids = $collection->getAllIds();
         $this->applyFilters($collection, $filter);
+        $ids = $collection->getAllIds();
         $options = array();
 
         if ($filter == 'category') {
