@@ -87,10 +87,11 @@ class GoMage_ProductDesigner_Model_Navigation extends Mage_Core_Model_Abstract
      */
     protected function _getAssociatedProductCollection($ids = array())
     {
-        $collection = Mage::getResourceModel('catalog/product_type_configurable_product_collection');
+        $collection = Mage::getResourceModel('gomage_designer/catalog_product_type_configurable_collection');
         $this->_addFiltersAttributes($collection);
+        $collection->addCategoryIds();
         if (!empty($ids)) {
-            $collection->getSelect()->where("link_table.parent_id IN (?)", $ids);
+            $collection->setProductFilter($ids);
         }
         $this->_addDesignAreaFilter($collection, 'link_table', 'parent_id');
         $collection->getSelect()->group('e.entity_id');
@@ -157,8 +158,8 @@ class GoMage_ProductDesigner_Model_Navigation extends Mage_Core_Model_Abstract
     public function getFilterOptions($filter)
     {
         $collection = $this->_prepareProductCollection();
-        $this->applyFilters($collection, $filter);
         $ids = $collection->getAllIds();
+        $this->applyFilters($collection, $filter);
         $options = array();
 
         if ($filter == 'category') {
@@ -196,7 +197,7 @@ class GoMage_ProductDesigner_Model_Navigation extends Mage_Core_Model_Abstract
             }
 
             $associatedProducts = $this->_getAssociatedProductCollection($ids);
-            $this->applyFilters($associatedProducts, array($filter, 'category'));
+            $this->applyFilters($associatedProducts, $filter);
             foreach ($associatedProducts as $_item) {
                 if (($value = $_item->getData($filter)) && ($label = $_item->getAttributeText($filter))) {
                     $options[$value] = $label;
@@ -219,7 +220,7 @@ class GoMage_ProductDesigner_Model_Navigation extends Mage_Core_Model_Abstract
             $ids = $collection->getAllIds();
 
             $associatedProducts = $this->_getAssociatedProductCollection($ids);
-            $this->applyFilters($associatedProducts, 'category');
+            $this->applyFilters($associatedProducts);
 
             $parentIds = array();
             foreach ($associatedProducts as $_item) {
