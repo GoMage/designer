@@ -173,7 +173,7 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
         $this->loadLayout();
         $block = $this->getLayout()->getBlock('uploadedImages');
         $baseMediaPath = Mage::getSingleton('gomage_designer/uploadedImage_config')->getBaseMediaPath();
-        $allowedFormatsString = Mage::getStoreConfig('gomage_designer/upload_image/format');
+        $allowedFormatsString = str_replace('/', ',', Mage::getStoreConfig('gomage_designer/upload_image/format'));
         $maxUploadFileSize = Mage::getStoreConfig('gomage_designer/upload_image/size');
         $allowedFormats = explode(',', $allowedFormatsString);
         $sessionId = $this->getSessionId();
@@ -206,7 +206,7 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
                 $fileDir = '/' . ($customerId ? $customerId : $sessionId) . '/';
                 $destinationDir = $baseMediaPath . $fileDir;
                 if (!file_exists($destinationDir)) {
-                    mkdir($destinationDir, 0775, true);
+                    mkdir($destinationDir, 0777, true);
                 }
                 $destinationFile = $destinationDir . $fileName;
 
@@ -218,6 +218,8 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
                     );
                     $uploadImage = Mage::getModel('gomage_designer/uploadedImage');
                     $uploadImage->setData($imageData);
+                    $uploadImage->resizeImage(Mage::getSingleton('gomage_designer/uploadedImage_config')
+                        ->getMediaPath($fileDir . $fileName));
                     $uploadImage->save();
                     $uploadedFilesCount++;
                 }

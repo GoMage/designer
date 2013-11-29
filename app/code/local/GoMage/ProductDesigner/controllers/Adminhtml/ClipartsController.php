@@ -26,7 +26,6 @@ class GoMage_ProductDesigner_Adminhtml_ClipartsController extends Mage_Adminhtml
             $category->load($categoryId);
             if($category->getId())
             {
-                Mage::log($category->getData());
                 Mage::register('category', $category);
             }
         }
@@ -116,7 +115,6 @@ class GoMage_ProductDesigner_Adminhtml_ClipartsController extends Mage_Adminhtml
                             $clipartObj = Mage::getModel('gomage_designer/clipart');
 
                             $imagePath = $clipartObj->getImagePath($image['url']);
-
                             $clipartObj->setData(array(
                                 'clipart_id' => @$image['value_id'],
                                 'category_id' => $category->getId(),
@@ -149,6 +147,7 @@ class GoMage_ProductDesigner_Adminhtml_ClipartsController extends Mage_Adminhtml
 
                                 if ($result) {
                                     @chmod($destinationFile, 0777);
+                                    $clipartObj->resizeClipart($destinationFile);
                                     @unlink($tmpFile);
                                 }
                             }

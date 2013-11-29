@@ -70,6 +70,7 @@ class GoMage_ProductDesigner_Block_Designer_Design_Cliparts extends Mage_Core_Bl
      */
     public function getClipartUrl($image)
     {
+
         return Mage::getSingleton('gomage_designer/clipart_gallery_config')->getMediaUrl(rawurlencode($image));
     }
 }

@@ -114,4 +114,9 @@ class GoMage_ProductDesigner_Model_UploadedImage extends Mage_Core_Model_Abstrac
 
         return $this;
     }
+
+    public function resizeImage($file)
+    {
+        return Mage::getModel('gomage_designer/clipart')->resizeClipart($file);
+    }
 }

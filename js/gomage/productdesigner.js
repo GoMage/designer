@@ -1439,8 +1439,8 @@ GoMage.Designer.prototype = {
             var img = e.target || e.srcElement;
             fabric.Image.fromURL(img.src, function(obj) {
                 obj.set({
-                    width: 64,  // move to config
-                    height: 64, // move to config
+//                    width: 64,  // move to config
+//                    height: 64, // move to config
                     tab: 'design'
                 });
 
@@ -2153,8 +2153,8 @@ GoMage.ImageUploader.prototype = {
             var img = e.target || e.srcElement;
             fabric.Image.fromURL(img.src, function(obj) {
                 obj.set({
-                    width: 64,  // move to config
-                    height: 64, // move to config
+//                    width: 64,  // move to config
+//                    height: 64, // move to config
                     tab: 'upload'
                 });
 
