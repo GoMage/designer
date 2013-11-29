@@ -87,10 +87,7 @@ class GoMage_ProductDesigner_Model_Navigation extends Mage_Core_Model_Abstract
      */
     protected function _getAssociatedProductCollection($ids = array())
     {
-        $category = $this->_getRootCategory();
         $collection = Mage::getResourceModel('catalog/product_type_configurable_product_collection');
-        $collection->addCategoryIds();
-        $collection->addCategoryFilter($category);
         $this->_addFiltersAttributes($collection);
         if (!empty($ids)) {
             $collection->getSelect()->where("link_table.parent_id IN (?)", $ids);
@@ -199,7 +196,7 @@ class GoMage_ProductDesigner_Model_Navigation extends Mage_Core_Model_Abstract
             }
 
             $associatedProducts = $this->_getAssociatedProductCollection($ids);
-            $this->applyFilters($associatedProducts, $filter);
+            $this->applyFilters($associatedProducts, array($filter, 'category'));
             foreach ($associatedProducts as $_item) {
                 if (($value = $_item->getData($filter)) && ($label = $_item->getAttributeText($filter))) {
                     $options[$value] = $label;
@@ -222,7 +219,7 @@ class GoMage_ProductDesigner_Model_Navigation extends Mage_Core_Model_Abstract
             $ids = $collection->getAllIds();
 
             $associatedProducts = $this->_getAssociatedProductCollection($ids);
-            $this->applyFilters($associatedProducts);
+            $this->applyFilters($associatedProducts, 'category');
 
             $parentIds = array();
             foreach ($associatedProducts as $_item) {
@@ -303,11 +300,14 @@ class GoMage_ProductDesigner_Model_Navigation extends Mage_Core_Model_Abstract
      */
     public function applyFilters($collection, $excludeFilter = null)
     {
+        if (is_string($excludeFilter)) {
+            $excludeFilter = (array) $excludeFilter;
+        }
         $request = Mage::app()->getRequest();
         $filters = $this->getAvailableFilters();
         foreach ($filters as $_code => $_filter) {
             if ($value = $request->getParam($_code)) {
-                if ($excludeFilter === null || $excludeFilter != $_code) {
+                if ($excludeFilter === null || !in_array($_code, $excludeFilter)) {
                     if (is_object($_filter)) {
                         $this->applyFilter($collection, $_filter->getAttributeCode(), $value);
                     } elseif (is_string($_filter)) {
