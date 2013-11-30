@@ -10,10 +10,6 @@ class GoMage_ProductDesigner_Model_Clipart extends Mage_Core_Model_Abstract {
 
     const CACHE_TAG             = 'designer_clipart';
 
-    const MAX_WIDTH = 250;
-
-    const MAX_HEIGHT = 350;
-
     /**
      * Model cache tag for clear cache in after save and after delete
      */
@@ -94,12 +90,12 @@ class GoMage_ProductDesigner_Model_Clipart extends Mage_Core_Model_Abstract {
 
     public function getMaxClipartHeight()
     {
-        return min(self::MAX_HEIGHT, Mage::getStoreConfig('gomage_designer/general/design_size_height')/2);
+        return Mage::getStoreConfig('gomage_designer/general/design_size_height') / 2;
     }
 
     public function getMaxClipartWidth()
     {
-        return min(self::MAX_WIDTH, Mage::getStoreConfig('gomage_designer/general/design_size_width')/2);
+        return Mage::getStoreConfig('gomage_designer/general/design_size_width') / 2;
     }
 
     public function resizeClipart($file)
