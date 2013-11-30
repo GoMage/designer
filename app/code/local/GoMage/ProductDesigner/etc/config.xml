@@ -106,6 +106,7 @@
                 <rewrite>
                     <product>GoMage_ProductDesigner_Model_Catalog_Product</product>
                     <product_image>GoMage_ProductDesigner_Model_Catalog_Product_Image</product_image>
+                    <product_attribute_backend_media>GoMage_ProductDesigner_Model_Catalog_Product_Attribute_Backend_Media</product_attribute_backend_media>
                 </rewrite>
             </catalog>
             <gomage_designer>

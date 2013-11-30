@@ -255,13 +255,6 @@ try {
         "VARCHAR (1024) DEFAULT NULL"
     );
 
-    /* Update backend model for med */
-    $this->updateAttribute(Mage_Catalog_Model_Product::ENTITY,
-        'media_gallery',
-        'backend_model',
-        'gomage_designer/catalog_product_attribute_backend_media'
-    );
-
     /* Add option table for attribute */
 
     $table = $installer->getConnection()->newTable($installer->getTable('gomage_designer/attribute_option'))
