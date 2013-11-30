@@ -95,7 +95,7 @@ class GoMage_ProductDesigner_Block_Designer_Text extends Mage_Core_Block_Templat
     {
         $sizes = array();
         $step = 2;
-        for ($size = 16; $size <= 72; $size += $step) {
+        for ($size = 12; $size <= 72; $size += $step) {
             $sizes[] = $size;
             if ($size == 24 || $size == 52) {
                 $step *= 2;

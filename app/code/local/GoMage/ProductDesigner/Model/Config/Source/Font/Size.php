@@ -6,7 +6,7 @@ class GoMage_ProductDesigner_Model_Config_Source_Font_Size
     {
         $sizes = array();
         $step = 2;
-        for ($size = 16; $size <= 72; $size += $step) {
+        for ($size = 12; $size <= 72; $size += $step) {
             $sizes[] = array('value' => $size, 'label' => $size);
             if ($size == 24 || $size == 52) {
                 $step *= 2;
