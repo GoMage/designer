@@ -1,27 +1,40 @@
 <?php
 /**
- * GoMage.com
+ *  extension for Magento
  *
- * GoMage ProductDesigner Extension
+ * Long description of this file (if any...)
  *
- * @category     Extension
- * @copyright    Copyright (c) 2010-2012 GoMage.com (http://www.gomage.com)
- * @author       GoMage.com
- * @license      http://www.gomage.com/licensing  Single domain license
- * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 1.0
- * @since        Class available since Release 1.0
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ * 
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade
+ * the GoMage ProductDesigner module to newer versions in the future.
+ * If you wish to customize the GoMage ProductDesigner module for your needs
+ * please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category   GoMage
+ * @package    GoMage_ProductDesigner
+ * @copyright  Copyright (C) 2013 
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
- * Category image helper
+ * Short description of the class
+ *
+ * Long description of the class (if any...)
  *
  * @category   GoMage
  * @package    GoMage_ProductDesigner
  * @subpackage Helper
  * @author     Roman Bublik <rb@gomage.com>
  */
-class GoMage_ProductDesigner_Helper_Image extends Mage_Core_Helper_Data
+abstract class GoMage_ProductDesigner_Helper_Image_Abstract extends Mage_Core_Helper_Data
 {
     /**
      * Thumbnail filename
@@ -52,22 +65,21 @@ class GoMage_ProductDesigner_Helper_Image extends Mage_Core_Helper_Data
      * @param string $filename Filename
      * @return GoMage_ProductDesigner_Helper_Image
      */
-    public function init($filename)
-    {
-        $this->_width = null;
-        $this->_height = null;
-        $this->_filename = $filename;
-        $this->_baseDir = Mage::getSingleton('gomage_designer/design_config')->getBaseMediaPath();
-        $imageExtension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
-        if ($imageExtension == 'pdf') {
-            $filename = str_replace('.pdf', '.jpg', $filename);
-            if (file_exists($this->_baseDir . $filename)) {
-                $this->_filename = $filename;
-            }
-        }
+    abstract public function init($filename);
 
-        return $this;
-    }
+    /**
+     * Get cached file url
+     *
+     * @return string
+     */
+    abstract protected function _getCachedUrl();
+
+    /**
+     * Get cache dir
+     *
+     * @return string
+     */
+    abstract protected function _getCacheDir();
 
     /**
      * Resize the image
@@ -83,6 +95,24 @@ class GoMage_ProductDesigner_Helper_Image extends Mage_Core_Helper_Data
         return $this;
     }
 
+    public function setWatermarkSize($size)
+    {
+        $this->_watermarkSize = $size;
+        return $this;
+    }
+
+    /**
+     * Set keep aspect ratio flag
+     *
+     * @param bool $flag Flag
+     * @return GoMage_ProductDesigner_Helper_Image
+     */
+    public function keepAspectRatio($flag)
+    {
+        $this->_keepAspectRatioFlag = $flag;
+        return $this;
+    }
+
     /**
      * Render the image path
      *
@@ -95,6 +125,26 @@ class GoMage_ProductDesigner_Helper_Image extends Mage_Core_Helper_Data
         }
         $this->_cacheFile();
         return $this->_getCachedUrl();
+    }
+
+    /**
+     * Get original file path
+     *
+     * @return string
+     */
+    protected function _getOriginalFilePath()
+    {
+        return $this->_baseDir . $this->_filename;
+    }
+
+    /**
+     * Get cached file path
+     *
+     * @return void
+     */
+    protected function _getCachedFilePath()
+    {
+        return $this->_getCacheDir() . DS . $this->_filename;
     }
 
     /**
@@ -154,71 +204,5 @@ class GoMage_ProductDesigner_Helper_Image extends Mage_Core_Helper_Data
         } catch (Exception $e) {
             Mage::logException($e);
         }
-    }
-
-    /**
-     * Get original file path
-     *
-     * @return string
-     */
-    protected function _getOriginalFilePath()
-    {
-        return $this->_baseDir . $this->_filename;
-    }
-
-    /**
-     * Get cached file url
-     *
-     * @return string
-     */
-    protected function _getCachedUrl()
-    {
-        $path = Mage::getSingleton('gomage_designer/design_config')->getBaseMediaUrl() . DS . 'cache';
-        if ($this->_width || $this->_height) {
-            $path .= "/{$this->_width}_{$this->_height}";
-        }
-        return "{$path}/{$this->_filename}";
-    }
-
-    /**
-     * Get cached file path
-     *
-     * @return void
-     */
-    protected function _getCachedFilePath()
-    {
-        return $this->_getCacheDir() . DS . $this->_filename;
-    }
-
-    /**
-     * Get cache dir
-     *
-     * @return string
-     */
-    protected function _getCacheDir()
-    {
-        $dir = Mage::getSingleton('gomage_designer/design_config')->getBaseMediaPath() . DS . 'cache';
-        if ($this->_width || $this->_height) {
-            $dir .= DS . $this->_width . '_' . $this->_height;
-        }
-        return $dir;
-    }
-
-    public function setWatermarkSize($size)
-    {
-        $this->_watermarkSize = $size;
-        return $this;
-    }
-
-    /**
-     * Set keep aspect ratio flag
-     *
-     * @param bool $flag Flag
-     * @return GoMage_ProductDesigner_Helper_Image
-     */
-    public function keepAspectRatio($flag)
-    {
-        $this->_keepAspectRatioFlag = $flag;
-        return $this;
     }
 }

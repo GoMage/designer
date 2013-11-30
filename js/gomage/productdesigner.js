@@ -1437,7 +1437,8 @@ GoMage.Designer.prototype = {
         Event.on($('cliparts-list'), 'click', '.clipart-image', function(e, elm){
             e.stop();
             var img = e.target || e.srcElement;
-            fabric.Image.fromURL(img.src, function(obj) {
+            var url = decodeURIComponent(img.getAttribute('data-origin-url'));
+            fabric.Image.fromURL(url, function(obj) {
                 obj.set({
 //                    width: 64,  // move to config
 //                    height: 64, // move to config
@@ -2151,7 +2152,8 @@ GoMage.ImageUploader.prototype = {
         Event.on($('uploadedImages'), 'click', '.clipart-image', function(e, elm){
             e.stop();
             var img = e.target || e.srcElement;
-            fabric.Image.fromURL(img.src, function(obj) {
+            var url = decodeURIComponent(img.getAttribute('data-origin-url'));
+            fabric.Image.fromURL(url, function(obj) {
                 obj.set({
 //                    width: 64,  // move to config
 //                    height: 64, // move to config

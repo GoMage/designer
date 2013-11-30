@@ -2,5 +2,9 @@
 $cliparts = $this->getCliparts();
 ?>
 <?php foreach($cliparts as $_clipart): ?>
-    <img src="<?php echo $this->getClipartUrl($_clipart->getImage()); ?>" class="clipart-image" alt="<?php echo $_clipart->getLabel()?>" title="<?php echo $_clipart->getLabel()?>"/>
+    <img src="<?php echo $this->getClipartUrl($_clipart->getImage()); ?>"
+         data-origin-url="<?php echo $this->getOriginClipartUrl($_clipart->getImage()); ?>"
+         class="clipart-image"
+         alt="<?php echo $_clipart->getLabel()?>"
+         title="<?php echo $_clipart->getLabel()?>"/>
 <?php endforeach; ?>

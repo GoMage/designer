@@ -115,7 +115,7 @@ class GoMage_ProductDesigner_Block_Customer_Designs extends Mage_Catalog_Block_P
      */
     public function getImage($design)
     {
-        return Mage::helper('gomage_designer/image')->init($design->getImage())->resize(135);
+        return Mage::helper('gomage_designer/image_design')->init($design->getImage())->resize(135);
     }
 
     /**
