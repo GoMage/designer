@@ -1222,7 +1222,7 @@ GoMage.ProductDesigner.prototype = {
     observeHistoryChanges: function() {
         Event.observe(document, 'PdChangeHistory', function(e){
             var history = e.history;
-            if (history.undoStack.length > 0 && this.canvasHasLayers(this.currentProd)) {
+            if (history.undoStack.length > 0 && this.canvasesHasLayers()) {
                 this.designChanged[this.currentColor] = true;
                 this.observeGoOut();
             } else {
