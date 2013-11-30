@@ -227,6 +227,7 @@
   }
 .pd-upload-input{
   margin-bottom: 5px;
+  overflow: hidden;
   }
  
 /* Fields
