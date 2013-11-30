@@ -35,9 +35,9 @@
                 </block>
             </block>
         </reference>
-        <reference name="js">
-            <block type="core/template" template="catalog/wysiwyg/js.phtml" name="catalog.wysiwyg.js" />
-        </reference>
+        <!--<reference name="js">-->
+            <!--<block type="core/template" template="catalog/wysiwyg/js.phtml" name="catalog.wysiwyg.js" />-->
+        <!--</reference>-->
     </adminhtml_cliparts_edit>
 
     <adminhtml_fonts_edit>
@@ -49,9 +49,9 @@
                 </block>
             </block>
         </reference>
-        <reference name="js">
-            <block type="core/template" template="catalog/wysiwyg/js.phtml" name="catalog.wysiwyg.js" />
-        </reference>
+        <!--<reference name="js">-->
+            <!--<block type="core/template" template="catalog/wysiwyg/js.phtml" name="catalog.wysiwyg.js" />-->
+        <!--</reference>-->
     </adminhtml_fonts_edit>
 
     <adminhtml_sales_order_view>

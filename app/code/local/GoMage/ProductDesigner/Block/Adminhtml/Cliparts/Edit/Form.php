@@ -58,7 +58,16 @@ class GoMage_ProductDesigner_Block_Adminhtml_Cliparts_Edit_Form extends Mage_Adm
 
     public function getHeader()
     {
-        return Mage::helper('catalog')->__('New Root Category');
+        if ($this->getId()) {
+            return $this->getName();
+        } else {
+            $parentId = (int) $this->getRequest()->getParam('parent');
+            if ($parentId && ($parentId != GoMage_ProductDesigner_Model_Clipart_Category::TREE_ROOT_ID)) {
+                return Mage::helper('catalog')->__('New Subcategory');
+            } else {
+                return Mage::helper('catalog')->__('New Root Category');
+            }
+        }
     }
 
     public function getSaveUrl(array $args = array())

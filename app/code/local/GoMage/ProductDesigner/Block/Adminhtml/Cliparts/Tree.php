@@ -173,7 +173,7 @@ class GoMage_ProductDesigner_Block_Adminhtml_Cliparts_Tree extends Mage_Adminhtm
         $allowMove = $this->_isCategoryMoveable($node);
         $item['allowDrop'] = $node->getLevel() < 2 ? $allowMove : false;
         // disallow drag if it's first level and category is root of a store
-        $item['allowDrag'] = $allowMove && (($node->getLevel()==1 && $rootForStores) ? false : true);
+        $item['allowDrag'] = $allowMove && (($node->getLevel()==1 && ($rootForStores || $node->hasChildren())) ? false : true);
 
         if ((int)$node->getChildrenCount()>0) {
             $item['children'] = array();
@@ -275,17 +275,21 @@ class GoMage_ProductDesigner_Block_Adminhtml_Cliparts_Tree extends Mage_Adminhtm
      */
     public function canAddSubCategory()
     {
-        $options = new Varien_Object(array('is_allow'=>true));
-        Mage::dispatchEvent(
-            'adminhtml_catalog_category_tree_can_add_sub_category',
-            array(
-                'category' => $this->getCategory(),
-                'options'   => $options,
-                'store'    => $this->getStore()->getId()
-            )
-        );
+//        $options = new Varien_Object(array('is_allow'=>true));
+//        Mage::dispatchEvent(
+//            'adminhtml_catalog_category_tree_can_add_sub_category',
+//            array(
+//                'category' => $this->getCategory(),
+//                'options'   => $options,
+//                'store'    => $this->getStore()->getId()
+//            )
+//        );
+        $category = $this->getCategory();
+        if ($category && $category->getId()){
+            return $category->getLevel() < 2;
+        }
 
-        return $options->getIsAllow();
+        return true;
     }
 
     public function getRoot($parentNodeCategory=null, $recursionLevel=3)
@@ -371,7 +375,10 @@ class GoMage_ProductDesigner_Block_Adminhtml_Cliparts_Tree extends Mage_Adminhtm
         }
         return
             '<script type="text/javascript">'
-            . $javascriptVarName . ' = ' . Mage::helper('core')->jsonEncode($categories) . ';'
+            . $javascriptVarName . ' = ' . Mage::helper('core')->jsonEncode($categories) . ';'.
+            ($this->canAddSubCategory()
+                ? '$("add_subcategory_button").show();'
+                : '$("add_subcategory_button").hide();')
             . '</script>';
     }
 }
