@@ -225,7 +225,6 @@ class GoMage_ProductDesigner_Model_Clipart_Category extends Mage_Core_Model_Abst
             throw $e;
         }
         if ($moveComplete) {
-            Mage::dispatchEvent('category_move', $eventParams);
             Mage::getSingleton('index/indexer')->processEntityAction(
                 $this, self::ENTITY, Mage_Index_Model_Event::TYPE_SAVE
             );
