@@ -42,7 +42,7 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
         $modules = (array) Mage::getConfig()->getNode('modules')->children();
         if (isset($modules[self::ADVANCED_NAVIGATION_MODULE_NAME])) {
             $module = $modules[self::ADVANCED_NAVIGATION_MODULE_NAME];
-            return $module->is('active');
+            return $module->is('active') && Mage::getStoreConfigFlag('gomage_navigation/general/mode');
         }
 
         return false;

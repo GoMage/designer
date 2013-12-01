@@ -60,7 +60,7 @@ class GoMage_ProductDesigner_Block_Adminhtml_Config_Form_Renderer_Website extend
         	<input id="'.$idprefix.'_diasbled" type="hidden" disabled="disabled" name="'.$nameprefix.'" />
         	<script type="text/javascript">
         	
-        	function updateGomageNavigationWebsites(){
+        	function updateGomageDesignerWebsites(){
         		
         		$("'.$idprefix.'_diasbled").disabled = "disabled";
         		
@@ -88,11 +88,11 @@ class GoMage_ProductDesigner_Block_Adminhtml_Config_Form_Renderer_Website extend
         	
         	$$(".gomage-designer-available-sites").each(function(e){
         		e.observe("click", function(){
-        			updateGomageNavigationWebsites();
+        			updateGomageDesignerWebsites();
         		});
         	});
         	
-        	updateGomageNavigationWebsites();
+        	updateGomageDesignerWebsites();
         	
         </script>';
     	
