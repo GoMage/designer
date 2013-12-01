@@ -133,6 +133,9 @@
 
      public function loadAttribute(Varien_Event_Observer $event)
      {
+         if (Mage::helper('gomage_designer')->advancedNavigationEnabled()) {
+             return;
+         }
          $attribute = $event->getAttribute();
          $attribute_id = (int) $attribute->getAttributeId();
          $colorAttributeCode = Mage::getStoreConfig('gomage_designer/navigation/color_attribute');

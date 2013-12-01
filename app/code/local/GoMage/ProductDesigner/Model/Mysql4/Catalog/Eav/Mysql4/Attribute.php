@@ -37,8 +37,12 @@
 class GoMage_ProductDesigner_Model_Mysql4_Catalog_Eav_Mysql4_Attribute
     extends Mage_Catalog_Model_Resource_Eav_Mysql4_Attribute
 {
+    protected $_navigationAttributeModel;
     protected function _saveOption(Mage_Core_Model_Abstract $object)
     {
+        if ($navigationResourceModel = $this->_getNavigationAttributeResourceModel()) {
+            $navigationResourceModel->_saveOption($object);
+        }
         $colorAttributeCode = Mage::getStoreConfig('gomage_designer/navigation/color_attribute');
         if (!$colorAttributeCode || $object->getAttributeCode() !=$colorAttributeCode) {
             return parent::_saveOption($object);
@@ -182,5 +186,19 @@ class GoMage_ProductDesigner_Model_Mysql4_Catalog_Eav_Mysql4_Attribute
         $ioObject->mv(Mage::getSingleton('catalog/product_media_config')->getTmpMediaPath($file), $dest);
 
         return $destFile;
+    }
+
+    protected function _getNavigationAttributeResourceModel()
+    {
+        if (is_null($this->_navigationAttributeModel)) {
+            if (Mage::helper('gomage_designer')->advancedNavigationEnabled()
+                && class_exists('GoMage_Navigation_Model_Resource_Eav_Mysql4_Entity_Attribute')) {
+                $this->_navigationAttributeModel = Mage::getModel('gomage_navigation/resource_eav_mysql4_entity_attribute');
+            } else {
+                $this->_navigationAttributeModel = false;
+            }
+        }
+
+        return $this->_navigationAttributeModel;
     }
 }

@@ -37,9 +37,17 @@
 class GoMage_ProductDesigner_Block_Adminhtml_Catalog_Product_Attribute_Edit_Tab_Options
     extends Mage_Adminhtml_Block_Catalog_Product_Attribute_Edit_Tab_Options
 {
+    protected $_navigationBlock;
+
     public function __construct()
     {
         parent::__construct();
+
+        if ($navigationBlock = $this->_getNavigationOptionsBlock()) {
+            $this->setTemplate($navigationBlock->getTemplate());
+            return;
+        }
+
         if (!Mage::helper('gomage_designer')->isEnabled()) {
             return;
         }
@@ -52,6 +60,9 @@ class GoMage_ProductDesigner_Block_Adminhtml_Catalog_Product_Attribute_Edit_Tab_
 
     public function getOptionValues()
     {
+        if ($navigationBlock = $this->_getNavigationOptionsBlock()) {
+            return $navigationBlock->getOptionValues();
+        }
         $values = parent::getOptionValues();
         $colorAttributeCode = Mage::getStoreConfig('gomage_designer/navigation/color_attribute');
         if (!$colorAttributeCode || !($this->getAttributeObject()->getAttributeCode() == $colorAttributeCode)) {
@@ -67,6 +78,27 @@ class GoMage_ProductDesigner_Block_Adminhtml_Catalog_Product_Attribute_Edit_Tab_
         }
 
         return $values;
+    }
 
+    public function getPopupTextValues()
+    {
+        if ($navigationBlock = $this->_getNavigationOptionsBlock()) {
+            return $navigationBlock->getPopupTextValues();
+        }
+    }
+
+    protected function _getNavigationOptionsBlock()
+    {
+        if (is_null($this->_navigationBlock)) {
+            if (!Mage::helper('gomage_designer')->advancedNavigationEnabled()) {
+                $this->_navigationBlock = false;
+            } elseif (class_exists('GoMage_Navigation_Block_Adminhtml_Catalog_Product_Attribute_Edit_Tab_Options')) {
+                $this->_navigationBlock = new GoMage_Navigation_Block_Adminhtml_Catalog_Product_Attribute_Edit_Tab_Options();
+            } else {
+                $this->_navigationBlock = false;
+            }
+        }
+
+        return $this->_navigationBlock;
     }
 }
