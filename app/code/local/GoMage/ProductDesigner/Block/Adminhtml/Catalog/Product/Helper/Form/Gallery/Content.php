@@ -1,5 +1,24 @@
 <?php
+/**
+ * GoMage Product Designer Extension
+ *
+ * @category     Extension
+ * @copyright    Copyright (c) 2013 GoMage (http://www.gomage.com)
+ * @author       GoMage
+ * @license      http://www.gomage.com/license-agreement/  Single domain license
+ * @terms of use http://www.gomage.com/terms-of-use/
+ * @version      Release: 1.0.0
+ * @since        Available since Release 1.0.0
+ */
 
+/**
+ * Media Gallery attribute form content
+ *
+ * @category   GoMage
+ * @package    GoMage_ProductDesigner
+ * @subpackage Block
+ * @author     Roman Bublik <rb@gomage.com>
+ */
 class GoMage_ProductDesigner_Block_Adminhtml_Catalog_Product_Helper_Form_Gallery_Content
     extends Mage_Adminhtml_Block_Catalog_Product_Helper_Form_Gallery_Content
 {
@@ -13,7 +32,7 @@ class GoMage_ProductDesigner_Block_Adminhtml_Catalog_Product_Helper_Form_Gallery
         $_helper = Mage::helper('gomage_designer');
         $allowedProductTypes = $_helper->getAllowedProductTypes();
         if (in_array($product->getTypeId(), $allowedProductTypes) && $_helper->isEnabled()) {
-            $this->setTemplate('gomage/catalog/product/helper/gallery.phtml');
+            $this->setTemplate('gomage/productdesigner/catalog/product/helper/gallery.phtml');
         }
     }
 

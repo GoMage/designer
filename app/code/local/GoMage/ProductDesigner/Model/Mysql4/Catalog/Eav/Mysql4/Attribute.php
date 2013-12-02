@@ -1,33 +1,18 @@
 <?php
 /**
- * GoMage.com extension for Magento
+ * GoMage Product Designer Extension
  *
- * Long description of this file (if any...)
- *
- * NOTICE OF LICENSE
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
- * 
- * DISCLAIMER
- *
- * Do not edit or add to this file if you wish to upgrade
- * the GoMage ProductDesigner module to newer versions in the future.
- * If you wish to customize the GoMage ProductDesigner module for your needs
- * please refer to http://www.magentocommerce.com for more information.
- *
- * @category   GoMage
- * @package    GoMage_ProductDesigner
- * @copyright  Copyright (C) 2013 GoMage.com (http://www.gomage.com)
- * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @category     Extension
+ * @copyright    Copyright (c) 2013 GoMage (http://www.gomage.com)
+ * @author       GoMage
+ * @license      http://www.gomage.com/license-agreement/  Single domain license
+ * @terms of use http://www.gomage.com/terms-of-use/
+ * @version      Release: 1.0.0
+ * @since        Available since Release 1.0.0
  */
 
 /**
- * Short description of the class
- *
- * Long description of the class (if any...)
+ * Product attribute resource model
  *
  * @category   GoMage
  * @package    GoMage_ProductDesigner

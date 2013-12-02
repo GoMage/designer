@@ -1,6 +1,18 @@
 <?php
+/**
+ * GoMage Product Designer Extension
+ *
+ * @category     Extension
+ * @copyright    Copyright (c) 2013 GoMage (http://www.gomage.com)
+ * @author       GoMage
+ * @license      http://www.gomage.com/license-agreement/  Single domain license
+ * @terms of use http://www.gomage.com/terms-of-use/
+ * @version      Release: 1.0.0
+ * @since        Available since Release 1.0.0
+ */
+
 $installer = $this;
-/* @var $installer Mage_Core_Model_Resource_Setup */
+/* @var $installer GoMage_ProductDesigner_Model_Resource_Setup */
 
 $installer->startSetup();
 

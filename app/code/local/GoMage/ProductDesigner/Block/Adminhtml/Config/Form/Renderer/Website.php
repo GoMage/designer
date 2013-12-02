@@ -1,16 +1,24 @@
 <?php
- /**
- * GoMage Advanced Navigation Extension
+/**
+ * GoMage Product Designer Extension
  *
  * @category     Extension
- * @copyright    Copyright (c) 2010-2013 GoMage (http://www.gomage.com)
+ * @copyright    Copyright (c) 2013 GoMage (http://www.gomage.com)
  * @author       GoMage
  * @license      http://www.gomage.com/license-agreement/  Single domain license
- * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 4.0
- * @since        Class available since Release 1.0
+ * @terms of use http://www.gomage.com/terms-of-use/
+ * @version      Release: 1.0.0
+ * @since        Available since Release 1.0.0
  */
- 		
+
+/**
+ * Website element renderer
+ *
+ * @category   GoMage
+ * @package    GoMage_ProductDesigner
+ * @subpackage Block
+ * @author     Roman Bublik <rb@gomage.com>
+ */
 class GoMage_ProductDesigner_Block_Adminhtml_Config_Form_Renderer_Website extends Mage_Adminhtml_Block_System_Config_Form_Field
 {
 

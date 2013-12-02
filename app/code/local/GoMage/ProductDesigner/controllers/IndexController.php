@@ -1,17 +1,23 @@
 <?php
-
 /**
- * GoMage.com
- *
- * GoMage ProductDesigner Extension
+ * GoMage Product Designer Extension
  *
  * @category     Extension
- * @copyright    Copyright (c) 2010-2012 GoMage.com (http://www.gomage.com)
- * @author       GoMage.com
- * @license      http://www.gomage.com/licensing  Single domain license
- * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 1.0
- * @since        Class available since Release 1.0
+ * @copyright    Copyright (c) 2013 GoMage (http://www.gomage.com)
+ * @author       GoMage
+ * @license      http://www.gomage.com/license-agreement/  Single domain license
+ * @terms of use http://www.gomage.com/terms-of-use/
+ * @version      Release: 1.0.0
+ * @since        Available since Release 1.0.0
+ */
+
+/**
+ * Designer controller
+ *
+ * @category   GoMage
+ * @package    GoMage_ProductDesigner
+ * @subpackage controllers
+ * @author     Roman Bublik <rb@gomage.com>
  */
 class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_Action
 {
@@ -202,7 +208,7 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
                     continue;
                 }
 
-                $fileName = substr(sha1(microtime()), 0, 20) . $this->getConvertHelper()->format($file['name']);
+                $fileName = substr(sha1(microtime()), 0, 20) . Mage::helper('gomage_designer')->formatFileName($file['name']);
                 $fileDir = '/' . ($customerId ? $customerId : $sessionId) . '/';
                 $destinationDir = $baseMediaPath . $fileDir;
                 if (!file_exists($destinationDir)) {
@@ -292,11 +298,6 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
     protected function _getCustomerSession()
     {
         return Mage::getSingleton('customer/session');
-    }
-
-    protected function getConvertHelper()
-    {
-        return Mage::helper('gomage_designer/convert');
     }
 
     protected function getSessionId()

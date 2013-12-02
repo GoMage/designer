@@ -1,38 +1,23 @@
 <?php
 /**
- *  extension for Magento
+ * GoMage Product Designer Extension
  *
- * Long description of this file (if any...)
- *
- * NOTICE OF LICENSE
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
- * 
- * DISCLAIMER
- *
- * Do not edit or add to this file if you wish to upgrade
- * the Gomage ProductDesigner module to newer versions in the future.
- * If you wish to customize the Gomage ProductDesigner module for your needs
- * please refer to http://www.magentocommerce.com for more information.
- *
- * @category   Gomage
- * @package    Gomage_ProductDesigner
- * @copyright  Copyright (C) 2013 
- * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @category     Extension
+ * @copyright    Copyright (c) 2013 GoMage (http://www.gomage.com)
+ * @author       GoMage
+ * @license      http://www.gomage.com/license-agreement/  Single domain license
+ * @terms of use http://www.gomage.com/terms-of-use/
+ * @version      Release: 1.0.0
+ * @since        Available since Release 1.0.0
  */
 
 /**
- * Short description of the class
+ * Configurable product collection
  *
- * Long description of the class (if any...)
- *
- * @category   Gomage
- * @package    Gomage_ProductDesigner
+ * @category   GoMage
+ * @package    GoMage_ProductDesigner
  * @subpackage Model
- * @author     
+ * @author     Roman Bublik <rb@gomage.com>
  */
 class Gomage_ProductDesigner_Model_Mysql4_Catalog_Product_Type_Configurable_Collection
     extends Mage_Catalog_Model_Resource_Eav_Mysql4_Product_Type_Configurable_Product_Collection

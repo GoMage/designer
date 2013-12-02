@@ -1,16 +1,23 @@
 <?php
 /**
- * GoMage.com
- *
- * GoMage ProductDesigner Extension
+ * GoMage Product Designer Extension
  *
  * @category     Extension
- * @copyright    Copyright (c) 2010-2012 GoMage.com (http://www.gomage.com)
- * @author       GoMage.com
- * @license      http://www.gomage.com/licensing  Single domain license
- * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 1.0
- * @since        Class available since Release 1.0
+ * @copyright    Copyright (c) 2013 GoMage (http://www.gomage.com)
+ * @author       GoMage
+ * @license      http://www.gomage.com/license-agreement/  Single domain license
+ * @terms of use http://www.gomage.com/terms-of-use/
+ * @version      Release: 1.0.0
+ * @since        Available since Release 1.0.0
+ */
+
+/**
+ * Designer helper
+ *
+ * @category   GoMage
+ * @package    GoMage_ProductDesigner
+ * @subpackage Helper
+ * @author     Roman Bublik <rb@gomage.com>
  */
 class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
 {
@@ -411,6 +418,12 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
         }
 
         return $config;
+    }
+
+    public function formatFileName($file)
+    {
+        $formatResult = Mage::helper('catalog/product_url')->format($file);
+        return preg_replace('#[\s]+#i', '-', $formatResult);
     }
 
     public function canApplyMsrp($product, $visibility = null, $checkAssociatedItems = true)

@@ -1,4 +1,17 @@
 <?xml version="1.0" ?>
+<!--
+/**
+* GoMage Product Designer Extension
+*
+* @category     Extension
+* @copyright    Copyright (c) 2013 GoMage (http://www.gomage.com)
+* @author       GoMage
+* @license      http://www.gomage.com/license-agreement/  Single domain license
+* @terms of use http://www.gomage.com/terms-of-use/
+* @version      Release: 1.0.0
+* @since        Available since Release 1.0.0
+*/
+-->
 <layout>
     <adminhtml_catalog_product_edit>
         <reference name="head">
@@ -49,15 +62,12 @@
                 </block>
             </block>
         </reference>
-        <!--<reference name="js">-->
-            <!--<block type="core/template" template="catalog/wysiwyg/js.phtml" name="catalog.wysiwyg.js" />-->
-        <!--</reference>-->
     </adminhtml_fonts_edit>
 
     <adminhtml_sales_order_view>
         <reference name="order_items">
-            <action method="addColumnRender"><column>name</column><block>gomage_designer/adminhtml_sales_items_column_name</block><template>gomage/sales/items/column/name.phtml</template><type>simple</type></action>
-            <action method="addColumnRender"><column>name</column><block>gomage_designer/adminhtml_sales_items_column_name</block><template>gomage/sales/items/column/name.phtml</template><type>configurable</type></action>
+            <action method="addColumnRender"><column>name</column><block>gomage_designer/adminhtml_sales_items_column_name</block><template>gomage/productdesigner/sales/items/column/name.phtml</template><type>simple</type></action>
+            <action method="addColumnRender"><column>name</column><block>gomage_designer/adminhtml_sales_items_column_name</block><template>gomage/productdesigner/sales/items/column/name.phtml</template><type>configurable</type></action>
         </reference>
     </adminhtml_sales_order_view>
 
