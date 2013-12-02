@@ -221,8 +221,6 @@
                 <price_for_image>0</price_for_image>
                 <show_comment>1</show_comment>
                 <default_tab>design</default_tab>
-                <design_size_width>500</design_size_width>
-                <design_size_height>700</design_size_height>
                 <zoom_size_width>600</zoom_size_width>
                 <zoom_size_height>800</zoom_size_height>
                 <page_title>GoMage Product Designer</page_title>

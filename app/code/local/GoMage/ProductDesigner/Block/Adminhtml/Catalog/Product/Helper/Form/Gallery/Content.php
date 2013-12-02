@@ -141,6 +141,6 @@ class GoMage_ProductDesigner_Block_Adminhtml_Catalog_Product_Helper_Form_Gallery
 
     public function getDesignAreaPopupWidth()
     {
-        return Mage::getStoreConfig('gomage_designer/general/design_size_width');
+        return Mage::helper('gomage_designer')->getDesignWidth();
     }
 }

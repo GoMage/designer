@@ -152,7 +152,7 @@ class GoMage_ProductDesigner_Block_Editor extends Mage_Core_Block_Template
 
     public function getProductImageWidth()
     {
-        return $imageWidth = Mage::getStoreConfig('gomage_designer/general/design_size_width');
+        return $imageWidth = Mage::helper('gomage_designer')->getDesignWidth();
     }
 
     public function getProductOriginalImageMinSizes()

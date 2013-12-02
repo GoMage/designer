@@ -29,9 +29,6 @@ if (!Function.prototype.bind) {
  * Convert first char in string to upper case
  */
 var $ucfirst = function(str) {
-    // +   original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-    // +   bugfixed by: Onno Marsman
-    // +   improved by: Brett Zamir (http://brett-zamir.me)
     str += '';
     var f = str.charAt(0).toUpperCase();
     return f + str.substr(1);
@@ -163,14 +160,12 @@ GoMage.ProductDesigner.prototype = {
         if(img && this.currentProd != img.id) {
             this.containerCanvases[this.currentProd] = this.canvas;
             this.containerLayers[this.currentProd] = this.container.childElements()[0].remove();
-//            this.history.clear();
             this.addDesignArea(img);
             this._toggleControlsButtons();
         }
     },
 
     changeProductColor: function(color){
-//        this.history.clear();
         this.containerCanvases[this.currentProd] = this.canvas;
         this.containerLayers[this.currentProd] = this.container.childElements()[0].remove();
         var product = this.config.product;
@@ -1044,7 +1039,6 @@ GoMage.ProductDesigner.prototype = {
         var widthScale = origImage['dimensions'][0] / dstWidth;
         var heightScale = origImage['dimensions'][1] / dstHeight;
 
-
         obj.set({
             width: Math.round(currentImg.w * widthScale),
             height: Math.round(currentImg.h * heightScale),
@@ -1405,12 +1399,10 @@ GoMage.ProductNavigation.prototype = {
                         window.history.pushState({}, '', '//' + location.host + location.pathname + '?id='+data['id']);
                     }
                 } else if(response.status == 'error') {
-                    // TODO
                     alert('Something went wrong...');
                 }
             }.bind(this),
             onFailure: function() {
-                // TODO
                 alert('Something went wrong...');
             }
         });
@@ -1451,8 +1443,6 @@ GoMage.Designer.prototype = {
             var url = decodeURIComponent(img.getAttribute('data-origin-url'));
             fabric.Image.fromURL(url, function(obj) {
                 obj.set({
-//                    width: 64,  // move to config
-//                    height: 64, // move to config
                     tab: 'design'
                 });
 
@@ -2166,8 +2156,6 @@ GoMage.ImageUploader.prototype = {
             var url = decodeURIComponent(img.getAttribute('data-origin-url'));
             fabric.Image.fromURL(url, function(obj) {
                 obj.set({
-//                    width: 64,  // move to config
-//                    height: 64, // move to config
                     tab: 'upload'
                 });
 
@@ -2605,7 +2593,6 @@ History.prototype = {
     },
 
     clear : function() {
-        // TODO
         this.undoStack = [];
         this.redoStack = [];
     },

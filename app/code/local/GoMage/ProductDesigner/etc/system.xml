@@ -214,36 +214,9 @@
                     <show_in_website>1</show_in_website>
                     <show_in_store>1</show_in_store>
                 </default_tab>
-                <!-- Design Size -->
-                <design_size translate="label comment">
-                    <label>Design Size</label>
-                    <frontend_type>label</frontend_type>
-                    <sort_order>9</sort_order>
-                    <show_in_default>1</show_in_default>
-                    <show_in_website>1</show_in_website>
-                    <show_in_store>1</show_in_store>
-                </design_size>
-                <design_size_width>
-                    <label>Width, px</label>
-                    <frontend_type>text</frontend_type>
-                    <sort_order>10</sort_order>
-                    <show_in_default>1</show_in_default>
-                    <show_in_website>1</show_in_website>
-                    <show_in_store>1</show_in_store>
-                    <validate>validate-number</validate>
-                </design_size_width>
-                <design_size_height>
-                    <label>Height, px</label>
-                    <frontend_type>text</frontend_type>
-                    <sort_order>11</sort_order>
-                    <show_in_default>1</show_in_default>
-                    <show_in_website>1</show_in_website>
-                    <show_in_store>1</show_in_store>
-                    <validate>validate-number</validate>
-                </design_size_height>
                 <!-- Zoom popup size -->
                 <zoom_size translate="label comment">
-                    <label>Zoom popup size</label>
+                    <label>Preview popup size</label>
                     <frontend_type>label</frontend_type>
                     <sort_order>12</sort_order>
                     <show_in_default>1</show_in_default>

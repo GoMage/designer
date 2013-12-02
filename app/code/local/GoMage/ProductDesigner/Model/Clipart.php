@@ -110,12 +110,12 @@ class GoMage_ProductDesigner_Model_Clipart extends Mage_Core_Model_Abstract {
 
     public function getMaxClipartHeight()
     {
-        return Mage::getStoreConfig('gomage_designer/general/design_size_height') / 2;
+        return Mage::helper('gomage_designer')->getDesignHeight() / 2;
     }
 
     public function getMaxClipartWidth()
     {
-        return Mage::getStoreConfig('gomage_designer/general/design_size_width') / 2;
+        return Mage::helper('gomage_designer')->getDesignWidth() / 2;
     }
 
     public function resizeClipart($file)

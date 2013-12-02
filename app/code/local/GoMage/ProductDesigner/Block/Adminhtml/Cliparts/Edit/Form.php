@@ -26,7 +26,6 @@ class GoMage_ProductDesigner_Block_Adminhtml_Cliparts_Edit_Form extends Mage_Adm
     protected function _prepareLayout()
     {
         $categoryId = $this->getId();
-        Mage::log($categoryId);
         // Save button
         $this->setChild('save_button',
             $this->getLayout()->createBlock('adminhtml/widget_button')

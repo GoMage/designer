@@ -201,18 +201,29 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
         return Mage::getSingleton('customer/session');
     }
 
+    public function getDesignWidth()
+    {
+        return GoMage_ProductDesigner_Model_Design::DESIGN_SIZE_WIDTH;
+    }
+
+    public function getDesignHeight()
+    {
+        return GoMage_ProductDesigner_Model_Design::DESIGN_SIZE_HEIGHT;
+    }
+
     /**
      * Return Image Url
      *
      * @param Mage_Catalog_Model_Product $product Product
      * @param Varien_Object              $image   Image
+     * @param array                      $size    Size
      * @return string
      */
     public function getDesignImageUrl(Mage_Catalog_Model_Product $product, $image, $size = array())
     {
         if (empty($size)) {
-            $imageWidth = Mage::getStoreConfig('gomage_designer/general/design_size_width');
-            $imageHeight = Mage::getStoreConfig('gomage_designer/general/design_size_height');
+            $imageWidth = Mage::helper('gomage_designer')->getDesignWidth();
+            $imageHeight = Mage::helper('gomage_designer')->getDesignHeight();
         } else {
             list($imageWidth, $imageHeight) = $size;
         }
