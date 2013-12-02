@@ -64,6 +64,8 @@
   }
 .pd_bottom_panel{
   text-align: center;
+  margin: 10px 0;
+  max-width: 100%;
   }
   .pd_bottom_panel .button{
     margin-bottom: 5px;
@@ -246,10 +248,12 @@
   .product-designer .form-list textarea{
     resize: vertical;
     }
-.product-designer .form-list .field{
+.product-designer .form-list .fields .field{
   width: 48%;
+  float: left;
+  clear: none;
   }
-  .product-designer .form-list .field + .field{
+  .product-designer .form-list .fields .field + .field{
     margin-left: 4%;
     }
 .product-designer .control label{
