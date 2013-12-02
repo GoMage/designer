@@ -57,7 +57,7 @@ class GoMage_ProductDesigner_Block_Designer_Design_Cliparts extends Mage_Core_Bl
      */
     public function getClipartUrl($image)
     {
-        $url = Mage::helper('gomage_designer/image_cliparts')->init($image)->resize(64, 64)->__toString();
+        $url = Mage::helper('gomage_designer/image_cliparts')->init($image)->resize(60, 60)->__toString();
         return $url;
     }
 

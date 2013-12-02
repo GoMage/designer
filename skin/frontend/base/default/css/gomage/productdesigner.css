@@ -152,6 +152,8 @@
 /* Tab design */
 .cliparts-list{
   margin: 10px 0;
+  overflow: auto;
+  max-height: 300px;
   }
   
 .products-designer-grid .display-product{
@@ -333,8 +335,8 @@
     margin: auto;
 }
 .clipart-image {
-    width: 64px;
-    height: 64px;
+    width: 60px;
+    height: 60px;
     cursor: pointer;
 }
 
