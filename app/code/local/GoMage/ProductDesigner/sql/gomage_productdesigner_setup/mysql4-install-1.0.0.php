@@ -250,8 +250,15 @@ try {
         'visible_on_front'  => false,
         'unique'            => false,
         'apply_to'          => 'simple,configurable',
-        'group'             => 'General'
+        'group'             => 'General',
+        'is_configurable'   => 0
     ));
+
+    $this->updateAttribute(Mage_Catalog_Model_Product::ENTITY,
+        'enable_product_designer',
+        'is_configurable',
+        0
+    );
 
     /* Add Color field to product image */
     $installer->getConnection()->addColumn(
