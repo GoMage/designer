@@ -96,7 +96,7 @@ class GoMage_ProductDesigner_Block_Adminhtml_Design_View extends Mage_Adminhtml_
      */
     public function getImage($image, $size)
     {
-        return Mage::helper('gomage_designer/image_design_design')->init($image)->resize($size);
+        return Mage::helper('gomage_designer/image_design')->init($image)->resize($size);
     }
 
     /**
