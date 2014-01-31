@@ -17,7 +17,7 @@ $defaultFonts = $this->getDefaultFonts();
 $fonts = $this->getFonts();
 $sizes = $this->getFontSizes();
 ?>
-<style type="text/css" scoped="scoped">
+<style type="text/css">
 <?php foreach($fonts as $font):?>
     @font-face {
         font-family: <?php echo $this->getFontName($font);?>;

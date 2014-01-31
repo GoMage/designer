@@ -229,7 +229,7 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
         }
 
         $imageFile = is_object($image) ? $image->getFile() : $image['file'];
-        $url = Mage::helper('catalog/image')->init($product, 'base_image', $imageFile)
+        $url = Mage::helper('catalog/image')->init($product, 'base_image', $imageFile)->keepFrame(false)
             ->resize($imageWidth, $imageHeight)->__toString();
 
         return $url;
@@ -246,7 +246,7 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
             $width = $imageObj->getOriginalWidth();
             $height = $imageObj->getOriginalHeight();
             $dimensions = array();
-            if ($width < $minWidth || $height < $minHeight) {
+            if ($width < $minWidth && $height < $minHeight) {
                 $dimensions[0] = $minWidth;
                 $dimensions[1] = $minHeight;
             } else {

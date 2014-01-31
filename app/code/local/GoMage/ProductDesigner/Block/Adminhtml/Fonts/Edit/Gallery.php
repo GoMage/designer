@@ -41,8 +41,8 @@ class GoMage_ProductDesigner_Block_Adminhtml_Fonts_Edit_Gallery
             ->setFileField('image')
             ->setFilters(array(
                 'images' => array(
-                    'label' => Mage::helper('adminhtml')->__('Fonts (.ttf, .otf)'),
-                    'files' => array('*.ttf', '*.otf')
+                    'label' => Mage::helper('adminhtml')->__('Fonts (.ttf, .otf, .woff, .eot)'),
+                    'files' => array('*.ttf', '*.otf', '*.woff', '*.eot')
                 )
             ));
 
