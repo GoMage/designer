@@ -11,14 +11,6 @@
  * @since        Available since Release 1.0.0
  */
 
-/**
- * Cart configurable item renderer
- *
- * @category   GoMage
- * @package    GoMage_ProductDesigner
- * @subpackage Block
- * @author     Roman Bublik <rb@gomage.com>
- */
 class GoMage_ProductDesigner_Block_Checkout_Cart_Item_Renderer_Configurable
     extends Mage_Checkout_Block_Cart_Item_Renderer_Configurable
 {

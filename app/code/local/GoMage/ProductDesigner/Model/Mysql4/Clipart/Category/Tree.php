@@ -11,14 +11,6 @@
  * @since        Available since Release 1.0.0
  */
 
-/**
- * Clipart category tree
- *
- * @category   GoMage
- * @package    GoMage_ProductDesigner
- * @subpackage Model
- * @author     Roman Bublik <rb@gomage.com>
- */
 class GoMage_ProductDesigner_Model_Mysql4_Clipart_Category_Tree
     extends Mage_Catalog_Model_Resource_Eav_Mysql4_Category_Tree
 {

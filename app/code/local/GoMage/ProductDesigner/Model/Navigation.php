@@ -11,14 +11,6 @@
  * @since        Available since Release 1.0.0
  */
 
-/**
- * Designer navigation model
- *
- * @category   GoMage
- * @package    GoMage_ProductDesigner
- * @subpackage Model
- * @author     Roman Bublik <rb@gomage.com>
- */
 class GoMage_ProductDesigner_Model_Navigation extends Mage_Core_Model_Abstract
 {
     protected $_collection = null;

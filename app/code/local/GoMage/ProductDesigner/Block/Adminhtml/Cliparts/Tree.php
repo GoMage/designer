@@ -11,14 +11,6 @@
  * @since        Available since Release 1.0.0
  */
 
-/**
- * Cliparts tree block
- *
- * @category   GoMage
- * @package    GoMage_ProductDesigner
- * @subpackage Block
- * @author     Roman Bublik <rb@gomage.com>
- */
 class GoMage_ProductDesigner_Block_Adminhtml_Cliparts_Tree extends Mage_Adminhtml_Block_Catalog_Category_Abstract
 {
 

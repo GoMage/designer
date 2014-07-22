@@ -11,15 +11,6 @@
  * @since        Available since Release 1.0.0
  */
 
-/**
- * Product attribute options tab block
- *
- *
- * @category   GoMage
- * @package    GoMage_ProductDesigner
- * @subpackage Block
- * @author     Roman Bublik <rb@gomage.com>
- */
 class GoMage_ProductDesigner_Block_Adminhtml_Catalog_Product_Attribute_Edit_Tab_Options
     extends Mage_Adminhtml_Block_Catalog_Product_Attribute_Edit_Tab_Options
 {

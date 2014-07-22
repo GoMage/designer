@@ -11,14 +11,6 @@
  * @since        Available since Release 1.0.0
  */
 
-/**
- * File uploader model
- *
- * @category   GoMage
- * @package    GoMage_ProductDesigner
- * @subpackage Model
- * @author     Roman Bublik <rb@gomage.com>
- */
 class GoMage_ProductDesigner_Model_File_Uploader extends Mage_Core_Model_File_Uploader {
     public function getFile()
     {

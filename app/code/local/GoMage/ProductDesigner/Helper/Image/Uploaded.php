@@ -11,14 +11,6 @@
  * @since        Available since Release 1.0.0
  */
 
-/**
- * Designer uploaded image helper
- *
- * @category   GoMage
- * @package    GoMage_ProductDesigner
- * @subpackage Helper
- * @author     Roman Bublik <rb@gomage.com>
- */
 class GoMage_ProductDesigner_Helper_Image_Uploaded extends GoMage_ProductDesigner_Helper_Image_Abstract
 {
     /**

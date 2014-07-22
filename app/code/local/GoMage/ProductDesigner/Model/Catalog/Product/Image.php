@@ -11,14 +11,6 @@
  * @since        Available since Release 1.0.0
  */
 
-/**
- * Catalog product image model
- *
- * @category   GoMage
- * @package    GoMage_ProductDesigner
- * @subpackage Model
- * @author     Roman Bublik <rb@gomage.com>
- */
 class GoMage_ProductDesigner_Model_Catalog_Product_Image extends Mage_Catalog_Model_Product_Image
 {
     public function setBaseFile($file)

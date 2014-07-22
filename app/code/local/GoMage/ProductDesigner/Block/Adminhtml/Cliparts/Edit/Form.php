@@ -11,14 +11,6 @@
  * @since        Available since Release 1.0.0
  */
 
-/**
- * Cliparts form block
- *
- * @category   GoMage
- * @package    GoMage_ProductDesigner
- * @subpackage Block
- * @author     Roman Bublik <rb@gomage.com>
- */
 class GoMage_ProductDesigner_Block_Adminhtml_Cliparts_Edit_Form extends Mage_Adminhtml_Block_Widget_Form {
 
     protected $defaultCategory;

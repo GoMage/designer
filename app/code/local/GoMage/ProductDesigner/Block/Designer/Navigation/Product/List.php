@@ -11,14 +11,6 @@
  * @since        Available since Release 1.0.0
  */
 
-/**
- * Designer navigation product list
- *
- * @category   GoMage
- * @package    GoMage_ProductDesigner
- * @subpackage Block
- * @author     Roman Bublik <rb@gomage.com>
- */
 class GoMage_ProductDesigner_Block_Designer_Navigation_Product_List extends Mage_Catalog_Block_Product_List
 {
     protected $_productCollection;

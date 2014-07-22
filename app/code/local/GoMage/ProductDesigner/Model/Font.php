@@ -11,14 +11,6 @@
  * @since        Available since Release 1.0.0
  */
 
-/**
- * Font Model
- *
- * @category   GoMage
- * @package    GoMage_ProductDesigner
- * @subpackage Model
- * @author     Roman Bublik <rb@gomage.com>
- */
 class GoMage_ProductDesigner_Model_Font extends Mage_Core_Model_Abstract
 {
     protected function _construct()

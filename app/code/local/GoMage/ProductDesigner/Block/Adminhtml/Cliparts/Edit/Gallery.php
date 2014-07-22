@@ -11,14 +11,6 @@
  * @since        Available since Release 1.0.0
  */
 
-/**
- * Cliparts gallery block
- *
- * @category   GoMage
- * @package    GoMage_ProductDesigner
- * @subpackage Block
- * @author     Roman Bublik <rb@gomage.com>
- */
 class GoMage_ProductDesigner_Block_Adminhtml_Cliparts_Edit_Gallery
     extends Mage_Adminhtml_Block_Catalog_Product_Helper_Form_Gallery_Content
 {

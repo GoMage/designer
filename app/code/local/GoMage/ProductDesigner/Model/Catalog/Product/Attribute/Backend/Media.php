@@ -11,14 +11,6 @@
  * @since        Available since Release 1.0.0
  */
 
-/**
- * Backend product media attribute model
- *
- * @category   GoMage
- * @package    GoMage_ProductDesigner
- * @subpackage Model
- * @author     Roman Bublik <rb@gomage.com>
- */
 class GoMage_ProductDesigner_Model_Catalog_Product_Attribute_Backend_Media
     extends Mage_Catalog_Model_Product_Attribute_Backend_Media
 {

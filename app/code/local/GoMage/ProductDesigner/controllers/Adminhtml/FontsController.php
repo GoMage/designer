@@ -11,14 +11,6 @@
  * @since        Available since Release 1.0.0
  */
 
-/**
- * Admin font controller
- *
- * @category   GoMage
- * @package    GoMage_ProductDesigner
- * @subpackage controllers
- * @author     Roman Bublik <rb@gomage.com>
- */
 class GoMage_ProductDesigner_Adminhtml_FontsController extends Mage_Adminhtml_Controller_Action
 {
     public function indexAction()

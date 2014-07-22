@@ -11,14 +11,6 @@
  * @since        Available since Release 1.0.0
  */
 
-/**
- * Designer image helper abstract
- *
- * @category   GoMage
- * @package    GoMage_ProductDesigner
- * @subpackage Helper
- * @author     Roman Bublik <rb@gomage.com>
- */
 abstract class GoMage_ProductDesigner_Helper_Image_Abstract extends Mage_Core_Helper_Data
 {
     /**

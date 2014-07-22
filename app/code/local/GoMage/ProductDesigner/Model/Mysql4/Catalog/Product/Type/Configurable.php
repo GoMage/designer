@@ -11,14 +11,6 @@
  * @since        Available since Release 1.0.0
  */
 
-/**
- * Catalog product configurable resource model
- *
- * @category   GoMage
- * @package    GoMage_ProductDesigner
- * @subpackage Model
- * @author     Roman Bublik <rb@gomage.com>
- */
 class GoMage_ProductDesigner_Model_Mysql4_Catalog_Product_Type_Configurable
     extends Mage_Catalog_Model_Resource_Eav_Mysql4_Product_Type_Configurable
 {

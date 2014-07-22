@@ -11,14 +11,6 @@
  * @since        Available since Release 1.0.0
  */
 
-/**
- * Catalog product model
- *
- * @category   GoMage
- * @package    GoMage_ProductDesigner
- * @subpackage Model
- * @author     Roman Bublik <rb@gomage.com>
- */
 class GoMage_ProductDesigner_Model_Catalog_Product extends Mage_Catalog_Model_Product
 {
     const GALLERY_ATTRIBUTE_CODE = 'media_gallery';

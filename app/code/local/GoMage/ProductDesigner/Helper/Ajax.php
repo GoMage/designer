@@ -11,14 +11,6 @@
  * @since        Available since Release 1.0.0
  */
 
-/**
- * Ajax helper
- *
- * @category   GoMage
- * @package    GoMage_ProductDesigner
- * @subpackage Helper
- * @author     Roman Bublik <rb@gomage.com>
- */
 class GoMage_ProductDesigner_Helper_Ajax extends Mage_Core_Helper_Data
 {
     public function sendResponse(GoMage_ProductDesigner_Model_Ajax_Response $response)

@@ -11,15 +11,6 @@
  * @since        Available since Release 1.0.0
  */
 
-/**
- * Catalog product list block
- * Add design buttons to page
- *
- * @category   GoMage
- * @package    GoMage_ProductDesigner
- * @subpackage Block
- * @author     Roman Bublik <rb@gomage.com>
- */
 class GoMage_ProductDesigner_Block_Catalog_Product_List extends Mage_Catalog_Block_Product_List
 {
     public function getProductButtons()

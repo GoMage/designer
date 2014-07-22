@@ -11,14 +11,6 @@
  * @since        Available since Release 1.0.0
  */
 
-/**
- * Designer controller
- *
- * @category   GoMage
- * @package    GoMage_ProductDesigner
- * @subpackage controllers
- * @author     Roman Bublik <rb@gomage.com>
- */
 class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_Action
 {
     public function dispatch($action)

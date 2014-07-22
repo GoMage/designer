@@ -11,15 +11,6 @@
  * @since        Available since Release 1.0.0
  */
 
-/**
- * Html Head block
- * Add files to head if module enabled
- *
- * @category   GoMage
- * @package    GoMage_ProductDesigner
- * @subpackage Block
- * @author     Roman Bublik <rb@gomage.com>
- */
 class GoMage_ProductDesigner_Block_Page_Html_Head extends Mage_Core_Block_Template
 {
     protected function _prepareLayout()

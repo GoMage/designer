@@ -11,14 +11,6 @@
  * @since        Available since Release 1.0.0
  */
 
-/**
- * Abstract media config
- *
- * @category   GoMage
- * @package    GoMage_ProductDesigner
- * @subpackage Model
- * @author     Roman Bublik <rb@gomage.com>
- */
 abstract class GoMage_ProductDesigner_Model_Config_Abstract
 {
     abstract public function getBaseMediaPathAddition();
