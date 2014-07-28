@@ -1,4 +1,5 @@
 <?php
+
 /**
  * GoMage Product Designer Extension
  *
@@ -10,22 +11,22 @@
  * @version      Release: 1.0.0
  * @since        Available since Release 1.0.0
  */
-
-class GoMage_ProductDesigner_Model_Clipart extends Mage_Core_Model_Abstract {
+class GoMage_ProductDesigner_Model_Clipart extends Mage_Core_Model_Abstract
+{
     /**
      * Entity code.
      * Can be used as part of method name for entity processing
      */
-    const ENTITY                = 'clipart_image';
+    const ENTITY = 'clipart_image';
 
-    const TREE_ROOT_ID          = 1;
+    const TREE_ROOT_ID = 1;
 
-    const CACHE_TAG             = 'designer_clipart';
+    const CACHE_TAG = 'designer_clipart';
 
     /**
      * Model cache tag for clear cache in after save and after delete
      */
-    protected $_cacheTag        = self::CACHE_TAG;
+    protected $_cacheTag = self::CACHE_TAG;
 
     protected $defaultCategory;
 
@@ -72,7 +73,7 @@ class GoMage_ProductDesigner_Model_Clipart extends Mage_Core_Model_Abstract {
         $expImagePath = explode('/', $imagePath);
         array_pop($expImagePath);
         $imagePath = implode('/', $expImagePath);
-        if(strpos($imagePath, $this->getConfig()->getBaseMediaPath()) === false) {
+        if (strpos($imagePath, $this->getConfig()->getBaseMediaPath()) === false) {
             $imagePath = $this->getConfig()->getBaseMediaPath() . $imagePath;
         }
 
@@ -92,7 +93,7 @@ class GoMage_ProductDesigner_Model_Clipart extends Mage_Core_Model_Abstract {
     public function getCliparts()
     {
         if (is_null($this->_cliparts)) {
-            $collection = $this->getCollection()->addFieldToFilter('disabled', 0)
+            $collection      = $this->getCollection()->addFieldToFilter('disabled', 0)
                 ->setOrder('main_table.position', 'asc');
             $this->_cliparts = $collection;
         }
@@ -114,7 +115,8 @@ class GoMage_ProductDesigner_Model_Clipart extends Mage_Core_Model_Abstract {
     {
         $image = new Varien_Image($file);
         if ($image->getOriginalHeight() > $this->getMaxClipartHeight() ||
-            $image->getOriginalWidth() > $this->getMaxClipartWidth()) {
+            $image->getOriginalWidth() > $this->getMaxClipartWidth()
+        ) {
             $image->keepFrame(false);
             $image->keepTransparency(true);
             if ($image->getOriginalWidth() > $this->getMaxClipartWidth()) {

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * GoMage Product Designer Extension
  *
@@ -10,7 +11,6 @@
  * @version      Release: 1.0.0
  * @since        Available since Release 1.0.0
  */
-
 class GoMage_ProductDesigner_Helper_Ajax extends Mage_Core_Helper_Data
 {
     public function sendResponse(GoMage_ProductDesigner_Model_Ajax_Response $response)

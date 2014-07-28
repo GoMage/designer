@@ -1,4 +1,5 @@
 <?php
+
 /**
  * GoMage Product Designer Extension
  *
@@ -10,7 +11,6 @@
  * @version      Release: 1.0.0
  * @since        Available since Release 1.0.0
  */
-
 class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
 {
     const ADVANCED_NAVIGATION_MODULE_NAME = 'GoMage_Navigation';
@@ -38,7 +38,7 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function advancedNavigationEnabled()
     {
-        $modules = (array) Mage::getConfig()->getNode('modules')->children();
+        $modules = (array)Mage::getConfig()->getNode('modules')->children();
         if (isset($modules[self::ADVANCED_NAVIGATION_MODULE_NAME])) {
             $module = $modules[self::ADVANCED_NAVIGATION_MODULE_NAME];
             return $module->is('active') && Mage::getStoreConfig('gomage_navigation/general/mode');
@@ -49,7 +49,7 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function isEnterpriseEdition()
     {
-        $modules = (array) Mage::getConfig()->getNode('modules')->children();
+        $modules = (array)Mage::getConfig()->getNode('modules')->children();
         return isset($modules['Enterprise_TargetRule']);
     }
 
@@ -85,7 +85,7 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
     public function hasColorAttribute()
     {
         $attributeCode = Mage::getStoreConfig('gomage_designer/navigation/color_attribute');
-        $attribute = Mage::getSingleton('eav/config')
+        $attribute     = Mage::getSingleton('eav/config')
             ->getAttribute(Mage_Catalog_Model_Product::ENTITY, $attributeCode);
         return $attribute->getId();
     }
@@ -94,7 +94,7 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
      * Return Image Settings
      *
      * @param Mage_Catalog_Model_Product $product Product
-     * @param int                        $imageId Image Id
+     * @param int $imageId Image Id
      * @return boolean|array
      */
     public function getImageSettings(Mage_Catalog_Model_Product $product, $imageId)
@@ -116,20 +116,20 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
     {
         if (!$this->_productSettings) {
             $settings = array();
-            $images = $product->getMediaGallery('images');
+            $images   = $product->getMediaGallery('images');
             foreach ($images as $image) {
                 $designArea = Mage::helper('core')->jsonDecode($image['design_area']);
-                $imageId = $image['value_id'];
+                $imageId    = $image['value_id'];
                 if ($designArea && !empty($designArea)) {
-                    $imageUrl = $this->getDesignImageUrl($product, $image);
+                    $imageUrl   = $this->getDesignImageUrl($product, $image);
                     $dimensions = $this->getImageDimensions($imageUrl);
 
                     $baseUrl = Mage::getBaseUrl('media');
                     $baseDir = Mage::getBaseDir('media') . DS;
 
-                    $designArea['path'] = str_replace($baseUrl, $baseDir, $imageUrl);
-                    $designArea['dimensions'] = array(
-                        'width' => $dimensions[0],
+                    $designArea['path']           = str_replace($baseUrl, $baseDir, $imageUrl);
+                    $designArea['dimensions']     = array(
+                        'width'  => $dimensions[0],
                         'height' => $dimensions[1]
                     );
                     $designArea['original_image'] = $this->getOriginalImage($product, $image);
@@ -149,7 +149,7 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
     public function jsonDecode($string)
     {
         $settings = Mage::helper('core')->jsonDecode($string);
-        $tmp = array();
+        $tmp      = array();
         foreach ($settings as $i => $v) {
             $tmp[$i] = (array)$v;
             if (!isset($tmp[$i]['s'])) {
@@ -162,12 +162,12 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function getImageDimensions($imagePath)
     {
-        $dirImg = Mage::getBaseDir().str_replace("/", DS, strstr($imagePath, '/media'));
+        $dirImg = Mage::getBaseDir() . str_replace("/", DS, strstr($imagePath, '/media'));
 
         if (file_exists($dirImg)) {
             $imageObj = new Varien_Image($dirImg);
-            $width = $imageObj->getOriginalWidth();
-            $height = $imageObj->getOriginalHeight();
+            $width    = $imageObj->getOriginalWidth();
+            $height   = $imageObj->getOriginalHeight();
             return array($width, $height);
         }
 
@@ -177,8 +177,8 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
     public function prepareDesignerSessionId()
     {
         $customerSession = $this->_getCustomerSession();
-        if(!$customerSession->getDesignerSessionId()) {
-            $customerSession->setDesignerSessionId(sha1(rand(0,1000).microtime(true)));
+        if (!$customerSession->getDesignerSessionId()) {
+            $customerSession->setDesignerSessionId(sha1(rand(0, 1000) . microtime(true)));
         }
     }
 
@@ -207,21 +207,21 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
      * Return Image Url
      *
      * @param Mage_Catalog_Model_Product $product Product
-     * @param Varien_Object              $image   Image
-     * @param array                      $size    Size
+     * @param Varien_Object $image Image
+     * @param array $size Size
      * @return string
      */
     public function getDesignImageUrl(Mage_Catalog_Model_Product $product, $image, $size = array())
     {
         if (empty($size)) {
-            $imageWidth = Mage::helper('gomage_designer')->getDesignWidth();
+            $imageWidth  = Mage::helper('gomage_designer')->getDesignWidth();
             $imageHeight = Mage::helper('gomage_designer')->getDesignHeight();
         } else {
             list($imageWidth, $imageHeight) = $size;
         }
 
         $imageFile = is_object($image) ? $image->getFile() : $image['file'];
-        $url = Mage::helper('catalog/image')->init($product, 'base_image', $imageFile)->keepFrame(false)
+        $url       = Mage::helper('catalog/image')->init($product, 'base_image', $imageFile)->keepFrame(false)
             ->resize($imageWidth, $imageHeight)->__toString();
 
         return $url;
@@ -231,12 +231,12 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
     {
         $imageFile = is_object($image) ? $image->getFile() : $image['file'];
         $imagePath = $product->getMediaConfig()->getMediaPath($imageFile);
-        $minWidth = Mage::getStoreConfig('gomage_designer/general/zoom_size_width');
+        $minWidth  = Mage::getStoreConfig('gomage_designer/general/zoom_size_width');
         $minHeight = Mage::getStoreConfig('gomage_designer/general/zoom_size_height');
         if (file_exists($imagePath)) {
-            $imageObj = new Varien_Image($imagePath);
-            $width = $imageObj->getOriginalWidth();
-            $height = $imageObj->getOriginalHeight();
+            $imageObj   = new Varien_Image($imagePath);
+            $width      = $imageObj->getOriginalWidth();
+            $height     = $imageObj->getOriginalHeight();
             $dimensions = array();
             if ($width < $minWidth && $height < $minHeight) {
                 $dimensions[0] = $minWidth;
@@ -246,7 +246,7 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
                 $dimensions[1] = $height;
             }
             return array(
-                'url' => $this->getDesignImageUrl($product, $image, $dimensions),
+                'url'        => $this->getDesignImageUrl($product, $image, $dimensions),
                 'dimensions' => $dimensions
             );
         }
@@ -269,20 +269,20 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
                 return $editorConfig;
             }
 
-            $images = $product->getMediaGallery('images');
+            $images             = $product->getMediaGallery('images');
             $colorAttributeCode = Mage::getStoreConfig('gomage_designer/navigation/color_attribute');
-            $defaultColor = null;
+            $defaultColor       = null;
             foreach ($images as $image) {
-                $id = $image['value_id'];
+                $id       = $image['value_id'];
                 $settings = Mage::helper('core')->jsonDecode($image['design_area']);
                 if (!$settings || empty($settings)) {
                     continue;
                 }
-                $imageUrl = $this->getDesignImageUrl($product, $image);
-                $conf = $settings;
-                $conf['id'] = $id;
-                $conf['u'] = $imageUrl;
-                $conf['d'] = $this->getImageDimensions($imageUrl);
+                $imageUrl           = $this->getDesignImageUrl($product, $image);
+                $conf               = $settings;
+                $conf['id']         = $id;
+                $conf['u']          = $imageUrl;
+                $conf['d']          = $this->getImageDimensions($imageUrl);
                 $conf['orig_image'] = $this->getOriginalImage($product, $image);
 
                 if ($product->getTypeId() == Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE) {
@@ -295,15 +295,15 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
                         }
                         $editorConfig['images'][$image['color']][$id] = $conf;
                     } else {
-                        $defaultColor = $product->getData($colorAttributeCode) ?:'none_color';
+                        $defaultColor                               = $product->getData($colorAttributeCode) ? : 'none_color';
                         $editorConfig['images'][$defaultColor][$id] = $conf;
                     }
                 } else {
-                    $defaultColor = 'none_color';
+                    $defaultColor                               = 'none_color';
                     $editorConfig['images'][$defaultColor][$id] = $conf;
                 }
                 $editorConfig['default_color'] = $defaultColor;
-                $editorConfig['url'] = $product->getProductUrl();
+                $editorConfig['url']           = $product->getProductUrl();
             }
 
             $this->_editorConfig = $editorConfig;
@@ -321,13 +321,13 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
     public function saveProductDesignedImages()
     {
         $product = $this->initializeProduct();
-        $images = Mage::app()->getRequest()->getParam('images');
+        $images  = Mage::app()->getRequest()->getParam('images');
         if ($product->getId() && $images && !empty($images)) {
             $design = Mage::getModel('gomage_designer/design')->saveDesign($product, $this->_getRequest()->getParams());
             return $design;
-        } elseif(!$product->getId()) {
+        } elseif (!$product->getId()) {
             throw new Exception(Mage::helper('gomage_designer')->__('Product is not defined'));
-        } elseif(!$images || empty($images)) {
+        } elseif (!$images || empty($images)) {
             throw new Exception(Mage::helper('gomage_designer')->__('Designed images are empty'));
         }
     }
@@ -343,7 +343,7 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
         if ($product) {
             return $product;
         }
-        $request = Mage::app()->getRequest();
+        $request   = Mage::app()->getRequest();
         $productId = $request->getParam("id", false);
 
         $product = Mage::getModel('catalog/product');
@@ -362,7 +362,7 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function getProductPriceConfig()
     {
-        $config = array();
+        $config   = array();
         $_request = Mage::getSingleton('tax/calculation')->getRateRequest(false, false, false);
         /* @var $product Mage_Catalog_Model_Product */
         $product = $this->initializeProduct();
@@ -373,17 +373,18 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
         $_request->setProductClassId($product->getTaxClassId());
         $currentTax = Mage::getSingleton('tax/calculation')->getRate($_request);
 
-        $_regularPrice = $product->getPrice();
-        $_finalPrice = $product->getFinalPrice();
-        $_priceInclTax = Mage::helper('tax')->getPrice($product, $_finalPrice, true);
-        $_priceExclTax = Mage::helper('tax')->getPrice($product, $_finalPrice);
-        $_tierPrices = array();
+        $_regularPrice      = $product->getPrice();
+        $_finalPrice        = $product->getFinalPrice();
+        $_priceInclTax      = Mage::helper('tax')->getPrice($product, $_finalPrice, true);
+        $_priceExclTax      = Mage::helper('tax')->getPrice($product, $_finalPrice);
+        $_tierPrices        = array();
         $_tierPricesInclTax = array();
         foreach ($product->getTierPrice() as $tierPrice) {
-            $_tierPrices[] = Mage::helper('core')->currency($tierPrice['website_price'], false, false);
+            $_tierPrices[]        = Mage::helper('core')->currency($tierPrice['website_price'], false, false);
             $_tierPricesInclTax[] = Mage::helper('core')->currency(
                 Mage::helper('tax')->getPrice($product, (int)$tierPrice['website_price'], true),
-                false, false);
+                false, false
+            );
         }
         $config = array(
             'productId'           => $product->getId(),
@@ -413,9 +414,9 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
         );
 
         $responseObject = new Varien_Object();
-        Mage::dispatchEvent('catalog_product_view_config', array('response_object'=>$responseObject));
+        Mage::dispatchEvent('catalog_product_view_config', array('response_object' => $responseObject));
         if (is_array($responseObject->getAdditionalOptions())) {
-            foreach ($responseObject->getAdditionalOptions() as $option=>$value) {
+            foreach ($responseObject->getAdditionalOptions() as $option => $value) {
                 $config[$option] = $value;
             }
         }
@@ -432,7 +433,7 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
     public function canApplyMsrp($product, $visibility = null, $checkAssociatedItems = true)
     {
         $version = Mage::getVersionInfo();
-        if (($version['major'] === '1') && ((int) $version['minor'] <= 5)) {
+        if (($version['major'] === '1') && ((int)$version['minor'] <= 5)) {
             return false;
         } elseif (method_exists(Mage::helper('catalog'), 'canApplyMsrp')) {
             return Mage::helper('catalog')->canApplyMsrp($product, $visibility, $checkAssociatedItems);
@@ -451,10 +452,12 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
     public function getMoveFromCartUrl($itemId)
     {
         $version = Mage::getVersionInfo();
-        if (($version['major'] === '1') && ((int) $version['minor'] <= 5)) {
+        if (($version['major'] === '1') && ((int)$version['minor'] <= 5)) {
             return false;
-        } else if (method_exists(Mage::helper('wishlist'), 'getMoveFromCartUrl')) {
-            return Mage::helper('wishlist')->getMoveFromCartUrl($itemId);
+        } else {
+            if (method_exists(Mage::helper('wishlist'), 'getMoveFromCartUrl')) {
+                return Mage::helper('wishlist')->getMoveFromCartUrl($itemId);
+            }
         }
 
         return false;
@@ -479,7 +482,7 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
     public function getProductDesign($product)
     {
         if (is_null($this->_productDesign)) {
-            $designId = (int) Mage::app()->getRequest()->getParam('design_id', false);
+            $designId = (int)Mage::app()->getRequest()->getParam('design_id', false);
             if ($designId) {
                 $design = Mage::getModel('gomage_designer/design')->load($designId);
                 if ($design->getId() && $design->getProductId() == $product->getId()) {
@@ -493,11 +496,12 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
         return $this->_productDesign;
     }
 
-    public function getAllStoreDomains(){
+    public function getAllStoreDomains()
+    {
         $domains = array();
         foreach (Mage::app()->getWebsites() as $website) {
             $url = $website->getConfig('web/unsecure/base_url');
-            if($domain = trim(preg_replace('/^.*?\\/\\/(.*)?\\//', '$1', $url))) {
+            if ($domain = trim(preg_replace('/^.*?\\/\\/(.*)?\\//', '$1', $url))) {
                 $domains[] = $domain;
             }
             $url = $website->getConfig('web/secure/base_url');
@@ -512,7 +516,7 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function getWindowCssPath()
     {
-        if(!$this->getIsAnymoreVersion(1, 7)) {
+        if (!$this->getIsAnymoreVersion(1, 7)) {
             return 'prototype/windows/themes/magento.css';
         } else {
             return 'lib/prototype/windows/themes/magento.css';
@@ -521,7 +525,7 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function getCssType()
     {
-        if(!$this->getIsAnymoreVersion(1, 7)) {
+        if (!$this->getIsAnymoreVersion(1, 7)) {
             return 'js_css';
         } else {
             return 'skin_css';
@@ -535,13 +539,13 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
 
     protected function _w()
     {
-        if(!Mage::getStoreConfig('gomage_activation/designer/installed') ||
-            (intval(Mage::getStoreConfig('gomage_activation/designer/count')) > 10))
-        {
+        if (!Mage::getStoreConfig('gomage_activation/designer/installed') ||
+            (intval(Mage::getStoreConfig('gomage_activation/designer/count')) > 10)
+        ) {
             return array();
         }
 
-        $time_to_update = 60*60*24*15;
+        $time_to_update = 60 * 60 * 24 * 15;
 
         $r = Mage::getStoreConfig('gomage_activation/designer/ar');
         $t = Mage::getStoreConfig('gomage_activation/designer/time');
@@ -552,10 +556,11 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
         $allsites = explode(',', str_replace($r, '', Mage::helper('core')->decrypt($s)));
         $allsites = array_diff($allsites, array(""));
 
-        if(($last_check+$time_to_update) < time()){
+        if (($last_check + $time_to_update) < time()) {
             $this->a(Mage::getStoreConfig('gomage_activation/designer/key'),
                 intval(Mage::getStoreConfig('gomage_activation/designer/count')),
-                implode(',', $allsites));
+                implode(',', $allsites)
+            );
         }
 
         return $allsites;
@@ -567,7 +572,7 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, sprintf('https://www.gomage.com/index.php/gomage_downloadable/key/check'));
         curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, 'key='.urlencode($k).'&sku=product-designer&domains='.urlencode(implode(',', $this->getAllStoreDomains())).'&ver='.urlencode('1.0'));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, 'key=' . urlencode($k) . '&sku=product-designer&domains=' . urlencode(implode(',', $this->getAllStoreDomains())) . '&ver=' . urlencode('1.0'));
         curl_setopt($ch, CURLOPT_TIMEOUT, 30);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
@@ -576,26 +581,26 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
 
         $content = curl_exec($ch);
 
-        $r	= Zend_Json::decode($content);
+        $r = Zend_Json::decode($content);
         $e = Mage::helper('core');
-        if(empty($r)){
+        if (empty($r)) {
 
             $value1 = Mage::getStoreConfig('gomage_activation/designer/ar');
 
             $groups = array(
-                'designer'=>array(
-                    'fields'=>array(
-                        'ar'=>array(
-                            'value'=>$value1
+                'designer' => array(
+                    'fields' => array(
+                        'ar'       => array(
+                            'value' => $value1
                         ),
-                        'websites'=>array(
-                            'value'=>(string)Mage::getStoreConfig('gomage_activation/designer/websites')
+                        'websites' => array(
+                            'value' => (string)Mage::getStoreConfig('gomage_activation/designer/websites')
                         ),
-                        'time'=>array(
-                            'value'=>(string)$e->encrypt($value1.(time()-(60*60*24*15-1800)).$value1)
+                        'time'     => array(
+                            'value' => (string)$e->encrypt($value1 . (time() - (60 * 60 * 24 * 15 - 1800)) . $value1)
                         ),
-                        'count'=>array(
-                            'value'=>$c+1)
+                        'count'    => array(
+                            'value' => $c + 1)
                     )
                 )
             );
@@ -614,34 +619,36 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
         $value1 = '';
         $value2 = '';
 
-        if(isset($r['d']) && isset($r['c'])){
+        if (isset($r['d']) && isset($r['c'])) {
             $value1 = $e->encrypt(base64_encode(Zend_Json::encode($r)));
 
 
-            if (!$s) $s = Mage::getStoreConfig('gomage_activation/designer/websites');
+            if (!$s) {
+                $s = Mage::getStoreConfig('gomage_activation/designer/websites');
+            }
 
             $s = array_slice(explode(',', $s), 0, $r['c']);
 
-            $value2 = $e->encrypt($value1.implode(',', $s).$value1);
+            $value2 = $e->encrypt($value1 . implode(',', $s) . $value1);
 
         }
         $groups = array(
-            'designer'=>array(
-                'fields'=>array(
-                    'ar'=>array(
-                        'value'=>$value1
+            'designer' => array(
+                'fields' => array(
+                    'ar'        => array(
+                        'value' => $value1
                     ),
-                    'websites'=>array(
-                        'value'=>(string)$value2
+                    'websites'  => array(
+                        'value' => (string)$value2
                     ),
-                    'time'=>array(
-                        'value'=>(string)$e->encrypt($value1.time().$value1)
+                    'time'      => array(
+                        'value' => (string)$e->encrypt($value1 . time() . $value1)
                     ),
-                    'installed'=>array(
-                        'value'=>1
+                    'installed' => array(
+                        'value' => 1
                     ),
-                    'count'=>array(
-                        'value'=>0)
+                    'count'     => array(
+                        'value' => 0)
 
                 )
             )
@@ -661,11 +668,11 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
     {
         return Zend_Json::decode(base64_decode(Mage::helper('core')->decrypt(Mage::getStoreConfig('gomage_activation/designer/ar'))));
     }
-    
+
     public function notify()
     {
         $frequency = intval(Mage::app()->loadCache('gomage_notifications_frequency'));
-        if (!$frequency){
+        if (!$frequency) {
             $frequency = 24;
         }
         $last_update = intval(Mage::app()->loadCache('gomage_notifications_last_update'));
@@ -675,15 +682,15 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
         }
 
         $timestamp = $last_update;
-        if (!$timestamp){
+        if (!$timestamp) {
             $timestamp = time();
         }
 
-        try{
+        try {
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, sprintf('https://www.gomage.com/index.php/gomage_notification/index/data'));
             curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, 'sku=product-designer&timestamp='.$timestamp.'&ver='.urlencode('1.0'));
+            curl_setopt($ch, CURLOPT_POSTFIELDS, 'sku=product-designer&timestamp=' . $timestamp . '&ver=' . urlencode('1.0'));
             curl_setopt($ch, CURLOPT_TIMEOUT, 30);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
@@ -692,18 +699,19 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
 
             $content = curl_exec($ch);
 
-            $result	= Zend_Json::decode($content);
+            $result = Zend_Json::decode($content);
 
-            if ($result && isset($result['frequency']) && ($result['frequency'] != $frequency)){
+            if ($result && isset($result['frequency']) && ($result['frequency'] != $frequency)) {
                 Mage::app()->saveCache($result['frequency'], 'gomage_notifications_frequency');
             }
 
-            if ($result && isset($result['data'])){
-                if (!empty($result['data'])){
+            if ($result && isset($result['data'])) {
+                if (!empty($result['data'])) {
                     Mage::getModel('adminnotification/inbox')->parse($result['data']);
                 }
             }
-        } catch (Exception $e){}
+        } catch (Exception $e) {
+        }
 
         Mage::app()->saveCache(time(), 'gomage_notifications_last_update');
 
