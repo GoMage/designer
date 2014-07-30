@@ -254,7 +254,7 @@ try {
         'is_configurable'   => 0
     ));
 
-    $this->updateAttribute(Mage_Catalog_Model_Product::ENTITY,
+    $installer->updateAttribute(Mage_Catalog_Model_Product::ENTITY,
         'enable_product_designer',
         'is_configurable',
         0
