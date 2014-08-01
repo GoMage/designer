@@ -1,4 +1,5 @@
 <?php
+
 /**
  * GoMage Product Designer Extension
  *
@@ -10,7 +11,6 @@
  * @version      Release: 1.0.0
  * @since        Available since Release 1.0.0
  */
-
 class GoMage_ProductDesigner_Block_Designer_UploadImage_Images extends Mage_Core_Block_Template
 {
     /**
@@ -20,8 +20,7 @@ class GoMage_ProductDesigner_Block_Designer_UploadImage_Images extends Mage_Core
      */
     public function getUploadedImages()
     {
-        $uploadedImage = Mage::getModel('gomage_designer/uploadedImage');
-        return $uploadedImage->getCustomerUploadedImages();
+        return Mage::getModel('gomage_designer/uploadedImage')->getCustomerUploadedImages();
     }
 
     /**
@@ -32,13 +31,11 @@ class GoMage_ProductDesigner_Block_Designer_UploadImage_Images extends Mage_Core
      */
     public function getImageUrl($image)
     {
-
-        $url = Mage::helper('gomage_designer/image_uploaded')->init($image)->resize(64, 64)->__toString();
-        return $url;
+        return Mage::helper('gomage_designer/image_uploaded')->init($image)->resize(64, 64)->__toString();
     }
 
     public function getOriginImageUrl($image)
     {
-        return rawurlencode(Mage::getSingleton('gomage_designer/uploadedImage_config')->getMediaUrl($image));
+        return Mage::getSingleton('gomage_designer/uploadedImage_config')->getMediaUrl($image);
     }
 }

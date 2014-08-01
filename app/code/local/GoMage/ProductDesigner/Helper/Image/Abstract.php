@@ -1,4 +1,5 @@
 <?php
+
 /**
  * GoMage Product Designer Extension
  *
@@ -10,7 +11,6 @@
  * @version      Release: 1.0.0
  * @since        Available since Release 1.0.0
  */
-
 abstract class GoMage_ProductDesigner_Helper_Image_Abstract extends Mage_Core_Helper_Data
 {
     /**
@@ -61,13 +61,13 @@ abstract class GoMage_ProductDesigner_Helper_Image_Abstract extends Mage_Core_He
     /**
      * Resize the image
      *
-     * @param integer $width  Width
+     * @param integer $width Width
      * @param integer $height Height
      * @return GoMage_ProductDesigner_Helper_Image
      */
     public function resize($width, $height = null)
     {
-        $this->_width = $width;
+        $this->_width  = $width;
         $this->_height = $height;
         return $this;
     }
@@ -172,7 +172,7 @@ abstract class GoMage_ProductDesigner_Helper_Image_Abstract extends Mage_Core_He
                 $image->resize($this->_width, $this->_height);
 
                 $path = $this->_getCacheDir() . $this->_filename;
-                $dir = dirname($path);
+                $dir  = dirname($path);
                 if (!is_dir($dir)) {
                     mkdir($dir, 0777, true);
                 }

@@ -97,35 +97,7 @@ class GoMage_ProductDesigner_Model_Clipart extends Mage_Core_Model_Abstract
                 ->setOrder('main_table.position', 'asc');
             $this->_cliparts = $collection;
         }
-
         return $this->_cliparts;
     }
 
-    public function getMaxClipartHeight()
-    {
-        return Mage::helper('gomage_designer')->getDesignHeight() / 2;
-    }
-
-    public function getMaxClipartWidth()
-    {
-        return Mage::helper('gomage_designer')->getDesignWidth() / 2;
-    }
-
-    public function resizeClipart($file)
-    {
-        $image = new Varien_Image($file);
-        if ($image->getOriginalHeight() > $this->getMaxClipartHeight() ||
-            $image->getOriginalWidth() > $this->getMaxClipartWidth()
-        ) {
-            $image->keepFrame(false);
-            $image->keepTransparency(true);
-            if ($image->getOriginalWidth() > $this->getMaxClipartWidth()) {
-                $image->resize($this->getMaxClipartWidth());
-            } elseif ($image->getOriginalHeight() > $this->getMaxClipartHeight()) {
-                $image->resize(null, $this->getMaxClipartHeight());
-            }
-
-            $image->save(pathinfo($file, PATHINFO_DIRNAME), pathinfo($file, PATHINFO_BASENAME));
-        }
-    }
 }

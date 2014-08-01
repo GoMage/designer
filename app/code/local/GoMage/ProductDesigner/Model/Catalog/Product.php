@@ -1,4 +1,5 @@
 <?php
+
 /**
  * GoMage Product Designer Extension
  *
@@ -10,7 +11,6 @@
  * @version      Release: 1.0.0
  * @since        Available since Release 1.0.0
  */
-
 class GoMage_ProductDesigner_Model_Catalog_Product extends Mage_Catalog_Model_Product
 {
     const GALLERY_ATTRIBUTE_CODE = 'media_gallery';
@@ -25,14 +25,14 @@ class GoMage_ProductDesigner_Model_Catalog_Product extends Mage_Catalog_Model_Pr
         if (!Mage::helper('gomage_designer')->isEnabled()) {
             return parent::getMediaGalleryImages();
         }
-        if(!$this->hasData('media_gallery_images') && is_array($this->getMediaGallery('images'))) {
-            $images = new Varien_Data_Collection();
-            $designId = (int) Mage::app()->getRequest()->getParam('design_id', false);
+        if (!$this->hasData('media_gallery_images') && is_array($this->getMediaGallery('images'))) {
+            $images   = new Varien_Data_Collection();
+            $designId = (int)Mage::app()->getRequest()->getParam('design_id', false);
             if ($designId) {
-                $design = Mage::getModel('gomage_designer/design')->load($designId);
-                $designColor = $design->getColor();
+                $design                 = Mage::getModel('gomage_designer/design')->load($designId);
+                $designColor            = $design->getColor();
                 $designImagesCollection = $this->getDesignProductImages($designId);
-                $designImages = array();
+                $designImages           = array();
                 foreach ($designImagesCollection as $_designImage) {
                     $designImages[$_designImage->getImageId()] = $_designImage;
                 }
@@ -53,21 +53,21 @@ class GoMage_ProductDesigner_Model_Catalog_Product extends Mage_Catalog_Model_Pr
                     continue;
                 }
                 if (!empty($designImages) && isset($designImages[$image['value_id']])) {
-                    $designImage = $designImages[$image['value_id']];
-                    $mediaConfig = $this->getDesignMediaConfig();
+                    $designImage    = $designImages[$image['value_id']];
+                    $mediaConfig    = $this->getDesignMediaConfig();
                     $imageExtension = strtolower(pathinfo($designImage['image'], PATHINFO_EXTENSION));
                     if ($imageExtension == 'pdf') {
                         $designImage['image'] = str_replace('.pdf', '.jpg', $designImage['image']);
                     }
                     $image['original_file'] = $image['file'];
-                    $image['file'] = $designImage['image'];
-                    $image['design_id'] = $designId;
+                    $image['file']          = $designImage['image'];
+                    $image['design_id']     = $designId;
                 } else {
                     $mediaConfig = $this->getMediaConfig();
                 }
-                $image['url'] = $mediaConfig->getMediaUrl($image['file']);
+                $image['url']  = $mediaConfig->getMediaUrl($image['file']);
                 $image['path'] = $mediaConfig->getMediaPath($image['file']);
-                $image['id'] = isset($image['value_id']) ? $image['value_id'] : null;
+                $image['id']   = isset($image['value_id']) ? $image['value_id'] : null;
                 $images->addItem(new Varien_Object($image));
             }
             $this->setData('media_gallery_images', $images);
@@ -78,9 +78,9 @@ class GoMage_ProductDesigner_Model_Catalog_Product extends Mage_Catalog_Model_Pr
 
     public function getImage()
     {
-        $designId = (int) Mage::app()->getRequest()->getParam('design_id', false);
+        $designId = (int)Mage::app()->getRequest()->getParam('design_id', false);
         if ($designId) {
-            $images = $this->getMediaGalleryImages();
+            $images    = $this->getMediaGalleryImages();
             $baseImage = null;
             foreach ($images as $image) {
                 if (is_null($baseImage) || $image->getOriginalFile() == $this->getData('image')) {
@@ -104,7 +104,7 @@ class GoMage_ProductDesigner_Model_Catalog_Product extends Mage_Catalog_Model_Pr
      * Retrieve Product URL with design
      *
      * @param string $designId Design Id
-     * @param bool   $useSid   Use SID
+     * @param bool $useSid Use SID
      * @return string
      */
     public function getDesignedProductUrl($designId, $useSid = null)
@@ -120,7 +120,14 @@ class GoMage_ProductDesigner_Model_Catalog_Product extends Mage_Catalog_Model_Pr
         if ($designId) {
             $params['_query'] = array('design_id' => $designId);
         }
-        return $this->getUrlModel()->getUrl($this, $params);
+        if (!empty($this->getData('url'))) {
+            $this->setData('url', null);
+        }
+
+        $url = $this->getUrlModel()->getUrl($this, $params);
+        $this->setData('url', null);
+
+        return $url;
     }
 
     /**
@@ -146,11 +153,12 @@ class GoMage_ProductDesigner_Model_Catalog_Product extends Mage_Catalog_Model_Pr
     public function getProductColors()
     {
         if ($this->getTypeId() == Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE
-            && Mage::helper('gomage_designer')->hasColorAttribute()) {
+            && Mage::helper('gomage_designer')->hasColorAttribute()
+        ) {
             $colors = Mage::getResourceModel('gomage_designer/catalog_product_type_configurable')->getProductColors($this->getId());
             foreach ($colors as &$color) {
                 if (isset($color['image']) && $color['image'] != null) {
-                    $color['image'] = Mage::getBaseUrl('media') . 'option_image'. DS . $color['image'];
+                    $color['image'] = Mage::getBaseUrl('media') . 'option_image' . DS . $color['image'];
                 }
             }
 

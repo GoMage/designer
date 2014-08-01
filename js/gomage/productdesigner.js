@@ -559,8 +559,7 @@ GoMage.ProductDesigner.prototype = {
                 if (canvas.getObjects().length > 0) {
                     canvas.deactivateAll();
                     canvas.renderAll();
-                    var image = canvas.toDataURL();
-                    image = image.substr(image.indexOf(',') + 1).toString();
+                    var image = canvas.toSVG();
                     images[imageId] = image;
                     var contextTop = canvas.contextTop;
                     if (contextTop && contextTop != undefined) {
@@ -1444,13 +1443,20 @@ GoMage.Designer.prototype = {
             e.stop();
             var img = e.target || e.srcElement;
             var url = decodeURIComponent(img.getAttribute('data-origin-url'));
-            fabric.Image.fromURL(url, function (obj) {
-                obj.set({
-                    tab: 'design'
-                });
-                var cmd = new InsertCommand(this.productDesigner, obj, true);
-                cmd.exec();
-                this.productDesigner.history.push(cmd);
+            fabric.Image.fromURL(url, function (image) {
+                fabric.Image.fromURL(image.toDataURL(), function (obj) {
+                    obj.set({tab: 'design'});
+                    var scale = 1;
+                    if (obj.getWidth() > (this.productDesigner.canvas.getWidth() / 2)) {
+                        scale = (this.productDesigner.canvas.getWidth() / 2) / obj.getWidth();
+                    }
+                    if (scale != 1) {
+                        obj.scale(scale);
+                    }
+                    var cmd = new InsertCommand(this.productDesigner, obj, true);
+                    cmd.exec();
+                    this.productDesigner.history.push(cmd);
+                }.bind(this));
             }.bind(this));
         }.bind(this));
     },
@@ -2159,14 +2165,21 @@ GoMage.ImageUploader.prototype = {
             e.stop();
             var img = e.target || e.srcElement;
             var url = decodeURIComponent(img.getAttribute('data-origin-url'));
-            fabric.Image.fromURL(url, function (obj) {
-                obj.set({
-                    tab: 'upload'
-                });
 
-                var cmd = new InsertCommand(this.productDesigner, obj, true);
-                cmd.exec();
-                this.productDesigner.history.push(cmd);
+            fabric.Image.fromURL(url, function (image) {
+                fabric.Image.fromURL(image.toDataURL(), function (obj) {
+                    obj.set({tab: 'upload'});
+                    var scale = 1;
+                    if (obj.getWidth() > (this.productDesigner.canvas.getWidth() / 2)) {
+                        scale = (this.productDesigner.canvas.getWidth() / 2) / obj.getWidth();
+                    }
+                    if (scale != 1) {
+                        obj.scale(scale);
+                    }
+                    var cmd = new InsertCommand(this.productDesigner, obj, true);
+                    cmd.exec();
+                    this.productDesigner.history.push(cmd);
+                }.bind(this));
             }.bind(this));
         }.bind(this));
     }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * GoMage Product Designer Extension
  *
@@ -10,7 +11,6 @@
  * @version      Release: 1.0.0
  * @since        Available since Release 1.0.0
  */
-
 class GoMage_ProductDesigner_Helper_Image_Uploaded extends GoMage_ProductDesigner_Helper_Image_Abstract
 {
     /**
@@ -21,10 +21,10 @@ class GoMage_ProductDesigner_Helper_Image_Uploaded extends GoMage_ProductDesigne
      */
     public function init($filename)
     {
-        $this->_width = null;
-        $this->_height = null;
+        $this->_width    = null;
+        $this->_height   = null;
         $this->_filename = $filename;
-        $this->_baseDir = Mage::getSingleton('gomage_designer/uploadedImage_config')->getBaseMediaPath();
+        $this->_baseDir  = Mage::getSingleton('gomage_designer/uploadedImage_config')->getBaseMediaPath();
 
         return $this;
     }
@@ -40,7 +40,7 @@ class GoMage_ProductDesigner_Helper_Image_Uploaded extends GoMage_ProductDesigne
         if ($this->_width || $this->_height) {
             $path .= "/{$this->_width}_{$this->_height}";
         }
-        return $path . DS . rawurlencode(ltrim($this->_filename, '/'));
+        return $path . DS . ltrim($this->_filename, '/');
     }
 
     /**

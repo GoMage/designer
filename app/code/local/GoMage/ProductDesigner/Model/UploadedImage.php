@@ -1,4 +1,5 @@
 <?php
+
 /**
  * GoMage Product Designer Extension
  *
@@ -10,7 +11,6 @@
  * @version      Release: 1.0.0
  * @since        Available since Release 1.0.0
  */
-
 class GoMage_ProductDesigner_Model_UploadedImage extends Mage_Core_Model_Abstract
 {
     protected $_urlModel;
@@ -47,7 +47,7 @@ class GoMage_ProductDesigner_Model_UploadedImage extends Mage_Core_Model_Abstrac
         $expImagePath = explode('/', $imagePath);
         array_pop($expImagePath);
         $imagePath = implode('/', $expImagePath);
-        if(strpos($imagePath, $this->getConfig()->getBaseMediaPath()) === false) {
+        if (strpos($imagePath, $this->getConfig()->getBaseMediaPath()) === false) {
             $imagePath = $this->getConfig()->getBaseMediaPath() . $imagePath;
         }
 
@@ -62,13 +62,13 @@ class GoMage_ProductDesigner_Model_UploadedImage extends Mage_Core_Model_Abstrac
     public function getCustomerUploadedImages()
     {
         $customerSession = $this->_getCustomerSession();
-        $uploadedImages = array();
-        if($customerId = $customerSession->getCustomerId()) {
+        $uploadedImages  = array();
+        if ($customerId = $customerSession->getCustomerId()) {
             $uploadedImages = $this->getCustomerImages($customerId)->getItems();
         }
-        if($this->_getDesignerSessionId()) {
+        if ($this->_getDesignerSessionId()) {
             $uploadedSessionImages = $this->_getUploadedImagesFromSession()->getItems();
-            $uploadedImages = array_merge($uploadedSessionImages, $uploadedImages);
+            $uploadedImages        = array_merge($uploadedSessionImages, $uploadedImages);
         }
         return $uploadedImages;
     }
@@ -95,7 +95,7 @@ class GoMage_ProductDesigner_Model_UploadedImage extends Mage_Core_Model_Abstrac
          * @var $collection GoMage_ProductDesigner_Model_Mysql4_UploadedImage_Collection
          */
         $designerSessionId = $this->_getDesignerSessionId();
-        $collection = $this->getResourceCollection();
+        $collection        = $this->getResourceCollection();
         $collection->addFieldToFilter('session_id', $designerSessionId);
 
         return $collection;
@@ -109,26 +109,21 @@ class GoMage_ProductDesigner_Model_UploadedImage extends Mage_Core_Model_Abstrac
     public function removeCustomerUploadedImages()
     {
         $customerSession = $this->_getCustomerSession();
-        $ids = array();
+        $ids             = array();
 
-        if($customerId = $customerSession->getCustomerId()) {
+        if ($customerId = $customerSession->getCustomerId()) {
             $ids = $this->getCustomerImages($customerId)->getAllIds();
         }
 
-        if($this->_getDesignerSessionId()) {
+        if ($this->_getDesignerSessionId()) {
             $uploadedSessionImagesIds = $this->_getUploadedImagesFromSession()->getAllIds();
-            $ids = array_merge($ids, $uploadedSessionImagesIds);
+            $ids                      = array_merge($ids, $uploadedSessionImagesIds);
         }
 
         if (!empty($ids)) {
             $this->getResource()->removeImagesByIds($ids);
         }
-
         return $this;
     }
 
-    public function resizeImage($file)
-    {
-        return Mage::getModel('gomage_designer/clipart')->resizeClipart($file);
-    }
 }

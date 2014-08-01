@@ -1,4 +1,5 @@
 <?php
+
 /**
  * GoMage Product Designer Extension
  *
@@ -10,7 +11,6 @@
  * @version      Release: 1.0.0
  * @since        Available since Release 1.0.0
  */
-
 class GoMage_ProductDesigner_Block_Designer_Design_Cliparts extends Mage_Core_Block_Template
 {
     protected $_cliparts = null;
@@ -49,12 +49,11 @@ class GoMage_ProductDesigner_Block_Designer_Design_Cliparts extends Mage_Core_Bl
      */
     public function getClipartUrl($image)
     {
-        $url = Mage::helper('gomage_designer/image_cliparts')->init($image)->resize(60, 60)->__toString();
-        return $url;
+        return Mage::helper('gomage_designer/image_cliparts')->init($image)->resize(60, 60)->__toString();
     }
 
     public function getOriginClipartUrl($image)
     {
-        return rawurlencode(Mage::getSingleton('gomage_designer/clipart_gallery_config')->getMediaUrl($image));
+        return Mage::getSingleton('gomage_designer/clipart_gallery_config')->getMediaUrl($image);
     }
 }
