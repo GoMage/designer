@@ -11,6 +11,7 @@
  * @since        Available since Release 1.0.0
  */
 ?>
+
 <?php $image = $this->getImage(); ?>
 <?php if($image && $image->getId()): ?>
     <?php $settings = $this->getSettings();?>
@@ -55,41 +56,11 @@
             canvas.setActiveObject(area);
             canvas.renderAll();
 
-            canvas.observe('object:moving', function(e) {
-                var obj = e.target;
-                var l = obj.get('left');
-                var t = obj.get('top');
-                var w = Math.round(obj.getWidth() / 2);
-                var h = Math.round(obj.getHeight() / 2);
-
-                if (l < w) {
-                    obj.set({left : w});
-                }
-
-                if (t < h) {
-                    obj.set({top : h});
-                }
-
-                if (l > canvas.getWidth() - w) {
-                    obj.set({left : canvas.getWidth() - w});
-                }
-
-                if (t > canvas.getHeight() - h) {
-                    obj.set({top : canvas.getHeight() - h});
-                }
-            });
-
             canvas.observe('object:scaling', function(e){
-                setTimeout(function(){
-                    var obj = e.target;
-                    var w = Math.round(obj.getWidth());
-                    var h = Math.round(obj.getHeight());
-                    $('areaWidth').value = w;
-                    $('areaHeight').value = h;
-                }, 100)
+                var obj = e.target;
+                $('areaWidth').value = Math.round(obj.getWidth());
+                $('areaHeight').value = Math.round(obj.getHeight());
             });
-
-
 
             var onTextChangeSize = function(element){
                 element.observe('keyup', function() {
@@ -112,7 +83,7 @@
                                 break;
                             }
                         }
-                        if(typeof widthOrHeight === 'string') {
+                        if(widthOrHeight) {
                             var value = parseInt(element.value);
                             if (value > validateValue) {
                                 element.value = validateValue;

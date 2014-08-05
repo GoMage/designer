@@ -1,4 +1,5 @@
 <?php
+
 /**
  * GoMage Product Designer Extension
  *
@@ -10,7 +11,6 @@
  * @version      Release: 1.0.0
  * @since        Available since Release 1.0.0
  */
-
 class GoMage_ProductDesigner_Block_Adminhtml_Product_Edit extends Mage_Core_Block_Template
 {
     protected $_image;
@@ -33,7 +33,7 @@ class GoMage_ProductDesigner_Block_Adminhtml_Product_Edit extends Mage_Core_Bloc
     public function getSettings()
     {
         $product = $this->getProduct();
-        $image = $this->getImage();
+        $image   = $this->getImage();
 
         if (!$product->getId()) {
             return array();
@@ -41,14 +41,14 @@ class GoMage_ProductDesigner_Block_Adminhtml_Product_Edit extends Mage_Core_Bloc
         $settings = Mage::helper('core')->jsonDecode($image->getDesignArea());
 
         if (is_null($settings) || empty($settings)) {
-            $imageWidth = $image->getWidth();
+            $imageWidth  = $image->getWidth();
             $imageHeight = $image->getHeight();
-            $settings = array(
-                't' => round($imageHeight / 2),
-                'l' => round($imageWidth / 2),
-                'h' => 200,
-                'w' => 200,
-                's' => 1,
+            $settings    = array(
+                't'  => round($imageHeight / 2),
+                'l'  => round($imageWidth / 2),
+                'h'  => 200,
+                'w'  => 200,
+                's'  => 1,
                 'ip' => 0,
             );
         }
@@ -120,10 +120,11 @@ class GoMage_ProductDesigner_Block_Adminhtml_Product_Edit extends Mage_Core_Bloc
     {
         $product = $this->getProduct();
 
-        if ($product && $product->getId()){
+        if ($product && $product->getId()) {
             return Mage::helper('adminhtml')->getUrl('*/designer_product/save', array(
-                'product_id' => $product->getId()
-            ));
+                    'product_id' => $product->getId()
+                )
+            );
         }
 
         return false;

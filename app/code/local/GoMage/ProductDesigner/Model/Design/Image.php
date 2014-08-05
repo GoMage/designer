@@ -35,19 +35,42 @@ class GoMage_ProductDesigner_Model_Design_Image extends Mage_Core_Model_Abstract
      */
     public function saveImage($image, $imageId, $product, $designId)
     {
-        $dataHelper    = Mage::helper('gomage_designer');
-        $imageSettings = $dataHelper->getImageSettings($product, $imageId);
+        $helper        = Mage::helper('gomage_designer');
+        $imageSettings = $helper->getImageSettings($product, $imageId);
         if ($imageSettings) {
-            $dimensions = $imageSettings['original_image']['dimensions'];
-            $canvas     = $this->createCanvas(
-                $imageSettings['original_image']['path'], $dimensions[0], $dimensions[1]
-            );
-            if ($canvas) {
-                $layer = $this->createLayer($image);
-                if ($layer) {
-                    $canvas = $this->addLayerToCanvas($canvas, $layer, $imageSettings);
-                    $this->saveCanvas($canvas, $layer, $imageId, $designId);
+            $canvas = $this->createCanvas($imageSettings['original_image']['path']);
+            $layer  = $this->createLayer($image);
+            if ($canvas && $layer) {
+                $canvas = $this->addLayerToCanvas($canvas, $layer, $imageSettings);
+
+                $canvas_file = $this->_prepareFileForSave();
+                $layer_file  = $this->_prepareFileForSave();
+
+                $layer->writeImage($layer_file);
+                $canvas->writeImage($canvas_file);
+
+                if ($this->_getImageExtensionForSave() == 'pdf') {
+                    $canvas->setImageFormat('jpg');
+                    $canvas->writeImage(str_replace('.pdf', '.jpg', $canvas_file));
+                    $layer->setImageFormat('jpg');
+                    $layer->writeImage(str_replace('.pdf', '.jpg', $layer_file));
                 }
+                $layer->destroy();
+                $canvas->destroy();
+
+                $designConfig = Mage::getSingleton('gomage_designer/design_config');
+                $configPath   = $designConfig->getBaseMediaPath();
+
+                $this->addData(array(
+                        'product_id'   => $product->getId(),
+                        'design_id'    => $designId,
+                        'image'        => str_replace($configPath, '', $canvas_file),
+                        'layer'        => str_replace($configPath, '', $layer_file),
+                        'image_id'     => $imageId,
+                        'created_date' => Mage::getModel('core/date')->gmtDate(),
+                    )
+                )->save();
+
             }
         }
     }
@@ -62,31 +85,21 @@ class GoMage_ProductDesigner_Model_Design_Image extends Mage_Core_Model_Abstract
      */
     public function addLayerToCanvas($canvas, $layer, $imageSettings)
     {
-        $designAreaLeft  = $imageSettings['l'] - $imageSettings['w'] / 2;
-        $designAreaTop   = $imageSettings['t'] - $imageSettings['h'] / 2;
-        $frameWidth      = $dstWidth = $imageSettings['dimensions']['width'];
-        $frameHeight     = $dstHeight = $imageSettings['dimensions']['height'];
-        $origImageWidth  = $imageSettings['original_image']['dimensions'][0];
-        $origImageHeight = $imageSettings['original_image']['dimensions'][1];
-        if ($origImageWidth / $origImageHeight >= $frameWidth / $frameHeight) {
-            $dstHeight = floor($frameWidth / $origImageWidth * $origImageHeight);
-            $scale     = $origImageWidth / $frameWidth;
-        } else {
-            $dstWidth = floor($frameHeight / $origImageHeight * $origImageWidth);
-            $scale    = $origImageHeight / $frameHeight;
-        }
-        $widthScale     = $origImageWidth / $dstWidth;
-        $heightScale    = $origImageHeight / $dstHeight;
-        $designAreaLeft = floor(($designAreaLeft * $scale) - ($frameWidth - $dstWidth));
-        $designAreaTop  = floor(($designAreaTop * $scale) - ($frameHeight - $dstHeight));
+        $scale_width  = $canvas->getImageWidth() / $imageSettings['dimensions']['width'];
+        $scale_height = $canvas->getimageheight() / $imageSettings['dimensions']['height'];
+        $offset_x     = floor($imageSettings['l'] * $scale_width);
+        $offset_y     = floor($imageSettings['t'] * $scale_height);
 
-        $layer->resizeImage(
-            floor($imageSettings['w'] * $widthScale),
-            floor($imageSettings['h'] * $heightScale),
-            Imagick::FILTER_LANCZOS,
-            1
+        $resized_layer = clone $layer;
+        $resized_layer->adaptiveResizeImage(
+            floor($imageSettings['w'] * $scale_width),
+            floor($imageSettings['h'] * $scale_height)
         );
-        $canvas->compositeImage($layer, $layer->getImageCompose(), $designAreaLeft, $designAreaTop);
+
+        $canvas->compositeImage($resized_layer, $resized_layer->getImageCompose(), $offset_x, $offset_y);
+        $canvas->flattenImages();
+
+        $resized_layer->destroy();
 
         return $canvas;
     }
@@ -101,83 +114,22 @@ class GoMage_ProductDesigner_Model_Design_Image extends Mage_Core_Model_Abstract
     {
         $layer = new Imagick();
         $layer->readImageBlob($image);
-        return $layer;
-    }
-
-    /**
-     * @param Imagick $layer Layer
-     * @param string $filename Filename
-     */
-    public function saveLayer($layer, $filename)
-    {
         $layer->setImageFormat($this->_getImageExtensionForSave());
-        $layer->writeImage($filename);
+        return $layer;
     }
 
     /**
      * Create canvas
      *
      * @param string $image Image Path
-     * @param float $width Width
-     * @param float $height Height
-     * @return Imagick|boolean
+     * @return Imagick
      */
-    public function createCanvas($image, $width, $height)
+    public function createCanvas($image)
     {
-        $width  = (int)$width;
-        $height = (int)$height;
-        if ($width && $height) {
-            $canvas = new Imagick();
-            $canvas->setsize($width, $height);
-            $canvas->readimage($image);
-            $canvas->setImageFormat($this->_getImageExtensionForSave());
-            return $canvas;
-        }
-        return false;
-    }
-
-    /**
-     * Save file to DB
-     *
-     * @param Imagick $canvas canvas
-     * @param $layer
-     * @param int $imageId Image Id
-     * @param int $designId Design Id
-     * @return void
-     */
-    public function saveCanvas($canvas, $layer, $imageId, $designId)
-    {
-        $currentProduct = Mage::registry('product');
-        $designConfig   = Mage::getSingleton('gomage_designer/design_config');
-        $configPath     = $designConfig->getBaseMediaPath();
-
-        if ($currentProduct && $currentProduct->getId()) {
-            $fileToSave    = $this->_prepareFileForSave();
-            $layerFilename = $this->_prepareFileForSave();
-
-            $this->saveLayer($layer, $layerFilename);
-            $canvas->writeImage($fileToSave);
-            if ($this->_getImageExtensionForSave() == 'pdf') {
-                $fileToSaveJpg    = str_replace('.pdf', '.jpg', $fileToSave);
-                $layerFilenameJpg = str_replace('.pdf', '.jpg', $layerFilename);
-                $canvas->setImageFormat('jpg');
-                $canvas->writeImage($fileToSaveJpg);
-                $layer->setImageFormat('jpg');
-                $this->saveLayer($layer, $layerFilenameJpg);
-            }
-            $layer->destroy();
-            $canvas->destroy();
-
-            $this->addData(array(
-                    'product_id'   => $currentProduct->getId(),
-                    'design_id'    => $designId,
-                    'image'        => str_replace($configPath, '', $fileToSave),
-                    'layer'        => str_replace($configPath, '', $layerFilename),
-                    'image_id'     => $imageId,
-                    'created_date' => Mage::getModel('core/date')->gmtDate(),
-                )
-            )->save();
-        }
+        $canvas = new Imagick();
+        $canvas->readimage($image);
+        $canvas->setImageFormat($this->_getImageExtensionForSave());
+        return $canvas;
     }
 
     /**

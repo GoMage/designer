@@ -149,15 +149,14 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
     public function jsonDecode($string)
     {
         $settings = Mage::helper('core')->jsonDecode($string);
-        $tmp      = array();
+        $result   = array();
         foreach ($settings as $i => $v) {
-            $tmp[$i] = (array)$v;
-            if (!isset($tmp[$i]['s'])) {
-                $tmp[$i]['s'] = 1;
+            $result[$i] = (array)$v;
+            if (!isset($result[$i]['s'])) {
+                $result[$i]['s'] = 1;
             }
         }
-        $settings = $tmp;
-        return $settings;
+        return $result;
     }
 
     public function getImageDimensions($imagePath)
@@ -214,17 +213,18 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
     public function getDesignImageUrl(Mage_Catalog_Model_Product $product, $image, $size = array())
     {
         if (empty($size)) {
-            $imageWidth  = Mage::helper('gomage_designer')->getDesignWidth();
-            $imageHeight = Mage::helper('gomage_designer')->getDesignHeight();
+            $imageWidth  = $this->getDesignWidth();
+            $imageHeight = $this->getDesignHeight();
         } else {
             list($imageWidth, $imageHeight) = $size;
         }
 
         $imageFile = is_object($image) ? $image->getFile() : $image['file'];
-        $url       = Mage::helper('catalog/image')->init($product, 'base_image', $imageFile)->keepFrame(false)
-            ->resize($imageWidth, $imageHeight)->__toString();
-
-        return $url;
+        return Mage::helper('catalog/image')
+            ->init($product, 'base_image', $imageFile)
+            ->keepFrame(false)
+            ->resize($imageWidth, $imageHeight)
+            ->__toString();
     }
 
     public function getOriginalImage(Mage_Catalog_Model_Product $product, $image)

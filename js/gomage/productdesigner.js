@@ -297,8 +297,8 @@ GoMage.ProductDesigner.prototype = {
             designArea.setAttribute('class', 'pd-design-area');
             designArea.setAttribute('id', 'designArea-' + prod.id);
             designArea.style.position = 'absolute';
-            designArea.style.marginLeft = this.calculateOffsetByX(prod) + 'px';
-            designArea.style.marginTop = this.calculateOffsetByY(prod) + 'px';
+            designArea.style.marginLeft = parseInt(prod.l) + 'px';
+            designArea.style.marginTop = parseInt(prod.t) + 'px';
             designArea.style.zIndex = '1000';
 
             var canvas = document.createElement('canvas');
@@ -322,16 +322,6 @@ GoMage.ProductDesigner.prototype = {
             this.canvas.selection = false;
         }
         this.currentProd = prod.id;
-    },
-
-    calculateOffsetByY: function (prod) {
-        return parseInt(prod.t) - Math.round(parseInt(prod.h) / 2);
-    },
-
-    calculateOffsetByX: function (prod) {
-        var x1 = Math.round(this.container.getWidth() / 2);
-        var x2 = Math.round(prod.d[0] / 2);
-        return parseInt(x1 - x2) + parseInt(prod.l) - Math.round(prod.w / 2);
     },
 
     observeSaveDesign: function () {
