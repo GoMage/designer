@@ -30,40 +30,43 @@ $sizes = $this->getFontSizes();
         <textarea id="add_text_textarea" class="pd-textarea" placeholder="<?php echo $this->__('Enter text here') ?>"></textarea>
     </div>
     <div class="pd-element-wrapper">
-        <select class="font-picker" id="font-selector">
+      <div class="pd-text-font-left">
+        <select class="font-picker pd-select" id="font-selector">
         <?php foreach ($defaultFonts as $font):?>
             <option value="<?php echo $font['value']; ?>" <?php echo $this->getDefaultFontFamily() == $font['value'] ? 'selected="selected"' : ''?>><?php echo $font['label']; ?></option>
         <?php endforeach;?>
         <?php foreach($fonts as $font): ?>
             <option value="<?php echo $this->getFontName($font); ?>"><?php echo $this->getFontName($font); ?></option>
         <?php endforeach; ?>
-        </select>
-    </div>
-    <div class="pd-element-wrapper">
-        <button id="add_text_button" class="panel-btn pd-btn-add-text"><?php echo $this->__('Add'); ?></button>
-        <select class="font-size-selector" id="font_size_selector">
+        </select>      
+      </div>
+      <div class="pd-text-font-right">
+        <select class="font-size-selector pd-select" id="font_size_selector">
             <?php foreach ($sizes as $size):?>
                 <option value="<?php echo $size; ?>" <?php echo $this->getDefaultFontSize() == $size ? 'selected="selected"' : ''?>><?php echo $size; ?></option>
             <?php endforeach;?>
-        </select>
+        </select>      
+      </div>
+
+    </div>
+    <div class="pd-element-wrapper">
         <button class="panel-btn pd-btn-bold" id="add_text_btn_bold"><?php echo $this->__('B'); ?></button>
         <button class="panel-btn pd-btn-italic" id="add_text_btn_italic"><?php echo $this->__('I'); ?></button>
         <button class="panel-btn pd-btn-underline" id="add_text_btn_underline"><?php echo $this->__('U'); ?></button>
         <button class="panel-btn pd-btn-vert-output" id="add_text_btn_vert_out" data-state="horizontal">|</button>
-    </div>
-    <?php if ($this->effectsEnabled()):?>
-        <div class="pd-element-wrapper">
-            <button id="curved-text-button" class="panel-btn">↭</button>
-            <button id="shadow-button" class="panel-btn"><?php echo $this->__('Shadow'); ?></button>
-            <button id="outline-button" class="panel-btn"><?php echo $this->__('Outline'); ?></button>
-        </div>
-        <div>
+        <span class="panel-btn-sep"></span>
+        
+        <?php if ($this->effectsEnabled()):?>
+        <button id="curved-text-button" class="panel-btn2"><?php echo $this->__('Curved Text') ?></button>
+        <button id="outline-button" class="panel-btn2"><?php echo $this->__('Outline'); ?></button>
+        <button id="shadow-button" class="panel-btn2"><?php echo $this->__('Shadow'); ?></button>
+        <div class="pd-text-effect-popup">
             <fieldset class="curved-text-config text-effect">
                 <legend><?php echo $this->__('Curved Text'); ?></legend>
                 <div id="curved-text-cancel" title="<?php echo $this->__('Cancel Curved') ?>" data-effect="curved" class="panel-cancel-btn">&times;</div>
                 <div class="pd-element-wrapper">
                     <label for="curve_spacing"><?php echo $this->__('Radius'); ?>: </label>
-                    <input type="range" id="curve_spacing" min='-40' max='40' step="1" value='0' style="width: 250px;">
+                    <input type="range" id="curve_spacing" min='-40' max='40' step="1" value='0'>
                 </div>
             </fieldset>
             <fieldset class="shadow-config text-effect">
@@ -97,14 +100,21 @@ $sizes = $this->getFontSizes();
                 </div>
             </fieldset>
         </div>
-    <?php endif;?>
+        <?php endif;?>        
+        
+    </div>
+    
     <div class="colors-panel" id="add_text_colors_panel">
         <?php foreach($colors as $color): ?>
             <span class="color-btn color-code-<?php echo $color; ?>" style="background-color:#<?php echo $color; ?>">&nbsp;</span>
         <?php endforeach; ?>
+            <span class="color-picher active"></span>
     </div>
-    <div class="pd-element-wrapper">
-        <canvas height="40" width="276" id="color" class="color-picker"></canvas>
+    <div class="pd-element-wrapper color-picker-palitra">
+        <canvas height="69" width="290" id="color" class="color-picker"></canvas>
+    </div>
+    <div class="pd-element-wrapper pd-add-text-actions">
+      <button id="add_text_button" class="pd-btn pd-btn-green pd-btn-add-text"><?php echo $this->__('Add Text'); ?></button>
     </div>
 </div>
 
