@@ -284,6 +284,7 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
                 $conf['u']          = $imageUrl;
                 $conf['d']          = $this->getImageDimensions($imageUrl);
                 $conf['orig_image'] = $this->getOriginalImage($product, $image);
+                $conf['ico']        = $this->getDesignImageUrl($product, $image, array(60, 60));
 
                 if ($product->getTypeId() == Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE) {
                     if ($image['color']) {
@@ -304,6 +305,7 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
                 }
                 $editorConfig['default_color'] = $defaultColor;
                 $editorConfig['url']           = $product->getProductUrl();
+                $editorConfig['name']          = $product->getName();
             }
 
             $this->_editorConfig = $editorConfig;

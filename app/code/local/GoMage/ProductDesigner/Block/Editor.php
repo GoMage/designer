@@ -1,4 +1,5 @@
 <?php
+
 /**
  * GoMage Product Designer Extension
  *
@@ -10,14 +11,13 @@
  * @version      Release: 1.0.0
  * @since        Available since Release 1.0.0
  */
-
 class GoMage_ProductDesigner_Block_Editor extends Mage_Core_Block_Template
 {
     protected $_editorConfig;
 
     protected $_tabs;
 
-    protected $_tabCodes = array('navigation', 'design', 'text', 'upload_image');
+    protected $_tabCodes = array('design', 'text', 'upload_image');
 
     protected $_activeTab;
 
@@ -63,7 +63,7 @@ class GoMage_ProductDesigner_Block_Editor extends Mage_Core_Block_Template
 
     public function getProductImages()
     {
-        $config = $this->getEditorConfig();
+        $config       = $this->getEditorConfig();
         $defaultColor = $config['default_color'];
         if (isset($config['images'][$defaultColor])) {
             return $config['images'][$defaultColor];
@@ -79,7 +79,7 @@ class GoMage_ProductDesigner_Block_Editor extends Mage_Core_Block_Template
 
     public function isNavigationEnabled()
     {
-        return $this->_getEnableTab('navigation');
+        return Mage::getStoreConfig('gomage_designer/navigation/enabled', Mage::app()->getStore());
     }
 
     public function isDesignEnabled()
@@ -99,7 +99,7 @@ class GoMage_ProductDesigner_Block_Editor extends Mage_Core_Block_Template
 
     protected function _getEnableTab($tab)
     {
-        return Mage::getStoreConfig('gomage_designer/'. $tab .'/enabled', Mage::app()->getStore());
+        return Mage::getStoreConfig('gomage_designer/' . $tab . '/enabled', Mage::app()->getStore());
     }
 
     public function isActiveTab($tab)
@@ -118,7 +118,7 @@ class GoMage_ProductDesigner_Block_Editor extends Mage_Core_Block_Template
             if ($this->isProductSelected()) {
                 $defaultTab = Mage::getStoreConfig('gomage_designer/general/default_tab', Mage::app()->getStore());
                 if ($this->_tabs[$defaultTab]) {
-                    $this->_activeTab  = $defaultTab;
+                    $this->_activeTab = $defaultTab;
                 } else {
                     foreach ($this->_tabs as $_tab => $_visibility) {
                         if ($_visibility) {
@@ -127,8 +127,6 @@ class GoMage_ProductDesigner_Block_Editor extends Mage_Core_Block_Template
                         }
                     }
                 }
-            } elseif($this->_tabs['navigation']) {
-                $this->_activeTab = 'navigation';
             }
         }
 
@@ -138,7 +136,7 @@ class GoMage_ProductDesigner_Block_Editor extends Mage_Core_Block_Template
     public function isProductSelected()
     {
         $product = $this->getProduct();
-        return (bool) $product->getId() && ($product->getEnableProductDesigner()
+        return (bool)$product->getId() && ($product->getEnableProductDesigner()
             && $product->hasImagesForDesign());
     }
 
@@ -150,7 +148,7 @@ class GoMage_ProductDesigner_Block_Editor extends Mage_Core_Block_Template
     public function getProductOriginalImageMinSizes()
     {
         return array(
-            'width' => Mage::getStoreConfig('gomage_designer/general/zoom_size_width'),
+            'width'  => Mage::getStoreConfig('gomage_designer/general/zoom_size_width'),
             'height' => Mage::getStoreConfig('gomage_designer/general/zoom_size_height')
         );
     }
@@ -162,7 +160,7 @@ class GoMage_ProductDesigner_Block_Editor extends Mage_Core_Block_Template
 
     public function isCustomerLoggedIn()
     {
-        return (bool) $this->getCustomerId();
+        return (bool)$this->getCustomerId();
     }
 
     /**
@@ -173,9 +171,9 @@ class GoMage_ProductDesigner_Block_Editor extends Mage_Core_Block_Template
     public function getDesignPriceConfig()
     {
         $config = array(
-            'fixed_price' => Mage::getStoreConfig('gomage_designer/general/fixed_price') ?:0,
-            'text_price'  => Mage::getStoreConfig('gomage_designer/general/price_for_text')?:0,
-            'image_text'  => Mage::getStoreConfig('gomage_designer/general/price_for_image')?:0
+            'fixed_price' => Mage::getStoreConfig('gomage_designer/general/fixed_price') ? : 0,
+            'text_price'  => Mage::getStoreConfig('gomage_designer/general/price_for_text') ? : 0,
+            'image_text'  => Mage::getStoreConfig('gomage_designer/general/price_for_image') ? : 0
         );
 
         return $config;
@@ -211,27 +209,27 @@ class GoMage_ProductDesigner_Block_Editor extends Mage_Core_Block_Template
 
     public function isHelpEnabled($area)
     {
-        return (bool) Mage::getStoreConfig('gomage_designer/'. $area .'/show_help') &&
-            $this->getHelpText($area);
+        return (bool)Mage::getStoreConfig('gomage_designer/' . $area . '/show_help') &&
+        $this->getHelpText($area);
     }
 
     public function getHelpPopupWidth($area)
     {
-        return Mage::getStoreConfig('gomage_designer/'. $area .'/popup_width');
+        return Mage::getStoreConfig('gomage_designer/' . $area . '/popup_width');
     }
 
     public function getHelpPopupHeight($area)
     {
-        return Mage::getStoreConfig('gomage_designer/'. $area .'/popup_height');
+        return Mage::getStoreConfig('gomage_designer/' . $area . '/popup_height');
     }
 
     public function getHelpText($area)
     {
-        return Mage::getStoreConfig('gomage_designer/'. $area .'/popup_text');
+        return Mage::getStoreConfig('gomage_designer/' . $area . '/popup_text');
     }
 
     public function additionalInstructionsEnabled()
     {
-        return (bool) Mage::getStoreConfig('gomage_designer/general/show_comment');
+        return (bool)Mage::getStoreConfig('gomage_designer/general/show_comment');
     }
 }

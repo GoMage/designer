@@ -1,4 +1,5 @@
 <?php
+
 /**
  * GoMage Product Designer Extension
  *
@@ -10,7 +11,6 @@
  * @version      Release: 1.0.0
  * @since        Available since Release 1.0.0
  */
-
 class GoMage_ProductDesigner_Model_Navigation extends Mage_Core_Model_Abstract
 {
     protected $_collection = null;
@@ -25,13 +25,17 @@ class GoMage_ProductDesigner_Model_Navigation extends Mage_Core_Model_Abstract
      */
     protected function _prepareProductCollection()
     {
-        $category = $this->_getRootCategory();
+        $category   = $this->_getRootCategory();
         $collection = Mage::getModel('catalog/product')->getCollection()
             ->addAttributeToFilter('type_id', array('in' => Mage::helper('gomage_designer')->getAllowedProductTypes()))
             ->addAttributeToFilter('enable_product_designer', 1)
             ->addStoreFilter(Mage::app()->getStore())
-            ->addCategoryFilter($category)
             ->addCategoryIds();
+
+        if ($category->getId() != Mage::app()->getStore()->getRootCategoryId()) {
+            $collection->addCategoryFilter($category);
+        }
+
         $this->_addFiltersAttributes($collection);
         $this->_addDesignAreaFilter($collection);
 
@@ -50,8 +54,8 @@ class GoMage_ProductDesigner_Model_Navigation extends Mage_Core_Model_Abstract
     protected function _getRootCategory()
     {
         if (is_null($this->_category)) {
-            $categoryId = Mage::getStoreConfig('gomage_designer/navigation/category')
-                ?: Mage::app()->getStore()->getRootCategoryId();
+            $categoryId      = Mage::getStoreConfig('gomage_designer/navigation/category')
+                ? : Mage::app()->getStore()->getRootCategoryId();
             $this->_category = Mage::getModel('catalog/category')->load($categoryId);
         }
 
@@ -80,6 +84,7 @@ class GoMage_ProductDesigner_Model_Navigation extends Mage_Core_Model_Abstract
 
     /**
      * Add Design area filter
+     *
      * @param Mage_Catalog_Model_Resource_Product_Collection $collection Product collection
      * @param string $tableAlias Table Alias
      * @param string $joinField Join Field
@@ -87,7 +92,7 @@ class GoMage_ProductDesigner_Model_Navigation extends Mage_Core_Model_Abstract
      */
     protected function _addDesignAreaFilter($collection, $tableAlias = 'e', $joinField = 'entity_id')
     {
-        $storeId = Mage::app()->getStore()->getId();
+        $storeId               = Mage::app()->getStore()->getId();
         $mediaGalleryAttribute = Mage::getSingleton('eav/config')
             ->getAttribute(Mage_Catalog_Model_Product::ENTITY, 'media_gallery');
         if ($mediaGalleryAttribute->getId()) {
@@ -96,15 +101,15 @@ class GoMage_ProductDesigner_Model_Navigation extends Mage_Core_Model_Abstract
                 "{$tableAlias}.{$joinField} = media_gallery.entity_id AND media_gallery.attribute_id = {$mediaGalleryAttribute->getId()}",
                 array()
             )->joinLeft(
-                array('media_gallery_value' => $collection->getTable('catalog/product_attribute_media_gallery_value')),
-                "media_gallery.value_id = media_gallery_value.value_id AND media_gallery_value.store_id = {$storeId}",
-                array()
-            )->joinLeft(
-                array('media_gallery_value_default' => $collection->getTable('catalog/product_attribute_media_gallery_value')),
-                "media_gallery.value_id = media_gallery_value_default.value_id AND media_gallery_value_default.store_id = 0",
-                array('media_gallery_value_default.design_area')
-            )
-            ->where('IFNULL(media_gallery_value.design_area, media_gallery_value_default.design_area) IS NOT NULL');
+                    array('media_gallery_value' => $collection->getTable('catalog/product_attribute_media_gallery_value')),
+                    "media_gallery.value_id = media_gallery_value.value_id AND media_gallery_value.store_id = {$storeId}",
+                    array()
+                )->joinLeft(
+                    array('media_gallery_value_default' => $collection->getTable('catalog/product_attribute_media_gallery_value')),
+                    "media_gallery.value_id = media_gallery_value_default.value_id AND media_gallery_value_default.store_id = 0",
+                    array('media_gallery_value_default.design_area')
+                )
+                ->where('IFNULL(media_gallery_value.design_area, media_gallery_value_default.design_area) IS NOT NULL');
         }
 
         return $collection;
@@ -137,12 +142,12 @@ class GoMage_ProductDesigner_Model_Navigation extends Mage_Core_Model_Abstract
     public function getFilterOptions($filter)
     {
         $collection = $this->_prepareProductCollection();
-        $ids = $collection->getAllIds();
+        $ids        = $collection->getAllIds();
         $this->applyFilters($collection, $filter);
         $options = array();
 
         if ($filter == 'category') {
-            $categoryIds = array();
+            $categoryIds         = array();
             $availableCategories = $this->_getRootCategory()->getAllChildren();
             if (!$availableCategories) {
                 return $options;
@@ -196,7 +201,7 @@ class GoMage_ProductDesigner_Model_Navigation extends Mage_Core_Model_Abstract
     {
         if (is_null($this->_collection)) {
             $collection = $this->_prepareProductCollection();
-            $ids = $collection->getAllIds();
+            $ids        = $collection->getAllIds();
 
             $associatedProducts = $this->_getAssociatedProductCollection($ids);
             $this->applyFilters($associatedProducts);
@@ -232,7 +237,7 @@ class GoMage_ProductDesigner_Model_Navigation extends Mage_Core_Model_Abstract
         if (is_null($this->_availableFilters)) {
             $filters = array();
             foreach (array(Mage::getStoreConfig('gomage_designer/navigation/color_attribute'),
-                 Mage::getStoreConfig('gomage_designer/navigation/size_attribute')) as $filter) {
+                         Mage::getStoreConfig('gomage_designer/navigation/size_attribute')) as $filter) {
                 if ($attribute = $this->_getFilterAttribute($filter)) {
                     $filters[$attribute->getAttributeCode()] = $attribute;
                 }
@@ -260,7 +265,7 @@ class GoMage_ProductDesigner_Model_Navigation extends Mage_Core_Model_Abstract
      * @param string $code Attribute Code
      * @return bool|Mage_Eav_Model_Attribute
      */
-    protected  function _getFilterAttribute($code)
+    protected function _getFilterAttribute($code)
     {
         $attribute = Mage::getSingleton('eav/config')
             ->getAttribute(Mage_Catalog_Model_Product::ENTITY, $code);
@@ -281,7 +286,7 @@ class GoMage_ProductDesigner_Model_Navigation extends Mage_Core_Model_Abstract
     public function applyFilters($collection, $excludeFilter = null)
     {
         if (is_string($excludeFilter)) {
-            $excludeFilter = (array) $excludeFilter;
+            $excludeFilter = (array)$excludeFilter;
         }
         $request = Mage::app()->getRequest();
         $filters = $this->getAvailableFilters();
@@ -304,14 +309,14 @@ class GoMage_ProductDesigner_Model_Navigation extends Mage_Core_Model_Abstract
      * Apply filter to collection
      *
      * @param Mage_Catalog_Model_Resource_Product_Collection $collection Collection
-     * @param string                                         $filter     Filter
-     * @param int|string                                     $value      Value
+     * @param string $filter Filter
+     * @param int|string $value Value
      * @return $this
      */
     public function applyFilter($collection, $filter, $value)
     {
         if ($filter == 'category') {
-            $category = Mage::getModel('catalog/category')->load((int) $value);
+            $category = Mage::getModel('catalog/category')->load((int)$value);
             if ($category && $category->getId()) {
                 $collection->addCategoryFilter($category);
             }

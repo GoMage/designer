@@ -81,6 +81,7 @@ GoMage.ProductDesigner = function (config, continueUrl, loginUrl, registrationUr
     this.designId = {};
 
     this.loadProduct(config.product);
+    this.observeChooseProduct();
     this.observeLayerControls();
     this.observeTabs();
     this.observeZoomBtn();
@@ -101,6 +102,7 @@ GoMage.ProductDesigner.prototype = {
         if (!product) {
             return;
         }
+        $('pd_current_product_name').innerHTML = product.name;
         if (!color) {
             color = product.default_color;
         }
@@ -117,6 +119,22 @@ GoMage.ProductDesigner.prototype = {
                 this.addDesignArea(img);
                 return;
             }
+        }
+    },
+
+    observeChooseProduct: function () {
+        if (this.navigation.chooseProduct) {
+            this.navigation.chooseProduct.observe('click', function (e) {
+                var elm = e.target || e.srcElement;
+                var content = $(elm.id + '-content');
+                if (content) {
+                    if (content.getStyle('display') == 'none') {
+                        content.setStyle({display: 'block'});
+                    } else {
+                        content.setStyle({display: 'none'});
+                    }
+                }
+            });
         }
     },
 
@@ -186,12 +204,16 @@ GoMage.ProductDesigner.prototype = {
         var images = product.images[this.currentColor];
         var imageTemplateData = {};
         var imagesHtml = '';
+        var first = true;
         for (var id in images) {
             if (images.hasOwnProperty(id)) {
-                imageTemplateData['url'] = images[id].u;
+                imageTemplateData['class'] = first ? 'active' : '';
+                imageTemplateData['ico'] = images[id].ico;
                 imageTemplateData['image-id'] = id;
                 imageTemplateData['data-image-id'] = images[id].id;
+                imageTemplateData['data-url'] = images[id].u;
                 imagesHtml += this.productAdditionalImageTemplate.evaluate(imageTemplateData);
+                first = false;
             }
         }
         productsList.innerHTML = imagesHtml;
@@ -263,11 +285,10 @@ GoMage.ProductDesigner.prototype = {
     },
 
     observeTabs: function () {
-        $('pd_nav_container').childElements().invoke('observe', 'click', function (e) {
+        $('pd_panels_nav').childElements().invoke('observe', 'click', function (e) {
             var elm = e.target || e.srcElement;
-            if (elm.tagName == 'SPAN') {
-                elm = elm.up('button');
-            }
+            elm.siblings().invoke('removeClassName', 'active');
+            elm.addClassName('active');
             var buttonId = elm.id;
             var tabContentElement = $(buttonId + '-content');
             if (tabContentElement) {
@@ -834,6 +855,8 @@ GoMage.ProductDesigner.prototype = {
 
     observeProductImageChange: function () {
         Event.on($(this.opt.product_side_id), 'click', '.product-image', function (e, elem) {
+            elem.up('li').addClassName('active');
+            elem.up('li').siblings().invoke('removeClassName', 'active');
             this.changeProductImage(elem.readAttribute('data-id'));
         }.bind(this));
     },
@@ -1304,19 +1327,19 @@ GoMage.ProductNavigation.prototype = {
     initProductView: function () {
         Event.on($(this.opt.navigationProducts), 'mouseover', '.item', function (e, elm) {
             e.stop();
-            var containerWidth = $(this.opt.navigationProducts).getWidth();
+            var containerWidth = parseInt($(this.opt.navigationProducts).getWidth()) + 20;
             elm.down('.display-product').setStyle({
                 display: 'block',
-                right: containerWidth + 'px'
+                left: containerWidth + 'px'
             });
         }.bind(this));
 
         Event.on($(this.opt.navigationProducts), 'mouseout', '.item', function (e, elm) {
             e.stop();
-            var containerWidth = $(this.opt.navigationProducts).getWidth();
+            var containerWidth = parseInt($(this.opt.navigationProducts).getWidth()) + 20;
             elm.down('.display-product').setStyle({
                 display: 'none',
-                right: containerWidth + 'px'
+                left: containerWidth + 'px'
             });
         }.bind(this));
     },
@@ -1361,7 +1384,11 @@ GoMage.ProductNavigation.prototype = {
                 if (productId && productId != undefined) {
                     var data = { id: productId };
                 }
+                if ($('pd_choose_product-content')) {
+                    $('pd_choose_product-content').setStyle({display: 'none'});
+                }
                 this.prepareAndSubmitData(this.opt.productUrl, this.updateDataOnProductChoose.bind(this), data);
+
             }
         }.bind(this));
     },
