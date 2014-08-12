@@ -1145,7 +1145,7 @@ GoMage.ProductDesigner.prototype = {
                         var imagePrice = parseFloat(this.prices.image_text);
                         var textPrice = parseFloat(this.prices.text_price);
                         canvas.getObjects().each(function (object) {
-                            if (object.type == 'custom_text') {
+                            if (object.type == 'text') {
                                 textsCount++;
                                 if (textPrice > 0) {
                                     textsPrice += textPrice;
@@ -1578,11 +1578,9 @@ GoMage.TextEditor = function (defaultFontFamily, defaultFontSize) {
         text: '',
         fontFamily: defaultFontFamily,
         fontSize: defaultFontSize,
-        strokeWidth: 0.00001,
-        textShadowOffsetX: 0,
-        textShadowOffsetY: 0,
-        textShadowBlur: 0,
-        curved: 0
+        stroke: '',
+        strokeWidth: 0,
+        shadow: null
     };
 
     this.fontSelector = $('font-selector');
@@ -1591,9 +1589,8 @@ GoMage.TextEditor = function (defaultFontFamily, defaultFontSize) {
     this.addTextBtnBold = $('add_text_btn_bold');
     this.addTextBtnItalic = $('add_text_btn_italic');
     this.addTextBtnUnderline = $('add_text_btn_underline');
-    this.addTextBtnVertOut = $('add_text_btn_vert_out');
+    this.addTextBtnStrokeThrough = $('add_text_btn_stroke_through');
     this.fontSizeSelector = $('font_size_selector');
-    this.curvedTextButton = $('curved-text-button');
     this.btnShadowText = $('shadow-button');
     this.btnOutlineText = $('outline-button');
     this.addTextColorsPanel = $('add_text_colors_panel');
@@ -1601,26 +1598,21 @@ GoMage.TextEditor = function (defaultFontFamily, defaultFontSize) {
     this.shadowOffsetX = $('shadow_x_range');
     this.shadowOffsetY = $('shadow_y_range');
     this.shadowBlur = $('shadow_blur');
-    this.curved = $('curve_spacing');
 
     this.fieldsMap = {
         text: this.addTextTextarea,
         fontFamily: this.fontSelector,
         fontSize: this.fontSizeSelector,
-        strokeWidth: this.outlineStrokeWidthRange,
-        textShadowOffsetX: this.shadowOffsetX,
-        textShadowOffsetY: this.shadowOffsetY,
-        textShadowBlur: this.shadowBlur,
-        curved: this.curved
+        strokeWidth: this.outlineStrokeWidthRange
     };
 
     this.defaultFieldsValues = {
-        curved: 8,
-        textShadowOffsetX: 5,
-        textShadowOffsetY: 5,
-        textShadowBlur: 5,
-        strokeStyle: '#ffffff',
-        strokeWidth: 0.30001
+        shadowOffsetX: 5,
+        shadowOffsetY: 5,
+        shadowBlur: 5,
+        shadowColor: '#000000',
+        stroke: '#000000',
+        strokeWidth: 0
     };
 
     this.observeTextTabShow();
@@ -1630,8 +1622,6 @@ GoMage.TextEditor = function (defaultFontFamily, defaultFontSize) {
     this.observeAddText();
     this.observeFontSizeChange();
     this.observeFontStyleControls();
-    this.observeCurvedTextButton();
-    this.observeCurvedTextControls();
     this.observeShadowButton();
     this.observeShadowControls();
     this.observeOutlineButton();
@@ -1651,9 +1641,8 @@ GoMage.TextEditor.prototype = {
     selectColorOnPicker: function (e) {
         var elem = e.target || e.srcElement;
         var obj = this.productDesigner.canvas.getActiveObject();
-        if (obj && obj.type == 'custom_text') {
+        if (obj && obj.type == 'text') {
             if (elem.id) {
-                var data;
                 switch (elem.id) {
                     case 'color':
                     {
@@ -1662,12 +1651,12 @@ GoMage.TextEditor.prototype = {
                     }
                     case 'textShadow':
                     {
-                        this.setShadow({textShadowColor: e.hex})
+                        this.setShadow({shadowColor: e.hex});
                         break;
                     }
                     case 'strokeStyle':
                     {
-                        var cmd = new TransformCommand(this.productDesigner.canvas, obj, {strokeStyle: e.hex});
+                        var cmd = new TransformCommand(this.productDesigner.canvas, obj, {stroke: e.hex});
                         cmd.exec();
                         this.productDesigner.history.push(cmd);
                         break;
@@ -1682,7 +1671,7 @@ GoMage.TextEditor.prototype = {
      */
     setTextColor: function (color) {
         var obj = this.productDesigner.canvas.getActiveObject();
-        if (obj && (obj.type == 'text' || obj.type == 'custom_text')) {
+        if (obj && obj.type == 'text') {
             var cmd = new TransformCommand(this.productDesigner.canvas, obj, {color: color});
             cmd.exec();
             this.productDesigner.history.push(cmd);
@@ -1692,13 +1681,17 @@ GoMage.TextEditor.prototype = {
     observeTextColorChange: function () {
         this.addTextColorsPanel.childElements().invoke('observe', 'click', function (e) {
             var elem = e.target || e.srcElement;
-            if (!elem.hasClassName('selected')) {
-                elem.siblings().invoke('removeClassName', 'selected');
+            if (!elem.hasClassName('active')) {
+                elem.siblings().invoke('removeClassName', 'active');
             }
-            elem.addClassName('selected');
-            var color = elem.className.match(/color-code-([0-9A-Z]{6})/)[1];
-            var color = '#' + color;
-            this.setTextColor(color);
+            elem.addClassName('active');
+            if (elem.className.match(/color-code-([0-9A-Z]{6})/)) {
+                var color = elem.className.match(/color-code-([0-9A-Z]{6})/)[1];
+                var color = '#' + color;
+                this.setTextColor(color);
+            } else {
+                $('color-picker-palitra').toggle();
+            }
         }.bind(this));
     },
 
@@ -1706,7 +1699,7 @@ GoMage.TextEditor.prototype = {
         this.fontSelector.observe('change', function (e) {
             var elem = e.target || e.srcElement;
             var obj = this.productDesigner.canvas.getActiveObject();
-            if (obj && obj.type == 'custom_text') {
+            if (obj && obj.type == 'text') {
                 var cmd = new TransformCommand(this.productDesigner.canvas, obj, {fontFamily: elem.value});
                 cmd.exec();
                 this.productDesigner.history.push(cmd);
@@ -1725,7 +1718,7 @@ GoMage.TextEditor.prototype = {
                 fontSize: parseInt(this.fontSizeSelector.value),
                 fontFamily: this.fontSelector.value
             };
-            var textObject = new fabric.CustomText(text, textObjectData);
+            var textObject = new fabric.Text(text, textObjectData);
             var cmd = new InsertCommand(this.productDesigner, textObject, true);
             cmd.exec();
             this.productDesigner.history.push(cmd);
@@ -1733,7 +1726,7 @@ GoMage.TextEditor.prototype = {
 
         this.addTextTextarea.observe('keyup', function (e) {
             var obj = this.productDesigner.canvas.getActiveObject();
-            if (!obj || obj.type != 'custom_text') {
+            if (!obj || obj.type != 'text') {
                 return;
             }
 
@@ -1748,7 +1741,7 @@ GoMage.TextEditor.prototype = {
                     return;
                 }
                 var currentValue = elem.value;
-                if (obj && (obj.type == 'text' || obj.type == 'custom_text')) {
+                if (obj && obj.type == 'text') {
                     if (currentValue != obj.getText()) {
                         var cmd = new TransformCommand(this.productDesigner.canvas, obj, {text: currentValue});
                         cmd.exec();
@@ -1763,7 +1756,7 @@ GoMage.TextEditor.prototype = {
         this.fontSizeSelector.observe('change', function (e) {
             var elem = e.target || e.srcElement;
             var obj = this.productDesigner.canvas.getActiveObject();
-            if (obj && (obj.type == 'text' || obj.type == 'custom_text')) {
+            if (obj && obj.type == 'text') {
                 var cmd = new TransformCommand(this.productDesigner.canvas, obj, {fontSize: parseInt(elem.value)});
                 cmd.exec();
                 this.productDesigner.history.push(cmd);
@@ -1774,8 +1767,8 @@ GoMage.TextEditor.prototype = {
     observeFontStyleControls: function () {
         this.addTextBtnBold.observe('click', function (e) {
             var obj = this.productDesigner.canvas.getActiveObject();
-            if (obj && (obj.type == 'text' || obj.type == 'custom_text')) {
-                var params = {fontWeight: (!obj.fontWeight || obj.fontWeight == '400' ? 'bold' : '400')}
+            if (obj && obj.type == 'text') {
+                var params = {fontWeight: (!obj.fontWeight || obj.fontWeight == 'normal' ? 'bold' : 'normal')};
                 var cmd = new TransformCommand(this.productDesigner.canvas, obj, params);
                 cmd.exec();
                 this.productDesigner.history.push(cmd);
@@ -1784,8 +1777,8 @@ GoMage.TextEditor.prototype = {
 
         this.addTextBtnItalic.observe('click', function (e) {
             var obj = this.productDesigner.canvas.getActiveObject();
-            if (obj && (obj.type == 'text' || obj.type == 'custom_text')) {
-                var params = {fontStyle: (!obj.fontStyle ? 'italic' : '')}
+            if (obj && obj.type == 'text') {
+                var params = {fontStyle: (!obj.fontStyle ? 'italic' : '')};
                 var cmd = new TransformCommand(this.productDesigner.canvas, obj, params);
                 cmd.exec();
                 this.productDesigner.history.push(cmd);
@@ -1794,18 +1787,18 @@ GoMage.TextEditor.prototype = {
 
         this.addTextBtnUnderline.observe('click', function (e) {
             var obj = this.productDesigner.canvas.getActiveObject();
-            if (obj && (obj.type == 'text' || obj.type == 'custom_text')) {
-                var params = {textDecoration: (!obj.textDecoration ? 'underline' : '')}
+            if (obj && obj.type == 'text') {
+                var params = {textDecoration: (!obj.textDecoration || obj.textDecoration != 'underline' ? 'underline' : '')};
                 var cmd = new TransformCommand(this.productDesigner.canvas, obj, params);
                 cmd.exec();
                 this.productDesigner.history.push(cmd);
             }
         }.bind(this));
 
-        this.addTextBtnVertOut.observe('click', function (e) {
+        this.addTextBtnStrokeThrough.observe('click', function (e) {
             var obj = this.productDesigner.canvas.getActiveObject();
-            if (obj && (obj.type == 'text' || obj.type == 'custom_text')) {
-                var params = {verticalOutput: (obj.verticalOutput == false ? true : false)}
+            if (obj && obj.type == 'text') {
+                var params = {textDecoration: (!obj.textDecoration || obj.textDecoration != 'line-through' ? 'line-through' : '')};
                 var cmd = new TransformCommand(this.productDesigner.canvas, obj, params);
                 cmd.exec();
                 this.productDesigner.history.push(cmd);
@@ -1835,24 +1828,17 @@ GoMage.TextEditor.prototype = {
 
     cancelTextEffect: function (elm) {
         var obj = this.productDesigner.canvas.getActiveObject();
-        if (!obj || obj.type != 'custom_text') {
+        if (!obj || obj.type != 'text') {
             return;
         }
         var btn = $(elm.id.replace('-cancel', '-button'));
         var params = {};
-        var controls = {};
-        if (elm.getAttribute('data-effect') == 'curved') {
-            this.fieldsMap.curved.value = 0;
-            params['curved'] = 0;
-        } else if (elm.getAttribute('data-effect') == 'outline') {
-            this.fieldsMap.strokeWidth.value = 0.00001;
-            params['strokeWidth'] = 0.00001;
-            params['strokeStyle'] = '';
+        if (elm.getAttribute('data-effect') == 'outline') {
+            this.fieldsMap.strokeWidth.value = 0;
+            params['strokeWidth'] = 0;
+            params['stroke'] = '';
         } else if (elm.getAttribute('data-effect') == 'shadow') {
-            this.fieldsMap.textShadowOffsetX.value = 0;
-            this.fieldsMap.textShadowOffsetY.value = 0;
-            this.fieldsMap.textShadowBlur.value = 0;
-            params['textShadow'] = undefined;
+            params['shadow'] = null;
         }
 
         if (btn) {
@@ -1864,41 +1850,6 @@ GoMage.TextEditor.prototype = {
         this.productDesigner.history.push(cmd);
     },
 
-    observeCurvedTextButton: function () {
-        if (!this.curvedTextButton) {
-            return;
-        }
-        this.curvedTextButton.observe('click', function (e) {
-            var elem = e.target || e.srcElement;
-            var obj = this.productDesigner.canvas.getActiveObject();
-            if (obj && obj.type == 'custom_text') {
-                this.toggleConfigContainer(elem);
-                if (obj.curved === 0 && this.curved) {
-                    this.curved.value = this.defaultFieldsValues.curved;
-                    var cmd = new TransformCommand(this.productDesigner.canvas, obj, {curved: parseFloat(this.defaultFieldsValues.curved)});
-                    cmd.exec();
-                    this.productDesigner.history.push(cmd);
-                }
-            }
-
-        }.bind(this));
-    },
-
-    observeCurvedTextControls: function () {
-        if (!this.curved) {
-            return;
-        }
-        this.curved.observe('change', function (e) {
-            var elem = e.target || e.srcElement;
-            var obj = this.productDesigner.canvas.getActiveObject();
-            if (obj && obj.type == 'custom_text') {
-                var cmd = new TransformCommand(this.productDesigner.canvas, obj, {curved: parseFloat(elem.value)});
-                cmd.exec();
-                this._addToHistory(cmd, 'curved', 8);
-            }
-        }.bind(this));
-    },
-
     observeShadowButton: function () {
         if (!this.btnShadowText) {
             return;
@@ -1906,18 +1857,16 @@ GoMage.TextEditor.prototype = {
         this.btnShadowText.observe('click', function (e) {
             var elem = e.target || e.srcElement;
             var obj = this.productDesigner.canvas.getActiveObject();
-            if (obj && obj.type == 'custom_text') {
+            if (obj && obj.type == 'text') {
                 this.toggleConfigContainer(elem);
-                if (obj.textShadow == '') {
+                if (obj.shadow == null) {
                     this.setShadow({
-                        textShadowOffsetX: this.defaultFieldsValues.textShadowOffsetX,
-                        textShadowOffsetY: this.defaultFieldsValues.textShadowOffsetY,
-                        textShadowBlur: this.defaultFieldsValues.textShadowBlur
+                        shadowOffsetX: this.defaultFieldsValues.shadowOffsetX,
+                        shadowOffsetY: this.defaultFieldsValues.shadowOffsetY,
+                        shadowBlur: this.defaultFieldsValues.shadowBlur,
+                        shadowColor: this.defaultFieldsValues.shadowColor
                     })
                 }
-                this.fieldsMap.textShadowOffsetX.value = this.defaultFieldsValues.textShadowOffsetX;
-                this.fieldsMap.textShadowOffsetY.value = this.defaultFieldsValues.textShadowOffsetY;
-                this.fieldsMap.textShadowBlur.value = this.defaultFieldsValues.textShadowBlur;
             }
         }.bind(this));
     },
@@ -1933,38 +1882,44 @@ GoMage.TextEditor.prototype = {
 
         shadowOffsetY.observe('change', function (e) {
             var elem = e.target || e.srcElement;
-            this.setShadow({textShadowOffsetY: parseInt(elem.value)});
+            this.setShadow({shadowOffsetY: parseInt(elem.value)});
         }.bind(this));
 
         shadowOffsetX.observe('change', function (e) {
             var elem = e.target || e.srcElement;
-            this.setShadow({textShadowOffsetX: parseInt(elem.value)});
+            this.setShadow({shadowOffsetX: parseInt(elem.value)});
         }.bind(this));
 
         shadowBlur.observe('change', function (e) {
             var elem = e.target || e.srcElement;
-            this.setShadow({textShadowBlur: parseInt(elem.value)});
+            this.setShadow({shadowBlur: parseInt(elem.value)});
         }.bind(this));
     },
 
     setShadow: function (shadowParams) {
         var obj = this.productDesigner.canvas.getActiveObject();
-        if (obj && obj.type == 'custom_text') {
+        if (obj && obj.type == 'text') {
+            var shadow = obj.shadow;
+            if (shadow == null) {
+                shadow = new fabric.Shadow();
+            }
             if (shadowParams != undefined) {
-                if (!shadowParams.hasOwnProperty('textShadowOffsetX')) {
-                    shadowParams['textShadowOffsetX'] = obj.textShadowOffsetX;
+                if (shadowParams.hasOwnProperty('shadowOffsetX')) {
+                    shadow.offsetX = shadowParams.shadowOffsetX;
                 }
-                if (!shadowParams.hasOwnProperty('textShadowOffsetY')) {
-                    shadowParams['textShadowOffsetY'] = obj.textShadowOffsetY;
+                if (shadowParams.hasOwnProperty('shadowOffsetY')) {
+                    shadow.offsetY = shadowParams.shadowOffsetY;
                 }
-                if (!shadowParams.hasOwnProperty('textShadowBlur')) {
-                    shadowParams['textShadowBlur'] = obj.textShadowBlur;
+                if (shadowParams.hasOwnProperty('shadowBlur')) {
+                    shadow.blur = shadowParams.shadowBlur;
+                }
+                if (shadowParams.hasOwnProperty('shadowColor')) {
+                    shadow.color = shadowParams.shadowColor;
                 }
             }
 
-            var cmd = new TransformCommand(this.productDesigner.canvas, obj, {textShadow: shadowParams});
+            var cmd = new TransformCommand(this.productDesigner.canvas, obj, {shadow: shadow});
             cmd.exec();
-            this._addToHistory(cmd, 'textShadow', {textShadowOffsetX: 2.5, textShadowOffsetY: 2.5, textShadowBlur: 2.5})
         }
     },
 
@@ -1975,12 +1930,12 @@ GoMage.TextEditor.prototype = {
         this.btnOutlineText.observe('click', function (e) {
             var elem = e.target || e.srcElement;
             var obj = this.productDesigner.canvas.getActiveObject();
-            if (obj && obj.type == 'custom_text') {
+            if (obj && obj.type == 'text') {
                 this.toggleConfigContainer(elem);
-                if (obj.strokeWidth == 0.00001) {
+                if (obj.strokeWidth == 0) {
                     var cmd = new TransformCommand(this.productDesigner.canvas, obj, {
                         strokeWidth: this.defaultFieldsValues.strokeWidth,
-                        strokeStyle: this.defaultFieldsValues.strokeStyle
+                        stroke: this.defaultFieldsValues.stroke
                     });
                     this.fieldsMap.strokeWidth.value = this.defaultFieldsValues.strokeWidth;
                     cmd.exec();
@@ -1997,12 +1952,11 @@ GoMage.TextEditor.prototype = {
         this.outlineStrokeWidthRange.observe('change', function (e) {
             var elem = e.target || e.srcElement;
             var obj = this.productDesigner.canvas.getActiveObject();
-            if (!obj || obj.type != 'custom_text') {
+            if (!obj || obj.type != 'text') {
                 return;
             }
             var cmd = new TransformCommand(this.productDesigner.canvas, obj, {strokeWidth: parseFloat(elem.value)});
             cmd.exec();
-            this._addToHistory(cmd, 'strokeWidth', 0.1);
         }.bind(this));
     },
 
@@ -2020,36 +1974,8 @@ GoMage.TextEditor.prototype = {
                 field.value = textObj ? textObj[property] : this.defaultTextOpt[property];
             }
         }
-    },
-
-    _addToHistory: function (cmd, property, range) {
-        lastHistoryCmd = this.productDesigner.history.last()
-        if (!lastHistoryCmd.type || lastHistoryCmd.type != cmd.type) {
-            this.productDesigner.history.push(cmd);
-            return;
-        }
-        var lastState = lastHistoryCmd.state;
-        if (!lastState.hasOwnProperty(property)) {
-            this.productDesigner.history.push(cmd);
-        } else {
-            if (typeof lastState[property] == 'object') {
-                var stateChanged = false;
-                for (var k in lastState[property]) {
-                    if (range.hasOwnProperty(k) && (Math.abs(cmd.state[property][k] - lastState[property][k]) > range[k])) {
-                        stateChanged = true;
-                    }
-                }
-
-                if (stateChanged) {
-                    this.productDesigner.history.push(cmd);
-                }
-            } else {
-                if (Math.abs(cmd.state[property] - lastState[property]) > range) {
-                    this.productDesigner.history.push(cmd);
-                }
-            }
-        }
     }
+
 };
 
 GoMage.ImageUploader = function (maxUploadFileSize, allowedImageExtensions, allowedImageExtensionsFormated, removeImgUrl) {
@@ -2263,12 +2189,6 @@ ColorPicker.prototype = {
 };
 // END OF COLOR PICKER
 
-// ------------------------------------------------------
-// Extending Fabric.js classes
-// ------------------------------------------------------
-fabric.CustomText = fabric.util.createClass(fabric.Text, {
-    type: 'custom_text'
-});
 
 // ------------------------------------------------------
 // Layers manager
@@ -2297,7 +2217,7 @@ var LayersManager = function (w) {
             } else if (obj.tab == 'upload' && this.w.config.isUploadImageEnabled) {
                 var tabContentElement = $('pd_add_image-content');
             }
-        } else if (obj.type == 'custom_text' && this.w.config.isTextEnabled) {
+        } else if (obj.type == 'text' && this.w.config.isTextEnabled) {
             var tabContentElement = $('pd_add_text-content');
             var event = document.createEvent('Event');
             event.obj = obj;

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * GoMage Product Designer Extension
  *
@@ -10,7 +11,6 @@
  * @version      Release: 1.0.0
  * @since        Available since Release 1.0.0
  */
-
 class GoMage_ProductDesigner_Block_Designer_Text extends Mage_Core_Block_Template
 {
     protected $_fonts;
@@ -18,8 +18,9 @@ class GoMage_ProductDesigner_Block_Designer_Text extends Mage_Core_Block_Templat
     public function getAvailableColors()
     {
         $colors = array(
-            'AC58FA', '00FFFF', '0A2A0A', 'BFFF00', '61210B', '0B610B', '0B615E ',
-            'B40486', '9FF781', '610B21', 'BDBDBD', '2ECCFA', '00FF40', 'FFBF00'
+            'E87F86', 'C5AB92', 'FBD37F', 'FCF47F', 'BCE97F', '9FBA7F',
+            'DF7FF1', 'C87FFF', '979BD2', 'A2C6F2', 'A2F1E0', 'DBF5C0',
+            '7F7F7F', 'A5A5A6', 'CCCCCC', 'F2F2F2', 'FFFFFF'
         );
 
         return $colors;
@@ -59,7 +60,7 @@ class GoMage_ProductDesigner_Block_Designer_Text extends Mage_Core_Block_Templat
      */
     public function getFonts()
     {
-        if(is_null($this->_fonts)) {
+        if (is_null($this->_fonts)) {
             $fonts = Mage::getResourceModel('gomage_designer/font_collection');
             $fonts->addFieldToFilter('disabled', '0')
                 ->setOrder('position', 'ASC');
@@ -106,7 +107,7 @@ class GoMage_ProductDesigner_Block_Designer_Text extends Mage_Core_Block_Templat
     public function getFontSizes()
     {
         $sizes = array();
-        $step = 2;
+        $step  = 2;
         for ($size = 12; $size <= 72; $size += $step) {
             $sizes[] = $size;
             if ($size == 24 || $size == 52) {
@@ -121,7 +122,7 @@ class GoMage_ProductDesigner_Block_Designer_Text extends Mage_Core_Block_Templat
 
     public function getImplodedFontsString()
     {
-        $fonts = $this->getFonts();
+        $fonts      = $this->getFonts();
         $fontsArray = array();
         foreach ($fonts as $font) {
             $fontsArray[] = $this->getFontName($font);
@@ -132,6 +133,6 @@ class GoMage_ProductDesigner_Block_Designer_Text extends Mage_Core_Block_Templat
 
     public function effectsEnabled()
     {
-        return (bool) Mage::getStoreConfig('gomage_designer/text/effects');
+        return (bool)Mage::getStoreConfig('gomage_designer/text/effects');
     }
 }

@@ -797,7 +797,7 @@ fieldset[disabled] select {
   .panel-btn.pd-btn-underline {
     background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAAmklEQVR42mNgAILY5JJsIP4KxP+h+BcQz2GAAiD7DJIcSF00A5IkOxB/gkqqMqABoJgfVI6LAYvkB6ikHBY5G5AcAzYwQjS+hmrUwCLnCwp1XBqPQDUmY5HrBuIduDT6A/E/IH4OxKZI4u5Qb1gy4AJAyVAgvgm1+QEQPwXiK0DszEAMACqUAGJdIBZkoCoAmsiPlICJwYdB+gAsqZyAsWG3AQAAAABJRU5ErkJggg==);
     }
-  .panel-btn.pd-btn-vert-output{
+  .panel-btn.pd-btn-stroke-through{
     background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAAwklEQVR42sXQvQ4BQRSG4cGqJDQaWuVWEhdAp3EBgiioiESynaug4Qq2UrsEUWhFolSo6OiQ9U4yxclkf6ic5Cn27Hzzc5Syqj/wCljgggBXbNBUUcXPNLY4oIosatjDjwvWzSlDqz9KCrZN0Icj+mW04oIVPE34hLF+s/qmWNjBw4S1O2byBnJx8IuwDXLW2xxM8MYL+ahr6qH0Qvo7c1opLrhGSvSKuOEo+3ZwKSa6whxn8+0mTdVFFx6maCCj/l4foieWOk1TgTAAAAAASUVORK5CYII=);
     }
   .panel-btn + .panel-btn{
