@@ -304,7 +304,6 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
     {
         $filesArray = array();
         foreach ($files as $key => $values) {
-
             foreach ($values as $valueKey => $value) {
                 $filesArray[$valueKey][$key] = $value;
             }

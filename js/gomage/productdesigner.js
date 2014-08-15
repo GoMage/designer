@@ -1978,32 +1978,39 @@ GoMage.TextEditor.prototype = {
 
 };
 
-GoMage.ImageUploader = function (maxUploadFileSize, allowedImageExtensions, allowedImageExtensionsFormated, removeImgUrl) {
+GoMage.ImageUploader = function (maxUploadFileSize, allowedImageExtensions, allowedImageExtensionsFormated, removeImgUrl, uploadImgUrl) {
     this.maxUploadFileSize = maxUploadFileSize;
     this.allowedImageExtension = allowedImageExtensions;
     this.allowedImageExtensionsFormated = allowedImageExtensionsFormated;
     this.removeImgUrl = removeImgUrl;
+    this.uploadImgUrl = uploadImgUrl;
+
+    this.productDesigner = window.w;
+
+    this.dropZone = $('upload-image-drop-zone');
     this.observeLicenseAgreements();
     this.observeLicenseAgreementsMoreInfo();
-    window.onload = this.observeSubmitForm.bind(this);
-    this.productDesigner = window.w;
+    window.onload = this.observeDropImage.bind(this);
+    this.observeUploadImage();
     this.observeImageSelect();
     this.observeRemoveImages();
+
 };
 
 GoMage.ImageUploader.prototype = {
+
     observeLicenseAgreements: function () {
         if (!$('licence_agreements')) {
             return;
         }
         $('licence_agreements').observe('click', function () {
-            var inputWrapper = $('file-input-box');
+            var inputWrapper = this.dropZone;
             if (inputWrapper.getStyle('display') == 'none') {
                 inputWrapper.setStyle({display: 'block'});
             } else {
                 inputWrapper.setStyle({display: 'none'});
             }
-        });
+        }.bind(this));
     },
 
     observeLicenseAgreementsMoreInfo: function () {
@@ -2020,50 +2027,10 @@ GoMage.ImageUploader.prototype = {
         }.bind(this));
     },
 
-    /**
-     * TODO Add upload for IE
-     */
-    observeSubmitForm: function () {
+    observeUploadImage: function () {
         $('uploadImages').onsubmit = function () {
             if ($('filesToUpload')) {
-                var errorContainer = $('upload-image-error');
-                var files = $('filesToUpload').files;
-                var errors = {};
-                var errorsCount = 0;
-                errorContainer.innerHTML = '';
-                errorContainer.hide();
-
-                if (files.length > 0) {
-                    for (var prop in files) {
-                        if (files.hasOwnProperty(prop)) {
-                            var file = files[prop];
-                            if (file.size && file.size > this.maxUploadFileSize) {
-                                errors['size'] = 'You can not upload files larger than ' + this.maxUploadFileSize / 1024 / 1024 + ' MB';
-                            }
-                            if (file.type && this.allowedImageExtension.indexOf(file.type) < 0) {
-                                errors['type'] = 'Cannot upload the file. The format is not supported. Supported file formats are: ' + this.allowedImageExtensionsFormated;
-                            }
-                        }
-                    }
-                } else {
-                    errors['count'] = 'Please, select files for upload';
-                }
-
-                for (var prop in errors) {
-                    if (errors.hasOwnProperty(prop)) {
-                        errorsCount++;
-                        // Sorry for hardcode
-                        errorContainer.insert('<p>' + errors[prop] + '</p>');
-                    }
-                }
-
-                if (errorsCount > 0) {
-                    errorContainer.show();
-                    return false;
-                } else {
-                    errorContainer.hide();
-                }
-
+                this._validateUploadedFiles($('filesToUpload').files);
                 $('uploadImages').target = 'iframeSave';
                 $('iframeSave').onload = function () {
                     var response = window.frames['iframeSave'].document.body.innerHTML;
@@ -2075,8 +2042,81 @@ GoMage.ImageUploader.prototype = {
         }.bind(this);
     },
 
+    observeDropImage: function () {
+
+        this.dropZone.down('a').observe('click', function () {
+            $('file-input-box').show();
+        });
+
+        this.dropZone.ondragover = this.dropZone.ondragenter = function (event) {
+            event.stopPropagation();
+            event.preventDefault();
+        }
+
+        this.dropZone.ondrop = function (event) {
+            event.stopPropagation();
+            event.preventDefault();
+            var files = event.dataTransfer.files;
+            if (this._validateUploadedFiles(files)) {
+                var formData = new FormData();
+                for (var i = 0; i < files.length; i++) {
+                    formData.append('filesToUpload[]', files[i]);
+                }
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', this.uploadImgUrl);
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        $('uploadedImages').update(xhr.response);
+                        $('remove-img-btn').show();
+                    }
+                };
+                xhr.send(formData);
+            }
+        }.bind(this);
+    },
+
+    _validateUploadedFiles: function (files) {
+        var errorContainer = $('upload-image-error');
+        var errors = {};
+        var errorsCount = 0;
+        errorContainer.innerHTML = '';
+        errorContainer.hide();
+
+        if (files.length > 0) {
+            for (var prop in files) {
+                if (files.hasOwnProperty(prop)) {
+                    var file = files[prop];
+                    if (file.size && file.size > this.maxUploadFileSize) {
+                        errors['size'] = 'You can not upload files larger than ' + this.maxUploadFileSize / 1024 / 1024 + ' MB';
+                    }
+                    if (file.type && this.allowedImageExtension.indexOf(file.type) < 0) {
+                        errors['type'] = 'Cannot upload the file. The format is not supported. Supported file formats are: ' + this.allowedImageExtensionsFormated;
+                    }
+                }
+            }
+        } else {
+            errors['count'] = 'Please, select file for upload';
+        }
+
+        for (var prop in errors) {
+            if (errors.hasOwnProperty(prop)) {
+                errorsCount++;
+                errorContainer.insert('<p>' + errors[prop] + '</p>');
+            }
+        }
+
+        if (errorsCount > 0) {
+            errorContainer.show();
+            return false;
+        } else {
+            errorContainer.hide();
+        }
+
+        return true;
+    },
+
     observeRemoveImages: function () {
-        Event.on($('file-input-box'), 'click', '#remove-img-btn', function (e, elm) {
+        $('remove-img-btn').observe('click', function () {
             this.removeImages();
         }.bind(this));
     },
@@ -2095,12 +2135,11 @@ GoMage.ImageUploader.prototype = {
                     $('remove-img-btn').hide();
                     $('filesToUpload').value = '';
                 } else if (response.status == 'error') {
-                    // Sorry for hardcode
                     errorContainer.insert('<p>' + response.message + '</p>');
                     errorContainer.show();
                 }
             }.bind(this)
-        })
+        });
     },
 
     observeImageSelect: function () {
