@@ -75,6 +75,7 @@ $productImageMinSize = $this->getProductOriginalImageMinSizes();
     }.bind(this));
 </script>
 <div id="product-designer" class="product-designer">
+    <div id="designer-load-info" style="display: none;"><?php echo $this->__('Loading, please wait') ?></div>
     <div class="product-designer-header">
         <?php if ($navigationEnabled): ?>
             <div class="pd_nav_container">

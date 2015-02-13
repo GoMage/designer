@@ -480,7 +480,7 @@ GoMage.ProductDesigner.prototype = {
             ;
             var imagesData = this.prepareImagesForSave();
             var data = Object.extend(data, imagesData);
-            new Ajax.Request(url, {
+            new Ajax.DesignerRequest(url, {
                 method: 'post',
                 parameters: data,
                 onSuccess: function (transport) {
@@ -625,7 +625,7 @@ GoMage.ProductDesigner.prototype = {
         }
 
         var params = this.prepareImagesForSave();
-        new Ajax.Request(url, {
+        new Ajax.DesignerRequest(url, {
             method: 'post',
             parameters: params,
             onSuccess: responseCallback.bind(this)
@@ -1407,7 +1407,7 @@ GoMage.ProductNavigation.prototype = {
         }
         data['ajax'] = true;
 
-        new Ajax.Request(url, {
+        new Ajax.DesignerRequest(url, {
             method: 'post',
             parameters: data,
             onSuccess: function (transport) {
@@ -1491,9 +1491,11 @@ GoMage.Designer.prototype = {
             data['tags'] = $('tagsSearchField').value;
         }
 
-        new Ajax.Request(this.opt.filterUrl, {
+        new Ajax.DesignerRequest(this.opt.filterUrl, {
             method: 'post',
             parameters: data,
+            //onCreate: showLoadInfo,
+            //onComplete: hideLoadInfo,
             onSuccess: function (transport) {
                 var response = transport.responseText.evalJSON();
                 if (response.status == 'success') {
@@ -2127,7 +2129,7 @@ GoMage.ImageUploader.prototype = {
     },
 
     removeImages: function () {
-        new Ajax.Request(this.removeImgUrl, {
+        new Ajax.DesignerRequest(this.removeImgUrl, {
             method: 'post',
             parameters: {ajax: true},
             onSuccess: function (transport) {
@@ -2604,3 +2606,23 @@ var AlignToCenterCommand = function (c, obj) {
         }
     };
 };
+
+Ajax.DesignerRequest = Class.create(Ajax.Request, {
+    initialize: function ($super, url, options) {
+        options.onCreate = showLoadInfo;
+        options.onComplete = hideLoadInfo;
+        $super(url, options);
+    }
+});
+
+function showLoadInfo() {
+    if ($('designer-load-info')) {
+        $('designer-load-info').show();
+    }
+}
+
+function hideLoadInfo() {
+    if ($('designer-load-info')) {
+        $('designer-load-info').hide();
+    }
+}
