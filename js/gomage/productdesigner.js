@@ -1163,7 +1163,7 @@ GoMage.ProductDesigner.prototype = {
                             this.designPrices['images'] = {};
                         }
                         this.designPrices['images'][id] = designAreaPrice
-                            + (imagePrice * imagesCount) + (textPrice * textsCount);
+                        + (imagePrice * imagesCount) + (textPrice * textsCount);
 
                         if (this.designPrices['texts_count'] == undefined) {
                             this.designPrices['texts_count'] = textsCount;
@@ -1382,7 +1382,7 @@ GoMage.ProductNavigation.prototype = {
             if (this._productChangeConfirmation()) {
                 var productId = elem.getAttribute('data-product_id');
                 if (productId && productId != undefined) {
-                    var data = { id: productId };
+                    var data = {id: productId};
                 }
                 if ($('pd_choose_product-content')) {
                     $('pd_choose_product-content').setStyle({display: 'none'});
@@ -1451,7 +1451,6 @@ GoMage.Designer = function (filterUrl) {
     this.productDesigner = window.w;
     this.observeFilterFields();
     this.observeImageSelect();
-    this.observeResetBtn();
 };
 
 GoMage.Designer.prototype = {
@@ -1479,7 +1478,6 @@ GoMage.Designer.prototype = {
     },
 
     filterImages: function (data) {
-        var hasData = data ? true : false;
         var data = data || {};
         data['ajax'] = true;
         if (data.hasOwnProperty('tags')) {
@@ -1501,17 +1499,13 @@ GoMage.Designer.prototype = {
                 if (response.status == 'success') {
                     if (response.hasOwnProperty('filters')) {
                         $('cliparts-filters').update(response.filters);
+                        this.observeFilterFields();
                     }
                     if (response.hasOwnProperty('cliparts')) {
                         $('cliparts-list').update(response.cliparts);
                     }
-                    var resetBtn = $('cliparts-filters').select('#cliparts-reset-btn')[0];
-                    if (resetBtn) {
-                        if (hasData) {
-                            resetBtn.show();
-                        } else {
-                            resetBtn.hide();
-                        }
+                    if ($('tagsSearchField')) {
+                        $('tagsSearchField').focus();
                     }
                 } else {
                     alert('Something went wrong...');
@@ -1524,31 +1518,9 @@ GoMage.Designer.prototype = {
     },
 
     observeFilterFields: function () {
-        if ($('cliparts-search-btn')) {
-            Event.on($('cliparts-filters'), 'click', '#cliparts-search-btn', function (e, elm) {
-                e.stop();
-                if (!elm.hasClassName('disabled')) {
-                    this.filterImages({tags: $('tagsSearchField').value});
-                }
-            }.bind(this));
-        }
-        if ($('tagsSearchField')) {
-            Event.on($('cliparts-filters'), 'search', '#tagsSearchField', function (e, elm) {
-                e.stop();
-                this.filterImages({tags: $('tagsSearchField').value});
-            }.bind(this));
-            Event.on($('cliparts-filters'), 'keyup', '#tagsSearchField', function (e, elm) {
-                e.stop();
-                setTimeout(function () {
-                    if (elm.value.replace(/\s/g, "") != "") {
-                        $('cliparts-search-btn').removeClassName('disabled');
-                    } else {
-                        $('cliparts-search-btn').addClassName('disabled');
-                    }
-                }.bind(this), 500)
-            }.bind(this));
-        }
-        if ($('mainCategoriesSearchField') || $('subCategoriesSearchField')) {
+
+        if ($('cliparts-filters') && $('mainCategoriesSearchField') || $('subCategoriesSearchField')) {
+            Event.stopObserving($('cliparts-filters'));
             Event.on($('cliparts-filters'), 'change', '#mainCategoriesSearchField, #subCategoriesSearchField', function (e, elm) {
                 e.stop();
                 var data = {};
@@ -1559,16 +1531,49 @@ GoMage.Designer.prototype = {
                 this.filterImages(data);
             }.bind(this));
         }
-    },
 
-    observeResetBtn: function () {
-        Event.on($('cliparts-filters'), 'click', '#cliparts-reset-btn', function (e, elm) {
-            if ($('tagsSearchField')) {
-                $('tagsSearchField').value = '';
+        if ($('tagsSearchField')) {
+
+            Event.on($('cliparts-search-btn'), 'click', function (e, elm) {
+                e.stop();
+                if (!elm.hasClassName('disabled')) {
+                    this.filterImages({tags: $('tagsSearchField').value});
+                }
+            }.bind(this));
+
+            if ($('tagsSearchField').value) {
+                $('cliparts-reset-btn').show();
+            } else {
+                $('cliparts-reset-btn').hide();
             }
-            this.filterImages();
-        }.bind(this));
+
+            Event.on($('cliparts-reset-btn'), 'click', function (e, elm) {
+                e.stop();
+                $('tagsSearchField').value = '';
+                this.filterImages();
+            }.bind(this));
+
+            Event.on($('tagsSearchField'), 'keypress', function (e, elm) {
+                var key = e.which || e.keyCode;
+                switch (key) {
+                    default:
+                        if (elm.value) {
+                            $('cliparts-search-btn').removeClassName('disabled');
+                        } else {
+                            $('cliparts-search-btn').addClassName('disabled');
+                        }
+                        break;
+                    case Event.KEY_RETURN:
+                        this.filterImages({tags: elm.value});
+                        e.stop();
+                        break;
+                }
+            }.bind(this));
+
+        }
     }
+
+
 };
 
 GoMage.TextEditor = function (defaultFontFamily, defaultFontSize) {
