@@ -1723,7 +1723,8 @@ GoMage.TextEditor.prototype = {
             var text = this.addTextTextarea.value;
             var textObjectData = {
                 fontSize: parseInt(this.fontSizeSelector.value),
-                fontFamily: this.fontSelector.value
+                fontFamily: this.fontSelector.value,
+                lineHeight: 1
             };
             var textObject = new fabric.Text(text, textObjectData);
             var cmd = new InsertCommand(this.productDesigner, textObject, true);
@@ -2624,5 +2625,47 @@ function showLoadInfo() {
 function hideLoadInfo() {
     if ($('designer-load-info')) {
         $('designer-load-info').hide();
+    }
+}
+
+/**
+ * @private
+ * @param {CanvasRenderingContext2D} ctx Context to render on
+ * @param {Array} textLines Array of all text lines
+ */
+fabric.Text.prototype._renderTextDecoration = function (ctx, textLines) {
+    if (!this.textDecoration) {
+        return;
+    }
+
+    // var halfOfVerticalBox = this.originY === 'top' ? 0 : this._getTextHeight(ctx, textLines) / 2;
+    var halfOfVerticalBox = this._getTextHeight(ctx, textLines) / 1.5,
+        _this = this;
+
+
+    /** @ignore */
+    function renderLinesAtOffset(offset) {
+        for (var i = 0, len = textLines.length; i < len; i++) {
+
+            var lineWidth = _this._getLineWidth(ctx, textLines[i]),
+                lineLeftOffset = _this._getLineLeftOffset(lineWidth),
+                lineHeight = Math.ceil(_this.fontSize / 24) * (_this.fontWeight == 'bold' ? 2 : 1);
+
+            ctx.fillRect(
+                _this._getLeftOffset() + lineLeftOffset,
+                ~~((offset + (i * _this._getHeightOfLine(ctx, i, textLines))) - halfOfVerticalBox),
+                lineWidth,
+                lineHeight);
+        }
+    }
+
+    if (this.textDecoration.indexOf('underline') > -1) {
+        renderLinesAtOffset(this.fontSize * this.lineHeight);
+    }
+    if (this.textDecoration.indexOf('line-through') > -1) {
+        renderLinesAtOffset(this.fontSize * this.lineHeight - this.fontSize / 2);
+    }
+    if (this.textDecoration.indexOf('overline') > -1) {
+        renderLinesAtOffset(this.fontSize * this.lineHeight - this.fontSize);
     }
 }
