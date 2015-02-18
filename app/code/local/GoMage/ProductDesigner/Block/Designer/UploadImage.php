@@ -1,4 +1,5 @@
 <?php
+
 /**
  * GoMage Product Designer Extension
  *
@@ -10,7 +11,6 @@
  * @version      Release: 1.0.0
  * @since        Available since Release 1.0.0
  */
-
 class GoMage_ProductDesigner_Block_Designer_UploadImage extends Mage_Core_Block_Template
 {
     /**
@@ -65,7 +65,7 @@ class GoMage_ProductDesigner_Block_Designer_UploadImage extends Mage_Core_Block_
         $allowedFormats = $this->getAllowedImageExtensions();
         $allowedFormats = explode(',', $allowedFormats);
         foreach ($allowedFormats as &$format) {
-            $format = 'image/'.$format;
+            $format = 'image/' . $format;
         }
 
         return $allowedFormats;
@@ -83,7 +83,7 @@ class GoMage_ProductDesigner_Block_Designer_UploadImage extends Mage_Core_Block_
 
     public function getMaxUploadFileSize()
     {
-        return (int) Mage::getStoreConfig('gomage_designer/upload_image/size') * 1024 * 1024;
+        return (int)Mage::getStoreConfig('gomage_designer/upload_image/size') * 1024 * 1024;
     }
 
     public function hasImages()

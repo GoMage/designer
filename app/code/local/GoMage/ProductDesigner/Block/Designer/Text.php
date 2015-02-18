@@ -18,9 +18,9 @@ class GoMage_ProductDesigner_Block_Designer_Text extends Mage_Core_Block_Templat
     public function getAvailableColors()
     {
         $colors = array(
-            'E87F86', 'C5AB92', 'FBD37F', 'FCF47F', 'BCE97F', '9FBA7F',
-            'DF7FF1', 'C87FFF', '979BD2', 'A2C6F2', 'A2F1E0', 'DBF5C0',
-            '7F7F7F', 'A5A5A6', 'CCCCCC', 'F2F2F2', 'FFFFFF'
+            'D6ACFD', '80FFFF', '859585', 'DFFF80', 'B09085', '85B085',
+            '85B0AF', 'DA82C3', 'CFFBC0', 'B08590', 'DEDEDE', '97E6FD',
+            '80FFA0', 'FFDF80'
         );
 
         return $colors;

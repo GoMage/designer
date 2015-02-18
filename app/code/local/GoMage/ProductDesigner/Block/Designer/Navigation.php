@@ -1,4 +1,5 @@
 <?php
+
 /**
  * GoMage Product Designer Extension
  *
@@ -10,7 +11,6 @@
  * @version      Release: 1.0.0
  * @since        Available since Release 1.0.0
  */
-
 class GoMage_ProductDesigner_Block_Designer_Navigation extends Mage_Core_Block_Template
 {
     /**

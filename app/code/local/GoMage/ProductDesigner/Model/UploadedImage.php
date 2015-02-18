@@ -13,7 +13,6 @@
  */
 class GoMage_ProductDesigner_Model_UploadedImage extends Mage_Core_Model_Abstract
 {
-    protected $_urlModel;
 
     protected function _construct()
     {

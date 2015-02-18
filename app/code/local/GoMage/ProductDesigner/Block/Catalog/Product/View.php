@@ -1,4 +1,5 @@
 <?php
+
 /**
  * GoMage Product Designer Extension
  *
@@ -10,7 +11,6 @@
  * @version      Release: 1.0.0
  * @since        Available since Release 1.0.0
  */
-
 class GoMage_ProductDesigner_Block_Catalog_Product_View extends Mage_Catalog_Block_Product_View
 {
     /**
@@ -33,13 +33,13 @@ class GoMage_ProductDesigner_Block_Catalog_Product_View extends Mage_Catalog_Blo
     {
         $design = Mage::helper('gomage_designer')->getProductDesign($this->getProduct());
         return in_array($this->getProduct()->getTypeId(), Mage::helper('gomage_designer')->getAllowedProductTypes())
-            && $design && $design->getId();
+        && $design && $design->getId();
     }
 
     public function getDesignUrl()
     {
         $product = $this->getProduct();
-        $params = array('_query' => array('id' => $product->getId()));
+        $params  = array('_query' => array('id' => $product->getId()));
         return $this->getUrl('designer', $params);
     }
 
