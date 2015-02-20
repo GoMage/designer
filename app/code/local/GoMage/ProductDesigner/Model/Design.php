@@ -1,4 +1,5 @@
 <?php
+
 /**
  * GoMage Product Designer Extension
  *
@@ -10,7 +11,6 @@
  * @version      Release: 1.0.0
  * @since        Available since Release 1.0.0
  */
-
 class GoMage_ProductDesigner_Model_Design extends Mage_Core_Model_Abstract
 {
     const DESIGN_SIZE_WIDTH = 580;
@@ -41,36 +41,37 @@ class GoMage_ProductDesigner_Model_Design extends Mage_Core_Model_Abstract
      * Save design
      *
      * @param Mage_Catalog_Model_Product $product Product
-     * @param array                      $data    Data
+     * @param array $data Data
      * @return $this
      */
     public function saveDesign($product, $data)
     {
-        $images = isset($data['images']) ? $data['images'] : false;
-        $prices = isset($data['prices']) ? $data['prices'] : array();
-        $color  = isset($data['color']) && $data['color'] != 'none_color'  ? $data['color']  : null;
+        $images  = isset($data['images']) ? $data['images'] : false;
+        $prices  = isset($data['prices']) ? $data['prices'] : array();
+        $color   = isset($data['color']) && $data['color'] != 'none_color' ? $data['color'] : null;
         $comment = isset($data['comment']) ? $data['comment'] : null;
 
         if (!$images || empty($images)) {
             return $this;
         }
-        $images = Mage::helper('core')->jsonDecode($images);
-        $prices = Mage::helper('core')->jsonDecode($prices);
-        $customerId = (int) Mage::getSingleton('customer/session')->getCustomerId();
+        $images     = Mage::helper('core')->jsonDecode($images);
+        $prices     = Mage::helper('core')->jsonDecode($prices);
+        $customerId = (int)Mage::getSingleton('customer/session')->getCustomerId();
 
         $this->setData(array(
-            'customer_id' => $customerId ? $customerId : null,
-            'session_id' => $customerId ? null : Mage::helper('gomage_designer')->getDesignerSessionId(),
-            'product_id' => $product->getId(),
-            'created_date' => Mage::getModel('core/date')->gmtDate(),
-            'price' => isset($prices['sub_total']) ? $prices['sub_total'] : 0,
-            'color' => $color,
-            'comment' => $comment
-        ))->save();
+                'customer_id'  => $customerId ? $customerId : null,
+                'session_id'   => $customerId ? null : Mage::helper('gomage_designer')->getDesignerSessionId(),
+                'product_id'   => $product->getId(),
+                'created_date' => Mage::getModel('core/date')->gmtDate(),
+                'price'        => isset($prices['sub_total']) ? $prices['sub_total'] : 0,
+                'color'        => $color,
+                'comment'      => $comment
+            )
+        )->save();
 
         $imagesPrice = isset($prices['images']) ? $prices['images'] : array();
         foreach ($images as $imageId => $_image) {
-            $image = Mage::getModel('gomage_designer/design_image');
+            $image      = Mage::getModel('gomage_designer/design_image');
             $imagePrice = isset($imagesPrice[$imageId]) ? $imagesPrice[$imageId] : 0;
             $image->setPrice($imagePrice);
             $image->saveImage($_image, $imageId, $product, $this->getId());
@@ -92,11 +93,20 @@ class GoMage_ProductDesigner_Model_Design extends Mage_Core_Model_Abstract
         $images = Mage::getModel('gomage_designer/design_image')->getCollection()
             ->addFieldToFilter('design_id', $designId)
             ->setPageSize(1);
-        $image = $images->getFirstItem();
+        $image  = $images->getFirstItem();
         if ($image && $image->getId()) {
             return $image->getImage();
         }
 
         return false;
     }
+
+    public function getDesignProduct()
+    {
+        if ($this->getProductId()) {
+            return Mage::getModel('catalog/product')->load($this->getProductId());
+        }
+        return null;
+    }
+
 }

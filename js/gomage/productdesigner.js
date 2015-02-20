@@ -47,6 +47,17 @@ function getUrlParams() {
     return params;
 }
 
+var ProductDesignerGlobalEval = function ProductDesignerGlobalEval(src) {
+    if (window.execScript) {
+        window.execScript(src);
+        return;
+    }
+    var fn = function () {
+        window.eval.call(window, src);
+    };
+    fn();
+};
+
 /**
  * Create module namespace if not defined
  */
@@ -84,6 +95,7 @@ GoMage.ProductDesigner = function (config, continueUrl, loginUrl, registrationUr
     this.observeChooseProduct();
     this.observeLayerControls();
     this.observeTabs();
+    this.observeShareBtn();
     this.observeZoomBtn();
     this.observeSaveDesign();
     this.observeContinueBtn();
@@ -619,12 +631,17 @@ GoMage.ProductDesigner.prototype = {
         return false;
     },
 
-    saveDesign: function (url, responseCallback) {
+    saveDesign: function (url, responseCallback, data) {
         if ((this.canvas == null) || this.canvas == 'undefined') {
             return;
         }
 
         var params = this.prepareImagesForSave();
+
+        if (typeof data != 'undefined') {
+            params = $H(params).merge(data);
+        }
+
         new Ajax.DesignerRequest(url, {
             method: 'post',
             parameters: params,
@@ -945,6 +962,69 @@ GoMage.ProductDesigner.prototype = {
         this.history.push(cmd);
     },
 
+    observeShareBtn: function () {
+        if (!this.config.navigation.share) {
+            return;
+        }
+        this.config.navigation.share.observe('click', function (e) {
+            e.stop();
+            this.saveDesign(this.urls.saveDesign, this.shareDesignCallback, {share: true});
+        }.bind(this));
+    },
+
+    shareDesignCallback: function (transport) {
+        var response = transport.responseText.evalJSON();
+        if (response.status == 'success') {
+            if (response.share) {
+                this.innerHTMLwithScripts($('share-container'), response.share);
+            }
+            this.designChanged[this.currentColor] = false;
+            this.designId[this.currentColor] = response.design_id;
+            this._toggleNavigationButtons('disabled');
+            this._toggleControlsButtons();
+            window.onbeforeunload = null;
+            this.createShareWindow();
+            this.shareWindow.showCenter(true);
+        } else if (response.status == 'error') {
+            console.log(response.message);
+        }
+    },
+
+    innerHTMLwithScripts: function (element, content) {
+        var js_scripts = content.extractScripts();
+        element.innerHTML = content.stripScripts();
+        for (var i = 0; i < js_scripts.length; i++) {
+            if (typeof(js_scripts[i]) != 'undefined') {
+                ProductDesignerGlobalEval(js_scripts[i]);
+            }
+        }
+    },
+
+    createShareWindow: function () {
+        if (!this.shareWindow) {
+            this.shareWindow = new Window({
+                className: 'magento',
+                title: 'Share',
+                minWidth: 300,
+                minHeight: 300,
+                maximizable: false,
+                minimizable: false,
+                resizable: false,
+                draggable: false,
+                recenterAuto: false,
+                showEffect: Effect.BlindDown,
+                hideEffect: Effect.BlindUp,
+                showEffectOptions: {duration: 0.4},
+                hideEffectOptions: {duration: 0.4}
+            });
+            this.shareWindow.setContent('share-container', true, true);
+            this.shareWindow.setZIndex(2000);
+            Event.on(document.body, 'click', '#overlay_modal', function (e, elm) {
+                Windows.closeAll();
+            });
+        }
+    },
+
     observeZoomBtn: function () {
         if (!this.config.navigation.zoom) {
             return;
@@ -952,7 +1032,7 @@ GoMage.ProductDesigner.prototype = {
         this.config.navigation.zoom.observe('click', function (e) {
             e.stop();
             this.zoom();
-        }.bind(this))
+        }.bind(this));
     },
 
     zoom: function () {

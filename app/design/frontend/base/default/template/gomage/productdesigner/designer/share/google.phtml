@@ -1,0 +1,25 @@
+<?php
+/**
+ * GoMage Product Designer Extension
+ *
+ * @category     Extension
+ * @copyright    Copyright (c) 2013 GoMage (http://www.gomage.com)
+ * @author       GoMage
+ * @license      http://www.gomage.com/license-agreement/  Single domain license
+ * @terms of use http://www.gomage.com/terms-of-use/
+ * @version      Release: 1.1.0
+ * @since        Available since Release 1.1.0
+ */
+?>
+
+<script type="text/javascript">
+    (function () {
+        var po = document.createElement('script');
+        po.type = 'text/javascript';
+        po.async = true;
+        po.src = 'https://apis.google.com/js/plusone.js';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(po, s);
+    })();
+</script>
+<div class="g-plus" data-action="share" data-href="<?php echo $this->getShareUrl(); ?>"></div>

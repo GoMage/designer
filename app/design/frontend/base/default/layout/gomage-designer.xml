@@ -64,6 +64,14 @@
         </reference>
     </gomage_designer_index_index>
 
+    <gomage_designer_design_share>
+        <block type="gomage_designer/designer_share" name="design_share" template="gomage/productdesigner/designer/share.phtml" output="toHtml">
+            <block type="gomage_designer/designer_share_system" template="gomage/productdesigner/designer/share/facebook.phtml"/>
+            <block type="gomage_designer/designer_share_system" template="gomage/productdesigner/designer/share/google.phtml"/>
+            <block type="gomage_designer/designer_share_system" template="gomage/productdesigner/designer/share/twitter.phtml"/>
+        </block>
+    </gomage_designer_design_share>
+
     <gomage_designer_design_price>
         <block type="core/template" name="design.price" as="design_price" template="gomage/productdesigner/designer/price.phtml" output="toHtml">
             <action method="setProduct"><product helper="gomage_designer/initializeProduct"/></action>
@@ -162,7 +170,7 @@
         <update handle="customer_account" />
         <reference name="head">
             <action method="addItem"><type>skin_css</type><name>css/gomage/productdesigner.css</name><params/></action>
-        </reference>        
+        </reference>
         <reference name="my.account.wrapper">
             <block type="core/template" name="customer.designs" template="gomage/productdesigner/customer/designs.phtml">
                 <action method="setTitle" translate="title">

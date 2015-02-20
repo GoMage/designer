@@ -1,0 +1,25 @@
+<?php
+/**
+ * GoMage Product Designer Extension
+ *
+ * @category     Extension
+ * @copyright    Copyright (c) 2013 GoMage (http://www.gomage.com)
+ * @author       GoMage
+ * @license      http://www.gomage.com/license-agreement/  Single domain license
+ * @terms of use http://www.gomage.com/terms-of-use/
+ * @version      Release: 1.1.0
+ * @since        Available since Release 1.1.0
+ */
+?>
+<?php
+$systems = $this->getSystems();
+?>
+<?php if ($systems): ?>
+    <ul>
+        <?php foreach ($systems as $system): ?>
+            <li>
+                <?php echo $system->toHtml(); ?>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+<?php endif; ?>

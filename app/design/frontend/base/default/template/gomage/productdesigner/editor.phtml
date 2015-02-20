@@ -39,7 +39,8 @@ $productImageMinSize = $this->getProductOriginalImageMinSizes();
             designGallery : $("pd_design_gallery"),
             saveDesign: $("pd_save_design"),
             continue : $('pd_gt_product'),
-            zoom: $('pd_zoom')
+            zoom: $('pd_zoom'),
+            share: $('pd_share')
         };
 
         settings.controls = {
@@ -99,6 +100,7 @@ $productImageMinSize = $this->getProductOriginalImageMinSizes();
             <span id="pd_current_product_name" class="current-product-name"><?php echo $this->__('Not selected'); ?></span>
         </div>
         <div id="pd_save_container" class="pd_save_container" style="display: <?php echo $this->isProductSelected() ? 'block': 'none'?>">
+            <button class="pd-btn pd-btn-blue-border" id="pd_share"><span><span><?php echo $this->__('Save & Share') ?></span></span></button>
             <button class="pd-btn pd-btn-blue-border" id="pd_zoom"><span><span><?php echo $this->__('Preview') ?></span></span></button>
             <button class="pd-btn pd-btn-blue-border" id="pd_save_design"><span><span><?php echo $this->__('Save  Design') ?></span></span></button>
             <button class="pd-btn pd-btn-blue" id="pd_gt_product"><span><span><?php echo $this->__('Continue') ?></span></span></button>
@@ -230,3 +232,4 @@ $productImageMinSize = $this->getProductOriginalImageMinSizes();
 <div id="product-zoom-container" style="width: <?php echo $productImageMinSize['width'] + 5 ?>px; height: <?php echo $productImageMinSize['height']+5 ?>px;">
     <canvas id="product-zoom-canvas"></canvas>
 </div>
+<div id="share-container" style="display: none"></div>

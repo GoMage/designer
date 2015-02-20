@@ -71,7 +71,8 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
             if (!$product || !$product->getId()) {
                 throw new Exception(Mage::helper('gomage_designer')->__('Product with id %d not found',
                     $this->getRequest()->getParam('id')
-                ));
+                )
+                );
             }
             $settings     = Mage::helper('gomage_designer')->getProductSettingForEditor($product);
             $responseData = array(
@@ -273,8 +274,13 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
         }
 
         try {
-            $design = $this->_saveDesign();
-            Mage::helper('gomage_designer/ajax')->sendSuccess(array('design_id' => $design->getId()));
+            $result              = array();
+            $design              = $this->_saveDesign();
+            $result['design_id'] = $design->getId();
+            if ($this->getRequest()->getParam('share', false)) {
+                $result['share'] = $this->_getDesignShareHtml($design);
+            }
+            Mage::helper('gomage_designer/ajax')->sendSuccess($result);
         } catch (Exception $e) {
             Mage::helper('gomage_designer/ajax')->sendError($e->getMessage());
         }
@@ -287,6 +293,17 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
         $update->load('gomage_designer_design_price');
         $layout->generateXml();
         $layout->generateBlocks();
+        return $layout->getOutput();
+    }
+
+    protected function _getDesignShareHtml($design)
+    {
+        $layout = $this->getLayout();
+        $update = $layout->getUpdate();
+        $update->load('gomage_designer_design_share');
+        $layout->generateXml();
+        $layout->generateBlocks();
+        $layout->getBlock('design_share')->setDesign($design);
         return $layout->getOutput();
     }
 
@@ -314,7 +331,7 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
     protected function _getTitle()
     {
         $title = Mage::getStoreConfig('gomage_designer/general/page_title');
-        return $title ? : Mage::getStoreConfig('design/head/default_title');
+        return $title ?: Mage::getStoreConfig('design/head/default_title');
     }
 
 }
