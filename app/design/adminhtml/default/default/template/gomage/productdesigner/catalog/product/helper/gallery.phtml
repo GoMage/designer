@@ -272,7 +272,7 @@ function openDesignAreaEditor(file, target)
                 } else {
                     $('design-area-popup').update(response.design_area);
                 }
-                window.designAreaPopup.showCenter(true, true);
+                window.designAreaPopup.showCenter(true);
                 setTimeout(function(){
                     var $designAreaPopupWrap = $('design-area-popup');
                     var wH = window.innerHeight;
@@ -280,13 +280,13 @@ function openDesignAreaEditor(file, target)
                         width: 'auto'
                     });
 
-                    if(0.9 * wH < window.designAreaPopup.height) {
+                    if(0.8 * wH < window.designAreaPopup.height) {
                         $designAreaPopupWrap.setStyle({
-                            'height': 0.9 * wH + 'px',
+                            'height': 0.8 * wH + 'px',
                             'overflow': 'auto'
                         });
                     }
-                    window.designAreaPopup.setSize(window.designAreaPopup.width, $designAreaPopupWrap.getHeight(), true);
+                    window.designAreaPopup.setSize(window.designAreaPopup.width, $designAreaPopupWrap.getHeight());
                 }.bind(this), 300);
                 if (target != undefined) {
                     window.designAreaPopup.target = target;
