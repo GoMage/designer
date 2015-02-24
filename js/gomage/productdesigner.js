@@ -1800,6 +1800,10 @@ GoMage.TextEditor.prototype = {
             if (!this.addTextTextarea.value) {
                 return;
             }
+            var obj = this.productDesigner.canvas.getActiveObject();
+            if (obj && obj.type == 'text') {
+                return;
+            }
             var text = this.addTextTextarea.value;
             var textObjectData = {
                 fontSize: parseInt(this.fontSizeSelector.value),
@@ -2056,6 +2060,11 @@ GoMage.TextEditor.prototype = {
     },
 
     _setInputValues: function (textObj) {
+        if (textObj) {
+            this.addTextButton.innerHTML = 'Edit Text';
+        } else {
+            this.addTextButton.innerHTML = 'Add Text';
+        }
         for (var property in this.fieldsMap) {
             if (this.fieldsMap.hasOwnProperty(property) && this.fieldsMap[property]) {
                 var field = this.fieldsMap[property];
@@ -2338,22 +2347,27 @@ var LayersManager = function (w) {
         }
         self.active = obj.get('uid');
 
+        var element_id = '';
         if (obj.type == 'image') {
             if (obj.tab == 'design' && this.w.config.isDesignedEnabled) {
-                var tabContentElement = $('pd_add_design-content');
+                element_id = 'pd_add_design';
             } else if (obj.tab == 'upload' && this.w.config.isUploadImageEnabled) {
-                var tabContentElement = $('pd_add_image-content');
+                element_id = 'pd_add_image';
             }
         } else if (obj.type == 'text' && this.w.config.isTextEnabled) {
-            var tabContentElement = $('pd_add_text-content');
+            element_id = 'pd_add_text';
             var event = document.createEvent('Event');
             event.obj = obj;
             event.initEvent('textTabShow', true, true);
             document.dispatchEvent(event);
         }
-        if (tabContentElement) {
-            tabContentElement.siblings().invoke('hide');
-            tabContentElement.setStyle({display: 'block'});
+
+        if (element_id && (element = $(element_id))) {
+            element.siblings().invoke('removeClassName', 'active');
+            element.addClassName('active');
+            var content_element = $(element_id + '-content');
+            content_element.siblings().invoke('hide');
+            content_element.setStyle({display: 'block'});
         }
         this.w._toggleControlsButtons();
     }.bind(this));
