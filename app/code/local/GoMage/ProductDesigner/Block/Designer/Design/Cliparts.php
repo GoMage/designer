@@ -42,7 +42,7 @@ class GoMage_ProductDesigner_Block_Designer_Design_Cliparts extends Mage_Core_Bl
     }
 
     /**
-     * Return cliaprt image url
+     * Return resized cliaprt image url
      *
      * @param string $image Image
      * @return string
@@ -52,6 +52,12 @@ class GoMage_ProductDesigner_Block_Designer_Design_Cliparts extends Mage_Core_Bl
         return Mage::helper('gomage_designer/image_cliparts')->init($image)->resize(60, 60)->__toString();
     }
 
+    /**
+     * Return original cliaprt image url
+     *
+     * @param string $image Image
+     * @return string
+     */
     public function getOriginClipartUrl($image)
     {
         return Mage::getSingleton('gomage_designer/clipart_gallery_config')->getMediaUrl($image);

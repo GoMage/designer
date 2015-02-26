@@ -24,7 +24,7 @@ class GoMage_ProductDesigner_Block_Designer_UploadImage_Images extends Mage_Core
     }
 
     /**
-     * Return Image url
+     * Return resized Image url
      *
      * @param string $image Image
      * @return string
@@ -34,6 +34,12 @@ class GoMage_ProductDesigner_Block_Designer_UploadImage_Images extends Mage_Core
         return Mage::helper('gomage_designer/image_uploaded')->init($image)->resize(64, 64)->__toString();
     }
 
+    /**
+     * Return original Image url
+     *
+     * @param string $image Image
+     * @return string
+     */
     public function getOriginImageUrl($image)
     {
         return Mage::getSingleton('gomage_designer/uploadedImage_config')->getMediaUrl($image);
