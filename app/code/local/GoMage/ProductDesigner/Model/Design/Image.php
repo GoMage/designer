@@ -170,9 +170,44 @@ class GoMage_ProductDesigner_Model_Design_Image extends Mage_Core_Model_Abstract
         }
     }
 
+    /**
+     * @return string
+     */
     protected function _getImageExtensionForSave()
     {
         return Mage::getStoreConfig('gomage_designer/general/format');
+    }
+
+    /**
+     * @param  string $filename
+     * @return $this
+     */
+    public function renameImage($filename)
+    {
+        $extension = strtolower(pathinfo($this->getImage(), PATHINFO_EXTENSION));
+        $filename  = '/' . $filename . '.' . $extension;
+
+        Mage::helper('gomage_designer/image_design')
+            ->init($this->getImage())
+            ->rename($filename);
+
+        $this->setImage($filename);
+
+        return $this;
+    }
+
+    public function renameLayer($filename)
+    {
+        $extension = strtolower(pathinfo($this->getLayer(), PATHINFO_EXTENSION));
+        $filename  = '/' . $filename . '.' . $extension;
+
+        Mage::helper('gomage_designer/image_design')
+            ->init($this->getLayer())
+            ->rename($filename);
+
+        $this->setLayer($filename);
+
+        return $this;
     }
 
 }

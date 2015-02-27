@@ -1,4 +1,5 @@
 <?php
+
 /**
  * GoMage Product Designer Extension
  *
@@ -10,7 +11,6 @@
  * @version      Release: 1.0.0
  * @since        Available since Release 1.0.0
  */
-
 class GoMage_ProductDesigner_Helper_Image_Design extends GoMage_ProductDesigner_Helper_Image_Abstract
 {
     /**
@@ -21,11 +21,11 @@ class GoMage_ProductDesigner_Helper_Image_Design extends GoMage_ProductDesigner_
      */
     public function init($filename)
     {
-        $this->_width = null;
-        $this->_height = null;
+        $this->_width    = null;
+        $this->_height   = null;
         $this->_filename = $filename;
-        $this->_baseDir = Mage::getSingleton('gomage_designer/design_config')->getBaseMediaPath();
-        $imageExtension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+        $this->_baseDir  = Mage::getSingleton('gomage_designer/design_config')->getBaseMediaPath();
+        $imageExtension  = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
         if ($imageExtension == 'pdf') {
             $filename = str_replace('.pdf', '.jpg', $filename);
             if (file_exists($this->_baseDir . $filename)) {
@@ -64,4 +64,17 @@ class GoMage_ProductDesigner_Helper_Image_Design extends GoMage_ProductDesigner_
         }
         return $dir;
     }
+
+    /**
+     * @param  string $filename
+     * @return $this
+     */
+    public function rename($filename)
+    {
+        $image = new Varien_Image($this->_getOriginalFilePath());
+        $image->save($this->_baseDir, $filename);
+        $this->init($filename);
+        return $this;
+    }
+
 }

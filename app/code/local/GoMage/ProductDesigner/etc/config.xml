@@ -52,6 +52,14 @@
                     </add_product_design_enabled>
                 </observers>
             </catalog_product_collection_load_before>
+            <sales_order_place_after>
+                <observers>
+                    <rename_design_images>
+                        <class>gomage_designer/observer</class>
+                        <method>renameDesignImages</method>
+                    </rename_design_images>
+                </observers>
+            </sales_order_place_after>
         </events>
     </frontend>
     <admin>
