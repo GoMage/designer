@@ -17,6 +17,8 @@ class GoMage_ProductDesigner_Model_Design extends Mage_Core_Model_Abstract
 
     const DESIGN_SIZE_HEIGHT = 700;
 
+    const CUSTOM_OPTION_ID = 0;
+
     /**
      * Initialize resource model
      *

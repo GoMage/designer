@@ -1,4 +1,5 @@
 <?php
+
 /**
  * GoMage Product Designer Extension
  *
@@ -10,9 +11,7 @@
  * @version      Release: 1.0.0
  * @since        Available since Release 1.0.0
  */
-
-class GoMage_ProductDesigner_Block_Catalog_Product_View_Options
-    extends Mage_Catalog_Block_Product_View_Options
+class GoMage_ProductDesigner_Block_Catalog_Product_View_Options extends Mage_Catalog_Block_Product_View_Options
 {
     protected $_designOption;
 
@@ -24,23 +23,33 @@ class GoMage_ProductDesigner_Block_Catalog_Product_View_Options
     public function getDesignOption()
     {
         if (is_null($this->_designOption)) {
-            $design = Mage::helper('gomage_designer')->getProductDesign($this->getProduct());
-            if ($design && $design->getId()) {
-                $option = new Mage_Catalog_Model_Product_Option(array(
-                    'id' => $design->getId(),
-                    'value' => $design->getId(),
-                    'price' => $design->getPrice(),
-                    'price_type' => 'fixed',
-                ));
 
-                if (!$this->hasOptions()) {
-                    $option->setData('decorated_is_last', true);
-                }
-                $option->setProduct($this->getProduct());
-                $priceConfig = $this->_getPriceConfiguration($option);
-                $option->setPriceConfig(
-                    Mage::helper('core')->jsonEncode($priceConfig)
-                );
+            $helper = Mage::helper('gomage_designer');
+
+            $design = $helper->getProductDesign($this->getProduct());
+            if ($design && $design->getId()) {
+
+                $option = Mage::getModel('catalog/product_option')
+                    ->setData(array(
+                            'value' => $design->getId(),
+                            'type'  => Mage_Catalog_Model_Product_Option::OPTION_TYPE_CHECKBOX,
+                            'title' => $helper->__('Design'),
+                        )
+                    )
+                    ->setProduct($this->getProduct())
+                    ->setId(GoMage_ProductDesigner_Model_Design::CUSTOM_OPTION_ID);
+
+                $option_value = Mage::getModel('catalog/product_option_value')
+                    ->setData(array(
+                            'title'      => $helper->__('Custom Design'),
+                            'price_type' => 'fixed',
+                            'price'      => $design->getPrice(),
+                        )
+                    )
+                    ->setProduct($this->getProduct())
+                    ->setId($design->getId());
+
+                $option->addValue($option_value);
 
                 $this->_designOption = $option;
             } else {
@@ -51,48 +60,15 @@ class GoMage_ProductDesigner_Block_Catalog_Product_View_Options
         return $this->_designOption;
     }
 
-    /**
-     * Return product design option html
-     *
-     * @return string
-     */
-    public function getDesignOptionHtml()
+
+    public function getOptions()
     {
-        if ($option = $this->getDesignOption()) {
-            $block = $this->getChild('product_option_design');
-            $block->setOption($option);
-            return $block->toHtml();
+        $options = parent::getOptions();
+
+        if ($design_option = $this->getDesignOption()) {
+            $options[] = $design_option;
         }
-
-        return '';
+        return $options;
     }
 
-    /**
-     * Product has design option
-     *
-     * @return bool
-     */
-    public function hasDesignOption()
-    {
-        $option = $this->getDesignOption();
-        return $option ? true : false;
-    }
-
-    /**
-     * Get price configuration
-     *
-     * @param Mage_Catalog_Model_Product_Option_Value|Mage_Catalog_Model_Product_Option $option
-     * @return array
-     */
-    protected function _getPriceConfiguration($option)
-    {
-        $data = array();
-        $data['price']      = Mage::helper('core')->currency($option->getPrice(true), false, false);
-        $data['oldPrice']   = Mage::helper('core')->currency($option->getPrice(false), false, false);
-        $data['priceValue'] = $option->getPrice(false);
-        $data['type']       = $option->getPriceType();
-        $data['excludeTax'] = $price = Mage::helper('tax')->getPrice($option->getProduct(), $data['price'], false);
-        $data['includeTax'] = $price = Mage::helper('tax')->getPrice($option->getProduct(), $data['price'], true);
-        return $data;
-    }
 }

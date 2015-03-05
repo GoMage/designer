@@ -1,4 +1,5 @@
 <?php
+
 /**
  * GoMage Product Designer Extension
  *
@@ -10,23 +11,22 @@
  * @version      Release: 1.0.0
  * @since        Available since Release 1.0.0
  */
-
 class GoMage_ProductDesigner_Block_Catalog_Product_List extends Mage_Catalog_Block_Product_List
 {
     public function getProductButtons()
     {
-        $products = $this->getLoadedProductCollection();
+        $products           = $this->getLoadedProductCollection();
         $_disabledAddToCart = Mage::getStoreConfig('gomage_designer/general/add_to_cart_button');
-        $buttons = array();
+        $buttons            = array();
 
         if (!Mage::helper('gomage_designer')->isEnabled()) {
             return $buttons;
         }
         foreach ($products as $_product) {
             $buttons[] = array(
-                'add_to_cart_enabled' => (!$_product->getEnableProductDesigner() || !$_disabledAddToCart) ? true : false,
+                'add_to_cart_enabled'   => (!$_product->getEnableProductDesigner() || !$_disabledAddToCart) ? true : false,
                 'add_to_design_enabled' => $_product->getEnableProductDesigner() ? true : false,
-                'design_url' => $this->_getDesignUrl($_product)
+                'design_url'            => $this->_getDesignUrl($_product)
             );
         }
 
@@ -41,7 +41,7 @@ class GoMage_ProductDesigner_Block_Catalog_Product_List extends Mage_Catalog_Blo
     protected function _getDesignUrl($product)
     {
         if (!$product->getEnableProductDesigner()) {
-            return  '';
+            return '';
         }
 
         return $this->getUrl('designer', array('_query' => array('id' => $product->getId())));

@@ -33,29 +33,6 @@ class GoMage_ProductDesigner_Model_Observer
     }
 
     /**
-     * Add design option to quote item
-     *
-     * @param Varien_Event_Observer $observer Observer
-     * @return void
-     */
-    public function addDesignToQuoteItem(Varien_Event_Observer $observer)
-    {
-        if (!Mage::helper('gomage_designer')->isEnabled()) {
-            return;
-        }
-        $item = $observer->getEvent()->getQuoteItem();
-        if ($design = Mage::app()->getRequest()->getParam('design')) {
-            $item->addOption(array(
-                    "product_id" => $item->getProduct()->getId(),
-                    "product"    => $item->getProduct(),
-                    "code"       => "design",
-                    "value"      => $design
-                )
-            );
-        }
-    }
-
-    /**
      * Add design Price to to final price
      *
      * @param Varien_Event_Observer $observer Observer
@@ -66,20 +43,31 @@ class GoMage_ProductDesigner_Model_Observer
         if (!Mage::helper('gomage_designer')->isEnabled()) {
             return;
         }
-        $product    = $observer->getEvent()->getProduct();
-        $buyRequest = $product->getCustomOption('info_buyRequest');
-        if ($buyRequest) {
-            $buyRequest = unserialize($buyRequest->getValue());
-            if (isset($buyRequest['design'])) {
-                $designId = $buyRequest['design'];
-                $design   = Mage::getModel('gomage_designer/design')->load($designId);
-                if ($design && $design->getId() && $design->getPrice() > 0) {
-                    $finalPrice = $product->getData('final_price');
-                    $finalPrice += $design->getPrice();
-                    $product->setFinalPrice($finalPrice);
-                }
+        $product = $observer->getEvent()->getProduct();
+        $design  = $product->getCustomOption('design');
+
+        if ($design && $design->getValue()) {
+            $design = Mage::getModel('gomage_designer/design')->load($design->getValue());
+            if ($design && $design->getId() && $design->getPrice() > 0) {
+                $finalPrice = $product->getData('final_price');
+                $finalPrice += $design->getPrice();
+                $product->setFinalPrice($finalPrice);
             }
         }
+    }
+
+    /**
+     * @param  Varien_Object $buyRequest
+     * @return int
+     */
+    protected function _getDesignIdByRequest(Varien_Object $buyRequest)
+    {
+        $design_id = 0;
+        $options   = $buyRequest->getOptions();
+        if (is_array($options) && isset($options[GoMage_ProductDesigner_Model_Design::CUSTOM_OPTION_ID])) {
+            $design_id = reset($options[GoMage_ProductDesigner_Model_Design::CUSTOM_OPTION_ID]);
+        }
+        return (int)$design_id;
     }
 
     /**
@@ -93,11 +81,14 @@ class GoMage_ProductDesigner_Model_Observer
         if (!Mage::helper('gomage_designer')->isEnabled()) {
             return;
         }
-        $buyRequest = $observer->getEvent()->getBuyRequest();
-        $product    = $observer->getEvent()->getProduct();
 
-        if ($designId = $buyRequest->getDesign()) {
-            $design = Mage::getModel('gomage_designer/design')->load($designId);
+        $product    = $observer->getEvent()->getProduct();
+        $buyRequest = $observer->getEvent()->getBuyRequest();
+
+        $design_id = $this->_getDesignIdByRequest($buyRequest);
+
+        if ($design_id > 0) {
+            $design = Mage::getModel('gomage_designer/design')->load($design_id);
             if ($design && $design->getId()) {
                 if (!$this->_checkProductDesignColorMatch($product, $design, $buyRequest)) {
                     $product->setOptionsValidationFail(true);
@@ -106,7 +97,7 @@ class GoMage_ProductDesigner_Model_Observer
                         Mage::helper('gomage_designer')->__('Сonfiguration of your design does not match the configuration of the product')
                     );
                 }
-                $product->addCustomOption('design', $designId);
+                $product->addCustomOption('design', $design_id);
             }
         }
     }
@@ -168,6 +159,7 @@ class GoMage_ProductDesigner_Model_Observer
         $order = $event->getEvent()->getOrder();
         $items = $order->getAllItems();
 
+        //TODO: get custom option "design"
         $number = 1;
         foreach ($items as $item) {
             $options = $item->getProductOptions();

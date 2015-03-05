@@ -1,4 +1,5 @@
 <?php
+
 /**
  * GoMage Product Designer Extension
  *
@@ -10,7 +11,6 @@
  * @version      Release: 1.0.0
  * @since        Available since Release 1.0.0
  */
-
 class GoMage_ProductDesigner_Block_Page_Html_Head extends Mage_Core_Block_Template
 {
     protected function _prepareLayout()
@@ -18,7 +18,6 @@ class GoMage_ProductDesigner_Block_Page_Html_Head extends Mage_Core_Block_Templa
         if (Mage::helper('gomage_designer')->isEnabled()) {
             $head = $this->getLayout()->getBlock('head');
             $head->addItem('skin_css', 'css/gomage/productdesigner.css');
-            $head->addJs('gomage/productdesigner/varien/product.js');
         }
 
         return parent::_prepareLayout();

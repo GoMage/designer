@@ -136,6 +136,7 @@
             <block type="gomage_designer/catalog_product_list" name="gomage.designer.product.list" template="gomage/productdesigner/catalog/product/list.phtml"/>
         </reference>
     </catalog_category_layered>
+
     <!-- Top links for logged in customer -->
     <customer_logged_in_top_links>
         <block type="page/template_links" name="top.links" as="topLinks" output="toHtml"/>
@@ -192,84 +193,16 @@
     </catalog_product_view>
 
     <PRODUCT_TYPE_simple translate="label" module="catalog">
-        <reference name="product.info.options">
-            <action method="setTemplate">
-                <template>gomage/productdesigner/catalog/product/view/options.phtml</template>
-            </action>
-            <block type="core/template" name="product.info.option.design" as="product_option_design" template="gomage/productdesigner/catalog/product/view/options/design.phtml"/>
-        </reference>
         <reference name="product.info.addtocart">
             <block type="gomage_designer/catalog_product_view" name="product.info.design" template="gomage/productdesigner/catalog/product/view/addtodesign.phtml" />
-        </reference>
-        <reference name="product.info.addtocart">
-            <action method="setTemplate">
-                <template>gomage/productdesigner/catalog/product/view/addtocart.phtml</template>
-            </action>
         </reference>
     </PRODUCT_TYPE_simple>
 
     <PRODUCT_TYPE_configurable translate="label" module="catalog">
-        <reference name="product.info.options">
-            <action method="setTemplate">
-                <template>gomage/productdesigner/catalog/product/view/options.phtml</template>
-            </action>
-            <block type="core/template" name="product.info.option.design" as="product_option_design" template="gomage/productdesigner/catalog/product/view/options/design.phtml"/>
-        </reference>
         <reference name="product.info.addtocart">
             <block type="gomage_designer/catalog_product_view" name="product.info.design" template="gomage/productdesigner/catalog/product/view/addtodesign.phtml" />
         </reference>
-        <reference name="product.info.addtocart">
-            <action method="setTemplate">
-                <template>gomage/productdesigner/catalog/product/view/addtocart.phtml</template>
-            </action>
-        </reference>
     </PRODUCT_TYPE_configurable>
-
-    <checkout_cart_index>
-        <reference name="checkout.cart">
-            <action method="addItemRender"><type>simple</type><block>gomage_designer/checkout_cart_item_renderer</block><template>gomage/productdesigner/checkout/cart/item/default.phtml</template></action>
-            <action method="addItemRender"><type>configurable</type><block>gomage_designer/checkout_cart_item_renderer_configurable</block><template>gomage/productdesigner/checkout/cart/item/default.phtml</template></action>
-        </reference>
-    </checkout_cart_index>
-
-    <checkout_onepage_review>
-        <reference name="root">
-            <action method="addItemRender"><type>default</type><block>gomage_designer/checkout_cart_item_renderer</block><template>gomage/productdesigner/checkout/onepage/review/item.phtml</template></action>
-            <action method="addItemRender"><type>configurable</type><block>gomage_designer/checkout_cart_item_renderer_configurable</block><template>gomage/productdesigner/checkout/onepage/review/item.phtml</template></action>
-        </reference>
-    </checkout_onepage_review>
-
-    <checkout_multishipping_addresses>
-        <reference name="checkout_addresses">
-            <action method="addItemRender"><type>default</type><block>gomage_designer/checkout_cart_item_renderer</block><template>gomage/productdesigner/checkout/multishipping/item/default.phtml</template></action>
-            <action method="addItemRender"><type>configurable</type><block>gomage_designer/checkout_cart_item_renderer_configurable</block><template>gomage/productdesigner/checkout/multishipping/item/default.phtml</template></action>
-        </reference>
-    </checkout_multishipping_addresses>
-
-    <checkout_multishipping_shipping translate="label">
-        <reference name="checkout_shipping">
-            <action method="addItemRender"><type>default</type><block>gomage_designer/checkout_cart_item_renderer</block><template>gomage/productdesigner/checkout/multishipping/item/default.phtml</template></action>
-            <action method="addItemRender"><type>configurable</type><block>designer/checkout_cart_item_renderer_configurable</block><template>gomage/productdesigner/checkout/multishipping/item/default.phtml</template></action>
-        </reference>
-        <reference name="checkout_billing_items">
-            <action method="addItemRender"><type>default</type><block>gomage_designer/checkout_cart_item_renderer</block><template>gomage/productdesigner/checkout/multishipping/item/default.phtml</template></action>
-            <action method="addItemRender"><type>configurable</type><block>gomage_designer/checkout_cart_item_renderer_configurable</block><template>gomage/productdesigner/checkout/multishipping/item/default.phtml</template></action>
-        </reference>
-    </checkout_multishipping_shipping>
-
-    <checkout_multishipping_overview>
-        <reference name="checkout_overview">
-            <action method="addItemRender"><type>default</type><block>gomage_designer/checkout_cart_item_renderer</block><template>gomage/productdesigner/checkout/multishipping/item/default.phtml</template></action>
-            <action method="addItemRender"><type>configurable</type><block>gomage_designer/checkout_cart_item_renderer_configurable</block><template>gomage/productdesigner/checkout/multishipping/item/default.phtml</template></action>
-        </reference>
-    </checkout_multishipping_overview>
-
-    <default>
-        <reference name="cart_sidebar">
-            <action method="addItemRender"><type>simple</type><block>gomage_designer/checkout_cart_item_renderer</block><template>checkout/cart/sidebar/default.phtml</template></action>
-            <action method="addItemRender"><type>configurable</type><block>gomage_designer/checkout_cart_item_renderer_configurable</block><template>checkout/cart/sidebar/default.phtml</template></action>
-        </reference>
-    </default>
 
     <sales_order_view translate="label">
         <reference name="order_items">
@@ -291,4 +224,5 @@
             <action method="addItemRender"><type>default</type><block>gomage_designer/sales_order_email_items_default</block><template>gomage/productdesigner/sales/order/email/items/default.phtml</template></action>
         </reference>
     </sales_email_order_items>
+
 </layout>

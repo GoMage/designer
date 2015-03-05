@@ -36,14 +36,6 @@
             </updates>
         </layout>
         <events>
-            <sales_quote_add_item>
-                <observers>
-                    <add_design_to_quote_item>
-                        <class>gomage_designer/observer</class>
-                        <method>addDesignToQuoteItem</method>
-                    </add_design_to_quote_item>
-                </observers>
-            </sales_quote_add_item>
             <catalog_product_collection_load_before>
                 <observers>
                     <add_product_design_enabled>
@@ -163,6 +155,11 @@
             <gomage_designer>
                 <class>GoMage_ProductDesigner_Helper</class>
             </gomage_designer>
+            <catalog>
+                <rewrite>
+                    <product_configuration>GoMage_ProductDesigner_Helper_Catalog_Product_Configuration</product_configuration>
+                </rewrite>
+            </catalog>
         </helpers>
         <blocks>
             <gomage_designer>
@@ -181,6 +178,12 @@
                     <product_view>GoMage_ProductDesigner_Block_Catalog_Product_View</product_view>
                 </rewrite>
             </catalog>
+            <checkout>
+                <rewrite>
+                    <cart_item_renderer>GoMage_ProductDesigner_Block_Checkout_Cart_Item_Renderer</cart_item_renderer>
+                    <cart_item_renderer_configurable>GoMage_ProductDesigner_Block_Checkout_Cart_Item_Renderer_Configurable</cart_item_renderer_configurable>
+                </rewrite>
+            </checkout>
         </blocks>
         <resources>
             <gomage_productdesigner_setup>

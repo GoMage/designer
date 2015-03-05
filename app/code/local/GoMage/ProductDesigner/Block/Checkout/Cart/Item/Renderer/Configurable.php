@@ -1,4 +1,5 @@
 <?php
+
 /**
  * GoMage Product Designer Extension
  *
@@ -10,9 +11,7 @@
  * @version      Release: 1.0.0
  * @since        Available since Release 1.0.0
  */
-
-class GoMage_ProductDesigner_Block_Checkout_Cart_Item_Renderer_Configurable
-    extends Mage_Checkout_Block_Cart_Item_Renderer_Configurable
+class GoMage_ProductDesigner_Block_Checkout_Cart_Item_Renderer_Configurable extends Mage_Checkout_Block_Cart_Item_Renderer_Configurable
 {
     /**
      * Return item design option value
@@ -21,7 +20,7 @@ class GoMage_ProductDesigner_Block_Checkout_Cart_Item_Renderer_Configurable
      */
     public function getDesignOption()
     {
-        $item = $this->getItem();
+        $item         = $this->getItem();
         $designOption = $item->getOptionByCode('design');
         if ($designOption && $designOption->getValue()) {
             return $designOption->getValue();
