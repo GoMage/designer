@@ -186,6 +186,7 @@ class GoMage_ProductDesigner_Model_Catalog_Product extends Mage_Catalog_Model_Pr
 
     public function hasImagesForDesign()
     {
+
         $config = Mage::helper('gomage_designer')->getProductSettingForEditor($this);
         if (empty($config['images'])) {
             return false;

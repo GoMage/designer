@@ -18,8 +18,7 @@
     <?php if ($this->getOrderOptions() || $designOption): ?>
         <dl class="item-options">
         <?php if ($designOption): ?>
-            <dt><?php echo $this->__('Product Design')?> (<?php echo $this->helper('core')->currency($designOption->getPrice(), true, false); ?>)</dt>
-            <a href="<?php echo $designOption->getUrl()?>" target="_blank"><?php echo $this->__('View')?></a>
+            <a href="<?php echo $designOption->getUrl()?>" target="_blank"><?php echo $this->__('View Custom Design ')?></a>
         <?php endif;?>
         <?php foreach ($this->getOrderOptions() as $_option): ?>
             <dt><?php echo $_option['label'] ?></dt>

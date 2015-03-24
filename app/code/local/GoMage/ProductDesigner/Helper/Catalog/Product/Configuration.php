@@ -25,7 +25,7 @@ class GoMage_ProductDesigner_Helper_Catalog_Product_Configuration extends Mage_C
                 'label'       => $helper->__('Design'),
                 'value'       => $helper->__('Custom Design'),
                 'print_value' => $helper->__('Custom Design'),
-                'option_id'   => $design_option->getId(),
+                'option_id'   => GoMage_ProductDesigner_Model_Design::CUSTOM_OPTION_ID,
                 'option_type' => 'checkbox',
                 'custom_view' => false
             );

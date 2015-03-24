@@ -23,6 +23,7 @@
             <action method="addJs"><script>gomage/productdesigner/prototype/prototype.js</script></action>
         </reference>
     </adminhtml_catalog_product_edit>
+
     <adminhtml_catalog_product_new>
         <reference name="head">
             <action method="addJs"><script>prototype/window.js</script></action>
@@ -33,9 +34,11 @@
             <action method="addJs"><script>gomage/productdesigner/prototype/prototype.js</script></action>
         </reference>
     </adminhtml_catalog_product_new>
+
     <adminhtml_designer_product_edit>
-            <block type="gomage_designer/adminhtml_product_edit" name="product_designer_product" template="gomage/productdesigner/product/edit.phtml" output="toHtml" />
+        <block type="gomage_designer/adminhtml_product_edit" name="product_designer_product" template="gomage/productdesigner/product/edit.phtml" output="toHtml" />
     </adminhtml_designer_product_edit>
+
     <adminhtml_cliparts_edit>
         <update handle="editor" />
         <reference name="left">
@@ -48,9 +51,6 @@
                 </block>
             </block>
         </reference>
-        <!--<reference name="js">-->
-            <!--<block type="core/template" template="catalog/wysiwyg/js.phtml" name="catalog.wysiwyg.js" />-->
-        <!--</reference>-->
     </adminhtml_cliparts_edit>
 
     <adminhtml_fonts_edit>

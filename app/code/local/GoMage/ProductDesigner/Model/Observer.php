@@ -159,21 +159,19 @@ class GoMage_ProductDesigner_Model_Observer
         $order = $event->getEvent()->getOrder();
         $items = $order->getAllItems();
 
-        //TODO: get custom option "design"
         $number = 1;
         foreach ($items as $item) {
-            $options = $item->getProductOptions();
-            if (!isset($options['info_buyRequest'])) {
-                continue;
-            }
-            $options = $options['info_buyRequest'];
-            if (isset($options['design'])) {
-                $design_id     = (int)$options['design'];
-                $design_images = Mage::getModel('gomage_designer/design')->getImages($design_id);
-                foreach ($design_images as $design_image) {
-                    $design_image->renameImage($this->_getDesignImageFileName($order->getIncrementId(), $number++))
-                        ->renameLayer($this->_getDesignImageFileName($order->getIncrementId(), $number++))
-                        ->save();
+            $options = $item->getProductOptionByCode('options');
+
+            foreach ($options as $option) {
+                if (isset($option['option_id']) && $option['option_id'] == GoMage_ProductDesigner_Model_Design::CUSTOM_OPTION_ID) {
+                    $design_id     = (int)$option['option_value'];
+                    $design_images = Mage::getModel('gomage_designer/design')->getImages($design_id);
+                    foreach ($design_images as $design_image) {
+                        $design_image->renameImage($this->_getDesignImageFileName($order->getIncrementId(), $number++))
+                            ->renameLayer($this->_getDesignImageFileName($order->getIncrementId(), $number++))
+                            ->save();
+                    }
                 }
             }
         }

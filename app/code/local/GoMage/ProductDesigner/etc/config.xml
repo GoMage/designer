@@ -108,6 +108,8 @@
                     <product>GoMage_ProductDesigner_Model_Catalog_Product</product>
                     <product_image>GoMage_ProductDesigner_Model_Catalog_Product_Image</product_image>
                     <product_attribute_backend_media>GoMage_ProductDesigner_Model_Catalog_Product_Attribute_Backend_Media</product_attribute_backend_media>
+                    <product_type_simple>GoMage_ProductDesigner_Model_Catalog_Product_Type_Simple</product_type_simple>
+                    <product_type_configurable>GoMage_ProductDesigner_Model_Catalog_Product_Type_Configurable</product_type_configurable>
                 </rewrite>
             </catalog>
             <gomage_designer>

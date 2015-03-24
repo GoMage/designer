@@ -126,6 +126,7 @@
             <block type="gomage_designer/catalog_product_list" name="gomage.designer.product.list" template="gomage/productdesigner/catalog/product/list.phtml"/>
         </reference>
     </catalog_category_default>
+
     <catalog_category_layered>
         <reference name="head">
             <block type="gomage_designer/page_html_head" name="gomage.designer.head">
@@ -137,7 +138,6 @@
         </reference>
     </catalog_category_layered>
 
-    <!-- Top links for logged in customer -->
     <customer_logged_in_top_links>
         <block type="page/template_links" name="top.links" as="topLinks" output="toHtml"/>
         <reference name="top.links">
@@ -203,26 +203,5 @@
             <block type="gomage_designer/catalog_product_view" name="product.info.design" template="gomage/productdesigner/catalog/product/view/addtodesign.phtml" />
         </reference>
     </PRODUCT_TYPE_configurable>
-
-    <sales_order_view translate="label">
-        <reference name="order_items">
-            <action method="addItemRender"><type>default</type><block>gomage_designer/sales_order_item_renderer_default</block><template>gomage/productdesigner/sales/order/items/renderer/default.phtml</template></action>
-        </reference>
-    </sales_order_view>
-
-    <sales_order_print>
-        <reference name="sales.order.print">
-            <action method="addItemRender"><type>default</type><block>gomage_designer/sales_order_item_renderer_default</block><template>gomage/productdesigner/sales/order/items/renderer/default.phtml</template></action>
-        </reference>
-        <reference name="sales_order_print">
-            <action method="addItemRender"><type>default</type><block>gomage_designer/sales_order_item_renderer_default</block><template>gomage/productdesigner/sales/order/items/renderer/default.phtml</template></action>
-        </reference>
-    </sales_order_print>
-
-    <sales_email_order_items>
-        <reference name="items">
-            <action method="addItemRender"><type>default</type><block>gomage_designer/sales_order_email_items_default</block><template>gomage/productdesigner/sales/order/email/items/default.phtml</template></action>
-        </reference>
-    </sales_email_order_items>
 
 </layout>
