@@ -88,4 +88,54 @@ class GoMage_ProductDesigner_Block_Checkout_Cart_Item_Renderer_Configurable exte
 
         return parent::getProductThumbnail();
     }
+
+    /**
+     * Get item delete url
+     *
+     * @return string
+     */
+    public function getDeleteUrl()
+    {
+        $helper = $this->getProCartHelper();
+        if (!$helper) {
+            return parent::getDeleteUrl();
+        }
+        $rendered = $this->getRenderedBlock();
+        $is_cart  = ($helper->getIsCartPage() || $helper->getChangeAttributeCart() ||
+            $helper->getChangeQtyCart() || $helper->isCrosssellAdd() || $helper->isWhishlistMove());
+
+        if ($helper->isProCartEnable() &&
+            ($rendered &&
+                (($rendered->getNameInLayout() == 'cart_sidebar' || $rendered->getName() == 'cart_sidebar') ||
+                    $is_cart))
+        ) {
+            return 'javascript:GomageProcartConfig.deleteItem(\'' . $this->getUrl(
+                'checkout/cart/delete',
+                array(
+                    'id' => $this->getItem()->getId()
+                )
+            ) . '\', \'' . $rendered->getNameInLayout() . '\')';
+        }
+
+        return parent::getDeleteUrl();
+
+    }
+
+    /**
+     * @return bool|Mage_Core_Helper_Abstract
+     */
+    protected function getProCartHelper()
+    {
+        $helper  = false;
+        $modules = (array)Mage::getConfig()->getNode('modules')->children();
+        if (isset($modules['GoMage_Procart']) && $modules['GoMage_Procart']->is('active')) {
+            try {
+                $helper = Mage::helper('gomage_procart');
+            } catch (Exception $e) {
+                $helper = false;
+            }
+        }
+        return $helper;
+    }
+
 }
