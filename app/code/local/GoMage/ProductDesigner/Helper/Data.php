@@ -116,7 +116,7 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
     {
         if (!$this->_productSettings) {
             $settings = array();
-            $images   = $product->getMediaGallery('images');
+            $images   = $product->getMediaGalleryImages();
             foreach ($images as $image) {
                 $designArea = Mage::helper('core')->jsonDecode($image['design_area']);
                 $imageId    = $image['value_id'];
@@ -269,7 +269,8 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
                 return $editorConfig;
             }
 
-            $images             = $product->getMediaGallery('images');
+            $images = $product->getMediaGalleryImages();
+
             $colorAttributeCode = Mage::getStoreConfig('gomage_designer/navigation/color_attribute');
             $defaultColor       = null;
             foreach ($images as $image) {
@@ -296,7 +297,7 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
                         }
                         $editorConfig['images'][$image['color']][$id] = $conf;
                     } else {
-                        $defaultColor                               = $product->getData($colorAttributeCode) ? : 'none_color';
+                        $defaultColor                               = $product->getData($colorAttributeCode) ?: 'none_color';
                         $editorConfig['images'][$defaultColor][$id] = $conf;
                     }
                 } else {

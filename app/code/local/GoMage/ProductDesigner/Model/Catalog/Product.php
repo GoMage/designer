@@ -25,7 +25,13 @@ class GoMage_ProductDesigner_Model_Catalog_Product extends Mage_Catalog_Model_Pr
         if (!Mage::helper('gomage_designer')->isEnabled()) {
             return parent::getMediaGalleryImages();
         }
-        if (!$this->hasData('media_gallery_images') && is_array($this->getMediaGallery('images'))) {
+
+        $media_gallery_images = $this->getMediaGallery('images');
+        if (empty($media_gallery_images) && $this->getTypeId() == Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE) {
+            $media_gallery_images = $this->getMediaGallery('configurable_images');
+        }
+
+        if (!$this->hasData('media_gallery_images') && is_array($media_gallery_images)) {
             $images   = new Varien_Data_Collection();
             $designId = (int)Mage::app()->getRequest()->getParam('design_id', false);
             if ($designId) {
@@ -37,7 +43,7 @@ class GoMage_ProductDesigner_Model_Catalog_Product extends Mage_Catalog_Model_Pr
                     $designImages[$_designImage->getImageId()] = $_designImage;
                 }
             }
-            foreach ($this->getMediaGallery('images') as $image) {
+            foreach ($media_gallery_images as $image) {
                 $imageDisabled = $image['disabled'];
                 if ($designId && $designColor) {
                     if ($designColor == $image['color']) {
@@ -186,7 +192,6 @@ class GoMage_ProductDesigner_Model_Catalog_Product extends Mage_Catalog_Model_Pr
 
     public function hasImagesForDesign()
     {
-
         $config = Mage::helper('gomage_designer')->getProductSettingForEditor($this);
         if (empty($config['images'])) {
             return false;
