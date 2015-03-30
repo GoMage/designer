@@ -106,6 +106,11 @@ GoMage.ProductDesigner = function (config, continueUrl, loginUrl, registrationUr
     this.observePriceMoreInfo();
     this.observeHelpIcons();
     this.observeHistoryChanges();
+
+    this._toggleNavigationButtons('disabled');
+    this._toggleControlsButtons();
+    this._toggleHistoryButtons();
+
 }
 
 GoMage.ProductDesigner.prototype = {
@@ -759,7 +764,8 @@ GoMage.ProductDesigner.prototype = {
         this.canvas.observe('object:modified', function (e) {
             var orig = e.target.originalState;
             // CASE 1: object has been moved
-            if (orig.left != e.target.left || orig.top != e.target.top) {
+
+            if (Math.round(orig.left) != Math.round(e.target.left) || Math.round(orig.top) != Math.round(e.target.top)) {
                 if ((e.target.left + e.target.width / 2 <= 0) || (e.target.left - e.target.width / 2 >= this.canvas.getWidth())) {
                     return;
                 } else if ((e.target.top + e.target.height / 2 <= 0) || (e.target.top - e.target.height / 2 >= this.canvas.getHeight())) {
