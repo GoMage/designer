@@ -76,6 +76,7 @@ GoMage.ProductDesigner = function (config, continueUrl, loginUrl, registrationUr
         registration: registrationUrl,
         saveDesign: saveDesign
     }
+    this.history_storage = {};
     this.history = new History();
     this.layersManager = new LayersManager(this);
     this.config = config;
@@ -88,6 +89,7 @@ GoMage.ProductDesigner = function (config, continueUrl, loginUrl, registrationUr
     this.productAdditionalImageTemplate = new Template($('product-image-template').innerHTML);
     this.isCustomerLogin = this.config.isCustomerLoggedIn;
     this.currentColor = null;
+    this.currentSlide = null;
     this.designChanged = {};
     this.designId = {};
 
@@ -134,6 +136,7 @@ GoMage.ProductDesigner.prototype = {
             if (images.hasOwnProperty(prop)) {
                 var img = images[prop];
                 this.addDesignArea(img);
+                this.currentSlide = img.id;
                 return;
             }
         }
@@ -161,6 +164,7 @@ GoMage.ProductDesigner.prototype = {
         var colors = data.product_colors;
 
         this.layersManager.clear();
+        this.history_storage = {};
         this.history.clear();
         this.containerLayers = {};
         this.containerCanvases = {};
@@ -195,6 +199,15 @@ GoMage.ProductDesigner.prototype = {
     changeProductImage: function (id) {
         var img = this.config.product.images[this.currentColor][id];
         if (img && this.currentProd != img.id) {
+
+            this.history_storage[this.currentSlide] = this.history;
+            if (this.history_storage.hasOwnProperty(id)) {
+                this.history = this.history_storage[id];
+            } else {
+                this.history = new History();
+            }
+            this.currentSlide = id;
+
             this.containerCanvases[this.currentProd] = this.canvas;
             this.containerLayers[this.currentProd] = this.container.childElements()[0].remove();
             this.addDesignArea(img);
@@ -1370,12 +1383,16 @@ GoMage.ProductDesigner.prototype = {
         var layerControls = [];
         var method = this.canvas.getActiveObject() ? 'removeClassName' : 'addClassName';
         for (var k in controls) {
-            if ((k != 'undo' && k != 'redo') && controls.hasOwnProperty(k)) {
-                var btn = $(controls[k]);
-                btn[method].apply(btn, ['disabled']);
+            if (k == 'undo') {
+                method = this.history.undoStack.length ? 'removeClassName' : 'addClassName';
+            } else if (k == 'redo') {
+                method = this.history.redoStack.length ? 'removeClassName' : 'addClassName';
+            } else if (controls.hasOwnProperty(k)) {
+                method = this.canvas.getActiveObject() ? 'removeClassName' : 'addClassName';
             }
+            var btn = $(controls[k]);
+            btn[method].apply(btn, ['disabled']);
         }
-
         layerControls.invoke(method, 'disabled');
     },
 
