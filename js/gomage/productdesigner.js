@@ -766,7 +766,18 @@ GoMage.ProductDesigner.prototype = {
         $(this.config.controls.allign_by_center).observe('click', function (e) {
             e.stop();
             this.alignByCenterLayer();
-        }.bind(this))
+        }.bind(this));
+
+        $(this.config.controls.front).observe('click', function (e) {
+            e.stop();
+            this.changePosition('front');
+        }.bind(this));
+
+        $(this.config.controls.back).observe('click', function (e) {
+            e.stop();
+            this.changePosition('back');
+        }.bind(this));
+
     },
 
     observeCanvasObjectModified: function () {
@@ -977,6 +988,19 @@ GoMage.ProductDesigner.prototype = {
             return;
         }
         var cmd = new AlignToCenterCommand(this.canvas, activeObject);
+        cmd.exec();
+        this.history.push(cmd);
+    },
+
+    changePosition: function (position) {
+        if ((this.canvas == null) || this.canvas == 'undefined') {
+            return;
+        }
+        var activeObject = this.canvas.getActiveObject();
+        if (!activeObject) {
+            return;
+        }
+        var cmd = new ChangePositionCommand(this.canvas, activeObject, position);
         cmd.exec();
         this.history.push(cmd);
     },
@@ -2719,6 +2743,29 @@ var AlignToCenterCommand = function (c, obj) {
             obj.setLeft(state.left);
             obj.setTop(state.top);
             obj.setCoords();
+            c.setActiveObject(obj);
+            c.renderAll();
+        }
+    };
+};
+
+var ChangePositionCommand = function (c, obj, pos) {
+    return {
+        exec: function () {
+            if (pos == 'front') {
+                c.bringToFront(obj);
+            } else if (pos == 'back') {
+                c.sendToBack(obj);
+            }
+            c.setActiveObject(obj);
+            c.renderAll();
+        },
+        unexec: function () {
+            if (pos == 'front') {
+                c.sendToBack(obj);
+            } else if (pos == 'back') {
+                c.bringToFront(obj);
+            }
             c.setActiveObject(obj);
             c.renderAll();
         }
