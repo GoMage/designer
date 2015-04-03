@@ -33,6 +33,18 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
     }
 
     /**
+     * Initialize product view layout
+     *
+     * @param   Mage_Catalog_Model_Product $product
+     * @return  GoMage_ProductDesigner_IndexController
+     */
+    protected function _initProductLayout($product)
+    {
+        Mage::helper('catalog/product_view')->initProductLayout($product, $this);
+        return $this;
+    }
+
+    /**
      * Index action
      *
      * @return void
@@ -47,6 +59,8 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
         } elseif (!$product->getId() && !Mage::helper('gomage_designer')->isNavigationEnabled()) {
             $this->_redirectReferer();
         }
+        Mage::register('current_product', $product);
+        $this->_initProductLayout($product);
         $this->loadLayout();
         $this->getLayout()->getBlock('head')->setTitle($this->_getTitle());
         $this->renderLayout();
@@ -79,6 +93,7 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
                 'product_settings' => $settings,
                 'design_price'     => $this->_getDesignPriceHtml(),
                 'price_config'     => Mage::helper('gomage_designer')->getProductPriceConfig(),
+                'product_options'  => $this->_getProductOptionsHtml($product),
             );
             if ($productColors = $product->getProductColors()) {
                 $responseData['product_colors'] = $productColors;
@@ -305,6 +320,18 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
         $layout->generateBlocks();
         $layout->getBlock('design_share')->setDesign($design);
         return $layout->getOutput();
+    }
+
+    protected function _getProductOptionsHtml($product)
+    {
+        $layout = $this->getLayout();
+        $update = $layout->getUpdate();
+        Mage::register('current_product', $product);
+        $this->_initProductLayout($product);
+        $update->load('gomage_designer_product_options');
+        $layout->generateXml();
+        $layout->generateBlocks();
+        return $layout->getBlock('product.options')->toHtml();
     }
 
     protected function _getCustomerSession()

@@ -162,6 +162,7 @@ GoMage.ProductDesigner.prototype = {
         var product = data.product_settings;
         var price = data.design_price;
         var colors = data.product_colors;
+        var product_options = data.product_options;
 
         this.layersManager.clear();
         this.history_storage = {};
@@ -175,6 +176,7 @@ GoMage.ProductDesigner.prototype = {
         this.loadProduct(product);
         this.updateProductImages(product);
         this.updateProductColors(colors);
+        this.updateProductOptions(product_options);
         this.showTabsSwitchers();
         this.showControls();
         this.showAdditionalPannel();
@@ -250,7 +252,7 @@ GoMage.ProductDesigner.prototype = {
     },
 
     updateProductColors: function (colors) {
-        $('product-colors').innerHTML = '';
+        $('product-colors').innerHTML = '<h4 class="pd-header">Choose Color</h4>';
         if (colors) {
             var colorsHtml = '';
             for (var id in colors) {
@@ -284,6 +286,16 @@ GoMage.ProductDesigner.prototype = {
             }
         } else {
             $('product-colors').hide();
+        }
+    },
+
+    updateProductOptions: function (options) {
+        var js_scripts = options.extractScripts();
+        $('product_options').innerHTML = options.stripScripts();
+        for (var i = 0; i < js_scripts.length; i++) {
+            if (typeof(js_scripts[i]) != 'undefined') {
+                ProductDesignerGlobalEval(js_scripts[i]);
+            }
         }
     },
 
@@ -671,9 +683,8 @@ GoMage.ProductDesigner.prototype = {
         var response = transport.responseText.evalJSON();
         if (response.status == 'redirect' && response.url != undefined) {
             window.onbeforeunload = null;
-            this.designChanged[this.currentColor] = false;
-            this.designId[this.currentColor] = response.design_id;
-            location.href = response.url;
+            $('design_option').value = response.design_id;
+            productAddToCartForm.submit();
         } else if (response.status == 'error') {
             console.log(response.message);
         }
@@ -702,6 +713,10 @@ GoMage.ProductDesigner.prototype = {
                     return;
                 }
                 if (this.navigation.continue.hasClassName('disabled')) {
+                    return;
+                }
+                if (!productAddToCartForm.validator.validate()) {
+                    alert('Please choose product options');
                     return;
                 }
                 if ((this.designChanged.hasOwnProperty(this.currentColor) && this.designChanged[this.currentColor] === false)

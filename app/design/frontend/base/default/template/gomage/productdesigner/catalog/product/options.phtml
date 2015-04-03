@@ -1,0 +1,41 @@
+<?php
+/**
+ * GoMage Product Designer Extension
+ *
+ * @category     Extension
+ * @copyright    Copyright (c) 2013 GoMage (http://www.gomage.com)
+ * @author       GoMage
+ * @license      http://www.gomage.com/license-agreement/  Single domain license
+ * @terms of use http://www.gomage.com/terms-of-use/
+ * @version      Release: 1.0.0
+ * @since        Available since Release 1.1.0
+ */
+?>
+
+<?php $_helper = $this->helper('catalog/output'); ?>
+<?php $_product = $this->getProduct(); ?>
+<script type="text/javascript">
+    var optionsPrice = new Product.OptionsPrice(<?php echo $this->getJsonConfig() ?>);
+</script>
+
+<form action="<?php echo $this->getSubmitUrl($_product) ?>" method="post"
+      id="product_addtocart_form"<?php if ($_product->getOptions()): ?> enctype="multipart/form-data"<?php endif; ?>>
+    <?php echo $this->getBlockHtml('formkey') ?>
+    <div class="no-display">
+        <input type="hidden" name="product" value="<?php echo $_product->getId() ?>"/>
+        <input type="hidden" id="design_option"
+               name="options[<?php echo GoMage_ProductDesigner_Model_Design::CUSTOM_OPTION_ID ?>][]" value="">
+    </div>
+    <?php if ($_product->isSaleable() && $this->hasOptions()): ?>
+        <h4 class="pd-header"><?php echo $this->__('Product Options') ?></h4>
+        <div class="product-shop">
+            <?php echo $this->getChildHtml('product_options_wrapper') ?>
+        </div>
+    <?php endif; ?>
+</form>
+<script type="text/javascript">
+    //<![CDATA[
+        var productAddToCartForm = new VarienForm('product_addtocart_form', true);
+    //]]>
+</script>
+

@@ -105,7 +105,7 @@ $productImageMinSize = $this->getProductOriginalImageMinSizes();
             <button class="pd-btn pd-btn-blue-border" id="pd_share"><span><span><?php echo $this->__('Save & Share') ?></span></span></button>
             <button class="pd-btn pd-btn-blue-border" id="pd_zoom"><span><span><?php echo $this->__('Preview') ?></span></span></button>
             <button class="pd-btn pd-btn-blue-border" id="pd_save_design"><span><span><?php echo $this->__('Save  Design') ?></span></span></button>
-            <button class="pd-btn pd-btn-blue" id="pd_gt_product"><span><span><?php echo $this->__('Continue') ?></span></span></button>
+            <button class="pd-btn pd-btn-blue" id="pd_gt_product"><span><span><?php echo $this->__('Add to Cart') ?></span></span></button>
         </div>
     </div>
     
@@ -191,14 +191,17 @@ $productImageMinSize = $this->getProductOriginalImageMinSizes();
                   </script>
               </div>
               <?php $colors = $this->getProductColors();?>
-                  <div id="product-colors" class="product-colors pd-box" style="<?php if (!$colors || empty($colors)) echo "display: none";?>">
-                      <h4 class="pd-header"><?php echo $this->__('Choose Color') ?></h4>
-                      <?php if ($colors): ?>
-                          <?php foreach($colors as $color): ?>
-                              <span class="color-btn <?php if ($color['option_id'] == $config['default_color']) echo 'selected'?>" data-color_id="<?php echo $color['option_id']?>" <?php if ($color['image']):?>style="background-image: url(<?php echo $color['image']; ?>); background-position: 50% 50%; background-repeat: no-repeat no-repeat"<?php endif;?>><?php if (!$color['image']): echo $color['value']; endif;?></span>
-                          <?php endforeach;?>
-                      <?php endif;?>
-                  </div>
+              <div id="product-colors" class="product-colors pd-box" style="<?php if (!$colors || empty($colors)) echo "display: none";?>">
+                  <h4 class="pd-header"><?php echo $this->__('Choose Color') ?></h4>
+                  <?php if ($colors): ?>
+                      <?php foreach($colors as $color): ?>
+                          <span class="color-btn <?php if ($color['option_id'] == $config['default_color']) echo 'selected'?>" data-color_id="<?php echo $color['option_id']?>" <?php if ($color['image']):?>style="background-image: url(<?php echo $color['image']; ?>); background-position: 50% 50%; background-repeat: no-repeat no-repeat"<?php endif;?>><?php if (!$color['image']): echo $color['value']; endif;?></span>
+                      <?php endforeach;?>
+                  <?php endif;?>
+              </div>
+              <div id="product_options" class="pd_product_options pd-box">
+                  <?php echo $this->getChildHtml('product.options'); ?>
+              </div>
               <?php if ($this->additionalInstructionsEnabled()): ?>
                   <div id="additional_instructions" class="additional_instructions pd-box">
                       <?php echo $this->getChildHtml('additionalInstructions');?>
