@@ -14,7 +14,31 @@
 -------------------------------------------------- */
 .product-designer{
   font-family: Arial, "Helvetica CY", "Nimbus Sans L", sans-serif;
+  position: relative;
   }
+  #designer-load-info{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width:250px;
+    padding:8px 8px 8px 35px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing   : border-box;
+    box-sizing        : border-box;
+    margin-left:-146.4px;
+    border:1px solid #0A263C;
+    -webkit-border-radius: 3px;
+    -moz-border-radius   : 3px;
+    border-radius        : 3px;
+    background:url('../../images/gomage/productdesigner/loadinfo.svg') 5px 50% no-repeat #fff;
+    background-size: 24px;
+    -webkit-box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.5);
+    -moz-box-shadow   : 2px 2px 3px rgba(0, 0, 0, 0.5);
+    box-shadow        : 2px 2px 3px rgba(0, 0, 0, 0.5);
+    font-weight:700;
+    z-index: 999;
+    font-size: 12px;
+    }
 .product-designer-header{
   margin: 0 0 10px;
   border-top: 1px solid #ced1d9;
@@ -32,7 +56,8 @@
       margin-left: 7px;
       }
 .product-designer-content{
-
+  position: relative;
+  z-index: 10;
   }
   .product-designer-sidebar{
     width: 306px;
@@ -701,10 +726,11 @@ select.pd-select{
     margin: auto;
 }
 .clipart-image {
-    width: 60px;
-    height: 60px;
-    cursor: pointer;
-}
+  width: 60px;
+  height: 60px;
+  cursor: pointer;
+  display: inline-block;
+  }
 
 
 /* Maybe leave it */
