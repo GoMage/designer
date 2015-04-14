@@ -152,6 +152,17 @@
       background-color: #91c544;
       color: #fefefe;
       }
+  .pd-btn-blue-border.disabled,
+  .pd-btn-green-border.disabled{
+    color: #CED1D9;
+    border-color: #CED1D9;
+    background: #fff;
+    }
+  .pd-btn-blue.disabled{
+    border-color: #CED1D9;
+    background: #CED1D9;
+    color: #fff;
+    }
   .pd_panels_nav .pd-btn{
     float: left;
     position: relative;
