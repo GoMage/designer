@@ -379,7 +379,7 @@ select.pd-select{
   }
   .color-btn {
     cursor: pointer;
-    margin: 12px 12px 0 0;
+    margin: 0 12px 12px 0;
     float: left;
     width: 39px;
     height: 39px;
@@ -402,6 +402,9 @@ select.pd-select{
     .color-btn:hover{
       opacity: 1;
       }
+.product-colors.pd-box{
+  padding-bottom: 0;
+  }
 .color-picher{
   float: left;
   width: 41px;
@@ -708,7 +711,8 @@ select.pd-select{
 #pd_container:after,
 .pd_panels_nav:after,
 .pd-element-wrapper:after,
-.colors-panel:after{
+.colors-panel:after,
+.pd-box:after{
   content: '';
   clear: both;
   display: block;
@@ -1058,4 +1062,9 @@ li.layer-type-text .layer-icon {
   resize: vertical;
   min-height: 50px;
   max-height: 100px;
+  }
+  
+.pd_product_options .product-options{
+  padding: 0;
+  border: 0;
   }
