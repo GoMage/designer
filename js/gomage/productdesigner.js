@@ -2189,14 +2189,17 @@ GoMage.ImageUploader.prototype = {
     observeUploadImage: function () {
         $('uploadImages').onsubmit = function () {
             if ($('filesToUpload')) {
-                this._validateUploadedFiles($('filesToUpload').files);
-                $('uploadImages').target = 'iframeSave';
-                $('iframeSave').onload = function () {
-                    var response = window.frames['iframeSave'].document.body.innerHTML;
-                    $('uploadedImages').update(response);
-                    $('filesToUpload').value = '';
-                    $('remove-img-btn').show();
-                }.bind(this);
+                if (this._validateUploadedFiles($('filesToUpload').files)) {
+                    showLoadInfo();
+                    $('uploadImages').target = 'iframeSave';
+                    $('iframeSave').onload = function () {
+                        var response = window.frames['iframeSave'].document.body.innerHTML;
+                        $('uploadedImages').update(response);
+                        $('filesToUpload').value = '';
+                        $('remove-img-btn').show();
+                        hideLoadInfo();
+                    }.bind(this);
+                }
             }
         }.bind(this);
     },
@@ -2217,6 +2220,7 @@ GoMage.ImageUploader.prototype = {
             event.preventDefault();
             var files = event.dataTransfer.files;
             if (this._validateUploadedFiles(files)) {
+                showLoadInfo();
                 var formData = new FormData();
                 for (var i = 0; i < files.length; i++) {
                     formData.append('filesToUpload[]', files[i]);
@@ -2227,6 +2231,7 @@ GoMage.ImageUploader.prototype = {
                     if (xhr.status === 200) {
                         $('uploadedImages').update(xhr.response);
                         $('remove-img-btn').show();
+                        hideLoadInfo();
                     }
                 };
                 xhr.send(formData);
