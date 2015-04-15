@@ -1840,6 +1840,9 @@ GoMage.TextEditor.prototype = {
                 this.setTextColor(color);
             } else {
                 $('color-picker-palitra').toggle();
+                if (!$('color-picker-palitra').visible()) {
+                    elem.removeClassName('active');
+                }
             }
         }.bind(this));
     },
