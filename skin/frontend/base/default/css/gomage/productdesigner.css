@@ -571,8 +571,11 @@ select.pd-select{
   margin-top: 5px;
   }
 .pd-upload-input{
-  margin-bottom: 5px;
+  margin: 5px 0;
   overflow: hidden;
+  }
+.pd-upload-buttons{
+  margin-bottom: 5px;
   }
 .dialog .account-login .content,
 .dialog .account-login .buttons-set,
@@ -619,6 +622,7 @@ select.pd-select{
   -webkit-box-sizing: border-box;
   -moz-box-sizing   : border-box;
   box-sizing        : border-box;
+  margin-bottom: 5px;
   }
   .upload-image-drop-zone a{
     text-decoration: none;
