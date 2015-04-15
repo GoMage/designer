@@ -158,6 +158,9 @@
     border-color: #CED1D9;
     background: #fff;
     }
+  .pd-btn.disabled span{
+    background: none !important;
+    }
   .pd-btn-blue.disabled{
     border-color: #CED1D9;
     background: #CED1D9;
