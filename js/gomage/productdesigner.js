@@ -729,6 +729,14 @@ GoMage.ProductDesigner.prototype = {
         }
     },
 
+    removeObject: function (obj) {
+        var event = document.createEvent('Event');
+        event.obj = obj;
+        event.initEvent('removeObject', true, true);
+        document.dispatchEvent(event);
+        this.layersManager.removeById(obj.get('uid'));
+    },
+
     observeLayerControls: function () {
         document.observe('keydown', function (e) {
             if (e.ctrlKey == true && e.which == 90) {
@@ -745,7 +753,7 @@ GoMage.ProductDesigner.prototype = {
                 }
                 var obj = this.canvas.getActiveObject();
                 if (obj) {
-                    this.layersManager.removeById(obj.get('uid'));
+                    this.removeObject(obj);
                 }
             }
         }.bind(this));
@@ -754,7 +762,7 @@ GoMage.ProductDesigner.prototype = {
             e.stop();
             var obj = this.canvas.getActiveObject();
             if (obj) {
-                this.layersManager.removeById(obj.get('uid'));
+                this.removeObject(obj);
             }
         }.bind(this));
 
@@ -1451,7 +1459,7 @@ GoMage.ProductDesigner.prototype = {
 };
 
 GoMage.ProductNavigation = function (filterUrl, productUrl) {
-    this.productDesigner = window.w;
+    this.productDesigner = window.pd;
     this.opt = {
         filterUrl: filterUrl,
         productUrl: productUrl,
@@ -1590,7 +1598,7 @@ GoMage.Designer = function (filterUrl) {
     this.opt = {
         filterUrl: filterUrl
     };
-    this.productDesigner = window.w;
+    this.productDesigner = window.pd;
     this.observeFilterFields();
     this.observeImageSelect();
 };
@@ -1721,7 +1729,7 @@ GoMage.Designer.prototype = {
 };
 
 GoMage.TextEditor = function (defaultFontFamily, defaultFontSize) {
-    this.productDesigner = window.w;
+    this.productDesigner = window.pd;
     this.colorPicker = null;
     this.defaultTextOpt = {
         text: '',
@@ -1765,6 +1773,7 @@ GoMage.TextEditor = function (defaultFontFamily, defaultFontSize) {
     };
 
     this.observeTextTabShow();
+    this.observeRemoveObject();
     this.initColorPickers();
     this.observeTextColorChange();
     this.observeFontChange();
@@ -1879,6 +1888,7 @@ GoMage.TextEditor.prototype = {
             var cmd = new InsertCommand(this.productDesigner, textObject, true);
             cmd.exec();
             this.productDesigner.history.push(cmd);
+            this._changeTextButtonLabel(textObject);
         }.bind(this));
 
         this.addTextTextarea.observe('keyup', function (e) {
@@ -2124,17 +2134,31 @@ GoMage.TextEditor.prototype = {
         }.bind(this));
     },
 
+    observeRemoveObject: function () {
+        document.observe('removeObject', function (e) {
+            this._changeTextButtonLabel();
+        }.bind(this));
+
+        this.productDesigner.canvas.observe('selection:cleared', function (e) {
+            this._changeTextButtonLabel();
+        }.bind(this));
+    },
+
     _setInputValues: function (textObj) {
-        if (textObj) {
-            this.addTextButton.innerHTML = 'Edit Text';
-        } else {
-            this.addTextButton.innerHTML = 'Add Text';
-        }
+        this._changeTextButtonLabel(textObj);
         for (var property in this.fieldsMap) {
             if (this.fieldsMap.hasOwnProperty(property) && this.fieldsMap[property]) {
                 var field = this.fieldsMap[property];
                 field.value = textObj ? textObj[property] : this.defaultTextOpt[property];
             }
+        }
+    },
+
+    _changeTextButtonLabel: function (obj) {
+        if (obj) {
+            this.addTextButton.innerHTML = 'Edit Text';
+        } else {
+            this.addTextButton.innerHTML = 'Add Text';
         }
     }
 
@@ -2147,7 +2171,7 @@ GoMage.ImageUploader = function (maxUploadFileSize, allowedImageExtensions, allo
     this.removeImgUrl = removeImgUrl;
     this.uploadImgUrl = uploadImgUrl;
 
-    this.productDesigner = window.w;
+    this.productDesigner = window.pd;
 
     this.dropZone = $('upload-image-drop-zone');
     this.observeLicenseAgreements();

@@ -110,7 +110,7 @@ $sizes = $this->getFontSizes();
 
 <script type="text/javascript">
     document.observe("dom:loaded", function(e){
-        var textEditor = new GoMage.TextEditor('<?php echo $this->getDefaultFontFamily();?>', '<?php echo $this->getDefaultFontSize()?>');
+        new GoMage.TextEditor('<?php echo $this->getDefaultFontFamily();?>', '<?php echo $this->getDefaultFontSize()?>');
     }.bind(this))
     var fonts = '<?php echo $this->getImplodedFontsString();?>'.split(',');
     if (fonts != '') {
