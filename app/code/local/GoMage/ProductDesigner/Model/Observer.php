@@ -157,7 +157,7 @@ class GoMage_ProductDesigner_Model_Observer
     {
         /** @var Mage_Sales_Model_Order $order */
         $order = $event->getEvent()->getOrder();
-        $items = $order->getAllItems();
+        $items = $order->getAllVisibleItems();
 
         $number = 1;
         foreach ($items as $item) {
