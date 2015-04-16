@@ -1405,10 +1405,12 @@ GoMage.ProductDesigner.prototype = {
         if (this.designChanged.hasOwnProperty(this.currentColor)
             && this.designChanged[this.currentColor] === true) {
             this.navigation.saveDesign.removeClassName(className);
-            this.navigation.continue.removeClassName(className)
+            this.navigation.continue.removeClassName(className);
+            this.navigation.share.removeClassName(className);
         } else if (!this.designChanged.hasOwnProperty(this.currentColor) ||
             (this.designChanged.hasOwnProperty(this.currentColor) && this.designChanged[this.currentColor] === false)) {
             this.navigation.saveDesign.addClassName(className);
+            this.navigation.share.addClassName(className);
             if (!this.designId[this.currentColor]) {
                 this.navigation.continue.addClassName(className);
             } else {
