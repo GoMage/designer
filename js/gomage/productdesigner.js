@@ -772,6 +772,8 @@ GoMage.ProductDesigner.prototype = {
             var orig = e.target.originalState;
             // CASE 1: object has been moved
 
+            var cmds = [];
+
             if (Math.round(orig.left) != Math.round(e.target.left) || Math.round(orig.top) != Math.round(e.target.top)) {
                 if ((e.target.left + e.target.width / 2 <= 0) || (e.target.left - e.target.width / 2 >= this.canvas.getWidth())) {
                     return;
@@ -784,14 +786,14 @@ GoMage.ProductDesigner.prototype = {
                     {left: orig.left, top: orig.top},
                     {left: e.target.left, top: e.target.top}
                 );
-                this.history.push(cmd);
+                cmds.push(cmd);
             }
 
             // CASE 2: object has been rotated
             if (orig.angle != e.target.angle) {
                 var obj = this.canvas.getActiveObject();
                 var cmd = new RotateCommand(this.canvas, obj, {angle: orig.angle}, {angle: e.target.angle});
-                this.history.push(cmd);
+                cmds.push(cmd);
             }
 
             // CASE 3: object has been resized
@@ -802,8 +804,16 @@ GoMage.ProductDesigner.prototype = {
                     {scaleX: orig.scaleX, scaleY: orig.scaleY},
                     {scaleX: e.target.scaleX, scaleY: e.target.scaleY}
                 );
+                cmds.push(cmd);
+            }
+
+            if (cmds.length == 1) {
+                this.history.push(cmds[0]);
+            } else if (cmds.length > 1) {
+                var cmd = new GroupCommand(cmds);
                 this.history.push(cmd);
             }
+
         }.bind(this));
     },
 
@@ -2802,6 +2812,21 @@ var ChangePositionCommand = function (c, obj, pos) {
             }
             c.setActiveObject(obj);
             c.renderAll();
+        }
+    };
+};
+
+var GroupCommand = function (cmds) {
+    return {
+        exec: function () {
+            cmds.each(function (element) {
+                element.exec();
+            });
+        },
+        unexec: function () {
+            cmds.each(function (element) {
+                element.unexec();
+            });
         }
     };
 };
