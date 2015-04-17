@@ -158,46 +158,6 @@ GoMage.ProductDesigner.prototype = {
         }
     },
 
-    changeProduct: function (data) {
-        var product = data.product_settings;
-        var price = data.design_price;
-        var colors = data.product_colors;
-        var product_options = data.product_options;
-
-        this.layersManager.clear();
-        this.history_storage = {};
-        this.history.clear();
-        this.containerLayers = {};
-        this.containerCanvases = {};
-        this.designChanged = {};
-        this.designId = {};
-        this.container.innerHTML = '';
-        this.config.product = product;
-        this.loadProduct(product);
-        this.updateProductImages(product);
-        this.updateProductColors(colors);
-        this.updateProductOptions(product_options);
-        this.showTabsSwitchers();
-        this.showControls();
-        this.showAdditionalPannel();
-        this._toggleNavigationButtons('disabled');
-        this._toggleControlsButtons();
-        this._toggleHistoryButtons();
-        this.config.isProductSelected = true;
-        if (price) {
-            if (!$('design_price_container').visible()) {
-                $('design_price_container').show();
-            }
-            $('design_price_container').update(price);
-            if (optionsPrice != undefined && data.price_config) {
-                optionsPrice.initialize(data.price_config);
-            }
-            this.initPrices();
-            this.reloadPrice();
-        }
-        window.onbeforeunload = null;
-    },
-
     changeProductImage: function (id) {
         var img = this.config.product.images[this.currentColor][id];
         if (img && this.currentProd != img.id) {
@@ -1547,14 +1507,10 @@ GoMage.ProductNavigation.prototype = {
             e.stop();
             if (this._productChangeConfirmation()) {
                 var productId = elem.getAttribute('data-product_id');
-                if (productId && productId != undefined) {
-                    var data = {id: productId};
+                if (!productId) {
+                    return;
                 }
-                if ($('pd_choose_product-content')) {
-                    $('pd_choose_product-content').setStyle({display: 'none'});
-                }
-                this.prepareAndSubmitData(this.opt.productUrl, this.updateDataOnProductChoose.bind(this), data);
-
+                window.location.href = this.opt.productUrl + '?id=' + productId;
             }
         }.bind(this));
     },
@@ -1600,12 +1556,6 @@ GoMage.ProductNavigation.prototype = {
 
         if (response.navigation_prodcuts) {
             $(this.opt.navigationProducts).update(response.navigation_prodcuts);
-        }
-    },
-
-    updateDataOnProductChoose: function (response) {
-        if (response.product_settings) {
-            this.productDesigner.changeProduct(response);
         }
     }
 };

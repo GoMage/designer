@@ -67,44 +67,6 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
     }
 
     /**
-     * Change product action
-     *
-     * @return void
-     */
-    public function changeProductAction()
-    {
-        $request = $this->getRequest();
-        $isAjax  = (bool)$request->getParam('ajax');
-        if (!$isAjax) {
-            $this->norouteAction();
-            return;
-        }
-
-        try {
-            $product = $this->_initializeProduct();
-            if (!$product || !$product->getId()) {
-                throw new Exception(Mage::helper('gomage_designer')->__('Product with id %d not found',
-                    $this->getRequest()->getParam('id')
-                )
-                );
-            }
-            $settings     = Mage::helper('gomage_designer')->getProductSettingForEditor($product);
-            $responseData = array(
-                'product_settings' => $settings,
-                'design_price'     => $this->_getDesignPriceHtml(),
-                'price_config'     => Mage::helper('gomage_designer')->getProductPriceConfig(),
-                'product_options'  => $this->_getProductOptionsHtml($product),
-            );
-            if ($productColors = $product->getProductColors()) {
-                $responseData['product_colors'] = $productColors;
-            }
-            Mage::helper('gomage_designer/ajax')->sendSuccess($responseData);
-        } catch (Exception $e) {
-            Mage::helper('gomage_designer/ajax')->sendError($e->getMessage());
-        }
-    }
-
-    /**
      * Filter products action
      *
      * @return void
@@ -301,16 +263,6 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
         }
     }
 
-    protected function _getDesignPriceHtml()
-    {
-        $layout = $this->getLayout();
-        $update = $layout->getUpdate();
-        $update->load('gomage_designer_design_price');
-        $layout->generateXml();
-        $layout->generateBlocks();
-        return $layout->getOutput();
-    }
-
     protected function _getDesignShareHtml($design)
     {
         $layout = $this->getLayout();
@@ -320,18 +272,6 @@ class GoMage_ProductDesigner_IndexController extends Mage_Core_Controller_Front_
         $layout->generateBlocks();
         $layout->getBlock('design_share')->setDesign($design);
         return $layout->getOutput();
-    }
-
-    protected function _getProductOptionsHtml($product)
-    {
-        $layout = $this->getLayout();
-        $update = $layout->getUpdate();
-        Mage::register('current_product', $product);
-        $this->_initProductLayout($product);
-        $update->load('gomage_designer_product_options');
-        $layout->generateXml();
-        $layout->generateBlocks();
-        return $layout->getBlock('product.options')->toHtml();
     }
 
     protected function _getCustomerSession()

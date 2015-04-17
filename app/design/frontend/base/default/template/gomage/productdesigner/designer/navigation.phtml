@@ -22,9 +22,9 @@
 </div>
 <script type="text/javascript">
     document.observe('dom:loaded', function(e){
-        var Navigator = new GoMage.ProductNavigation(
+        new GoMage.ProductNavigation(
             '<?php echo Mage::getUrl('*/index/filterProducts')?>',
-            '<?php echo Mage::getUrl('*/index/changeProduct')?>'
+            '<?php echo Mage::getUrl('*')?>'
         );
     }.bind(this));
 </script>
