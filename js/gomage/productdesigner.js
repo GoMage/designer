@@ -1428,6 +1428,11 @@ GoMage.ProductDesigner.prototype = {
     },
 
     _toggleControlsButtons: function () {
+
+        if ((this.canvas == null) || this.canvas == 'undefined') {
+            return;
+        }
+
         var controls = this.config.controls;
         var layerControls = [];
         var method = this.canvas.getActiveObject() ? 'removeClassName' : 'addClassName';
@@ -2141,9 +2146,11 @@ GoMage.TextEditor.prototype = {
             this._changeTextButtonLabel();
         }.bind(this));
 
-        this.productDesigner.canvas.observe('selection:cleared', function (e) {
-            this._changeTextButtonLabel();
-        }.bind(this));
+        if (this.productDesigner.canvas) {
+            this.productDesigner.canvas.observe('selection:cleared', function (e) {
+                this._changeTextButtonLabel();
+            }.bind(this));
+        }
     },
 
     _setInputValues: function (textObj) {
