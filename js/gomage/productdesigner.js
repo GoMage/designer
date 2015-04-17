@@ -1388,13 +1388,22 @@ GoMage.ProductDesigner.prototype = {
     observeHistoryChanges: function () {
         Event.observe(document, 'PdChangeHistory', function (e) {
             var history = e.history;
-            if (history.undoStack.length > 0 && this.canvasesHasLayers()) {
+            var history_object = e.history_object;
+
+            if (history_object) {
+                this.designChanged[this.currentColor] = history_object.isDesignChanged();
+            } else if (history.undoStack.length > 0 && this.canvasesHasLayers()) {
                 this.designChanged[this.currentColor] = true;
-                this.observeGoOut();
             } else {
                 this.designChanged[this.currentColor] = false;
+            }
+
+            if (this.designChanged[this.currentColor]) {
+                this.observeGoOut();
+            } else {
                 window.onbeforeunload = null
             }
+
             this.designId[this.currentColor] = null;
             this._toggleNavigationButtons('disabled');
             this._toggleHistoryButtons();
@@ -2556,6 +2565,19 @@ LayersManager.prototype = {
 // ------------------------------------------------------
 // History managment
 // ------------------------------------------------------
+var HistoryObject = function (cmd) {
+    var cmd = cmd;
+    var design_changed = !($('pd_save_design').hasClassName('disabled'));
+    return {
+        getCommand: function () {
+            return cmd;
+        },
+        isDesignChanged: function () {
+            return design_changed;
+        }
+    };
+}
+
 var History = function () {
     this.undoStack = [];
     this.redoStack = [];
@@ -2564,24 +2586,29 @@ var History = function () {
 
 History.prototype = {
     push: function (cmd) {
-        this.undoStack.push(cmd);
+        var history_object = new HistoryObject(cmd);
+        this.undoStack.push(history_object);
         this.fireChangeEvent();
     },
 
     undo: function () {
-        var cmd = this.undoStack.pop();
+        var history_object = this.undoStack.pop();
+        if (!history_object) return;
+        var cmd = history_object.getCommand();
         if (!cmd) return;
         cmd.unexec();
-        this.redoStack.push(cmd);
-        this.fireChangeEvent();
+        this.redoStack.push(history_object);
+        this.fireChangeEvent(history_object);
     },
 
     redo: function () {
-        var cmd = this.redoStack.pop();
+        var history_object = this.redoStack.pop();
+        if (!history_object) return;
+        var cmd = history_object.getCommand();
         if (!cmd) return;
         cmd.exec();
-        this.undoStack.push(cmd);
-        this.fireChangeEvent();
+        this.undoStack.push(history_object);
+        this.fireChangeEvent(history_object);
     },
 
     clear: function () {
@@ -2594,9 +2621,10 @@ History.prototype = {
         return stack[stack.length - 1];
     },
 
-    fireChangeEvent: function () {
+    fireChangeEvent: function (history_object) {
         var event = document.createEvent('Event');
         event.history = this;
+        event.history_object = history_object;
         event.initEvent('PdChangeHistory', true, true);
         document.dispatchEvent(event);
     }
