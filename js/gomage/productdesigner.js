@@ -1093,8 +1093,14 @@ GoMage.ProductDesigner.prototype = {
 
         zoomCanvas.selection = false;
         fabric.Image.fromURL(imgUrl, function (obj) {
+
             var backgroundImage = this.prepareBackgroundZoomImage(obj);
+
+            var group_left = (parseInt(this.config.imageMinSize.width) - backgroundImage.get('width')) / 2;
+            var group_top = (parseInt(this.config.imageMinSize.height) - backgroundImage.get('height')) / 2;
+
             if (this.containerCanvases[this.currentProd].getObjects().length > 0) {
+
                 var canvas = this.containerCanvases[this.currentProd];
                 canvas.deactivateAll();
                 canvas.renderAll();
@@ -1104,28 +1110,26 @@ GoMage.ProductDesigner.prototype = {
                     canvas.clearContext(contextTop);
                 }
                 fabric.Image.fromURL(image, function (obj) {
-                    var designImage = this.prepareDesignImageForZoom(obj)
-                    var group = new fabric.Group([designImage, backgroundImage], {
-                        left: parseInt(this.config.imageMinSize.width) / 2,
-                        top: parseInt(this.config.imageMinSize.height) / 2,
+                    var designImage = this.prepareDesignImageForZoom(obj);
+
+                    var group = new fabric.Group([backgroundImage, designImage], {
+                        left: group_left,
+                        top: group_top,
                         hasControls: false,
                         hasBorders: false
                     });
-                    group.padding = this.config.imageMinSize.width > this.config.imageMinSize.height
-                        ? this.config.imageMinSize.width : this.config.imageMinSize.height;
                     zoomCanvas.add(group);
                     zoomCanvas.setActiveObject(group);
                     zoomCanvas.renderAll();
                 }.bind(this))
+
             } else {
                 var group = new fabric.Group([backgroundImage], {
-                    left: parseInt(this.config.imageMinSize.width) / 2,
-                    top: parseInt(this.config.imageMinSize.width) / 2,
+                    left: group_left,
+                    top: group_top,
                     hasControls: false,
                     hasBorders: false
                 });
-                group.padding = this.config.imageMinSize.width > this.config.imageMinSize.height
-                    ? this.config.imageMinSize.width : this.config.imageMinSize.height;
                 zoomCanvas.add(group);
                 zoomCanvas.setActiveObject(group);
                 zoomCanvas.renderAll();
@@ -1135,18 +1139,11 @@ GoMage.ProductDesigner.prototype = {
 
     prepareBackgroundZoomImage: function (obj) {
         var origImage = this.config.product.images[this.currentColor][this.currentProd].orig_image;
-        var width = origImage.dimensions[0];
-        var height = origImage.dimensions[1];
-        if (height == parseInt(this.config.imageMinSize.height) && width == parseInt(this.config.imageMinSize.width)) {
-            obj.lockMovementX = true;
-            obj.lockMovementY = true;
-        }
-
         obj.set({
-            height: height,
-            width: width,
-            left: width / 2,
-            top: height / 2,
+            height: Math.round(parseInt(origImage.dimensions[1])),
+            width: Math.round(parseInt(origImage.dimensions[0])),
+            left: 0,
+            top: 0,
             hasControls: false,
             hasBorders: true
         });
@@ -1157,25 +1154,15 @@ GoMage.ProductDesigner.prototype = {
     prepareDesignImageForZoom: function (obj) {
         var currentImg = this.config.product.images[this.currentColor][this.currentProd];
         var origImage = this.config.product.images[this.currentColor][this.currentProd].orig_image;
-        var frameWidth = dstWidth = currentImg.d[0];
-        var frameHeight = dstHeight = currentImg.d[1];
 
-        if ((origImage['dimensions'][0] / origImage['dimensions'][1]) >= frameWidth / frameHeight) {
-            var dstHeight = Math.round((frameWidth / origImage['dimensions'][0]) * origImage['dimensions'][1]);
-            var scale = origImage['dimensions'][0] / frameWidth;
-        } else {
-            var dstWidth = Math.round((frameHeight / origImage['dimensions'][1]) * origImage['dimensions'][0])
-            var scale = origImage['dimensions'][1] / frameHeight;
-        }
-
-        var widthScale = origImage['dimensions'][0] / dstWidth;
-        var heightScale = origImage['dimensions'][1] / dstHeight;
+        var scale_x = origImage.dimensions[0] / currentImg.d[0];
+        var scale_y = origImage.dimensions[1] / currentImg.d[1];
 
         obj.set({
-            width: Math.round(currentImg.w * widthScale),
-            height: Math.round(currentImg.h * heightScale),
-            top: Math.round((currentImg.t * scale) - (frameHeight - dstHeight)),
-            left: Math.round((currentImg.l * scale) - (frameWidth - dstWidth)),
+            width: Math.round(currentImg.w * scale_x),
+            height: Math.round(currentImg.h * scale_y),
+            top: Math.round(currentImg.t * scale_y),
+            left: Math.round(currentImg.l * scale_x),
             hasControls: false,
             hasBorders: false
         });
