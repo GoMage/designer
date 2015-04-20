@@ -113,6 +113,7 @@ class GoMage_ProductDesigner_Model_Design_Image extends Mage_Core_Model_Abstract
     public function createLayer($image)
     {
         $layer = new Imagick();
+        $layer->setBackgroundColor(new ImagickPixel('transparent'));
         $layer->readImageBlob($image);
         $layer->setImageFormat($this->_getImageExtensionForSave());
         return $layer;
