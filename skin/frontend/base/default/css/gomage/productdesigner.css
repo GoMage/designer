@@ -412,6 +412,11 @@ select.pd-select{
     .color-btn:hover{
       opacity: 1;
       }
+    .color-btn.selected{
+      opacity: 1;
+      border-width: 2px;
+      border-color: #5295cc;
+      }
 .product-colors.pd-box{
   padding-bottom: 0;
   }
