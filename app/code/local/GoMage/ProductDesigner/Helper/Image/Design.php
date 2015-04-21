@@ -71,8 +71,7 @@ class GoMage_ProductDesigner_Helper_Image_Design extends GoMage_ProductDesigner_
      */
     public function rename($filename)
     {
-        $image = new Varien_Image($this->_getOriginalFilePath());
-        $image->save($this->_baseDir, $filename);
+        rename($this->_getOriginalFilePath(), $this->_baseDir . DS . $filename);
         $this->init($filename);
         return $this;
     }
