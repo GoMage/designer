@@ -289,6 +289,7 @@ GoMage.ProductDesigner.prototype = {
     observeTabs: function () {
         $('pd_panels_nav').childElements().invoke('observe', 'click', function (e) {
             var elm = e.target || e.srcElement;
+            elm = elm.up('button.pd-btn') || elm;
             elm.siblings().invoke('removeClassName', 'active');
             elm.addClassName('active');
             var buttonId = elm.id;
