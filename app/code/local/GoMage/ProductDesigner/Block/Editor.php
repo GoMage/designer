@@ -171,9 +171,9 @@ class GoMage_ProductDesigner_Block_Editor extends Mage_Core_Block_Template
     public function getDesignPriceConfig()
     {
         $config = array(
-            'fixed_price' => Mage::getStoreConfig('gomage_designer/general/fixed_price') ? : 0,
-            'text_price'  => Mage::getStoreConfig('gomage_designer/general/price_for_text') ? : 0,
-            'image_text'  => Mage::getStoreConfig('gomage_designer/general/price_for_image') ? : 0
+            'fixed_price' => Mage::getStoreConfig('gomage_designer/general/fixed_price') ?: 0,
+            'text_price'  => Mage::getStoreConfig('gomage_designer/general/price_for_text') ?: 0,
+            'image_text'  => Mage::getStoreConfig('gomage_designer/general/price_for_image') ?: 0
         );
 
         return $config;
@@ -205,6 +205,16 @@ class GoMage_ProductDesigner_Block_Editor extends Mage_Core_Block_Template
             }
         }
         return false;
+    }
+
+    public function getColorAttributeId()
+    {
+        $colorAttributeCode = $attributeCode = Mage::getStoreConfig('gomage_designer/navigation/color_attribute');
+        $attribute          = Mage::getSingleton('eav/config')
+            ->getAttribute(Mage_Catalog_Model_Product::ENTITY, $colorAttributeCode);
+
+        return $attribute && $attribute->getId() ? $attribute->getId() : 0;
+
     }
 
     public function isHelpEnabled($area)

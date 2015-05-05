@@ -117,6 +117,20 @@ GoMage.ProductDesigner = function (config, continueUrl, loginUrl, registrationUr
 
 GoMage.ProductDesigner.prototype = {
 
+    fireEvent: function (element, event) {
+        if (document.createEventObject) {
+            // dispatch for IE
+            var evt = document.createEventObject();
+            return element.fireEvent('on' + event, evt)
+        }
+        else {
+            // dispatch for firefox + others
+            var evt = document.createEvent("HTMLEvents");
+            evt.initEvent(event, true, true);
+            return !element.dispatchEvent(evt);
+        }
+    },
+
     loadProduct: function (product, color) {
         if (!product) {
             return;
@@ -130,6 +144,8 @@ GoMage.ProductDesigner.prototype = {
         }
 
         this.currentColor = color;
+        this.changeColorAttribute();
+
         var images = product.images[color];
 
         for (var prop in images) {
@@ -139,6 +155,37 @@ GoMage.ProductDesigner.prototype = {
                 this.currentSlide = img.id;
                 return;
             }
+        }
+    },
+
+    changeColorAttribute: function () {
+
+        if (isNaN(parseInt(this.currentColor))) {
+            return;
+        }
+
+        var color_attribute = $('attribute' + this.config.colorAttributeId);
+        if (color_attribute) {
+
+            color_attribute.value = this.currentColor;
+            this.fireEvent(color_attribute, 'change');
+
+            color_attribute.up('dl').hide();
+            
+            var options = $$('#product-options-wrapper dl');
+            var hide = true;
+
+            options.each(function (option) {
+                if (option.visible()) {
+                    hide = false;
+                    throw $break;
+                }
+            });
+
+            if (hide) {
+                $('product_options').hide();
+            }
+
         }
     },
 
@@ -209,81 +256,6 @@ GoMage.ProductDesigner.prototype = {
             }
         }
         productsList.innerHTML = imagesHtml;
-    },
-
-    updateProductColors: function (colors) {
-        $('product-colors').innerHTML = '<h4 class="pd-header">Choose Color</h4>';
-        if (colors) {
-            var colorsHtml = '';
-            for (var id in colors) {
-                if (colors.hasOwnProperty(id)) {
-                    var color = colors[id];
-                    if (!this.config.product.images.hasOwnProperty(color['option_id'])) {
-                        continue;
-                    }
-                    var element = document.createElement('span');
-                    element.addClassName('color-btn');
-                    element.setAttribute('data-color_id', color['option_id']);
-                    if (color['image']) {
-                        element.setStyle({
-                            'background-image': 'url(' + color['image'] + ')',
-                            'background-position': '50% 50%',
-                            'background-repeat': 'no-repeat no-repeat'
-                        });
-                    } else {
-                        element.innerHTML = color['value'];
-                    }
-
-                    if (this.currentColor == color['option_id']) {
-                        element.addClassName('selected');
-                    }
-                    colorsHtml += element.outerHTML;
-                }
-            }
-            $('product-colors').innerHTML = colorsHtml;
-            if (!$('product-colors').visible() && colorsHtml != '') {
-                $('product-colors').show();
-            }
-        } else {
-            $('product-colors').hide();
-        }
-    },
-
-    updateProductOptions: function (options) {
-        var js_scripts = options.extractScripts();
-        $('product_options').innerHTML = options.stripScripts();
-        for (var i = 0; i < js_scripts.length; i++) {
-            if (typeof(js_scripts[i]) != 'undefined') {
-                ProductDesignerGlobalEval(js_scripts[i]);
-            }
-        }
-    },
-
-    showTabsSwitchers: function () {
-        if (!this.config.isProductSelected) {
-            if (this.config.isDesignedEnabled) {
-                $(this.config.navigation.addDesign.show());
-            }
-            if (this.config.isTextEnabled) {
-                $(this.config.navigation.addText.show());
-            }
-            if (this.config.isUploadImageEnabled) {
-                $(this.config.navigation.addImage.show());
-            }
-        }
-    },
-
-    showControls: function () {
-        if (!this.config.isProductSelected) {
-            $('pd_save_container').show();
-            $('pd_bottom_panel').show();
-        }
-    },
-
-    showAdditionalPannel: function () {
-        if (!this.config.isProductSelected) {
-            $('additional_panels').show();
-        }
     },
 
     observeTabs: function () {
@@ -1608,8 +1580,6 @@ GoMage.Designer.prototype = {
         new Ajax.DesignerRequest(this.opt.filterUrl, {
             method: 'post',
             parameters: data,
-            //onCreate: showLoadInfo,
-            //onComplete: hideLoadInfo,
             onSuccess: function (transport) {
                 var response = transport.responseText.evalJSON();
                 if (response.status == 'success') {
@@ -1634,7 +1604,6 @@ GoMage.Designer.prototype = {
     },
 
     observeFilterFields: function () {
-
         if ($('cliparts-filters') && $('mainCategoriesSearchField') || $('subCategoriesSearchField')) {
             Event.stopObserving($('cliparts-filters'));
             Event.on($('cliparts-filters'), 'change', '#mainCategoriesSearchField, #subCategoriesSearchField', function (e, elm) {
@@ -1649,7 +1618,6 @@ GoMage.Designer.prototype = {
         }
 
         if ($('tagsSearchField')) {
-
             Event.on($('cliparts-search-btn'), 'click', function (e, elm) {
                 e.stop();
                 if (!elm.hasClassName('disabled')) {

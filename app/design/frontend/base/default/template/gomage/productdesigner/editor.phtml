@@ -54,6 +54,8 @@ $productImageMinSize = $this->getProductOriginalImageMinSizes();
             back: 'pd_back'
         };
 
+        settings.colorAttributeId = <?php echo $this->getColorAttributeId(); ?>;
+
         settings.imageMinSize = <?php echo $this->getProductOriginalImageMinSizesJson(); ?>;
 
         settings.prices = <?php echo $this->getDesignPriceConfigJson(); ?>;
