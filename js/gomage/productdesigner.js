@@ -170,9 +170,10 @@ GoMage.ProductDesigner.prototype = {
             color_attribute.value = this.currentColor;
             this.fireEvent(color_attribute, 'change');
 
-            color_attribute.up('dl').hide();
+            color_attribute.up('dd').hide();
+            color_attribute.up('dd').previous('dt').hide();
 
-            var options = $$('#product-options-wrapper dl');
+            var options = $$('#product-options-wrapper dd');
             var hide = true;
 
             options.each(function (option) {

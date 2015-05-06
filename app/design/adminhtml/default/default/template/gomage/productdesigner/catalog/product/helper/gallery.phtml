@@ -75,6 +75,7 @@ $colors = $this->getProductColors();
             <?php if ($colors): ?>
             <td class="cell-color" <?php if (!$productDesignerEnabled): ?>style="display: none"<?php endif;?>>
                 <select <?php if($_block->getElement()->getReadonly()):?> disabled="disabled"<?php endif;?> onchange="<?php echo $_block->getJsObjectName(); ?>.updateImage('__file__')" style="width: 100px;" class="validate-color-select">
+                    <option value=""><?php echo Mage::helper('gomage_designer')->__('- Select Color -') ?></option>
                     <?php foreach($colors as $color):?>
                         <option value="<?php echo $color['option_id']?>"><?php echo $color['value']?></option>
                     <?php endforeach;?>
