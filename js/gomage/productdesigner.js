@@ -171,7 +171,7 @@ GoMage.ProductDesigner.prototype = {
             this.fireEvent(color_attribute, 'change');
 
             color_attribute.up('dl').hide();
-            
+
             var options = $$('#product-options-wrapper dl');
             var hide = true;
 
@@ -1863,11 +1863,20 @@ GoMage.TextEditor.prototype = {
         }.bind(this));
     },
 
+    changeControlState: function (control) {
+        if (control.hasClassName('active')) {
+            control.removeClassName('active');
+        } else {
+            control.addClassName('active');
+        }
+    },
+
     observeFontStyleControls: function () {
         this.addTextBtnBold.observe('click', function (e) {
+            this.changeControlState(this.addTextBtnBold);
             var obj = this.productDesigner.canvas.getActiveObject();
             if (obj && obj.type == 'text') {
-                var params = {fontWeight: (!obj.fontWeight || obj.fontWeight == 'normal' ? 'bold' : 'normal')};
+                var params = {fontWeight: (this.addTextBtnBold.hasClassName('active') ? 'bold' : 'normal')};
                 var cmd = new TransformCommand(this.productDesigner.canvas, obj, params);
                 cmd.exec();
                 this.productDesigner.history.push(cmd);
@@ -1875,9 +1884,10 @@ GoMage.TextEditor.prototype = {
         }.bind(this));
 
         this.addTextBtnItalic.observe('click', function (e) {
+            this.changeControlState(this.addTextBtnItalic);
             var obj = this.productDesigner.canvas.getActiveObject();
             if (obj && obj.type == 'text') {
-                var params = {fontStyle: (!obj.fontStyle ? 'italic' : '')};
+                var params = {fontStyle: (this.addTextBtnItalic.hasClassName('active') ? 'italic' : '')};
                 var cmd = new TransformCommand(this.productDesigner.canvas, obj, params);
                 cmd.exec();
                 this.productDesigner.history.push(cmd);
@@ -1885,9 +1895,10 @@ GoMage.TextEditor.prototype = {
         }.bind(this));
 
         this.addTextBtnUnderline.observe('click', function (e) {
+            this.changeControlState(this.addTextBtnUnderline);
             var obj = this.productDesigner.canvas.getActiveObject();
             if (obj && obj.type == 'text') {
-                var params = {textDecoration: (!obj.textDecoration || obj.textDecoration != 'underline' ? 'underline' : '')};
+                var params = {textDecoration: (this.addTextBtnUnderline.hasClassName('active') ? 'underline' : '')};
                 var cmd = new TransformCommand(this.productDesigner.canvas, obj, params);
                 cmd.exec();
                 this.productDesigner.history.push(cmd);
@@ -1895,9 +1906,10 @@ GoMage.TextEditor.prototype = {
         }.bind(this));
 
         this.addTextBtnStrokeThrough.observe('click', function (e) {
+            this.changeControlState(this.addTextBtnStrokeThrough);
             var obj = this.productDesigner.canvas.getActiveObject();
             if (obj && obj.type == 'text') {
-                var params = {textDecoration: (!obj.textDecoration || obj.textDecoration != 'line-through' ? 'line-through' : '')};
+                var params = {textDecoration: (this.addTextBtnStrokeThrough.hasClassName('active') ? 'line-through' : '')};
                 var cmd = new TransformCommand(this.productDesigner.canvas, obj, params);
                 cmd.exec();
                 this.productDesigner.history.push(cmd);
@@ -1950,14 +1962,12 @@ GoMage.TextEditor.prototype = {
     },
 
     observeShadowButton: function () {
-        if (!this.btnShadowText) {
-            return;
-        }
         this.btnShadowText.observe('click', function (e) {
             var elem = e.target || e.srcElement;
+            this.toggleConfigContainer(elem);
+
             var obj = this.productDesigner.canvas.getActiveObject();
             if (obj && obj.type == 'text') {
-                this.toggleConfigContainer(elem);
                 if (obj.shadow == null) {
                     this.setShadow({
                         shadowOffsetX: this.defaultFieldsValues.shadowOffsetX,
@@ -2023,14 +2033,12 @@ GoMage.TextEditor.prototype = {
     },
 
     observeOutlineButton: function () {
-        if (!this.btnOutlineText) {
-            return;
-        }
         this.btnOutlineText.observe('click', function (e) {
             var elem = e.target || e.srcElement;
+            this.toggleConfigContainer(elem);
+
             var obj = this.productDesigner.canvas.getActiveObject();
             if (obj && obj.type == 'text') {
-                this.toggleConfigContainer(elem);
                 if (obj.strokeWidth == 0) {
                     var cmd = new TransformCommand(this.productDesigner.canvas, obj, {
                         strokeWidth: this.defaultFieldsValues.strokeWidth,
