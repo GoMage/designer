@@ -1664,6 +1664,13 @@ GoMage.Designer.prototype = {
 GoMage.TextEditor = function (defaultFontFamily, defaultFontSize) {
     this.productDesigner = window.pd;
     this.colorPicker = null;
+
+    this.selected_colors = {
+        color: '',
+        textShadow: '',
+        strokeStyle: ''
+    };
+
     this.defaultTextOpt = {
         text: '',
         fontFamily: defaultFontFamily,
@@ -1732,26 +1739,33 @@ GoMage.TextEditor.prototype = {
     selectColorOnPicker: function (e) {
         var elem = e.target || e.srcElement;
         var obj = this.productDesigner.canvas.getActiveObject();
-        if (obj && obj.type == 'text') {
-            if (elem.id) {
-                switch (elem.id) {
-                    case 'color':
-                    {
+        if (elem.id) {
+            switch (elem.id) {
+                case 'color':
+                {
+                    this.selected_colors.color = e.hex;
+                    if (obj && obj.type == 'text') {
                         this.setTextColor(e.hex);
-                        break;
                     }
-                    case 'textShadow':
-                    {
+                    break;
+                }
+                case 'textShadow':
+                {
+                    this.selected_colors.textShadow = e.hex;
+                    if (obj && obj.type == 'text') {
                         this.setShadow({shadowColor: e.hex});
-                        break;
                     }
-                    case 'strokeStyle':
-                    {
+                    break;
+                }
+                case 'strokeStyle':
+                {
+                    this.selected_colors.strokeStyle = e.hex;
+                    if (obj && obj.type == 'text') {
                         var cmd = new TransformCommand(this.productDesigner.canvas, obj, {stroke: e.hex});
                         cmd.exec();
                         this.productDesigner.history.push(cmd);
-                        break;
                     }
+                    break;
                 }
             }
         }
@@ -1780,6 +1794,7 @@ GoMage.TextEditor.prototype = {
                 var color = elem.className.match(/color-code-([0-9A-Z]{6})/)[1];
                 var color = '#' + color;
                 this.setTextColor(color);
+                $('color-picker-palitra').hide();
             } else {
                 $('color-picker-palitra').toggle();
                 if (!$('color-picker-palitra').visible()) {
@@ -1801,6 +1816,20 @@ GoMage.TextEditor.prototype = {
         }.bind(this));
     },
 
+    getTextColor: function () {
+        var elem = this.addTextColorsPanel.down('.active');
+        if (elem) {
+            if (elem.hasClassName('color-picher')) {
+                return this.selected_colors.color;
+            } else if (elem.className.match(/color-code-([0-9A-Z]{6})/)) {
+                var color = elem.className.match(/color-code-([0-9A-Z]{6})/)[1];
+                var color = '#' + color;
+                return color;
+            }
+        }
+
+    },
+
     observeAddText: function () {
         var timeout;
         this.addTextButton.observe('click', function () {
@@ -1815,9 +1844,18 @@ GoMage.TextEditor.prototype = {
             var textObjectData = {
                 fontSize: parseInt(this.fontSizeSelector.value),
                 fontFamily: this.fontSelector.value,
-                lineHeight: 1
+                lineHeight: 1,
+                fontWeight: this.addTextBtnBold.hasClassName('active') ? 'bold' : 'normal',
+                fontStyle: this.addTextBtnItalic.hasClassName('active') ? 'italic' : '',
+                textDecoration: (this.addTextBtnUnderline.hasClassName('active') ? 'underline' : '') + (this.addTextBtnStrokeThrough.hasClassName('active') ? ' line-through' : '')
             };
             var textObject = new fabric.Text(text, textObjectData);
+
+            var color = this.getTextColor();
+            if (color) {
+                textObject.setColor(color);
+            }
+
             var cmd = new InsertCommand(this.productDesigner, textObject, true);
             cmd.exec();
             this.productDesigner.history.push(cmd);
@@ -1864,11 +1902,14 @@ GoMage.TextEditor.prototype = {
         }.bind(this));
     },
 
-    changeControlState: function (control) {
-        if (control.hasClassName('active')) {
-            control.removeClassName('active');
-        } else {
+    changeControlState: function (control, active) {
+        if (typeof active === 'undefined') {
+            active = !control.hasClassName('active');
+        }
+        if (active) {
             control.addClassName('active');
+        } else {
+            control.removeClassName('active');
         }
     },
 
@@ -1899,7 +1940,7 @@ GoMage.TextEditor.prototype = {
             this.changeControlState(this.addTextBtnUnderline);
             var obj = this.productDesigner.canvas.getActiveObject();
             if (obj && obj.type == 'text') {
-                var params = {textDecoration: (this.addTextBtnUnderline.hasClassName('active') ? 'underline' : '')};
+                var params = {textDecoration: (this.addTextBtnUnderline.hasClassName('active') ? 'underline' : '') + (this.addTextBtnStrokeThrough.hasClassName('active') ? ' line-through' : '')};
                 var cmd = new TransformCommand(this.productDesigner.canvas, obj, params);
                 cmd.exec();
                 this.productDesigner.history.push(cmd);
@@ -1910,7 +1951,7 @@ GoMage.TextEditor.prototype = {
             this.changeControlState(this.addTextBtnStrokeThrough);
             var obj = this.productDesigner.canvas.getActiveObject();
             if (obj && obj.type == 'text') {
-                var params = {textDecoration: (this.addTextBtnStrokeThrough.hasClassName('active') ? 'line-through' : '')};
+                var params = {textDecoration: (this.addTextBtnUnderline.hasClassName('active') ? 'underline' : '') + (this.addTextBtnStrokeThrough.hasClassName('active') ? ' line-through' : '')};
                 var cmd = new TransformCommand(this.productDesigner.canvas, obj, params);
                 cmd.exec();
                 this.productDesigner.history.push(cmd);
@@ -1919,14 +1960,14 @@ GoMage.TextEditor.prototype = {
     },
 
     toggleConfigContainer: function (elem) {
-        elem.siblings().invoke('removeClassName', 'active');
-        elem.addClassName('active');
         var configClass = elem.id.replace('-button', '-config');
         var configElement = $$('.' + configClass)[0];
         configElement.siblings().invoke('setStyle', {display: 'none'});
         if (configElement.getStyle('display') == 'none') {
+            elem.addClassName('active');
             configElement.setStyle({display: 'block'});
         } else {
+            elem.removeClassName('active');
             configElement.setStyle({display: 'none'});
         }
     },
@@ -2088,6 +2129,7 @@ GoMage.TextEditor.prototype = {
     },
 
     _setInputValues: function (textObj) {
+
         this._changeTextButtonLabel(textObj);
         for (var property in this.fieldsMap) {
             if (this.fieldsMap.hasOwnProperty(property) && this.fieldsMap[property]) {
@@ -2095,6 +2137,14 @@ GoMage.TextEditor.prototype = {
                 field.value = textObj ? textObj[property] : this.defaultTextOpt[property];
             }
         }
+
+        if (textObj) {
+            this.changeControlState(this.addTextBtnBold, textObj.get('fontWeight') == 'bold');
+            this.changeControlState(this.addTextBtnItalic, textObj.get('fontStyle') == 'italic');
+            this.changeControlState(this.addTextBtnUnderline, textObj.get('textDecoration').indexOf('underline') >= 0);
+            this.changeControlState(this.addTextBtnStrokeThrough, textObj.get('textDecoration').indexOf('line-through') >= 0);
+        }
+        
     },
 
     _changeTextButtonLabel: function (obj) {
