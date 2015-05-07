@@ -126,7 +126,7 @@ class GoMage_ProductDesigner_Model_Catalog_Product extends Mage_Catalog_Model_Pr
         if ($designId) {
             $params['_query'] = array('design_id' => $designId);
         }
-        if (!empty($this->getData('url'))) {
+        if ($this->getData('url')) {
             $this->setData('url', null);
         }
 
