@@ -1855,7 +1855,7 @@ GoMage.TextEditor.prototype = {
             if (this.selected_colors.strokeStyle ||
                 (this.outlineStrokeWidthRange.value != this.defaultFieldsValues.strokeWidth)) {
                 textObjectData.stroke = this.selected_colors.strokeStyle;
-                textObjectData.strokeWidth = this.outlineStrokeWidthRange.value;
+                textObjectData.strokeWidth = parseFloat(this.outlineStrokeWidthRange.value);
             }
 
             var textObject = new fabric.Text(text, textObjectData);
