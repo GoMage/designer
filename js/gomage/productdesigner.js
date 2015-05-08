@@ -1695,6 +1695,7 @@ GoMage.TextEditor = function (defaultFontFamily, defaultFontSize) {
     this.shadowOffsetX = $('shadow_x_range');
     this.shadowOffsetY = $('shadow_y_range');
     this.shadowBlur = $('shadow_blur');
+    this.resetSettings = $('reset_text_settings');
 
     this.fieldsMap = {
         text: this.addTextTextarea,
@@ -1725,6 +1726,7 @@ GoMage.TextEditor = function (defaultFontFamily, defaultFontSize) {
     this.observeOutlineButton();
     this.observeOutlineControls();
     this.observeCancelTextEffect();
+    this.observeResetSettings();
 };
 
 GoMage.TextEditor.prototype = {
@@ -1849,11 +1851,30 @@ GoMage.TextEditor.prototype = {
                 fontStyle: this.addTextBtnItalic.hasClassName('active') ? 'italic' : '',
                 textDecoration: (this.addTextBtnUnderline.hasClassName('active') ? 'underline' : '') + (this.addTextBtnStrokeThrough.hasClassName('active') ? ' line-through' : '')
             };
+
+            if (this.selected_colors.strokeStyle ||
+                (this.outlineStrokeWidthRange.value != this.defaultFieldsValues.strokeWidth)) {
+                textObjectData.stroke = this.selected_colors.strokeStyle;
+                textObjectData.strokeWidth = this.outlineStrokeWidthRange.value;
+            }
+
             var textObject = new fabric.Text(text, textObjectData);
 
             var color = this.getTextColor();
             if (color) {
                 textObject.setColor(color);
+            }
+
+            if (this.selected_colors.textShadow ||
+                this.shadowOffsetX.value ||
+                this.shadowOffsetY.value ||
+                this.shadowBlur.value) {
+                var shadow = new fabric.Shadow();
+                shadow.offsetX = this.shadowOffsetX.value;
+                shadow.offsetY = this.shadowOffsetY.value;
+                shadow.blur = this.shadowBlur.value;
+                shadow.color = this.selected_colors.textShadow;
+                textObject.setShadow(shadow);
             }
 
             var cmd = new InsertCommand(this.productDesigner, textObject, true);
@@ -1963,13 +1984,59 @@ GoMage.TextEditor.prototype = {
         var configClass = elem.id.replace('-button', '-config');
         var configElement = $$('.' + configClass)[0];
         configElement.siblings().invoke('setStyle', {display: 'none'});
+        $$('.panel-btn2').invoke('removeClassName', 'active');
         if (configElement.getStyle('display') == 'none') {
             elem.addClassName('active');
             configElement.setStyle({display: 'block'});
         } else {
-            elem.removeClassName('active');
             configElement.setStyle({display: 'none'});
         }
+    },
+
+    observeResetSettings: function () {
+        this.resetSettings.observe('click', function (e) {
+            var obj = this.productDesigner.canvas.getActiveObject();
+
+            this.fontSelector.value = this.defaultTextOpt.fontFamily;
+            this.fontSizeSelector.value = this.defaultTextOpt.fontSize;
+
+            [this.addTextBtnBold, this.addTextBtnItalic,
+                this.addTextBtnUnderline, this.addTextBtnStrokeThrough,
+                this.btnShadowText, this.btnOutlineText].invoke('removeClassName', 'active');
+
+            $$('.shadow-config, .outline-config').invoke('hide');
+            this.addTextColorsPanel.childElements().invoke('removeClassName', 'active');
+            $('color-picker-palitra').hide();
+            this.selected_colors = {
+                color: '',
+                textShadow: '',
+                strokeStyle: ''
+            };
+
+            this.outlineStrokeWidthRange = 0;
+            this.shadowOffsetX = 0;
+            this.shadowOffsetY = 0;
+            this.shadowBlur = 0;
+
+            if (obj && obj.type == 'text') {
+                var textObjectData = {
+                    fontSize: parseInt(this.fontSizeSelector.value),
+                    fontFamily: this.fontSelector.value,
+                    lineHeight: 1,
+                    fontWeight: 'normal',
+                    fontStyle: '',
+                    textDecoration: '',
+                    stroke: '',
+                    strokeWidth: 0,
+                    shadow: null,
+                    color: '#000000'
+                };
+                var cmd = new TransformCommand(this.productDesigner.canvas, obj, textObjectData);
+                cmd.exec();
+                this.productDesigner.history.push(cmd);
+            }
+
+        }.bind(this));
     },
 
     observeCancelTextEffect: function () {
@@ -1980,22 +2047,24 @@ GoMage.TextEditor.prototype = {
     },
 
     cancelTextEffect: function (elm) {
+        var btn = $(elm.id.replace('-cancel', '-button'));
+        if (btn) {
+            this.toggleConfigContainer(btn);
+        }
+
         var obj = this.productDesigner.canvas.getActiveObject();
         if (!obj || obj.type != 'text') {
             return;
         }
-        var btn = $(elm.id.replace('-cancel', '-button'));
+
         var params = {};
         if (elm.getAttribute('data-effect') == 'outline') {
             this.fieldsMap.strokeWidth.value = 0;
             params['strokeWidth'] = 0;
             params['stroke'] = '';
+            this.selected_colors.strokeStyle = '';
         } else if (elm.getAttribute('data-effect') == 'shadow') {
             params['shadow'] = null;
-        }
-
-        if (btn) {
-            this.toggleConfigContainer(btn);
         }
 
         var cmd = new TransformCommand(this.productDesigner.canvas, obj, params);
@@ -2143,8 +2212,40 @@ GoMage.TextEditor.prototype = {
             this.changeControlState(this.addTextBtnItalic, textObj.get('fontStyle') == 'italic');
             this.changeControlState(this.addTextBtnUnderline, textObj.get('textDecoration').indexOf('underline') >= 0);
             this.changeControlState(this.addTextBtnStrokeThrough, textObj.get('textDecoration').indexOf('line-through') >= 0);
+
+            var color = textObj.getFill();
+            $('color-picker-palitra').hide();
+            this.addTextColorsPanel.childElements().invoke('removeClassName', 'active');
+            if (color.match(/#([0-9A-Za-z]{6})/)) {
+                color = color.replace('#', '');
+                if (this.addTextColorsPanel.down('.color-code-' + color)) {
+                    this.addTextColorsPanel.down('.color-code-' + color).addClassName('active');
+                } else {
+                    this.selected_colors.color = '#' + color;
+                    this.addTextColorsPanel.down('.color-picher').addClassName('active');
+                    $('color-picker-palitra').show();
+                }
+            }
+
+            if (textObj.getStroke()) {
+                this.selected_colors.strokeStyle = textObj.getStroke();
+            }
+
+            var shadow = textObj.getShadow();
+            if (shadow) {
+                this.shadowOffsetX.value = shadow.offsetX;
+                this.shadowOffsetY.value = shadow.offsetY;
+                this.shadowBlur.value = shadow.blur;
+                this.selected_colors.textShadow = shadow.color;
+            } else {
+                this.shadowOffsetX.value = 0;
+                this.shadowOffsetY.value = 0;
+                this.shadowBlur.value = 0;
+                this.selected_colors.textShadow = '';
+            }
+
         }
-        
+
     },
 
     _changeTextButtonLabel: function (obj) {

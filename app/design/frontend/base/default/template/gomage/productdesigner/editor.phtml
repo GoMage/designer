@@ -140,7 +140,10 @@ $productImageMinSize = $this->getProductOriginalImageMinSizes();
                   <?php endif;?>
                   <?php if ($this->isTextEnabled()): ?>
                       <div class="pd-tab-content" id="pd_add_text-content" <?php if ($this->isActiveTab('text')): ?>style="display: block;"<?php endif;?>>
-                          <h4 class="pd-header"><?php echo $this->__('Text'); ?></h4>
+                          <h4 class="pd-header">
+                              <?php echo $this->__('Text'); ?>
+                              <button id="reset_text_settings"><?php echo $this->__('Reset settings'); ?></button>
+                          </h4>
                           <?php if ($this->isHelpEnabled('text')):?>
                               <span class="tab-help-icon">?</span>
                               <div class="tab-help-content" style="display: none; width: <?php echo $this->getHelpPopupWidth('text')?>px; height: <?php echo $this->getHelpPopupHeight('text')?>px">
