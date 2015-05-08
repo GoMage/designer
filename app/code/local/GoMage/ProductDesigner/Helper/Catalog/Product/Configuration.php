@@ -8,7 +8,7 @@
  * @author       GoMage
  * @license      http://www.gomage.com/license-agreement/  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use/
- * @version      Release: 2.0.0
+ * @version      Release: 2.1.0
  * @since        Available since Release 2.0.0
  */
 class GoMage_ProductDesigner_Helper_Catalog_Product_Configuration extends Mage_Catalog_Helper_Product_Configuration
