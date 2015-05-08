@@ -2013,10 +2013,10 @@ GoMage.TextEditor.prototype = {
                 strokeStyle: ''
             };
 
-            this.outlineStrokeWidthRange = 0;
-            this.shadowOffsetX = 0;
-            this.shadowOffsetY = 0;
-            this.shadowBlur = 0;
+            this.outlineStrokeWidthRange.value = 0;
+            this.shadowOffsetX.value = 0;
+            this.shadowOffsetY.value = 0;
+            this.shadowBlur.value = 0;
 
             if (obj && obj.type == 'text') {
                 var textObjectData = {
