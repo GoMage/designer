@@ -481,6 +481,14 @@ select.pd-select{
     float: left;
     margin-right: 10px;
     }
+    .products-designer-grid .display-product .product-media .more-views h2{
+      font-size: 12px;
+      margin-top: 10px;
+      font-weight: 400;
+      }
+      .products-designer-grid .display-product .product-media .more-views ul li{
+        margin-bottom: 5px;
+        }
   .products-designer-grid .display-product .product-info{
     overflow: hidden;
     }
@@ -1085,7 +1093,10 @@ li.layer-type-text .layer-icon {
     border: 0;
     }
 #navigation-filters .fields .field{
-  margin: 0;
+  margin-bottom: 0;
+  }
+.pd-btn-clear-text-styles{
+  margin-left: 5px;
   }
 
 .product-designer-price .regular-price .price {
