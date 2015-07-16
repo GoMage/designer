@@ -13,6 +13,11 @@
  */
 class GoMage_ProductDesigner_Adminhtml_ClipartsController extends Mage_Adminhtml_Controller_Action
 {
+    protected function _isAllowed()
+    {
+        return Mage::getSingleton('admin/session')->isAllowed('catalog/gomage_designer/cliparts');
+    }
+
     public function indexAction()
     {
         $this->_forward('edit');
@@ -60,11 +65,12 @@ class GoMage_ProductDesigner_Adminhtml_ClipartsController extends Mage_Adminhtml
 
             $clipartBlock  = $this->getLayout()->getBlock('cliparts_edit');
             $eventResponse = new Varien_Object(array(
-                'content'  => $clipartBlock->getFormHtml()
-                    . $this->getLayout()->getBlock('cliparts_categories_tree')
-                        ->getBreadcrumbsJavascript($breadcrumbsPath, 'editingCategoryBreadcrumbs'),
-                'messages' => $this->getLayout()->getMessagesBlock()->getGroupedHtml(),
-            ));
+                    'content'  => $clipartBlock->getFormHtml()
+                        . $this->getLayout()->getBlock('cliparts_categories_tree')
+                            ->getBreadcrumbsJavascript($breadcrumbsPath, 'editingCategoryBreadcrumbs'),
+                    'messages' => $this->getLayout()->getMessagesBlock()->getGroupedHtml(),
+                )
+            );
 
             $this->getResponse()->setBody(
                 Mage::helper('core')->jsonEncode($eventResponse->getData())

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * GoMage Product Designer Extension
  *
@@ -10,13 +11,16 @@
  * @version      Release: 2.1.0
  * @since        Available since Release 1.0.0
  */
-
-class GoMage_ProductDesigner_Adminhtml_Designer_DesignController
-    extends Mage_Adminhtml_Controller_Action
+class GoMage_ProductDesigner_Adminhtml_Designer_DesignController extends Mage_Adminhtml_Controller_Action
 {
+    protected function _isAllowed()
+    {
+        return Mage::getSingleton('admin/session')->isAllowed('sales/order');
+    }
+
     public function dispatch($action)
     {
-        if(!Mage::helper('gomage_designer')->isEnabled()) {
+        if (!Mage::helper('gomage_designer')->isEnabled()) {
             $action = 'noRoute';
         }
         parent::dispatch($action);
@@ -31,15 +35,15 @@ class GoMage_ProductDesigner_Adminhtml_Designer_DesignController
 
     public function downloadAction()
     {
-        $imageId = (int) $this->getRequest()->getParam('image_id');
-        $type = $this->getRequest()->getParam('type');
+        $imageId = (int)$this->getRequest()->getParam('image_id');
+        $type    = $this->getRequest()->getParam('type');
 
         if ($imageId) {
             $image = Mage::getModel('gomage_designer/design_image')->load($imageId);
             if ($image) {
                 $imageGetter = 'get' . $type;
-                $imageName = ltrim($image->$imageGetter(), '/');
-                $imageFile = file_get_contents(Mage::getModel('gomage_designer/design_config')->getMediaPath($image->$imageGetter()));
+                $imageName   = ltrim($image->$imageGetter(), '/');
+                $imageFile   = file_get_contents(Mage::getModel('gomage_designer/design_config')->getMediaPath($image->$imageGetter()));
                 $this->_prepareDownloadResponse($imageName, $imageFile);
                 return;
             }
@@ -54,10 +58,10 @@ class GoMage_ProductDesigner_Adminhtml_Designer_DesignController
             $this->_redirectReferer();
         }
 
-        $designId = (int) Mage::app()->getRequest()->getParam('design_id');
+        $designId = (int)Mage::app()->getRequest()->getParam('design_id');
 
         if ($designId) {
-            $images = Mage::getModel('gomage_designer/design')->getImages($designId);
+            $images          = Mage::getModel('gomage_designer/design')->getImages($designId);
             $archiveFileName = Mage::getBaseDir('tmp') . DS . 'design_images.zip';
             if (file_exists($archiveFileName)) {
                 unlink($archiveFileName);

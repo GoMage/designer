@@ -1,4 +1,5 @@
 <?php
+
 /**
  * GoMage Product Designer Extension
  *
@@ -10,13 +11,16 @@
  * @version      Release: 2.1.0
  * @since        Available since Release 1.0.0
  */
-
-class GoMage_ProductDesigner_Adminhtml_Designer_ProductController
-    extends Mage_Adminhtml_Controller_Action
+class GoMage_ProductDesigner_Adminhtml_Designer_ProductController extends Mage_Adminhtml_Controller_Action
 {
+    protected function _isAllowed()
+    {
+        return Mage::getSingleton('admin/session')->isAllowed('catalog/products');
+    }
+
     public function dispatch($action)
     {
-        if(!Mage::helper('gomage_designer')->isEnabled()) {
+        if (!Mage::helper('gomage_designer')->isEnabled()) {
             $action = 'noRoute';
         }
         parent::dispatch($action);
@@ -30,7 +34,7 @@ class GoMage_ProductDesigner_Adminhtml_Designer_ProductController
     protected function _initializeProduct()
     {
         $productId = $this->getRequest()->getParam('product_id');
-        $product = Mage::getModel('catalog/product');
+        $product   = Mage::getModel('catalog/product');
 
         if ($productId) {
             $product->load($productId);
@@ -52,8 +56,9 @@ class GoMage_ProductDesigner_Adminhtml_Designer_ProductController
             if ($image && $image->getId()) {
                 $html = $this->_getProductEditHtml();
                 Mage::helper('gomage_designer/ajax')->sendSuccess(array(
-                    'design_area' => $html
-                ));
+                        'design_area' => $html
+                    )
+                );
             } else {
                 Mage::helper('gomage_designer/ajax')->sendError(Mage::helper('gomage_designer')->__('You can not choose this image for design'));
             }
@@ -79,15 +84,15 @@ class GoMage_ProductDesigner_Adminhtml_Designer_ProductController
      * Initialize product image
      *
      * @param Mage_Catalog_Model_Product $product Product
-     * @param string                     $idField Image Field
+     * @param string $idField Image Field
      * @return bool|Varien_Object
      */
     protected function _initializeProductImage($product, $idField = 'img')
     {
         $imageId = $this->getRequest()->getParam($idField);
         if ($product->getId() && $imageId) {
-            $images  = $product->getMediaGallery('images');
-            $image = new Varien_Object();
+            $images = $product->getMediaGallery('images');
+            $image  = new Varien_Object();
             foreach ($images as $_image) {
                 if ($_image['value_id'] == $imageId) {
                     $_image['id'] = $_image['value_id'];
@@ -114,14 +119,14 @@ class GoMage_ProductDesigner_Adminhtml_Designer_ProductController
         $product = $this->_initializeProduct();
 
         try {
-            if (!$product || !$product->getId()){
+            if (!$product || !$product->getId()) {
                 throw new Exception(Mage::helper('gomage_designer')->__('Product with id %d not found', $this->getRequest()->getParam('product_id')));
             }
             $image = $this->_initializeProductImage($product, 'image_id');
             if (!$image || !$image->getId()) {
                 throw new Exception(Mage::helper('gomage_designer')->__('Image with id %d not found', $this->getRequest()->getParam('image_id')));
             }
-            if ($mediaGalleryAttribute = $product->getMediaGalleryAttribute()){
+            if ($mediaGalleryAttribute = $product->getMediaGalleryAttribute()) {
                 $mediaGalleryAttribute->updateImage($product, $image->getFile(), array('design_area' => $this->_prepareDesignAreaSettings()));
                 $product->save();
             }
@@ -139,7 +144,7 @@ class GoMage_ProductDesigner_Adminhtml_Designer_ProductController
      */
     protected function _prepareDesignAreaSettings()
     {
-        $params  = $this->getRequest()->getParams();
+        $params   = $this->getRequest()->getParams();
         $settings = array(
             't'  => isset($params['t']) ? $params['t'] : null, // offset top
             'l'  => isset($params['l']) ? $params['l'] : null, // offset left
@@ -159,19 +164,19 @@ class GoMage_ProductDesigner_Adminhtml_Designer_ProductController
      */
     public function updateStateAction()
     {
-        $productId = (int) $this->getRequest()->getParam('product_id');
-        $imageId   = (int) $this->getRequest()->getParam('image_id');
-        $state = (int) $this->getRequest()->getParam('state');
+        $productId = (int)$this->getRequest()->getParam('product_id');
+        $imageId   = (int)$this->getRequest()->getParam('image_id');
+        $state     = (int)$this->getRequest()->getParam('state');
 
         try {
             if (!$state) {
-                $product  = $this->_initializeProduct();
+                $product = $this->_initializeProduct();
                 if ($product && $product->getId()) {
                     $image = $this->_initializeProductImage($product, 'image_id');
                     if (!$image || !$image->getId()) {
                         throw new Exception(Mage::helper('gomage_designer')->__('Image with id %d not found', $imageId));
                     }
-                    if ($mediaGalleryAttribute = $product->getMediaGalleryAttribute()){
+                    if ($mediaGalleryAttribute = $product->getMediaGalleryAttribute()) {
                         $mediaGalleryAttribute->updateImage(
                             $product,
                             $image->getFile(),
@@ -191,20 +196,20 @@ class GoMage_ProductDesigner_Adminhtml_Designer_ProductController
 
     public function uploadAttributeImageAction()
     {
-        file_put_contents(Mage::getBaseDir('var').'/data.txt', print_r($_FILES, true));
+        file_put_contents(Mage::getBaseDir('var') . '/data.txt', print_r($_FILES, true));
 
         $result = array();
         try {
             $uploader = new Varien_File_Uploader('option_image');
-            $uploader->setAllowedExtensions(array('jpg','jpeg','gif','png'));
+            $uploader->setAllowedExtensions(array('jpg', 'jpeg', 'gif', 'png'));
             $uploader->setAllowRenameFiles(true);
             $uploader->setFilesDispersion(true);
             $result = $uploader->save(
                 Mage::getSingleton('catalog/product_media_config')->getBaseTmpMediaPath()
             );
 
-            $result['url'] = Mage::getSingleton('catalog/product_media_config')->getTmpMediaUrl($result['file']);
-            $result['file'] = $result['file'] . '.tmp';
+            $result['url']    = Mage::getSingleton('catalog/product_media_config')->getTmpMediaUrl($result['file']);
+            $result['file']   = $result['file'] . '.tmp';
             $result['cookie'] = array(
                 'name'     => session_name(),
                 'value'    => $this->_getSession()->getSessionId(),
@@ -213,10 +218,10 @@ class GoMage_ProductDesigner_Adminhtml_Designer_ProductController
                 'domain'   => $this->_getSession()->getCookieDomain()
             );
         } catch (Exception $e) {
-            $result = array('error'=>$e->getMessage(), 'errorcode'=>$e->getCode());
+            $result = array('error' => $e->getMessage(), 'errorcode' => $e->getCode());
         }
 
-        file_put_contents(Mage::getBaseDir('var').'/data-response.txt', print_r($result, true));
+        file_put_contents(Mage::getBaseDir('var') . '/data-response.txt', print_r($result, true));
 
         $this->getResponse()->setBody(Mage::helper('core')->jsonEncode($result));
     }
