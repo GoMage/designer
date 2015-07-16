@@ -575,7 +575,7 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, sprintf('https://www.gomage.com/index.php/gomage_downloadable/key/check'));
         curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, 'key=' . urlencode($k) . '&sku=product-designer&domains=' . urlencode(implode(',', $this->getAllStoreDomains())) . '&ver=' . urlencode('2.1'));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, 'key=' . urlencode($k) . '&sku=product-designer&domains=' . urlencode(implode(',', $this->getAllStoreDomains())) . '&ver=' . urlencode('2.2'));
         curl_setopt($ch, CURLOPT_TIMEOUT, 30);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
@@ -693,7 +693,7 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, sprintf('https://www.gomage.com/index.php/gomage_notification/index/data'));
             curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, 'sku=product-designer&timestamp=' . $timestamp . '&ver=' . urlencode('2.1'));
+            curl_setopt($ch, CURLOPT_POSTFIELDS, 'sku=product-designer&timestamp=' . $timestamp . '&ver=' . urlencode('2.2'));
             curl_setopt($ch, CURLOPT_TIMEOUT, 30);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
