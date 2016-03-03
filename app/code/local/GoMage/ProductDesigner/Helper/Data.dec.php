@@ -8,7 +8,7 @@
  * @author       GoMage
  * @license      http://www.gomage.com/license-agreement/  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use/
- * @version      Release: 2.2.0
+ * @version      Release: 2.3.0
  * @since        Available since Release 1.0.0
  */
 class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
@@ -693,7 +693,7 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, sprintf('https://www.gomage.com/index.php/gomage_notification/index/data'));
             curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, 'sku=product-designer&timestamp=' . $timestamp . '&ver=' . urlencode('2.2'));
+            curl_setopt($ch, CURLOPT_POSTFIELDS, 'sku=product-designer&timestamp=' . $timestamp . '&ver=' . urlencode('2.3'));
             curl_setopt($ch, CURLOPT_TIMEOUT, 30);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 

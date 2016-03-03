@@ -8,7 +8,7 @@
  * @author       GoMage
  * @license      http://www.gomage.com/license-agreement/  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use/
- * @version      Release: 2.2.0
+ * @version      Release: 2.3.0
  * @since        Available since Release 1.0.0
  */
 class GoMage_ProductDesigner_Adminhtml_ClipartsController extends Mage_Adminhtml_Controller_Action
