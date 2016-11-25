@@ -67,7 +67,7 @@ class GoMage_ProductDesigner_Block_Adminhtml_Catalog_Product_Helper_Form_Gallery
     /**
      * Return update state url
      *
-     * @return bool|string
+     * @return string
      */
     public function getUpdateStateUrl()
     {
@@ -79,7 +79,7 @@ class GoMage_ProductDesigner_Block_Adminhtml_Catalog_Product_Helper_Form_Gallery
             ));
         }
 
-        return false;
+        return '';
     }
 
     /**
