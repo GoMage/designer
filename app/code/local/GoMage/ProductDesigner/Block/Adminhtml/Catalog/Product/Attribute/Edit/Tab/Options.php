@@ -1,4 +1,5 @@
 <?php
+
 /**
  * GoMage Product Designer Extension
  *
@@ -10,7 +11,6 @@
  * @version      Release: 2.3.0
  * @since        Available since Release 1.0.0
  */
-
 class GoMage_ProductDesigner_Block_Adminhtml_Catalog_Product_Attribute_Edit_Tab_Options
     extends Mage_Adminhtml_Block_Catalog_Product_Attribute_Edit_Tab_Options
 {
@@ -40,7 +40,7 @@ class GoMage_ProductDesigner_Block_Adminhtml_Catalog_Product_Attribute_Edit_Tab_
         if ($navigationBlock = $this->_getNavigationOptionsBlock()) {
             return $navigationBlock->getOptionValues();
         }
-        $values = parent::getOptionValues();
+        $values             = parent::getOptionValues();
         $colorAttributeCode = Mage::getStoreConfig('gomage_designer/navigation/color_attribute');
         if (!$colorAttributeCode || !($this->getAttributeObject()->getAttributeCode() == $colorAttributeCode)) {
             return $values;
@@ -78,4 +78,25 @@ class GoMage_ProductDesigner_Block_Adminhtml_Catalog_Product_Attribute_Edit_Tab_
 
         return $this->_navigationBlock;
     }
+
+    public function getShowOptions()
+    {
+        return 10;
+    }
+
+    public function getUploader()
+    {
+        $uploader = $this->getLayout()->createBlock('core/template');
+
+        $_modules      = Mage::getConfig()->getNode('modules')->children();
+        $_modulesArray = (array)$_modules;
+        if (!isset($_modulesArray['Mage_Uploader'])) {
+            $uploader->setTemplate('gomage/productdesigner/catalog/product/attribute/uploader/flash.phtml');
+        } else {
+            $uploader->setTemplate('gomage/productdesigner/catalog/product/attribute/uploader/html.phtml');
+        }
+        $uploader->setParentBlock($this);
+        return $uploader;
+    }
+
 }

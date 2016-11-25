@@ -1,4 +1,5 @@
 <?php
+
 /**
  * GoMage Product Designer Extension
  *
@@ -10,7 +11,6 @@
  * @version      Release: 2.3.0
  * @since        Available since Release 1.0.0
  */
-
 class GoMage_ProductDesigner_Block_Adminhtml_Cliparts_Edit_Gallery
     extends Mage_Adminhtml_Block_Catalog_Product_Helper_Form_Gallery_Content
 {
@@ -24,40 +24,60 @@ class GoMage_ProductDesigner_Block_Adminhtml_Cliparts_Edit_Gallery
     {
         $preparedLayout = parent::_prepareLayout();
 
-        $this->setChild('uploader',
-            $this->getLayout()->createBlock('adminhtml/media_uploader')
-        );
+        if (Mage::helper('gomage_designer')->isModuleExists('Mage_Uploader')) {
 
-        $this->getUploader()->getConfig()
-            ->setUrl(Mage::getModel('adminhtml/url')->addSessionParam()->getUrl('*/*/uploadImage', array('_current' => true)))
-            ->setFileField('image')
-            ->setFilters(array(
-                'images' => array(
-                    'label' => Mage::helper('adminhtml')->__('Images (.gif, .jpg, .png)'),
-                    'files' => array('*.gif', '*.jpg','*.jpeg', '*.png')
-                )
-            ));
+            $this->setChild('uploader',
+                $this->getLayout()->createBlock($this->_uploaderType)
+            );
+
+            $this->getUploader()->getUploaderConfig()
+                ->setFileParameterName('image')
+                ->setTarget(Mage::getModel('adminhtml/url')->addSessionParam()->getUrl('*/*/uploadImage', array('_current' => true)));
+
+            $browseConfig = $this->getUploader()->getButtonConfig();
+            $browseConfig
+                ->setAttributes(array(
+                        'accept' => $browseConfig->getMimeTypesByExtensions('gif, jpg, jpeg, png')
+                    )
+                );
+        } else {
+            $this->setChild('uploader',
+                $this->getLayout()->createBlock('adminhtml/media_uploader')
+            );
+
+            $this->getUploader()->getConfig()
+                ->setUrl(Mage::getModel('adminhtml/url')->addSessionParam()->getUrl('*/*/uploadImage', array('_current' => true)))
+                ->setFileField('image')
+                ->setFilters(array(
+                        'images' => array(
+                            'label' => Mage::helper('adminhtml')->__('Images (.gif, .jpg, .png)'),
+                            'files' => array('*.gif', '*.jpg', '*.jpeg', '*.png')
+                        )
+                    )
+                );
+        }
 
         Mage::dispatchEvent('cliparts_gallery_prepare_layout', array('block' => $this));
         return $preparedLayout;
     }
 
-    public function getHtmlId() {
+    public function getHtmlId()
+    {
         return 'media_gallery_content';
     }
 
     public function getImagesJson()
     {
-        $values = array();
-        $category = $this->getCategory();
+        $values        = array();
+        $category      = $this->getCategory();
         $galleryConfig = Mage::getSingleton('gomage_designer/clipart_gallery_config');
-        $mediaUrl = $galleryConfig->getBaseMediaUrl();
+        $mediaUrl      = $galleryConfig->getBaseMediaUrl();
 
-        if($category) {
-            foreach($category->getClipartsCollection() as $image) {
+        if ($category) {
+            foreach ($category->getClipartsCollection() as $image) {
                 $imageData = $image->getData();
-                $imageUrl = $imageData['image'];
-                $valueId = $imageData['clipart_id'];
+                $imageUrl  = $imageData['image'];
+                $valueId   = $imageData['clipart_id'];
 
                 unset($imageData['image']);
                 unset($imageData['entity_type_id']);
@@ -65,11 +85,11 @@ class GoMage_ProductDesigner_Block_Adminhtml_Cliparts_Edit_Gallery
                 unset($imageData['category_id']);
 
                 $additionalData['value_id'] = $valueId;
-                $additionalData['url'] = $mediaUrl.$imageUrl;
-                $additionalData['file'] = $imageUrl;
-                $additionalData['removed'] = 0;
-                $data = array_merge($additionalData, $imageData);
-                $values[] = $data;
+                $additionalData['url']      = $mediaUrl . $imageUrl;
+                $additionalData['file']     = $imageUrl;
+                $additionalData['removed']  = 0;
+                $data                       = array_merge($additionalData, $imageData);
+                $values[]                   = $data;
             }
         }
         return Mage::helper('core')->jsonEncode($values);
@@ -101,14 +121,15 @@ class GoMage_ProductDesigner_Block_Adminhtml_Cliparts_Edit_Gallery
         return json_encode($this->getImageTypes(), JSON_FORCE_OBJECT);
     }
 
-    public function getCategory() {
+    public function getCategory()
+    {
         /* @var $category GoMage_ProductDesigner_Model_Clipart_Category */
-        if($this->hasData('category')) {
+        if ($this->hasData('category')) {
             $category = $this->getData('category');
             return $category;
         }
         $category = Mage::registry('category');
-        if($category){
+        if ($category) {
             $this->setData('category', $category);
             return $category;
         }

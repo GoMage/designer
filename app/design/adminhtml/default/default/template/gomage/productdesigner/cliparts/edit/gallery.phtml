@@ -127,7 +127,9 @@
                                     newImage.disabled = 0;
                                     newImage.removed = 0;
                                     this.images.push(newImage);
-                                    this.uploader.removeFile(item.id);
+                                    if (typeof this.uploader != 'undefined') {
+                                        this.uploader.removeFile(item.id);
+                                    }
                                 }.bind(this));
                                 this.container.setHasChanges();
                                 this.updateImages();
@@ -135,7 +137,13 @@
                             Product.Gallery.prototype.file2id = {
                                 'no_selection' : 0
                             };
-                            window.<?php echo $this->getJsObjectName(); ?> = new Product.Gallery('<?php echo $this->getHtmlId() ?>', <?php echo $this->getUploader()->getJsObjectName() ?>, <?php echo $this->getImageTypesJson() ?>);
+
+                            <?php if (Mage::helper('gomage_designer')->isModuleExists('Mage_Uploader')): ?>
+                                window.<?php echo $this->getJsObjectName(); ?> = new Product.Gallery('<?php echo $this->getHtmlId() ?>', <?php echo $this->getImageTypesJson() ?>);
+                            <?php else: ?>
+                                window.<?php echo $this->getJsObjectName(); ?> = new Product.Gallery('<?php echo $this->getHtmlId() ?>', <?php echo $this->getUploader()->getJsObjectName() ?>, <?php echo $this->getImageTypesJson() ?>);
+                            <?php endif;?>
+
                             //]]>
                         </script>
                         </td>

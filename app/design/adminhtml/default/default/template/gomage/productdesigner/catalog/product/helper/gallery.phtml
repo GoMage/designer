@@ -211,13 +211,19 @@ $colors = $this->getProductColors();
             newImage.disabled = 0;
             newImage.removed = 0;
             this.images.push(newImage);
-            this.uploader.removeFile(item.id);
+            if (typeof this.uploader != 'undefined') {
+                this.uploader.removeFile(item.id);
+            }
         }.bind(this));
         this.container.setHasChanges();
         this.updateImages();
     }
 //<![CDATA[
-    var <?php echo $_block->getJsObjectName(); ?> = new Product.Gallery('<?php echo $_block->getHtmlId() ?>', <?php if ($_block->getElement()->getReadonly()):?>null<?php else:?><?php echo $_block->getUploader()->getJsObjectName() ?><?php endif;?>, <?php echo $_block->getImageTypesJson() ?>);
+    <?php if (Mage::helper('gomage_designer')->isModuleExists('Mage_Uploader')): ?>
+        var <?php echo $_block->getJsObjectName(); ?> = new Product.Gallery('<?php echo $_block->getHtmlId() ?>', <?php echo $_block->getImageTypesJson() ?>);
+    <?php else: ?>
+        var <?php echo $_block->getJsObjectName(); ?> = new Product.Gallery('<?php echo $_block->getHtmlId() ?>', <?php if ($_block->getElement()->getReadonly()):?>null<?php else:?><?php echo $_block->getUploader()->getJsObjectName() ?><?php endif;?>, <?php echo $_block->getImageTypesJson() ?>);
+    <?php endif;?>
 //]]>
 </script>
 

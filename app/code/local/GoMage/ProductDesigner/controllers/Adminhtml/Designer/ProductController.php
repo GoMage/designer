@@ -196,9 +196,6 @@ class GoMage_ProductDesigner_Adminhtml_Designer_ProductController extends Mage_A
 
     public function uploadAttributeImageAction()
     {
-        file_put_contents(Mage::getBaseDir('var') . '/data.txt', print_r($_FILES, true));
-
-        $result = array();
         try {
             $uploader = new Varien_File_Uploader('option_image');
             $uploader->setAllowedExtensions(array('jpg', 'jpeg', 'gif', 'png'));
@@ -220,8 +217,6 @@ class GoMage_ProductDesigner_Adminhtml_Designer_ProductController extends Mage_A
         } catch (Exception $e) {
             $result = array('error' => $e->getMessage(), 'errorcode' => $e->getCode());
         }
-
-        file_put_contents(Mage::getBaseDir('var') . '/data-response.txt', print_r($result, true));
 
         $this->getResponse()->setBody(Mage::helper('core')->jsonEncode($result));
     }

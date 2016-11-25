@@ -86,5 +86,6 @@
             <action method="addJs"><script>lib/FABridge.js</script></action>
             <action method="addJs"><script>mage/adminhtml/flexuploader.js</script></action>
         </reference>
+        <update handle="editor"/>
     </adminhtml_catalog_product_attribute_edit>
 </layout>

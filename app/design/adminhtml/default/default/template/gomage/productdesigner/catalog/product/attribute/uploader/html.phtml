@@ -1,0 +1,403 @@
+<?php
+/**
+ * GoMage Product Designer Extension
+ *
+ * @category     Extension
+ * @copyright    Copyright (c) 2013-2015 GoMage (http://www.gomage.com)
+ * @author       GoMage
+ * @license      http://www.gomage.com/license-agreement/  Single domain license
+ * @terms of use http://www.gomage.com/terms-of-use/
+ * @version      Release: 2.3.0
+ * @since        Available since Release 2.4.0
+ */
+
+$type = 'option_image';
+$uploaderConfig = Mage::getModel('uploader/config_uploader');
+$uploaderConfig->setFileParameterName($type)
+    ->setTarget(
+        Mage::getModel('adminhtml/url')
+            ->addSessionParam()
+            ->getUrl('*/designer_product/uploadAttributeImage', array('type' => $type, '_secure' => true))
+    );
+$miscConfig = Mage::getModel('uploader/config_misc');
+$miscConfig->setReplaceBrowseWithRemove(true);
+$browseButtonConfig = Mage::getModel('uploader/config_browsebutton');
+
+$json_config = Mage::helper('core')->jsonEncode(array(
+    'uploaderConfig'    => $uploaderConfig->getData(),
+    'elementIds'        => array(
+        'container' => $this->getParentBlock()->getHtmlId() . '-new',
+        'delete'    => $this->getParentBlock()->getHtmlId() . '-delete',
+        'browse'    => array($this->getParentBlock()->getHtmlId() . '-browse'),
+        'upload'    => array($this->getParentBlock()->getHtmlId() . '-upload'),
+        'templateFile' => $this->getParentBlock()->getHtmlId() . '-template'
+    ),
+    'browseConfig'      => $browseButtonConfig->getData(),
+    'miscConfig'        => $miscConfig->getData(),
+));
+
+?>
+<div class="no-display" id="<?php echo $this->getParentBlock()->getHtmlId() ?>">
+    <div id="{{id}}-container" class="file-row">
+        <span class="file-info">{{name}} {{size}}</span>
+        <span class="delete-button"><button  id="{{id}}" title="Remove" type="button" class="scalable delete" onclick="" style=""><span><span><span><?php echo $this->__('Remove') ?></span></span></span></button></span>
+        <span class="progress-text"></span>
+        <div class="clear"></div>
+    </div>
+</div>
+
+<script type="text/javascript">
+//<![CDATA[
+
+var uploaderTemplate = '<div class="no-display" id="[[idName]]-template">' +
+    '<div id="{{id}}-container" class="file-row file-row-narrow">' +
+    '<span class="file-info">' +
+    '<span class="file-info-name">{{name}}</span>' +
+    ' ' +
+    '<span class="file-info-size">{{size}}</span>' +
+    '</span>' +
+    '<span class="progress-text"></span>' +
+    '<div class="clear"></div>' +
+    '</div>' +
+    '</div>';
+
+var fileListTemplate = '<span class="file-info">' +
+    '<span class="file-info-name">{{name}}</span>' +
+    ' ' +
+    '<span class="file-info-size">({{size}})</span>' +
+    '</span>';
+
+var Downloadable = {
+    uploaderObj : $H({}),
+    objCount : 0,
+    setUploaderObj : function(type, key, obj){
+        if (!this.uploaderObj.get(type)) {
+            this.uploaderObj.set(type, $H({}));
+        }
+        this.uploaderObj.get(type).set(key, obj);
+    },
+    getUploaderObj : function(type, key){
+        try {
+            return this.uploaderObj.get(type).get(key);
+        } catch (e) {
+            try {
+                console.log(e);
+            } catch (e2) {
+                alert(e.name + '\n' + e.message);
+            }
+        }
+    },
+    unsetUploaderObj : function(type, key){
+        try {
+            this.uploaderObj.get(type).unset(key);
+        } catch (e) {
+            try {
+                console.log(e);
+            } catch (e2) {
+                alert(e.name + '\n' + e.message);
+            }
+        }
+    },
+    massUploadByType : function(type){
+        try {
+            this.uploaderObj.get(type).each(function(item){
+                var container = item.value.elements.container.up('tr');
+                if (container.visible() && !container.hasClassName('no-display')) {
+                    item.value.upload();
+                } else {
+                    Downloadable.unsetUploaderObj(type, item.key);
+                }
+            });
+        } catch (e) {
+            try {
+                console.log(e);
+            } catch (e2) {
+                alert(e.name + '\n' + e.message);
+            }
+        }
+    }
+};
+
+Downloadable.FileUploader = Class.create();
+Downloadable.FileUploader.prototype = {
+    type : null,
+    key : null, //key, identifier of uploader obj
+    elmContainer : null, //insert Flex object and templates to elmContainer
+    fileValueName : null, //name of field of JSON data of saved file
+    fileValue : null,
+    idName : null, //id name of elements for unique uploader
+    uploaderText: uploaderTemplate,
+    uploaderSyntax : /(^|.|\r|\n)(\[\[(\w+)\]\])/,
+    uploaderObj : $H({}),
+    config : null,
+    initialize: function (type, key, elmContainer, fileValueName, fileValue ,idName, config) {
+        this.type = type;
+        this.key = key;
+        this.elmContainer = elmContainer;
+        this.fileValueName = fileValueName;
+        this.fileValue = fileValue;
+        this.idName = idName;
+        this.config = config;
+        uploaderTemplate = new Template(this.uploaderText, this.uploaderSyntax);
+
+        Element.insert(
+            elmContainer,
+            {'top' : uploaderTemplate.evaluate({
+                'idName' : this.idName,
+                'fileValueName' : this.fileValueName,
+                'uploaderObj' : 'Downloadable.getUploaderObj(\''+this.type+'\', \''+this.key+'\')'
+            })
+            }
+        );
+        if ($(this.idName+'_save')) {
+            $(this.idName+'_save').value = this.fileValue.toJSON
+                ? this.fileValue.toJSON()
+                : Object.toJSON(this.fileValue);
+        }
+        var uploaderConfig = (Object.isString(this.config) && this.config.evalJSON()) || this.config;
+        Downloadable.setUploaderObj(
+            this.type,
+            this.key,
+            new Uploader(uploaderConfig)
+        );
+        if (varienGlobalEvents) {
+            varienGlobalEvents.attachEventHandler('tabChangeBefore', Downloadable.getUploaderObj(type, key).onContainerHideBefore);
+        }
+        new Downloadable.FileList(this.idName, Downloadable.getUploaderObj(type, key));
+    }
+};
+
+Downloadable.FileList = Class.create();
+Downloadable.FileList.prototype = {
+    file: [],
+    containerId: '',
+    container: null,
+    uploader: null,
+    fileListTemplate: fileListTemplate,
+    templatePattern : /(^|.|\r|\n)({{(\w+)}})/,
+    listTemplate : null,
+    initialize: function (containerId, uploader) {
+        this.containerId  = containerId,
+            this.container = $(this.containerId);
+        this.uploader = uploader;
+        document.on('uploader:fileSuccess', function(event) {
+            var memo = event.memo;
+            if(this._checkCurrentContainer(memo.containerId)) {
+                this.handleUploadComplete([{response: memo.response}]);
+                this.handleButtonsSwap();
+            }
+        }.bind(this));
+        document.on('uploader:fileError', function(event) {
+            var memo = event.memo;
+            if(this._checkCurrentContainer(memo.containerId)) {
+                this.handleButtonsSwap();
+            }
+        }.bind(this));
+        document.on('upload:simulateDelete', this.handleFileRemoveAll.bind(this));
+        document.on('uploader:simulateNewUpload', this.handleFileNew.bind(this));
+        this.file = this.getElement('save').value.evalJSON();
+        this.listTemplate = new Template(this.fileListTemplate, this.templatePattern);
+        this.updateFiles();
+        this.uploader.onFileRemoveAll = this.handleFileRemoveAll.bind(this);
+        this.uploader.onFileSelect = this.handleFileSelect.bind(this);
+    },
+
+    _checkCurrentContainer: function (child) {
+        return $(this.containerId).down('#' + child);
+    },
+
+    handleFileRemoveAll: function(e) {
+        if(e.memo && this._checkCurrentContainer(e.memo.containerId)) {
+            $(this.containerId+'-new').hide();
+            $(this.containerId+'-old').show();
+            this.handleButtonsSwap();
+        }
+    },
+    handleFileNew: function (e) {
+        if(e.memo && this._checkCurrentContainer(e.memo.containerId)) {
+            $(this.containerId + '-new').show();
+            $(this.containerId + '-old').hide();
+            this.handleButtonsSwap();
+        }
+    },
+    handleButtonsSwap: function () {
+        $$(['#' + this.containerId+'-browse', '#'+this.containerId+'-delete']).invoke('toggle');
+    },
+    handleFileSelect: function() {
+        $(this.containerId+'_type').checked = true;
+    },
+    getElement: function (name) {
+        return $(this.containerId + '_' + name);
+    },
+    handleUploadComplete: function (files) {
+        files.each(function(item) {
+            if (!item.response.isJSON()) {
+                try {
+                    console.log(item.response);
+                } catch (e2) {
+                    alert(item.response);
+                }
+                return;
+            }
+            var response = item.response.evalJSON();
+            if (response.error) {
+                return;
+            }
+            var newFile = {};
+            newFile.file = response.file;
+            newFile.name = response.name;
+            newFile.size = response.size;
+            newFile.status = 'new';
+            this.file[0] = newFile;
+        }.bind(this));
+        this.updateFiles();
+    },
+    updateFiles: function() {
+        this.getElement('save').value = this.file.toJSON
+            ? this.file.toJSON()
+            : Object.toJSON(this.file);
+        this.file.each(function(row){
+            row.size = this.uploader.formatSize(row.size);
+            $(this.containerId + '-old').innerHTML = this.listTemplate.evaluate(row);
+            $(this.containerId + '-new').hide();
+            $(this.containerId + '-old').show();
+        }.bind(this));
+    }
+};
+
+var optionDefaultInputType = 'radio';
+
+// IE removes quotes from element.innerHTML whenever it thinks they're not needed, which breaks html.
+var templateText =
+        '<tr class="option-row">'+
+<?php foreach ($this->getParentBlock()->getStores() as $_store): ?>
+            '<td><input name="option[value][{{id}}][<?php echo $_store->getId() ?>]" value="{{store<?php echo $_store->getId() ?>}}" class="input-text<?php if($_store->getId()==0): ?> required-option<?php endif; ?>" type="text" <?php if ($this->getParentBlock()->getReadOnly()):?> disabled="disabled"<?php endif;?>/><\/td>'+
+<?php endforeach; ?>
+			'<td>'+
+            '<div class="row a-right">'+
+                '<input type="hidden" id="option_image_{{id}}_save" name="option[image][{{id}}]" value="" />'+
+                '<div id="option_image_{{id}}" class="uploader a-left">'+
+                    '<div id="option_image_{{id}}-old" class="file-row-info"></div>'+
+                    '<div id="option_image_{{id}}-new" class="file-row-info"></div>'+
+                '</div>'+
+                '<button  id="option_image_{{id}}-delete" title="" type="button" class="scalable delete" onclick="" style="display:none; width:31px;"><span><span><span></span></span></span></button>'+
+                '<div id="option_image_{{id}}-browse">' +
+                    '<button id="option_image_{{id}}-browse_button" title="Browse" type="button" class="scalable " onclick="" style=""><span><span><span>Browse</span></span></span></button>'+
+                '</div>'+
+                '<button id="option_image_{{id}}-upload" title="Upload" type="button" class="scalable " onclick="" style=""><span><span><span>Upload</span></span></span></button>'+
+            '</div>'+
+            '<\/td>'+
+            '<td><input class="input-text" type="checkbox" name="option[remove_image][{{id}}]]" value="1" /><\/td>'+
+            '<td><input class="input-text" type="text" name="option[order][{{id}}]" value="{{sort_order}}" <?php if ($this->getParentBlock()->getReadOnly()):?> disabled="disabled"<?php endif;?>/><\/td>'+
+            '<td class="a-center"><input class="input-radio" type="{{intype}}" name="default[]" value="{{id}}" {{checked}} <?php if ($this->getParentBlock()->getReadOnly()):?> disabled="disabled"<?php endif;?>/><\/td>'+
+            '<td class="a-left">'+
+                '<input type="hidden" class="delete-flag" name="option[delete][{{id}}]" value="" />'+
+                <?php if (!$this->getParentBlock()->getReadOnly()):?>
+                    '<?php echo $this->getParentBlock()->getDeleteButtonHtml() ?>'+
+                <?php endif;?>
+            '<\/td>'+
+        '<\/tr>';
+
+var attributeOption = {
+    table : $('attribute-options-table'),
+    templateSyntax : /(^|.|\r|\n)({{(\w+)}})/,
+    templateText : templateText,
+    fileListTemplate:fileListTemplate,
+    listTemplate : null,
+    itemCount : 0,
+    totalItems : 0,
+    itemsUsed:[],
+    add : function(data) {
+
+        var options_array = this.itemsUsed.indexOf(data.id);
+        if ( options_array == '-1' )
+        {
+            this.template = new Template(this.templateText, this.templateSyntax);
+            this.listTemplate = new Template(this.fileListTemplate, this.templateSyntax);
+            if(!data.id){
+                data = {};
+                data.id  = 'option_'+this.itemCount;
+            }
+            if (!data.intype)
+                data.intype = optionDefaultInputType;
+
+            Element.insert(this.table, {after: this.template.evaluate(data)});
+            this.bindRemoveButtons();
+            var itemCount = this.itemCount;
+
+            if (!data.image_info) {
+                data.image_info = [];
+            }else{
+                $('option_image_' + data.id + '-old').innerHTML = this.listTemplate.evaluate(data.image_info[0]);
+            }
+            $('option_image_' + data.id + '-new').hide();
+            $('option_image_' + data.id + '-old').show();
+
+            var UploaderConfigOptionImage = '<?php echo $json_config ?>'.replace(
+            new RegExp('<?php echo $this->getParentBlock()->getHtmlId(); ?>', 'g'),
+            'option_image_'+data.id);
+
+            new Downloadable.FileUploader(
+                'option_image',
+                'option_image_'+itemCount,
+                $('option_image_'+data.id).up('td'),
+                'option[image]['+data.id+']',
+                data.image_info,
+                'option_image_'+data.id,
+                UploaderConfigOptionImage
+            );
+
+            this.itemCount++;
+            this.totalItems++;
+            this.updateItemsCountField();
+
+            this.itemsUsed.push(data.id);
+        }
+    },
+    remove : function(event){
+        var element = $(Event.findElement(event, 'tr')); // !!! Button already
+                                                               // have table parent in safari
+        // Safari workaround
+        element.ancestors().each(function(parentItem){
+           if (parentItem.hasClassName('option-row')) {
+               element = parentItem;
+               throw $break;
+           } else if (parentItem.hasClassName('box')) {
+               throw $break;
+           }
+        });
+
+        if(element){
+            var elementFlags = element.getElementsByClassName('delete-flag');
+            if(elementFlags[0]){
+                elementFlags[0].value=1;
+            }
+
+            element.addClassName('no-display');
+            element.addClassName('template');
+            element.hide();
+            this.totalItems--;
+            this.updateItemsCountField();
+        }
+    },
+    updateItemsCountField: function() {
+        if (this.totalItems > 0) {
+            $('option-count-check').value = '1';
+        } else {
+            $('option-count-check').value = '';
+        }
+    },
+    bindRemoveButtons : function(){
+        var buttons = $$('.delete-option');
+        for(var i=0;i<buttons.length;i++){
+            if(!$(buttons[i]).binded){
+                $(buttons[i]).binded = true;
+                Event.observe(buttons[i], 'click', this.remove.bind(this));
+            }
+        }
+    }
+
+};
+
+//]]>
+</script>
