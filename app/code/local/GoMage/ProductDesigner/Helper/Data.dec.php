@@ -4,11 +4,11 @@
  * GoMage Product Designer Extension
  *
  * @category     Extension
- * @copyright    Copyright (c) 2013-2015 GoMage (http://www.gomage.com)
+ * @copyright    Copyright (c) 2013-2016 GoMage (https://www.gomage.com)
  * @author       GoMage
- * @license      http://www.gomage.com/license-agreement/  Single domain license
- * @terms of use http://www.gomage.com/terms-of-use/
- * @version      Release: 2.3.0
+ * @license      https://www.gomage.com/license-agreement/  Single domain license
+ * @terms of use https://www.gomage.com/terms-of-use/
+ * @version      Release: 2.4.0
  * @since        Available since Release 1.0.0
  */
 class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
@@ -51,6 +51,12 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
     {
         $modules = (array)Mage::getConfig()->getNode('modules')->children();
         return isset($modules['Enterprise_TargetRule']);
+    }
+
+    public function isModuleExists($moduleName)
+    {
+        $modules = (array)Mage::getConfig()->getNode('modules')->children();
+        return isset($modules[$moduleName]);
     }
 
     public function getIsAnymoreVersion($major, $minor, $revision = 0)
@@ -575,7 +581,7 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, sprintf('https://www.gomage.com/index.php/gomage_downloadable/key/check'));
         curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, 'key=' . urlencode($k) . '&sku=product-designer&domains=' . urlencode(implode(',', $this->getAllStoreDomains())) . '&ver=' . urlencode('2.2'));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, 'key=' . urlencode($k) . '&sku=product-designer&domains=' . urlencode(implode(',', $this->getAllStoreDomains())) . '&ver=' . urlencode('2.4.0'));
         curl_setopt($ch, CURLOPT_TIMEOUT, 30);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
@@ -693,7 +699,7 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, sprintf('https://www.gomage.com/index.php/gomage_notification/index/data'));
             curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, 'sku=product-designer&timestamp=' . $timestamp . '&ver=' . urlencode('2.3'));
+            curl_setopt($ch, CURLOPT_POSTFIELDS, 'sku=product-designer&timestamp=' . $timestamp . '&ver=' . urlencode('2.4.0'));
             curl_setopt($ch, CURLOPT_TIMEOUT, 30);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
