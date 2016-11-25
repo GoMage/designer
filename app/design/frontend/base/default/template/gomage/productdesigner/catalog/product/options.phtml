@@ -14,10 +14,11 @@
 
 <?php $_helper = $this->helper('catalog/output'); ?>
 <?php $_product = $this->getProduct(); ?>
+<?php if ($_product->getOptions()): ?>
 <script type="text/javascript">
     var optionsPrice = new Product.OptionsPrice(<?php echo $this->getJsonConfig() ?>);
 </script>
-
+<?php endif; ?>
 <form action="<?php echo $this->getSubmitUrl($_product) ?>" method="post"
       id="product_addtocart_form"<?php if ($_product->getOptions()): ?> enctype="multipart/form-data"<?php endif; ?>>
     <?php echo $this->getBlockHtml('formkey') ?>
