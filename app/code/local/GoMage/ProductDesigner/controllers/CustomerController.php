@@ -243,6 +243,7 @@ class GoMage_ProductDesigner_CustomerController extends Mage_Customer_AccountCon
         $errors = array();
         $customer->setPassword($this->getRequest()->getPost('password'));
         $customer->setConfirmation($this->getRequest()->getPost('confirmation'));
+        $customer->setPasswordConfirmation($this->getRequest()->getPost('confirmation'));
         $customerErrors = $customer->validate();
         if (is_array($customerErrors)) {
             $errors = array_merge($customerErrors, $errors);
