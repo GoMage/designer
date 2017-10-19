@@ -251,7 +251,7 @@
             <text>
                 <enabled>1</enabled>
                 <effects>1</effects>
-                <font>Arial</font>
+                <font>Liberation Mono</font>
                 <size>14</size>
             </text>
             <upload_image>

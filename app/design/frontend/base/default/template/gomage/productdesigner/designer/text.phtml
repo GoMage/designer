@@ -24,6 +24,22 @@ $sizes = $this->getFontSizes();
         src: url("<?php echo $this->getFontUrl($font->getFont());?>");
     }
 <?php endforeach;?>
+@font-face {
+    font-family: "Liberation Mono";
+    src: url("<?php echo $this->getFontUrl('LiberationMono-Regular.ttf');?>");
+}
+@font-face {
+    font-family: "Liberation Sans";
+    src: url("<?php echo $this->getFontUrl('LiberationSans-Regular.ttf');?>");
+}
+@font-face {
+    font-family: "Liberation Sans Narrow";
+    src: url("<?php echo $this->getFontUrl('LiberationSansNarrow-Regular.ttf');?>");
+}
+@font-face {
+    font-family: "Liberation Serif";
+    src: url("<?php echo $this->getFontUrl('LiberationSerif-Regular.ttf');?>");
+}
 </style>
 <div>
     <div class="pd-element-wrapper">

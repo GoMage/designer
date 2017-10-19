@@ -123,7 +123,7 @@ class GoMage_ProductDesigner_Block_Designer_Text extends Mage_Core_Block_Templat
     public function getImplodedFontsString()
     {
         $fonts      = $this->getFonts();
-        $fontsArray = array();
+        $fontsArray = Mage::getModel('gomage_designer/config_source_font')->toOptionHash();
         foreach ($fonts as $font) {
             $fontsArray[] = $this->getFontName($font);
         }

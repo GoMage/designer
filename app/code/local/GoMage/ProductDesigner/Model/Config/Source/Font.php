@@ -15,11 +15,21 @@ class GoMage_ProductDesigner_Model_Config_Source_Font
 {
     public function toOptionArray()
     {
-      return array(
-        array('value' => 'Arial', 'label' => 'Arial'),
-        array('value' => 'Comic Sans MS', 'label' => 'Comic Sans'),
-        array('value' => 'Impact', 'label' => 'Impact'),
-        array('value' => 'Times New Roman', 'label' => 'Times New Roman'),
-      );
+        return array(
+            array('value' => 'Liberation Mono', 'label' => 'Liberation Mono'),
+            array('value' => 'Liberation Sans', 'label' => 'Liberation Sans'),
+            array('value' => 'Liberation Sans Narrow', 'label' => 'Liberation Sans Narrow'),
+            array('value' => 'Liberation Serif', 'label' => 'Liberation Serif'),
+        );
+    }
+
+    public function toOptionHash()
+    {
+        return array(
+            'Liberation Mono'        => 'Liberation Mono',
+            'Liberation Sans'        => 'Liberation Sans',
+            'Liberation Sans Narrow' => 'Liberation Sans Narrow',
+            'Liberation Serif'       => 'Liberation Serif',
+        );
     }
 }

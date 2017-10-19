@@ -1866,13 +1866,13 @@ GoMage.TextEditor.prototype = {
             }
 
             if (this.selected_colors.textShadow ||
-                this.shadowOffsetX.value ||
-                this.shadowOffsetY.value ||
-                this.shadowBlur.value) {
+                parseInt(this.shadowOffsetX.value) ||
+                parseInt(this.shadowOffsetY.value) ||
+                parseInt(this.shadowBlur.value)) {
                 var shadow = new fabric.Shadow();
-                shadow.offsetX = this.shadowOffsetX.value;
-                shadow.offsetY = this.shadowOffsetY.value;
-                shadow.blur = this.shadowBlur.value;
+                shadow.offsetX = parseInt(this.shadowOffsetX.value);
+                shadow.offsetY = parseInt(this.shadowOffsetY.value);
+                shadow.blur = parseInt(this.shadowBlur.value);
                 shadow.color = this.selected_colors.textShadow;
                 textObject.setShadow(shadow);
             }
