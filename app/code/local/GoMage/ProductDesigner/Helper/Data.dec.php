@@ -4,11 +4,11 @@
  * GoMage Product Designer Extension
  *
  * @category     Extension
- * @copyright    Copyright (c) 2013-2016 GoMage (https://www.gomage.com)
+ * @copyright    Copyright (c) 2013-2017 GoMage (https://www.gomage.com)
  * @author       GoMage
  * @license      https://www.gomage.com/license-agreement/  Single domain license
  * @terms of use https://www.gomage.com/terms-of-use/
- * @version      Release: 2.4.0
+ * @version      Release: 2.5.0
  * @since        Available since Release 1.0.0
  */
 class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
@@ -705,7 +705,7 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, sprintf('https://www.gomage.com/index.php/gomage_notification/index/data'));
             curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, 'sku=product-designer&timestamp=' . $timestamp . '&ver=' . urlencode('2.4.0'));
+            curl_setopt($ch, CURLOPT_POSTFIELDS, 'sku=product-designer&timestamp=' . $timestamp . '&ver=' . urlencode('2.5.0'));
             curl_setopt($ch, CURLOPT_TIMEOUT, 30);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
