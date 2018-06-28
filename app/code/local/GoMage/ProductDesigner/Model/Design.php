@@ -56,8 +56,18 @@ class GoMage_ProductDesigner_Model_Design extends Mage_Core_Model_Abstract
         if (!$images || empty($images)) {
             return $this;
         }
-        $images     = Mage::helper('core')->jsonDecode($images);
-        $prices     = Mage::helper('core')->jsonDecode($prices);
+        if ($images) {
+            $images = Mage::helper('core')->jsonDecode($images);
+        } else {
+            $images = array();
+        }
+
+        if ($prices) {
+            $prices = Mage::helper('core')->jsonDecode($images);
+        } else {
+            $prices = array();
+        }
+
         $customerId = (int)Mage::getSingleton('customer/session')->getCustomerId();
 
         $this->setData(array(

@@ -124,9 +124,11 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
             $settings = array();
             $images   = $product->getMediaGalleryImages();
             foreach ($images as $image) {
-                $designArea = Mage::helper('core')->jsonDecode($image['design_area']);
+                if ($image['design_area']) {
+                    $designArea = Mage::helper('core')->jsonDecode($image['design_area']);
+                }
                 $imageId    = $image['value_id'];
-                if ($designArea && !empty($designArea)) {
+                if (isset($designArea) && $designArea && !empty($designArea)) {
                     $imageUrl   = $this->getDesignImageUrl($product, $image);
                     $dimensions = $this->getImageDimensions($imageUrl);
 
@@ -154,14 +156,17 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function jsonDecode($string)
     {
-        $settings = Mage::helper('core')->jsonDecode($string);
-        $result   = array();
-        foreach ($settings as $i => $v) {
-            $result[$i] = (array)$v;
-            if (!isset($result[$i]['s'])) {
-                $result[$i]['s'] = 1;
+        $result = array();
+        if ($string) {
+            $settings = Mage::helper('core')->jsonDecode($string);
+            foreach ($settings as $i => $v) {
+                $result[$i] = (array)$v;
+                if (!isset($result[$i]['s'])) {
+                    $result[$i]['s'] = 1;
+                }
             }
         }
+
         return $result;
     }
 
@@ -281,8 +286,10 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
             $defaultColor       = null;
             foreach ($images as $image) {
                 $id       = $image['value_id'];
-                $settings = Mage::helper('core')->jsonDecode($image['design_area']);
-                if (!$settings || empty($settings)) {
+                if ($image['design_area']) {
+                    $settings = Mage::helper('core')->jsonDecode($image['design_area']);
+                }
+                if (!isset($settings) || !$settings || empty($settings)) {
                     continue;
                 }
                 $imageUrl           = $this->getDesignImageUrl($product, $image);

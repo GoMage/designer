@@ -56,7 +56,9 @@ class GoMage_ProductDesigner_Block_Adminhtml_Catalog_Product_Helper_Form_Gallery
         $settings = array();
         if ($product && $product->getId()){
             foreach ($product->getMediaGallery('images') as $image) {
-                $settings[$image['value_id']] = Mage::helper('core')->jsonDecode($image['design_area']);
+                if ($image['design_area']) {
+                    $settings[$image['value_id']] = Mage::helper('core')->jsonDecode($image['design_area']);
+                }
             }
 
             return Mage::helper('core')->jsonEncode($settings);
