@@ -63,7 +63,7 @@ class GoMage_ProductDesigner_Model_Design extends Mage_Core_Model_Abstract
         }
 
         if ($prices) {
-            $prices = Mage::helper('core')->jsonDecode($images);
+            $prices = Mage::helper('core')->jsonDecode($prices);
         } else {
             $prices = array();
         }
