@@ -307,7 +307,7 @@ GoMage.ProductDesigner.prototype = {
 
             this.container.appendChild(designArea);
             this.designArea = designArea;
-            this.canvas = new fabric.Canvas(canvas);
+            this.canvas = new fabric.Canvas(canvas, {stateful: true});
             this.canvas.selection = false;
             this.containerCanvases[prod.id] = this.canvas;
             this._observeCanvasObjects();
@@ -743,7 +743,7 @@ GoMage.ProductDesigner.prototype = {
         }
         // Canvas events
         this.canvas.observe('object:modified', function (e) {
-            var orig = e.target.originalState;
+            var orig = e.target._stateProperties;
             // CASE 1: object has been moved
 
             var cmds = [];
@@ -829,8 +829,8 @@ GoMage.ProductDesigner.prototype = {
         this.canvas.observe('after:render', function (e) {
             var n = 0;
             this.canvas.forEachObject(function (o) {
-                var w = Math.round(o.getWidth() / 2);
-                var h = Math.round(o.getHeight() / 2);
+                var w = Math.round(o.width / 2);
+                var h = Math.round(o.height / 2);
                 var l = o.left;
                 var t = o.top;
                 var f = false;
@@ -1063,7 +1063,7 @@ GoMage.ProductDesigner.prototype = {
         canvas.setAttribute('width', parseInt(this.config.imageMinSize.width));
         canvas.setAttribute('height', parseInt(this.config.imageMinSize.height));
         $('product-zoom-container').appendChild(canvas);
-        var zoomCanvas = new fabric.Canvas(canvas);
+        var zoomCanvas = new fabric.Canvas(canvas, {stateful: true});
 
         zoomCanvas.selection = false;
         fabric.Image.fromURL(imgUrl, function (obj) {
