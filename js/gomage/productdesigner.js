@@ -829,10 +829,10 @@ GoMage.ProductDesigner.prototype = {
         this.canvas.observe('after:render', function (e) {
             var n = 0;
             this.canvas.forEachObject(function (o) {
-                var l = o.left;
-                var t = o.top;
                 var w = Math.round(o.getWidth() / 2);
                 var h = Math.round(o.getHeight() / 2);
+                var l = o.left;
+                var t = o.top;
                 var f = false;
                 if (l < w) f = true;
                 if (t < h) f = true;
