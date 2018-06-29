@@ -1852,8 +1852,10 @@ GoMage.TextEditor.prototype = {
                 textDecoration: (this.addTextBtnUnderline.hasClassName('active') ? 'underline' : '') + (this.addTextBtnStrokeThrough.hasClassName('active') ? ' line-through' : '')
             };
 
-            if (this.selected_colors.strokeStyle ||
-                (this.outlineStrokeWidthRange.value != this.defaultFieldsValues.strokeWidth)) {
+            if (this.outlineStrokeWidthRange &&
+                (this.selected_colors.strokeStyle ||
+                    (this.outlineStrokeWidthRange.value != this.defaultFieldsValues.strokeWidth))
+            ) {
                 textObjectData.stroke = this.selected_colors.strokeStyle;
                 textObjectData.strokeWidth = parseFloat(this.outlineStrokeWidthRange.value);
             }
@@ -1864,6 +1866,10 @@ GoMage.TextEditor.prototype = {
             if (color) {
                 textObject.setColor(color);
             }
+
+            this.shadowOffsetX = this.shadowOffsetX === null ? 0 : this.shadowOffsetX;
+            this.shadowOffsetY = this.shadowOffsetY === null ? 0 : this.shadowOffsetY;
+            this.shadowBlur = this.shadowBlur === null ? 0 : this.shadowBlur;
 
             if (this.selected_colors.textShadow ||
                 parseInt(this.shadowOffsetX.value) ||
