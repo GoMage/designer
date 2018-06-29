@@ -372,8 +372,8 @@ select.pd-select{
     }
   .tab-help-content{
     position: absolute;
-    left: 100%;
-    top: 0;
+    left: 70%;
+    top: 6%;
     margin: 0;
     border: 1px solid #ced1d9;
     background: #fff;
