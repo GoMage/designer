@@ -25,9 +25,17 @@ class GoMage_ProductDesigner_Helper_Image_Design extends GoMage_ProductDesigner_
         $this->_height   = null;
         $this->_filename = $filename;
         $this->_baseDir  = Mage::getSingleton('gomage_designer/design_config')->getBaseMediaPath();
-        $imageExtension  = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+
+        return $this;
+    }
+
+    public function initView($filename)
+    {
+        $this->init($filename);
+
+        $imageExtension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
         if ($imageExtension == 'pdf') {
-            $filename = str_replace('.pdf', '.jpg', $filename);
+            $filename = str_replace('.pdf', '.png', $filename);
             if (file_exists($this->_baseDir . $filename)) {
                 $this->_filename = $filename;
             }
@@ -71,6 +79,16 @@ class GoMage_ProductDesigner_Helper_Image_Design extends GoMage_ProductDesigner_
      */
     public function rename($filename)
     {
+        $imageExtension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+        if ($imageExtension == 'pdf') {
+            $orig_jpeg_input = str_replace('.pdf', '.png', $this->_getOriginalFilePath());
+            $orig_jpeg_output = str_replace('.pdf', '.png', $this->_baseDir . DS . $filename);
+            if (file_exists($orig_jpeg_input)) {
+                rename($orig_jpeg_input, $orig_jpeg_output);
+            }
+
+        }
+
         rename($this->_getOriginalFilePath(), $this->_baseDir . DS . $filename);
         $this->init($filename);
         return $this;

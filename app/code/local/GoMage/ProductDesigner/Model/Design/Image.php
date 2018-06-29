@@ -50,10 +50,10 @@ class GoMage_ProductDesigner_Model_Design_Image extends Mage_Core_Model_Abstract
                 $canvas->writeImage($canvas_file);
                 $canvas->mergeImageLayers(Imagick::LAYERMETHOD_FLATTEN);
                 if ($this->_getImageExtensionForSave() == 'pdf') {
-                    $canvas->setImageFormat('jpg');
-                    $canvas->writeImage(str_replace('.pdf', '.jpg', $canvas_file));
-                    $layer->setImageFormat('jpg');
-                    $layer->writeImage(str_replace('.pdf', '.jpg', $layer_file));
+                    $canvas->setImageFormat('png');
+                    $canvas->writeImage(str_replace('.pdf', '.png', $canvas_file));
+                    $layer->setImageFormat('png');
+                    $layer->writeImage(str_replace('.pdf', '.png', $layer_file));
                 }
                 $layer->destroy();
                 $canvas->destroy();

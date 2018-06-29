@@ -63,7 +63,7 @@ class GoMage_ProductDesigner_Model_Catalog_Product extends Mage_Catalog_Model_Pr
                     $mediaConfig    = $this->getDesignMediaConfig();
                     $imageExtension = strtolower(pathinfo($designImage['image'], PATHINFO_EXTENSION));
                     if ($imageExtension == 'pdf') {
-                        $designImage['image'] = str_replace('.pdf', '.jpg', $designImage['image']);
+                        $designImage['image'] = str_replace('.pdf', '.png', $designImage['image']);
                     }
                     $image['original_file'] = $image['file'];
                     $image['file']          = $designImage['image'];
