@@ -35,6 +35,7 @@ class GoMage_ProductDesigner_Model_Design_Image extends Mage_Core_Model_Abstract
      */
     public function saveImage($image, $imageId, $product, $designId)
     {
+        $image = $this->prepareImage($image);
         $helper        = Mage::helper('gomage_designer');
         $imageSettings = $helper->getImageSettings($product, $imageId);
         if ($imageSettings) {
@@ -209,6 +210,15 @@ class GoMage_ProductDesigner_Model_Design_Image extends Mage_Core_Model_Abstract
         $this->setLayer($filename);
 
         return $this;
+    }
+
+    private function prepareImage($image)
+    {
+        return str_replace('stroke-dasharray: ;', '', $image);
+//        $pos = strpos($image, ': ;');
+//        if ($pos !== false) {
+//
+//        }
     }
 
 }

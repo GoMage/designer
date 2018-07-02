@@ -371,6 +371,15 @@ Validation.add('validate-one-design-area-required','<?php echo $this->__("Please
 });
 
 Validation.add('validate-color-select','<?php echo $this->__("Please select color option") ?>', function (v,elm) {
+    var choseDesignArea = elm.up(1).down('.validate-one-design-area-required');
+    if (choseDesignArea) {
+        if (!choseDesignArea.checked) {
+            return true;
+        }
+    } else {
+        return true;
+    }
+
     if (!$('enable_product_designer') || parseInt($('enable_product_designer').value) === 0) {
         return true;
     }
