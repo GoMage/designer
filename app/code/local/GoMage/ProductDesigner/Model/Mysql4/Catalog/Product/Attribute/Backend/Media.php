@@ -25,11 +25,28 @@ class GoMage_ProductDesigner_Model_Mysql4_Catalog_Product_Attribute_Backend_Medi
     {
         $adapter = $this->_getReadAdapter();
 
+        $eventObjectWrapper = new Varien_Object(
+            array(
+                'product' => $product,
+                'backend_attribute' => $object
+            )
+        );
+        Mage::dispatchEvent(
+            $this->_eventPrefix . '_load_gallery_before',
+            array('event_object_wrapper' => $eventObjectWrapper)
+        );
+
+        if ($eventObjectWrapper->hasProductIdsOverride()) {
+            $productIds = $eventObjectWrapper->getProductIdsOverride();
+        } else {
+            $productIds = array($product->getId());
+        }
+
         // Select gallery images for product
         $select = $adapter->select()
             ->from(
                 array('main'=>$this->getMainTable()),
-                array('value_id', 'value AS file')
+                array('value_id', 'value AS file', 'product_id' => 'entity_id')
             )
             ->joinLeft(
                 array('value' => $this->getTable(self::GALLERY_VALUE_TABLE)),
@@ -48,7 +65,7 @@ class GoMage_ProductDesigner_Model_Mysql4_Catalog_Product_Attribute_Backend_Medi
                 )
             )
             ->where('main.attribute_id = ?', $object->getAttribute()->getId())
-            ->where('main.entity_id = ?', $product->getId())
+            ->where('main.entity_id IN (?)', $productIds)
             ->order('IF(value.position IS NULL, default_value.position, value.position) ASC');
 
         $result = $adapter->fetchAll($select);
