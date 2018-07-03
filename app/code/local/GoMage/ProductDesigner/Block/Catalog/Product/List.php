@@ -11,11 +11,11 @@
  * @version      Release: 2.5.0
  * @since        Available since Release 1.0.0
  */
-class GoMage_ProductDesigner_Block_Catalog_Product_List extends Mage_Catalog_Block_Product_List
+class GoMage_ProductDesigner_Block_Catalog_Product_List extends Mage_Core_Block_Template
 {
     public function getProductButtons()
     {
-        $products           = $this->getLoadedProductCollection();
+        $products = Mage::app()->getLayout()->getBlock('product_list')->getLoadedProductCollection();
         $_disabledAddToCart = Mage::getStoreConfig('gomage_designer/general/add_to_cart_button');
         $buttons            = array();
 
