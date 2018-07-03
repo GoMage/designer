@@ -82,8 +82,7 @@ $productImageMinSize = $this->getProductOriginalImageMinSizes();
 <div id="product-designer" class="product-designer">
     <div id="designer-load-info" style="display: none;"><?php echo $this->__('Loading, please wait') ?></div>
     <div class="product-designer-header">
-        <?php if ($navigationEnabled): ?>
-            <div class="pd_nav_container">
+            <div class="pd_nav_container" <?php if (!$navigationEnabled): ?> style="display:none" <?php endif;?>>
                 <button class="pd-btn pd-btn-blue" id="pd_choose_product"><span><span><?php echo $this->__('Choose Product') ?></span></span></button>
                 <div class="pd-tab-content" id="pd_choose_product-content">
                     <h4 class="pd-header"><?php echo $this->__('Choose Product'); ?></h4>
@@ -98,7 +97,6 @@ $productImageMinSize = $this->getProductOriginalImageMinSizes();
                     </div>
                 </div>
             </div>
-        <?php endif;?>
         <div class="pd-current-product">
             <strong><?php echo $this->__('Current Product') ?>:</strong>
             <span id="pd_current_product_name" class="current-product-name"><?php echo $this->__('Not selected'); ?></span>
