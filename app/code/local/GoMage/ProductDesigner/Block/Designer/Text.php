@@ -27,22 +27,6 @@ class GoMage_ProductDesigner_Block_Designer_Text extends Mage_Core_Block_Templat
     }
 
     /**
-     * Return font name
-     *
-     * @param string $font Font
-     * @return string
-     */
-    public function getFontName($font)
-    {
-        if ($font->getLabel()) {
-            return $font->getLabel();
-        }
-        $fontName = $font->getFont();
-        $fontName = substr(strrchr($fontName, '/'), 1);
-        return pathinfo($fontName, PATHINFO_FILENAME);
-    }
-
-    /**
      * Return font url
      *
      * @param string $font Font
@@ -56,14 +40,13 @@ class GoMage_ProductDesigner_Block_Designer_Text extends Mage_Core_Block_Templat
     /**
      * Return Fonts collection
      *
-     * @return GoMage_ProductDesigner_Model_Mysql4_Font_Collection
+     * @return array
      */
     public function getFonts()
     {
         if (is_null($this->_fonts)) {
-            $fonts = Mage::getResourceModel('gomage_designer/font_collection');
-            $fonts->addFieldToFilter('disabled', '0')
-                ->setOrder('position', 'ASC');
+            $fonts = Mage::getStoreConfig('gomage_designer/text/fonts_imagick');
+            $fonts = explode(',', $fonts);
             $this->_fonts = $fonts;
         }
         return $this->_fonts;
@@ -122,13 +105,9 @@ class GoMage_ProductDesigner_Block_Designer_Text extends Mage_Core_Block_Templat
 
     public function getImplodedFontsString()
     {
-        $fonts      = $this->getFonts();
-        $fontsArray = Mage::getModel('gomage_designer/config_source_font')->toOptionHash();
-        foreach ($fonts as $font) {
-            $fontsArray[] = $this->getFontName($font);
-        }
+        $fonts = $this->getFonts();
 
-        return implode(',', $fontsArray);
+        return implode(',', $fonts);
     }
 
     public function effectsEnabled()

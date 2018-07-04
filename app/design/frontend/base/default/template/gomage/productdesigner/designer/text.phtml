@@ -20,8 +20,7 @@ $sizes = $this->getFontSizes();
 <style type="text/css">
 <?php foreach($fonts as $font):?>
     @font-face {
-        font-family: <?php echo $this->getFontName($font);?>;
-        src: url("<?php echo $this->getFontUrl($font->getFont());?>");
+        font-family: <?php echo $font;?>;
     }
 <?php endforeach;?>
 @font-face {
@@ -52,7 +51,7 @@ $sizes = $this->getFontSizes();
             <option value="<?php echo $font['value']; ?>" <?php echo $this->getDefaultFontFamily() == $font['value'] ? 'selected="selected"' : ''?>><?php echo $font['label']; ?></option>
         <?php endforeach;?>
         <?php foreach($fonts as $font): ?>
-            <option value="<?php echo $this->getFontName($font); ?>"><?php echo $this->getFontName($font); ?></option>
+            <option value="<?php echo $font; ?>"><?php echo $font; ?></option>
         <?php endforeach; ?>
         </select>
       </div>

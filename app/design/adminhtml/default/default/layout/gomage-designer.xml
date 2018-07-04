@@ -53,17 +53,6 @@
         </reference>
     </adminhtml_cliparts_edit>
 
-    <adminhtml_fonts_edit>
-        <update handle="editor" />
-        <reference name="content">
-            <block name="cliparts_edit"  type="gomage_designer/adminhtml_fonts_edit" template="gomage/productdesigner/fonts/edit.phtml">
-                <block name="form" type="gomage_designer/adminhtml_fonts_edit_form" template="gomage/productdesigner/fonts/edit/form.phtml">
-                    <block name="gallery" type="gomage_designer/adminhtml_fonts_edit_gallery" />
-                </block>
-            </block>
-        </reference>
-    </adminhtml_fonts_edit>
-
     <adminhtml_sales_order_view>
         <reference name="order_items">
             <action method="addColumnRender"><column>name</column><block>gomage_designer/adminhtml_sales_items_column_name</block><template>gomage/productdesigner/sales/items/column/name.phtml</template><type>simple</type></action>

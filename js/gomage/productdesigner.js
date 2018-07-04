@@ -831,8 +831,8 @@ GoMage.ProductDesigner.prototype = {
             this.canvas.forEachObject(function (o) {
                 var w = Math.round(o.width / 2);
                 var h = Math.round(o.height / 2);
-                var l = o.left;
-                var t = o.top;
+                var l = o.left;// + w;
+                var t = o.top;// + h;
                 var f = false;
                 if (l < w) f = true;
                 if (t < h) f = true;

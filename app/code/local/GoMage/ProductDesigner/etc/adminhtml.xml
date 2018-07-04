@@ -30,11 +30,6 @@
                             <action>adminhtml/cliparts</action>
                             <sort_order>1</sort_order>
                         </cliparts>
-                        <fonts module="gomage_designer">
-                            <title>Fonts</title>
-                            <action>adminhtml/fonts</action>
-                            <sort_order>2</sort_order>
-                        </fonts>
                     </children>
                 </gomage_designer>
             </children>
@@ -53,9 +48,6 @@
                                     <cliparts>
                                         <title>Cliparts</title>
                                     </cliparts>
-                                    <fonts>
-                                        <title>Fonts</title>
-                                    </fonts>
                                 </children>
                             </gomage_designer>
                         </children>
