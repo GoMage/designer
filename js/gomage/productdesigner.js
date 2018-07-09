@@ -151,10 +151,22 @@ GoMage.ProductDesigner.prototype = {
         for (var prop in images) {
             if (images.hasOwnProperty(prop)) {
                 var img = images[prop];
+                this.copyDesignWhenChangeColor(img);
                 this.addDesignArea(img);
                 this.currentSlide = img.id;
                 return;
             }
+        }
+    },
+
+    copyDesignWhenChangeColor: function (img) {
+        if (this.containerLayers[this.currentProd]
+            && this.containerCanvases[this.currentProd]) {
+            this.containerLayers[img.id] = this.containerLayers[this.currentProd];
+            this.containerLayers[img.id].setAttribute('id', 'designArea-' + img.id);
+            this.containerLayers[img.id].style.marginLeft = parseInt(img.l) + 'px';
+            this.containerLayers[img.id].style.marginTop = parseInt(img.t) + 'px';
+            this.containerCanvases[img.id] = this.containerCanvases[this.currentProd];
         }
     },
 
