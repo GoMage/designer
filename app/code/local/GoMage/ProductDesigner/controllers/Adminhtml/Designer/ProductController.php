@@ -116,6 +116,7 @@ class GoMage_ProductDesigner_Adminhtml_Designer_ProductController extends Mage_A
      */
     public function saveAction()
     {
+        $responseData = [];
         $product = $this->_initializeProduct();
 
         try {
@@ -127,10 +128,18 @@ class GoMage_ProductDesigner_Adminhtml_Designer_ProductController extends Mage_A
                 throw new Exception(Mage::helper('gomage_designer')->__('Image with id %d not found', $this->getRequest()->getParam('image_id')));
             }
             if ($mediaGalleryAttribute = $product->getMediaGalleryAttribute()) {
-                $mediaGalleryAttribute->updateImage($product, $image->getFile(), array('design_area' => $this->_prepareDesignAreaSettings()));
+                $file = $this->saveCanvasBackgroundImage($image['file']);
+                $responseData['canvas_background_file'] = $file;
+                $dataToUpdate = [
+                    'design_area' => $this->_prepareDesignAreaSettings(),
+                    'canvas_background_file' => $file,
+                ];
+                $mediaGalleryAttribute->updateImage($product, $image->getFile(), $dataToUpdate);
                 $product->save();
+
+
             }
-            Mage::helper('gomage_designer/ajax')->sendSuccess();
+            Mage::helper('gomage_designer/ajax')->sendSuccess($responseData);
         } catch (Exception $e) {
             Mage::logException($e);
             Mage::helper('gomage_designer/ajax')->sendError($e->getMessage());
@@ -144,15 +153,7 @@ class GoMage_ProductDesigner_Adminhtml_Designer_ProductController extends Mage_A
      */
     protected function _prepareDesignAreaSettings()
     {
-        $params   = $this->getRequest()->getParams();
-        $settings = array(
-            't'  => isset($params['t']) ? $params['t'] : null, // offset top
-            'l'  => isset($params['l']) ? $params['l'] : null, // offset left
-            'h'  => isset($params['h']) ? $params['h'] : null, // design area height
-            'w'  => isset($params['w']) ? $params['w'] : null, // design area width
-            's'  => isset($params['s']) ? $params['s'] : null, // side type [front, back, left, right]
-            'ip' => isset($params['ip']) ? $params['ip'] : null
-        );
+        $settings = $this->getSettings();
 
         return Mage::helper('core')->jsonEncode($settings);
     }
@@ -219,5 +220,69 @@ class GoMage_ProductDesigner_Adminhtml_Designer_ProductController extends Mage_A
         }
 
         $this->getResponse()->setBody(Mage::helper('core')->jsonEncode($result));
+    }
+
+    /**
+     * @return array
+     */
+    private function getSettings()
+    {
+        $params = $this->getRequest()->getParams();
+
+        return array(
+            't' => isset($params['t']) ? $params['t'] : null, // offset top
+            'l' => isset($params['l']) ? $params['l'] : null, // offset left
+            'h' => isset($params['h']) ? $params['h'] : null, // design area height
+            'w' => isset($params['w']) ? $params['w'] : null, // design area width
+            's' => isset($params['s']) ? $params['s'] : null, // side type [front, back, left, right]
+            'ip' => isset($params['ip']) ? $params['ip'] : null
+        );
+    }
+
+    /**
+     * @param string $imagePath
+     *
+     * @return string
+     */
+    private function saveCanvasBackgroundImage($imagePath)
+    {
+        $imageUrl = $this->getImageUrlByPath($imagePath);
+        $pathToSave = Mage::getSingleton('gomage_designer/CanvasBackgroundImage_gallery_config')->getBaseMediaPath();
+        if (!file_exists($pathToSave)) {
+            mkdir($pathToSave, 0777, true);
+        }
+
+        $imageExtension = 'png';
+        $fileName = Mage::helper('core')->getRandomString(16) . '.' . $imageExtension;
+
+        $settings = $this->getSettings();
+        $handle = fopen($imageUrl, 'rb');
+        $layer = new Imagick();
+        $layer->readImageFile($handle);
+
+        // calc the coefficient as original image can be higher than image from container popup.
+        $coefficient = $layer->getImageGeometry()['width'] / GoMage_ProductDesigner_Model_Design::DESIGN_SIZE_WIDTH;
+        $y = $settings['t'] * $coefficient;
+        $x = $settings['l'] * $coefficient;
+        $width = $settings['w'] * $coefficient;
+        $height = $settings['h'] * $coefficient;
+
+        $layer->cropImage($width, $height, $x, $y);
+        $layer->writeImage($pathToSave . DS . $fileName);
+
+        return $fileName;
+    }
+
+    /**
+     * @param string $imagePath
+     *
+     * @return string
+     */
+    private function getImageUrlByPath($imagePath)
+    {
+        $media = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA);
+        $imageUrl = $media . 'catalog' . DS . 'product' . DS . $imagePath;
+
+        return $imageUrl;
     }
 }

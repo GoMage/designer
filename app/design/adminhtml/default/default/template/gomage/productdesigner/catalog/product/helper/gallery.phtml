@@ -166,6 +166,14 @@ $colors = $this->getProductColors();
         this.container.setHasChanges();
     }
 
+    Product.Gallery.prototype.updateBackgroundCanvasFile = function(file, value) {
+        var index = this.getIndexByFile(file);
+        this.images[index].canvas_background_file = value;
+        this.getElement('save').value = Object.toJSON(this.images);
+        this.updateState(file);
+        this.container.setHasChanges();
+    }
+
     Product.Gallery.prototype.updateVisualisation = function(file) {
         var image = this.getImageByFile(file);
         this.getFileElement(file, 'cell-label input').value = image.label;

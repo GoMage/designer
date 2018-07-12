@@ -90,6 +90,7 @@ GoMage.ProductDesigner = function (config, continueUrl, loginUrl, registrationUr
     this.isCustomerLogin = this.config.isCustomerLoggedIn;
     this.currentColor = null;
     this.currentSlide = null;
+    this.currentBackImageExt = null;
     this.designChanged = {};
     this.designId = {};
 
@@ -300,6 +301,7 @@ GoMage.ProductDesigner.prototype = {
         this.container.style.height = parseInt(prod.d[1]) + 'px';
         this.container.style.width = parseInt(prod.d[0]) + 'px';
         this.container.style.background = 'url(' + prod.u + ') no-repeat center';
+        this.currentBackImageExt =  prod.u.substr(prod.u.lastIndexOf('.') + 1);
 
         if (typeof this.containerLayers[prod.id] === 'undefined') {
             var designArea = document.createElement('div');
@@ -320,6 +322,24 @@ GoMage.ProductDesigner.prototype = {
             this.container.appendChild(designArea);
             this.designArea = designArea;
             this.canvas = new fabric.Canvas(canvas, {stateful: true});
+            var imageUrl = prod.canvas_background_url;
+            var background;
+            self = this;
+            if (imageUrl) {
+                fabric.Image.fromURL(imageUrl, function (objects) {
+                    background = objects;
+                    background.set({
+                        width: self.canvas.getWidth(),
+                        height: self.canvas.getHeight(),
+                        left: 0,
+                        top: 0,
+                        selectable: false
+                    });
+                    self.canvas.add(background);
+                    self.canvas.renderAll();
+                });
+            }
+
             this.canvas.selection = false;
             this.containerCanvases[prod.id] = this.canvas;
             this._observeCanvasObjects();
@@ -555,6 +575,7 @@ GoMage.ProductDesigner.prototype = {
         for (var imageId in this.containerCanvases) {
             if (this.containerCanvases.hasOwnProperty(imageId) && colorImages.hasOwnProperty(imageId)) {
                 var canvas = this.containerCanvases[imageId];
+                canvas.getObjects()[0].remove();
                 if (canvas.getObjects().length > 0) {
                     canvas.deactivateAll();
                     canvas.renderAll();
@@ -1568,6 +1589,10 @@ GoMage.Designer.prototype = {
                     if (scale != 1) {
                         obj.scale(scale);
                     }
+
+                    if (this.productDesigner.currentBackImageExt === 'png') {
+                        obj.globalCompositeOperation = 'source-atop';
+                    }
                     var cmd = new InsertCommand(this.productDesigner, obj, true);
                     cmd.exec();
                     this.productDesigner.history.push(cmd);
@@ -1894,7 +1919,9 @@ GoMage.TextEditor.prototype = {
                 shadow.color = this.selected_colors.textShadow;
                 textObject.setShadow(shadow);
             }
-
+            if (this.productDesigner.currentBackImageExt === 'png') {
+                textObject.globalCompositeOperation = 'source-atop';
+            }
             var cmd = new InsertCommand(this.productDesigner, textObject, true);
             cmd.exec();
             this.productDesigner.history.push(cmd);
@@ -2460,6 +2487,9 @@ GoMage.ImageUploader.prototype = {
                     }
                     if (scale != 1) {
                         obj.scale(scale);
+                    }
+                    if (this.productDesigner.currentBackImageExt === 'png') {
+                        obj.globalCompositeOperation = 'source-atop';
                     }
                     var cmd = new InsertCommand(this.productDesigner, obj, true);
                     cmd.exec();

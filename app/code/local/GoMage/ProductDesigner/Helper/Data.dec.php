@@ -299,6 +299,10 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
                 $conf['d']          = $this->getImageDimensions($imageUrl);
                 $conf['orig_image'] = $this->getOriginalImage($product, $image);
                 $conf['ico']        = $this->getDesignImageUrl($product, $image, array(60, 60));
+                $conf['canvas_background_url'] = $image->getCanvasBackgroundFile() ?
+                    Mage::getSingleton('gomage_designer/CanvasBackgroundImage_gallery_config')
+                        ->getBaseMediaUrl() . DS . $image->getCanvasBackgroundFile()
+                    : null;
 
                 if ($product->getTypeId() == Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE) {
                     if ($image['color']) {
@@ -740,6 +744,5 @@ class GoMage_ProductDesigner_Helper_Data extends Mage_Core_Helper_Abstract
         }
 
         Mage::app()->saveCache(time(), 'gomage_notifications_last_update');
-
     }
 }

@@ -116,6 +116,11 @@
                                     window.designAreaPopup.updateImageFile, Object.toJSON(data)
                                 );
                             }
+                            if (response['canvas_background_file']) {
+                                window.designAreaPopup.galleryObject.updateBackgroundCanvasFile(
+                                    window.designAreaPopup.updateImageFile, response['canvas_background_file'],
+                                );
+                            }
                             if (window.designAreaPopup.target != undefined) {
                                 var state = window.designAreaPopup.target.previous();
                                 if (state != undefined && state.type == 'checkbox') {

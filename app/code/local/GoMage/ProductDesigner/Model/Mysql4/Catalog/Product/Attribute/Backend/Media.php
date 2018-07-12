@@ -61,7 +61,8 @@ class GoMage_ProductDesigner_Model_Mysql4_Catalog_Product_Attribute_Backend_Medi
                     'position_default' => 'position',
                     'disabled_default' => 'disabled',
                     'color_default' => 'color',
-                    'design_area_default' => 'design_area'
+                    'design_area_default' => 'design_area',
+                    'canvas_background_file',
                 )
             )
             ->where('main.attribute_id = ?', $object->getAttribute()->getId())
