@@ -74,6 +74,7 @@ $sizes = $this->getFontSizes();
         <?php if ($this->effectsEnabled()):?>
             <button id="outline-button" class="panel-btn2"><?php echo $this->__('Outline'); ?></button>
             <button id="shadow-button" class="panel-btn2"><?php echo $this->__('Shadow'); ?></button>
+            <button id="curved-button" class="panel-btn2"><?php echo $this->__('Curved'); ?></button>
             <div class="pd-text-effect-popup">
                 <fieldset class="shadow-config text-effect">
                     <legend><?php echo $this->__('Shadow'); ?></legend>
@@ -103,6 +104,36 @@ $sizes = $this->getFontSizes();
                     </div>
                     <div class="pd-element-wrapper">
                         <canvas height="40" width="288" id="strokeStyle" class="color-picker"></canvas>
+                    </div>
+                </fieldset>
+                <fieldset class="curved-config text-effect">
+                    <legend><?php echo $this->__('Curved'); ?></legend>
+                    <div id="curved-cancel" title="<?php echo $this->__('Cancel Curved') ?>" data-effect="curved" class="panel-cancel-btn">&times;</div>
+                    <div class="pd-element-wrapper">
+                        <label><?php echo $this->__('Radius'); ?>: </label>
+                        <input type="range" value="50" id="radius_range" min="0" max="100" step="1">
+                    </div>
+                    <div class="pd-element-wrapper">
+                        <label><?php echo $this->__('Spacing'); ?>: </label>
+                        <input type="range" value="20" id="spacing_range" min="5" max="40" step="1">
+                    </div>
+                    <label for="effect"><?php echo $this->__('Effect'); ?>: </label>
+                    <select name="effect" id="effect">
+                        <option value="STRAIGHT"><?php echo $this->__('STRAIGHT'); ?></option>
+                        <option value="curved"><?php echo $this->__('Curved'); ?></option>
+                        <option value="arc"><?php echo $this->__('Arc'); ?></option>
+                        <option value="smallToLarge"><?php echo $this->__('smallToLarge'); ?></option>
+                        <option value="largeToSmallTop"><?php echo $this->__('largeToSmallTop'); ?></option>
+                        <option value="largeToSmallBottom"><?php echo $this->__('largeToSmallBottom'); ?></option>
+                        <option value="bulge"><?php echo $this->__('bulge'); ?></option>
+                    </select>
+                    <div class="fieldset">
+                        <ul class="form-list">
+                            <li class="control">
+                                <label for="reverse"><?php echo $this->__('Reverse'); ?> </label>
+                                <input type="checkbox" name="reverse" id="reverse" class="checkbox"/>
+                            </li>
+                        </ul>
                     </div>
                 </fieldset>
             </div>
