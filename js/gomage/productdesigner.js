@@ -1145,10 +1145,9 @@ GoMage.ProductDesigner.prototype = {
     },
 
     prepareBackgroundZoomImage: function (obj) {
-        var origImage = this.config.product.images[this.currentColor][this.currentProd].orig_image;
         obj.set({
-            height: Math.round(parseInt(origImage.dimensions[1])),
-            width: Math.round(parseInt(origImage.dimensions[0])),
+            height: Math.round(this.config.imageMinSize.height),
+            width: Math.round(this.config.imageMinSize.width),
             left: 0,
             top: 0,
             hasControls: false,
@@ -1160,10 +1159,9 @@ GoMage.ProductDesigner.prototype = {
 
     prepareDesignImageForZoom: function (obj) {
         var currentImg = this.config.product.images[this.currentColor][this.currentProd];
-        var origImage = this.config.product.images[this.currentColor][this.currentProd].orig_image;
 
-        var scale_x = origImage.dimensions[0] / currentImg.d[0];
-        var scale_y = origImage.dimensions[1] / currentImg.d[1];
+        var scale_x = this.config.imageMinSize.width / currentImg.d[0];
+        var scale_y = this.config.imageMinSize.height / currentImg.d[1];
 
         obj.set({
             width: Math.round(currentImg.w * scale_x),
@@ -1178,6 +1176,17 @@ GoMage.ProductDesigner.prototype = {
     },
 
     createZoomWindow: function () {
+        var maxWidth = window.screen.availWidth,
+            k = 0;
+
+        if (this.config.imageMinSize.width > maxWidth) {
+            k = maxWidth / this.config.imageMinSize.width;
+            this.config.imageMinSize.width = maxWidth;
+            this.config.imageMinSize.height = this.config.imageMinSize.height * k;
+            $('product-zoom-container').style.width = maxWidth + 'px';
+            $('product-zoom-container').style.height = this.config.imageMinSize.height + 'px';
+        }
+
         if (!this.zoomWindow) {
             this.zoomWindow = new Window({
                 className: 'magento',
