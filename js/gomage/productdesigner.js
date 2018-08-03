@@ -2135,6 +2135,9 @@ GoMage.TextEditor.prototype = {
     },
 
     observeCurvedButton: function () {
+        if (!this.btnCurvedText) {
+            return;
+        }
         this.btnCurvedText.observe('click', function (e) {
             var elem = e.target || e.srcElement;
             this.toggleConfigContainer(elem);
@@ -2180,6 +2183,9 @@ GoMage.TextEditor.prototype = {
     },
 
     observeShadowButton: function () {
+        if (!this.btnShadowText) {
+            return;
+        }
         this.btnShadowText.observe('click', function (e) {
             var elem = e.target || e.srcElement;
             this.toggleConfigContainer(elem);
@@ -2251,6 +2257,9 @@ GoMage.TextEditor.prototype = {
     },
 
     observeOutlineButton: function () {
+        if (!this.btnOutlineText) {
+            return;
+        }
         this.btnOutlineText.observe('click', function (e) {
             var elem = e.target || e.srcElement;
             this.toggleConfigContainer(elem);
