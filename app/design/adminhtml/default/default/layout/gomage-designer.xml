@@ -37,6 +37,12 @@
         </reference>
     </adminhtml_catalog_product_new>
 
+    <adminhtml_catalog_product_attribute_edit>
+        <reference name="head">
+            <action method="addJs"><script>jscolor/jscolor.js</script></action>
+        </reference>
+    </adminhtml_catalog_product_attribute_edit>
+
     <adminhtml_designer_product_edit>
         <block type="gomage_designer/adminhtml_product_edit" name="product_designer_product" template="gomage/productdesigner/product/edit.phtml" output="toHtml" />
     </adminhtml_designer_product_edit>

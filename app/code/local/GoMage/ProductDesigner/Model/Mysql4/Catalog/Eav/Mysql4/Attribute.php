@@ -15,116 +15,95 @@ class GoMage_ProductDesigner_Model_Mysql4_Catalog_Eav_Mysql4_Attribute
     extends Mage_Catalog_Model_Resource_Eav_Mysql4_Attribute
 {
     protected $_navigationAttributeModel;
+
     protected function _saveOption(Mage_Core_Model_Abstract $object)
     {
         if ($navigationResourceModel = $this->_getNavigationAttributeResourceModel()) {
             $navigationResourceModel->_saveOption($object);
         }
         $colorAttributeCode = Mage::getStoreConfig('gomage_designer/navigation/color_attribute');
-        if (!$colorAttributeCode || $object->getAttributeCode() !=$colorAttributeCode) {
+        if (!$colorAttributeCode || $object->getAttributeCode() != $colorAttributeCode) {
             return parent::_saveOption($object);
         }
 
         $option = $object->getOption();
         if (is_array($option)) {
-            $write = $this->_getWriteAdapter();
-            $optionTable        = $this->getTable('attribute_option');
-            $optionValueTable   = $this->getTable('attribute_option_value');
-            $stores = Mage::getModel('core/store')
-                ->getResourceCollection()
-                ->setLoadDefault(true)
-                ->load();
-
-            if (isset($option['value'])) {
+            if (isset($option['color'])) {
+                $write = $this->_getWriteAdapter();
+                $optionTable        = $this->getTable('attribute_option');
+                $optionValueTable   = $this->getTable('attribute_option_value');
+                $stores = Mage::getModel('core/store')
+                    ->getResourceCollection()
+                    ->setLoadDefault(true)
+                    ->load();
+                $destinationDirectory = $this->getDestinationDirectory();
                 $attributeDefaultValue = array();
+                $table = Mage::getSingleton('core/resource')->getTableName('gomage_productdesigner_attribute_option');
+                $connection = $this->_getReadAdapter();
+
                 if (!is_array($object->getDefault())) {
                     $object->setDefault(array());
                 }
 
-                foreach ($option['value'] as $optionId => $values) {
-                    $intOptionId = (int) $optionId;
+                foreach ($option['color'] as $optionId => $colorHex) {
+                    $optionIdInt = (int)$optionId;
                     if (!empty($option['delete'][$optionId])) {
-                        if ($intOptionId) {
-                            $condition = $write->quoteInto('option_id=?', $intOptionId);
-                            $write->delete($optionTable, $condition);
+                        if ($optionIdInt) {
+                            $write->delete($optionTable, array('option_id = ?' => $optionIdInt));
                         }
-
                         continue;
                     }
-
-                    if (!$intOptionId) {
+                    if (!$optionIdInt) {
                         $data = array(
                             'attribute_id'  => $object->getId(),
                             'sort_order'    => isset($option['order'][$optionId]) ? $option['order'][$optionId] : 0,
                         );
                         $write->insert($optionTable, $data);
-                        $intOptionId = $write->lastInsertId();
-                    }
-                    else {
+                        $optionIdInt = $write->lastInsertId();
+                    } else {
                         $data = array(
                             'sort_order'    => isset($option['order'][$optionId]) ? $option['order'][$optionId] : 0,
                         );
-                        $write->update($optionTable, $data, $write->quoteInto('option_id=?', $intOptionId));
+                        $write->update($optionTable, $data, $write->quoteInto('option_id=?', $optionIdInt));
                     }
 
-                    $attribute_id = $object->getAttributeId();
-                    $table = Mage::getSingleton('core/resource')->getTableName('gomage_productdesigner_attribute_option');
+                    $fileName = $option['value'][$optionId][0] . '_' . uniqid() . '.png';
 
-                    $connection =  $this->_getReadAdapter();
+                    $this->saveImage($colorHex, $destinationDirectory . DS . $fileName);
+                    $attributeId = $object->getId();
+                    $isNotNew = $connection->fetchOne("SELECT COUNT(*) FROM {$table}"
+                            . " WHERE `attribute_id` = {$attributeId} AND `option_id` = '{$optionIdInt}';") > 0;
 
-
-                    if(isset($option['remove_image'][$intOptionId]) && $option['remove_image'][$intOptionId] > 0){
-
-                        $connection->query("DELETE FROM {$table} WHERE `attribute_id` = {$attribute_id} AND `option_id` = {$intOptionId}; ");
-
-                    }
-
-                    if(isset($option['image'][$optionId])){
-
-                        $imageInfo = Zend_Json::decode($option['image'][$optionId]);
-                        if(isset($imageInfo[0])){
-                            $imageInfo = $imageInfo[0];
-
-                        }else{
-                            $imageInfo = null;
-                        }
-
-                        if(!empty($imageInfo) && isset($imageInfo['status']) && $imageInfo['status'] == 'new'){
-
-                            $image 	= $this->_moveImageFromTmp($imageInfo['file']);
-                            $name	= $imageInfo['name'];
-                            $size	= (float)$imageInfo['size'];
-
-                            if($connection->fetchOne("SELECT COUNT(*) FROM {$table} WHERE `attribute_id` = {$attribute_id} AND `option_id` = {$intOptionId};") > 0){
-                                $connection->query("UPDATE {$table} SET `filename` = '{$image}', `name` = '{$name}', `size` = {$size} WHERE `attribute_id` = {$attribute_id} AND `option_id` = {$intOptionId}; ");
-                            }else{
-                                $connection->query("INSERT INTO {$table} VALUES ({$intOptionId},{$attribute_id},'{$image}','{$name}',{$size});");
-
-                            }
-                        }
+                    if ($isNotNew) {
+                        $connection->query("UPDATE {$table} SET `filename` = '{$fileName}', `color_hex` = '{$colorHex}'"
+                            . " WHERE `attribute_id` = {$attributeId} AND `option_id` = {$optionIdInt}; ");
+                    } else {
+                        $connection->query("INSERT INTO {$table}" .
+                            " VALUES ({$optionIdInt},{$attributeId},'{$fileName}','{$colorHex}')");
                     }
 
                     if (in_array($optionId, $object->getDefault())) {
                         if ($object->getFrontendInput() == 'multiselect') {
-                            $attributeDefaultValue[] = $intOptionId;
+                            $attributeDefaultValue[] = $optionIdInt;
                         } else if ($object->getFrontendInput() == 'select') {
-                            $attributeDefaultValue = array($intOptionId);
+                            $attributeDefaultValue = array($optionIdInt);
                         }
                     }
 
-
                     // Default value
-                    if (!isset($values[0])) {
+                    if (!isset($option['value'][$optionId][0])) {
                         Mage::throwException(Mage::helper('eav')->__('Default option value is not defined.'));
                     }
 
-                    $write->delete($optionValueTable, $write->quoteInto('option_id=?', $intOptionId));
+                    $write->delete($optionValueTable, $write->quoteInto('option_id=?', $optionIdInt));
                     foreach ($stores as $store) {
-                        if (isset($values[$store->getId()]) && (!empty($values[$store->getId()]) || $values[$store->getId()] == "0")) {
+                        if (isset($option['value'][$optionId][$store->getId()])
+                            && (!empty($option['value'][$optionId][$store->getId()])
+                                || $option['value'][$optionId][$store->getId()] == "0")) {
                             $data = array(
-                                'option_id' => $intOptionId,
+                                'option_id' => $optionIdInt,
                                 'store_id'  => $store->getId(),
-                                'value'     => $values[$store->getId()],
+                                'value'     => $option['value'][$optionId][$store->getId()],
                             );
                             $write->insert($optionValueTable, $data);
                         }
@@ -136,33 +115,8 @@ class GoMage_ProductDesigner_Model_Mysql4_Catalog_Eav_Mysql4_Attribute
                 ), $write->quoteInto($this->getIdFieldName() . '=?', $object->getId()));
             }
         }
+
         return $this;
-    }
-
-    protected function _moveImageFromTmp($file) {
-
-        $ioObject = new Varien_Io_File();
-        $destDirectory = Mage::getBaseDir('media') . '/option_image';
-
-        try {
-            $ioObject->open(array('path' => $destDirectory));
-        }
-        catch (Exception $e) {
-            $ioObject->mkdir($destDirectory, 0777, true);
-            $ioObject->open(array('path' => $destDirectory));
-        }
-
-        if (strrpos($file, '.tmp') == strlen($file) - 4) {
-            $file = substr($file, 0, strlen($file) - 4);
-        }
-
-        $destFile = Varien_File_Uploader::getNewFileName($file);
-
-        $dest = $destDirectory . '/' . $destFile;
-
-        $ioObject->mv(Mage::getSingleton('catalog/product_media_config')->getTmpMediaPath($file), $dest);
-
-        return $destFile;
     }
 
     protected function _getNavigationAttributeResourceModel()
@@ -177,5 +131,45 @@ class GoMage_ProductDesigner_Model_Mysql4_Catalog_Eav_Mysql4_Attribute
         }
 
         return $this->_navigationAttributeModel;
+    }
+
+    /**
+     * @param $color
+     * @param $destination
+     *
+     * @return void
+     */
+    private function saveImage($color, $destination)
+    {
+        $color = (int)hexdec($color);
+        $red = ($color >> 16) & 0xFF;
+        $green = ($color >> 8) & 0xFF;
+        $blue = $color & 0xFF;
+
+        $image = imagecreatetruecolor(100, 100);
+
+        $imageColor = imagecolorallocate($image, $red, $green, $blue);
+        imagefill($image, 0, 0, $imageColor);
+
+        imagepng($image, $destination);
+        imagedestroy($image);
+    }
+
+    /**
+     * @return string
+     */
+    private function getDestinationDirectory()
+    {
+        $ioObject = new Varien_Io_File();
+        $destinationDirectory = Mage::getBaseDir('media') . '/option_image';
+
+        try {
+            $ioObject->open(array('path' => $destinationDirectory));
+        } catch (Exception $e) {
+            $ioObject->mkdir($destinationDirectory, 0777, true);
+            $ioObject->open(array('path' => $destinationDirectory));
+        }
+
+        return $destinationDirectory;
     }
 }

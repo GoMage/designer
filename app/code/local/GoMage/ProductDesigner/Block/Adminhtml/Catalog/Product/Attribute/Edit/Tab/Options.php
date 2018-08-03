@@ -48,8 +48,8 @@ class GoMage_ProductDesigner_Block_Adminhtml_Catalog_Product_Attribute_Edit_Tab_
         if ($values) {
             $images = $this->getAttributeObject()->getOptionImages();
             foreach ($values as $value) {
-                if (isset($images[$value['id']])) {
-                    $value->setImageInfo(array($images[$value['id']]));
+                if (isset($images[$value['id']]['color_hex'])) {
+                    $value->setColor($images[$value['id']]['color_hex']);
                 }
             }
         }
