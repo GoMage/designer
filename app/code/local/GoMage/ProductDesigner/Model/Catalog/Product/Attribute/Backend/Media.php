@@ -35,7 +35,7 @@ class GoMage_ProductDesigner_Model_Catalog_Product_Attribute_Backend_Media
         $value = array();
         $value['images'] = array();
         $value['values'] = array();
-        $localAttributes = array('label', 'position', 'disabled', 'color', 'design_area', 'canvas_background_file');
+        $localAttributes = array('label', 'position', 'disabled', 'color', 'design_area');
 
         foreach ($this->_getResource()->loadGallery($object, $this) as $image) {
             foreach ($localAttributes as $localAttribute) {
@@ -179,8 +179,6 @@ class GoMage_ProductDesigner_Model_Catalog_Product_Attribute_Backend_Media
             $data['position'] = (int) $image['position'];
             $data['disabled'] = (int) $image['disabled'];
             $data['store_id'] = (int) $object->getStoreId();
-            $data['canvas_background_file'] = $image['canvas_background_file'];
-
             if (isset($image['color'])) {
                 $data['color']    = (int) $image['color'];
             }
@@ -206,7 +204,7 @@ class GoMage_ProductDesigner_Model_Catalog_Product_Attribute_Backend_Media
      * @return string
      */
     public function addImage(Mage_Catalog_Model_Product $product, $file,
-                             $mediaAttribute = null, $move = false, $exclude = true)
+        $mediaAttribute = null, $move = false, $exclude = true)
     {
         $file = realpath($file);
 
@@ -310,8 +308,7 @@ class GoMage_ProductDesigner_Model_Catalog_Product_Attribute_Backend_Media
             'disabled'    => 'disabled',
             'exclude'     => 'disabled',
             'color'       => 'color',
-            'design_area' => 'design_area',
-            'canvas_background_file' => 'canvas_background_file',
+            'design_area' => 'design_area'
         );
 
         $attrCode = $this->getAttribute()->getAttributeCode();
