@@ -1124,10 +1124,9 @@ GoMage.ProductDesigner.prototype = {
     },
 
     prepareBackgroundZoomImage: function (obj) {
-        var origImage = this.config.product.images[this.currentColor][this.currentProd].orig_image;
         obj.set({
-            height: Math.round(parseInt(origImage.dimensions[1])),
-            width: Math.round(parseInt(origImage.dimensions[0])),
+            height: Math.round(this.config.imageMinSize.height),
+            width: Math.round(this.config.imageMinSize.width),
             left: 0,
             top: 0,
             hasControls: false,
@@ -1139,10 +1138,9 @@ GoMage.ProductDesigner.prototype = {
 
     prepareDesignImageForZoom: function (obj) {
         var currentImg = this.config.product.images[this.currentColor][this.currentProd];
-        var origImage = this.config.product.images[this.currentColor][this.currentProd].orig_image;
 
-        var scale_x = origImage.dimensions[0] / currentImg.d[0];
-        var scale_y = origImage.dimensions[1] / currentImg.d[1];
+        var scale_x = this.config.imageMinSize.width / currentImg.d[0];
+        var scale_y = this.config.imageMinSize.height / currentImg.d[1];
 
         obj.set({
             width: Math.round(currentImg.w * scale_x),
@@ -1157,6 +1155,17 @@ GoMage.ProductDesigner.prototype = {
     },
 
     createZoomWindow: function () {
+        var maxWidth = window.screen.availWidth,
+            k = 0;
+
+        if (this.config.imageMinSize.width > maxWidth) {
+            k = maxWidth / this.config.imageMinSize.width;
+            this.config.imageMinSize.width = maxWidth;
+            this.config.imageMinSize.height = this.config.imageMinSize.height * k;
+            $('product-zoom-container').style.width = maxWidth + 'px';
+            $('product-zoom-container').style.height = this.config.imageMinSize.height + 'px';
+        }
+
         if (!this.zoomWindow) {
             this.zoomWindow = new Window({
                 className: 'magento',
@@ -1701,12 +1710,17 @@ GoMage.TextEditor = function (defaultFontFamily, defaultFontSize) {
     this.addTextBtnStrokeThrough = $('add_text_btn_stroke_through');
     this.fontSizeSelector = $('font_size_selector');
     this.btnShadowText = $('shadow-button');
+    this.btnCurvedText = $('curved-button');
     this.btnOutlineText = $('outline-button');
     this.addTextColorsPanel = $('add_text_colors_panel');
     this.outlineStrokeWidthRange = $('outline_range');
     this.shadowOffsetX = $('shadow_x_range');
     this.shadowOffsetY = $('shadow_y_range');
     this.shadowBlur = $('shadow_blur');
+    this.curvedRadius = $('radius_range');
+    this.curvedSpacing = $('spacing_range');
+    this.curvedEffect = $('effect');
+    this.curvedReverse = $('reverse');
     this.resetSettings = $('reset_text_settings');
 
     this.fieldsMap = {
@@ -1735,6 +1749,8 @@ GoMage.TextEditor = function (defaultFontFamily, defaultFontSize) {
     this.observeFontStyleControls();
     this.observeShadowButton();
     this.observeShadowControls();
+    this.observeCurvedButton();
+    this.observeCurvedControls();
     this.observeOutlineButton();
     this.observeOutlineControls();
     this.observeCancelTextEffect();
@@ -1758,7 +1774,7 @@ GoMage.TextEditor.prototype = {
                 case 'color':
                 {
                     this.selected_colors.color = e.hex;
-                    if (obj && obj.type == 'text') {
+                    if (obj && obj.type == 'curvedText') {
                         this.setTextColor(e.hex);
                     }
                     break;
@@ -1766,7 +1782,7 @@ GoMage.TextEditor.prototype = {
                 case 'textShadow':
                 {
                     this.selected_colors.textShadow = e.hex;
-                    if (obj && obj.type == 'text') {
+                    if (obj && obj.type == 'curvedText') {
                         this.setShadow({shadowColor: e.hex});
                     }
                     break;
@@ -1774,7 +1790,7 @@ GoMage.TextEditor.prototype = {
                 case 'strokeStyle':
                 {
                     this.selected_colors.strokeStyle = e.hex;
-                    if (obj && obj.type == 'text') {
+                    if (obj && obj.type == 'curvedText') {
                         var cmd = new TransformCommand(this.productDesigner.canvas, obj, {stroke: e.hex});
                         cmd.exec();
                         this.productDesigner.history.push(cmd);
@@ -1790,7 +1806,7 @@ GoMage.TextEditor.prototype = {
      */
     setTextColor: function (color) {
         var obj = this.productDesigner.canvas.getActiveObject();
-        if (obj && obj.type == 'text') {
+        if (obj && obj.type == 'curvedText') {
             var cmd = new TransformCommand(this.productDesigner.canvas, obj, {color: color});
             cmd.exec();
             this.productDesigner.history.push(cmd);
@@ -1822,7 +1838,7 @@ GoMage.TextEditor.prototype = {
         this.fontSelector.observe('change', function (e) {
             var elem = e.target || e.srcElement;
             var obj = this.productDesigner.canvas.getActiveObject();
-            if (obj && obj.type == 'text') {
+            if (obj && obj.type == 'curvedText') {
                 var cmd = new TransformCommand(this.productDesigner.canvas, obj, {fontFamily: elem.value});
                 cmd.exec();
                 this.productDesigner.history.push(cmd);
@@ -1851,7 +1867,7 @@ GoMage.TextEditor.prototype = {
                 return;
             }
             var obj = this.productDesigner.canvas.getActiveObject();
-            if (obj && obj.type == 'text') {
+            if (obj && obj.type == 'curvedText') {
                 return;
             }
             var text = this.addTextTextarea.value;
@@ -1871,8 +1887,9 @@ GoMage.TextEditor.prototype = {
                 textObjectData.stroke = this.selected_colors.strokeStyle;
                 textObjectData.strokeWidth = parseFloat(this.outlineStrokeWidthRange.value);
             }
-
-            var textObject = new fabric.Text(text, textObjectData);
+            textObjectData.effect = 'STRAIGHT';
+            textObjectData.textAlign= 'center';
+            var textObject = new fabric.CurvedText(text, textObjectData);
 
             var color = this.getTextColor();
             if (color) {
@@ -1918,7 +1935,7 @@ GoMage.TextEditor.prototype = {
                     return;
                 }
                 var currentValue = elem.value;
-                if (obj && obj.type == 'text') {
+                if (obj && obj.type == 'curvedText') {
                     if (currentValue != obj.getText()) {
                         var cmd = new TransformCommand(this.productDesigner.canvas, obj, {text: currentValue});
                         cmd.exec();
@@ -1933,7 +1950,7 @@ GoMage.TextEditor.prototype = {
         this.fontSizeSelector.observe('change', function (e) {
             var elem = e.target || e.srcElement;
             var obj = this.productDesigner.canvas.getActiveObject();
-            if (obj && obj.type == 'text') {
+            if (obj && obj.type == 'curvedText') {
                 var cmd = new TransformCommand(this.productDesigner.canvas, obj, {fontSize: parseInt(elem.value)});
                 cmd.exec();
                 this.productDesigner.history.push(cmd);
@@ -1956,7 +1973,7 @@ GoMage.TextEditor.prototype = {
         this.addTextBtnBold.observe('click', function (e) {
             this.changeControlState(this.addTextBtnBold);
             var obj = this.productDesigner.canvas.getActiveObject();
-            if (obj && obj.type == 'text') {
+            if (obj && obj.type == 'curvedText') {
                 var params = {fontWeight: (this.addTextBtnBold.hasClassName('active') ? 'bold' : 'normal')};
                 var cmd = new TransformCommand(this.productDesigner.canvas, obj, params);
                 cmd.exec();
@@ -1967,7 +1984,7 @@ GoMage.TextEditor.prototype = {
         this.addTextBtnItalic.observe('click', function (e) {
             this.changeControlState(this.addTextBtnItalic);
             var obj = this.productDesigner.canvas.getActiveObject();
-            if (obj && obj.type == 'text') {
+            if (obj && obj.type == 'curvedText') {
                 var params = {fontStyle: (this.addTextBtnItalic.hasClassName('active') ? 'italic' : '')};
                 var cmd = new TransformCommand(this.productDesigner.canvas, obj, params);
                 cmd.exec();
@@ -1978,7 +1995,7 @@ GoMage.TextEditor.prototype = {
         this.addTextBtnUnderline.observe('click', function (e) {
             this.changeControlState(this.addTextBtnUnderline);
             var obj = this.productDesigner.canvas.getActiveObject();
-            if (obj && obj.type == 'text') {
+            if (obj && obj.type == 'curvedText') {
                 var params = {textDecoration: (this.addTextBtnUnderline.hasClassName('active') ? 'underline' : '') + (this.addTextBtnStrokeThrough.hasClassName('active') ? ' line-through' : '')};
                 var cmd = new TransformCommand(this.productDesigner.canvas, obj, params);
                 cmd.exec();
@@ -1989,7 +2006,7 @@ GoMage.TextEditor.prototype = {
         this.addTextBtnStrokeThrough.observe('click', function (e) {
             this.changeControlState(this.addTextBtnStrokeThrough);
             var obj = this.productDesigner.canvas.getActiveObject();
-            if (obj && obj.type == 'text') {
+            if (obj && obj.type == 'curvedText') {
                 var params = {textDecoration: (this.addTextBtnUnderline.hasClassName('active') ? 'underline' : '') + (this.addTextBtnStrokeThrough.hasClassName('active') ? ' line-through' : '')};
                 var cmd = new TransformCommand(this.productDesigner.canvas, obj, params);
                 cmd.exec();
@@ -2020,7 +2037,7 @@ GoMage.TextEditor.prototype = {
 
             [this.addTextBtnBold, this.addTextBtnItalic,
                 this.addTextBtnUnderline, this.addTextBtnStrokeThrough,
-                this.btnShadowText, this.btnOutlineText].invoke('removeClassName', 'active');
+                this.btnShadowText, this.btnOutlineText, this.btnCurvedText].invoke('removeClassName', 'active');
 
             $$('.shadow-config, .outline-config').invoke('hide');
             this.addTextColorsPanel.childElements().invoke('removeClassName', 'active');
@@ -2036,7 +2053,7 @@ GoMage.TextEditor.prototype = {
             this.shadowOffsetY.value = 0;
             this.shadowBlur.value = 0;
 
-            if (obj && obj.type == 'text') {
+            if (obj && obj.type == 'curvedText') {
                 var textObjectData = {
                     fontSize: parseInt(this.fontSizeSelector.value),
                     fontFamily: this.fontSelector.value,
@@ -2090,13 +2107,64 @@ GoMage.TextEditor.prototype = {
         this.productDesigner.history.push(cmd);
     },
 
+    observeCurvedButton: function () {
+        if (!this.btnCurvedText) {
+            return;
+        }
+        this.btnCurvedText.observe('click', function (e) {
+            var elem = e.target || e.srcElement;
+            this.toggleConfigContainer(elem);
+        }.bind(this));
+    },
+
+    observeCurvedControls: function () {
+        var curvedRadius = this.curvedRadius,
+            curvedSpacing = this.curvedSpacing,
+            curvedEffect = this.curvedEffect,
+            curvedReverse = this.curvedReverse;
+        if (!curvedRadius || !curvedSpacing || !curvedEffect || !curvedReverse) {
+            return;
+        }
+
+        curvedRadius.observe('change', function (e) {
+            var elem = e.target || e.srcElement;
+            this.setCurveOption('radius', elem.value)
+        }.bind(this));
+
+        curvedSpacing.observe('change', function (e) {
+            var elem = e.target || e.srcElement;
+            this.setCurveOption('spacing', elem.value)
+        }.bind(this));
+
+        curvedEffect.observe('change', function (e) {
+            var elem = e.target || e.srcElement;
+            this.setCurveOption('effect', elem.value)
+        }.bind(this));
+
+        curvedReverse.observe('click', function (e) {
+            var elem = e.target || e.srcElement;
+            this.setCurveOption('reverse', elem.checked)
+        }.bind(this));
+    },
+
+    setCurveOption: function (param, value) {
+        var obj = this.productDesigner.canvas.getActiveObject();
+        if (obj) {
+            obj.set(param, value);
+        }
+        this.productDesigner.canvas.renderAll();
+    },
+
     observeShadowButton: function () {
+        if (!this.btnShadowText) {
+            return;
+        }
         this.btnShadowText.observe('click', function (e) {
             var elem = e.target || e.srcElement;
             this.toggleConfigContainer(elem);
 
             var obj = this.productDesigner.canvas.getActiveObject();
-            if (obj && obj.type == 'text') {
+            if (obj && obj.type == 'curvedText') {
                 if (obj.shadow == null) {
                     this.setShadow({
                         shadowOffsetX: this.defaultFieldsValues.shadowOffsetX,
@@ -2136,7 +2204,7 @@ GoMage.TextEditor.prototype = {
 
     setShadow: function (shadowParams) {
         var obj = this.productDesigner.canvas.getActiveObject();
-        if (obj && obj.type == 'text') {
+        if (obj && obj.type == 'curvedText') {
             var shadow = obj.shadow;
             if (shadow == null) {
                 shadow = new fabric.Shadow();
@@ -2162,12 +2230,15 @@ GoMage.TextEditor.prototype = {
     },
 
     observeOutlineButton: function () {
+        if (!this.btnOutlineText) {
+            return;
+        }
         this.btnOutlineText.observe('click', function (e) {
             var elem = e.target || e.srcElement;
             this.toggleConfigContainer(elem);
 
             var obj = this.productDesigner.canvas.getActiveObject();
-            if (obj && obj.type == 'text') {
+            if (obj && obj.type == 'curvedText') {
                 if (obj.strokeWidth == 0) {
                     var cmd = new TransformCommand(this.productDesigner.canvas, obj, {
                         strokeWidth: this.defaultFieldsValues.strokeWidth,
@@ -2560,7 +2631,7 @@ var LayersManager = function (w) {
             } else if (obj.tab == 'upload' && this.w.config.isUploadImageEnabled) {
                 element_id = 'pd_add_image';
             }
-        } else if (obj.type == 'text' && this.w.config.isTextEnabled) {
+        } else if (obj.type == 'curvedText' && this.w.config.isTextEnabled) {
             element_id = 'pd_add_text';
             var event = document.createEvent('Event');
             event.obj = obj;
@@ -2982,47 +3053,5 @@ function showLoadInfo() {
 function hideLoadInfo() {
     if ($('designer-load-info')) {
         $('designer-load-info').hide();
-    }
-}
-
-/**
- * @private
- * @param {CanvasRenderingContext2D} ctx Context to render on
- * @param {Array} textLines Array of all text lines
- */
-fabric.Text.prototype._renderTextDecoration = function (ctx, textLines) {
-    if (!this.textDecoration) {
-        return;
-    }
-
-    // var halfOfVerticalBox = this.originY === 'top' ? 0 : this._getTextHeight(ctx, textLines) / 2;
-    var halfOfVerticalBox = this._getTextHeight(ctx, textLines) / 1.5,
-        _this = this;
-
-
-    /** @ignore */
-    function renderLinesAtOffset(offset) {
-        for (var i = 0, len = textLines.length; i < len; i++) {
-
-            var lineWidth = _this._getLineWidth(ctx, textLines[i]),
-                lineLeftOffset = _this._getLineLeftOffset(lineWidth),
-                lineHeight = Math.ceil(_this.fontSize / 24) * (_this.fontWeight == 'bold' ? 2 : 1);
-
-            ctx.fillRect(
-                _this._getLeftOffset() + lineLeftOffset,
-                ~~((offset + (i * _this._getHeightOfLine(ctx, i, textLines))) - halfOfVerticalBox),
-                lineWidth,
-                lineHeight);
-        }
-    }
-
-    if (this.textDecoration.indexOf('underline') > -1) {
-        renderLinesAtOffset(this.fontSize * this.lineHeight);
-    }
-    if (this.textDecoration.indexOf('line-through') > -1) {
-        renderLinesAtOffset(this.fontSize * this.lineHeight - this.fontSize / 2);
-    }
-    if (this.textDecoration.indexOf('overline') > -1) {
-        renderLinesAtOffset(this.fontSize * this.lineHeight - this.fontSize);
     }
 }
