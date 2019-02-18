@@ -30,7 +30,7 @@
            <show_in_store>1</show_in_store>
            <groups>
                <designer translate="label">
-                   <label>GoMage Product Designer v.2.5.0</label>
+                   <label>GoMage Product Designer v.2.6.0</label>
                    <frontend_type>text</frontend_type>
                    <sort_order>20</sort_order>
                    <show_in_default>1</show_in_default>
